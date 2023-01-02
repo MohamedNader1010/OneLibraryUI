@@ -1,0 +1,12 @@
+<div class="d-flex flex-column vh-100">
+	<app-navbar [opened]="sidenav.opened" (toggleSidenav)="toggleSidenav($event)"></app-navbar>
+	<mat-sidenav-container class="example-container w-100 h-100" autosize>
+		<mat-sidenav #sidenav mode="side" position="end">
+			<p>Auto-resizing sidenav</p>
+		</mat-sidenav>
+		<mat-sidenav-content class="h-100">
+			<router-outlet></router-outlet>
+		</mat-sidenav-content>
+	</mat-sidenav-container>
+	<app-footer></app-footer>
+</div>
