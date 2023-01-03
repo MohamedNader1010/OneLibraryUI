@@ -26,15 +26,16 @@ export class LoginComponent {
 	handleRegister() {
 		this.router.navigate(["auth/register"]);
 	}
+
 	handleSubmit() {
 		if (this.loginForm.valid) {
 			localStorage.setItem("Securitytoken", "testtesttest");
-			localStorage.setItem("expiresOn", new Date().toUTCString());
+			localStorage.setItem("expiresOn", new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toUTCString());
 			localStorage.setItem("userName", "test");
 			this.router.navigate([""]);
 			// this._login.login(this.loginForm.value).subscribe({
 			// 	next: (data: any) => {
-			// 		// this.toastr.success("loged in successfully", "logged in");
+			// 		this.toastr.success("loged in successfully", "logged in");
 			// 		this.router.navigate([""]);
 			// 		localStorage.setItem("token", data.token);
 			// 		localStorage.setItem("expires", data.expiresOn);
@@ -42,7 +43,7 @@ export class LoginComponent {
 			// 	},
 			// 	error: (e) => {
 			// 		this._login.isLogged = false;
-			// 		// this.toastr.error(e.error.message, "unauthorized");
+			// 		this.toastr.error(e.error.message, "unauthorized");
 			// 	},
 			// });
 		}

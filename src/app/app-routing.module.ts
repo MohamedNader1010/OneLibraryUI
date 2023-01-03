@@ -1,3 +1,4 @@
+import {LoginGuard} from "./../Modules/authentication.Module/guards/login.guard";
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 
@@ -9,6 +10,7 @@ const routes: Routes = [
 	{
 		path: "",
 		loadChildren: () => import("../Modules/shared/shared.module").then((m) => m.SharedModule),
+		canLoad: [LoginGuard],
 	},
 ];
 
