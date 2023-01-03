@@ -26,6 +26,7 @@ export class LoginComponent {
 	handleRegister() {
 		this.router.navigate(["auth/register"]);
 	}
+
 	handleSubmit() {
 		if (this.loginForm.valid) {
 			localStorage.setItem("Securitytoken", "testtesttest");

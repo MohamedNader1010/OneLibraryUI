@@ -1,6 +1,6 @@
+import {LoginGuard} from "./../Modules/authentication.Module/guards/login.guard";
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
-import {LoginGuard} from "src/Modules/authentication.Module/guards/login.guard";
 
 const routes: Routes = [
 	{

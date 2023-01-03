@@ -1,5 +1,7 @@
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import {environment} from "src/environments/environment";
+import {_HttpOptions} from "src/Persistents/consts";
 import {Service} from "../interfaces/Iservice";
 import {SharedService} from "./../../shared/services/shared.service";
 
@@ -8,19 +10,10 @@ import {SharedService} from "./../../shared/services/shared.service";
 })
 export class ServicesService {
 	constructor(private http: HttpClient, private data: SharedService) {}
-	uri: string = `${this.data.apiUrl}Service/`;
+	uri: string = `${environment.apiUrl}Service/`;
 	getAll = () => this.http.get<Service[]>(`${this.uri}GetServices`);
-	getOne = (id: number) => this.http.get<Service>(`${this.data.apiUrl}GetServicesById/GetById/${id}`);
-	add(service: Service) {
-		const httpOptions = {headers: new HttpHeaders({"Content-Type": "application/json"})};
-		return this.http.post<Service>(`${this.uri}AddService`, service, httpOptions);
-	}
-	update(id: number, service: Service) {
-		const httpOptions = {headers: new HttpHeaders({"Content-Type": "application/json"})};
-		return this.http.put<Service>(`${this.uri}EditService/${id}`, {...service, id}, httpOptions);
-	}
-	delete(id: number) {
-		const httpOptions = {headers: new HttpHeaders({"Content-Type": "application/json"})};
-		return this.http.delete<Service>(`${this.uri}DeleteService?id=${id}`, httpOptions);
-	}
+	getOne = (id: number) => this.http.get<Service>(`${environment.apiUrl}GetServicesById/GetById/${id}`);
+	add = (service: Service) => this.http.post<Service>(`${this.uri}AddService`, service, _HttpOptions);
+	update = (id: number, service: Service) => this.http.put<Service>(`${this.uri}EditService/${id}`, {...service, id}, _HttpOptions);
+	delete = (id: number) => this.http.delete<Service>(`${this.uri}DeleteService?id=${id}`, _HttpOptions);
 }
