@@ -20,6 +20,7 @@ export class AllComponent implements OnInit {
 	@ViewChild(MatTable) servicesTable!: MatTable<any>;
 	MaterialDataSource: any[] = [];
 	ServiceTypeDataSource: any[] = [];
+	
 	constructor(
 		private _router: Router,
 		private _liveAnnouncer: LiveAnnouncer,
@@ -28,6 +29,7 @@ export class AllComponent implements OnInit {
 		private _service: ServicesService,
 		public dialog: MatDialog
 	) {}
+	
 	columns = [
 		{
 			columnDef: "id",
@@ -50,14 +52,19 @@ export class AllComponent implements OnInit {
 			cell: (element: Service) => this.ServiceTypeDataSource.find((x) => x.id == element.serivceTypeId)?.Name,
 		},
 	];
+	
 	@ViewChild(MatPaginator) paginator!: MatPaginator;
+	
 	@ViewChild(MatSort) sort!: MatSort;
+	
 	dataSource: MatTableDataSource<Service> = new MatTableDataSource<Service>([]);
+	
 	ngOnInit(): void {
 		this.getAllMaterials();
 		this.getAllServicesTypes();
 		this.getAll();
 	}
+	
 	getAll() {
 		this._service.getAll().subscribe({
 			next: (data) => {
@@ -68,17 +75,26 @@ export class AllComponent implements OnInit {
 			// error: (e) => console.log(e),
 		});
 	}
+	
 	getAllMaterials = () => this._material.getAll().subscribe({next: (data) => (this.MaterialDataSource = data)});
+	
 	getAllServicesTypes = () => this._serviceType.getAll().subscribe({next: (data) => (this.ServiceTypeDataSource = data)});
+	
 	dcols = this.columns.map((c) => c.columnDef);
+	
 	displayedColumns = [...this.dcols, "actions"];
+	
 	announceSortChange = (sortState: Sort) => (sortState.direction ? this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`) : this._liveAnnouncer.announce("Sorting cleared"));
+	
 	applyFilter = (event: Event) => {
 		this.dataSource.filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
 		if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
 	};
+	
 	HandleNew = () => this._router.navigate(["services/new"]);
+	
 	handleEdit = (row: Service) => this._router.navigate(["services/edit"], {queryParams: {id: row.id}});
+	
 	handleDelete = (row: Service) => {
 		this.dialog
 			.open(DialogComponent, {data: {location: "welder", msg: `are you sure you want to delete "${row.name}"?`}})
