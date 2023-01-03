@@ -7,10 +7,11 @@ import {AllComponent} from "./components/all/all.component";
 import {AddEditComponent} from "./components/add-edit/add-edit.component";
 import {MatComponentsModule} from "./../mat-components.Module/mat-components.module";
 import {ServicesService} from "./services/services.service";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
 	declarations: [ServiceComponent, AllComponent, AddEditComponent],
-	imports: [CommonModule, ServiceRoutingModule, MatComponentsModule],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceRoutingModule, MatComponentsModule],
 	providers: [ServicesService],
 })
 export class ServiceModule {}

@@ -5,7 +5,9 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort, Sort} from "@angular/material/sort";
 import {MatTable, MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
+import {Material} from "src/Modules/material/interfaces/Imaterial";
 import {MaterialService} from "src/Modules/material/services/material.service";
+import {ServiceType} from "src/Modules/serviceType/interFaces/IserviceType";
 import {ServicesTypeService} from "src/Modules/serviceType/services/serviceType.service";
 import {DialogComponent} from "src/Modules/shared/components/dialog/dialog.component";
 import {Service} from "../../interfaces/Iservice";
@@ -18,8 +20,8 @@ import {ServicesService} from "../../services/services.service";
 })
 export class AllComponent implements OnInit {
 	@ViewChild(MatTable) servicesTable!: MatTable<any>;
-	MaterialDataSource: any[] = [];
-	ServiceTypeDataSource: any[] = [];
+	MaterialDataSource: Material[] = [];
+	ServiceTypeDataSource: ServiceType[] = [];
 	constructor(
 		private _router: Router,
 		private _liveAnnouncer: LiveAnnouncer,
@@ -42,12 +44,12 @@ export class AllComponent implements OnInit {
 		{
 			columnDef: "Material",
 			header: "Material",
-			cell: (element: Service) => this.MaterialDataSource.find((x) => x.id == element.materialId)?.Name,
+			cell: (element: Service) => this.MaterialDataSource.find((x) => x.id == element.materialId)?.name,
 		},
 		{
 			columnDef: "Type",
 			header: "Type",
-			cell: (element: Service) => this.ServiceTypeDataSource.find((x) => x.id == element.serivceTypeId)?.Name,
+			cell: (element: Service) => this.ServiceTypeDataSource.find((x) => x.id == element.serivceTypeId)?.name,
 		},
 	];
 	@ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -81,7 +83,7 @@ export class AllComponent implements OnInit {
 	handleEdit = (row: Service) => this._router.navigate(["services/edit"], {queryParams: {id: row.id}});
 	handleDelete = (row: Service) => {
 		this.dialog
-			.open(DialogComponent, {data: {location: "welder", msg: `are you sure you want to delete "${row.name}"?`}})
+			.open(DialogComponent, {data: {location: "services", msg: `are you sure you want to delete "${row.name}"?`}})
 			.afterClosed()
 			.subscribe((result) => {
 				if (result) this._service.delete(row.id).subscribe({complete: () => this.getAll()});

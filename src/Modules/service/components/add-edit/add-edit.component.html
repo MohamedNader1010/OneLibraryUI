@@ -1,1 +1,34 @@
-<p>add-edit works!</p>
+<h2 class="w-100 text-center" *ngIf="id; else update">Service Details</h2>
+<ng-template #update>
+	<h2 class="w-100 text-center">New Service</h2>
+</ng-template>
+<section class="container">
+	<form [formGroup]="servicesForm" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+		<div class="row">
+			<div class="col">
+				<mat-form-field class="w-100">
+					<mat-label>Name</mat-label>
+					<input matInput formControlName="name" />
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+			<mat-form-field appearance="fill" class="col-6">
+				<mat-label>Material</mat-label>
+				<mat-select formControlName="material">
+					<mat-option *ngFor="let mat of MaterialDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="fill" class="col-6">
+				<mat-label>Type</mat-label>
+				<mat-select formControlName="type">
+					<mat-option *ngFor="let type of ServiceTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<div class="my-2 d-flex flex-row-reverse">
+			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !servicesForm.valid }}">save</button>
+			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+		</div>
+	</form>
+</section>
