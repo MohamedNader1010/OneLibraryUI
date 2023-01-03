@@ -9,9 +9,10 @@ import {NavbarComponent} from "./components/navbar/navbar.component";
 import {SharedComponent} from "./shared.component";
 import {MatComponentsModule} from "../mat-components.Module/mat-components.module";
 import {AuthService} from "../authentication.Module/services/auth.service";
+import { TableComponent } from './components/table/table.component';
 
 @NgModule({
-	declarations: [SharedComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent],
+	declarations: [SharedComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
 	imports: [CommonModule, SharedRoutingModule, MatComponentsModule],
 	providers: [AuthService],
 })
