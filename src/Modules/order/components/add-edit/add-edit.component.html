@@ -1,0 +1,80 @@
+<h2 class="w-100 text-center" *ngIf="id; else update">Service Details</h2>
+<ng-template #update>
+	<h2 class="w-100 text-center">New Service</h2>
+</ng-template>
+<section class="container">
+	<form [formGroup]="orderForm" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+		<div class="row">
+			<mat-form-field appearance="fill" class="col-11">
+				<mat-label>Client</mat-label>
+				<mat-select formControlName="clientId">
+					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<div class="col-1">
+				<button type="button" mat-icon-button matTooltip="add" color="primary" aria-label="add order detail row" (click)="handleNewDetail()">
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+		</div>
+		<!-- order details -->
+		<div formArrayName="details" *ngIf="OrderDetails.controls.length">
+			<div class="row" *ngFor="let detail of OrderDetails.controls; let i = index">
+				<ng-container [formGroupName]="i">
+					<div class="col-4">
+						<mat-form-field appearance="fill" class="w-100">
+							<mat-label>service</mat-label>
+							<mat-select formControlName="serviceId">
+								<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div class="col-4">
+						<mat-form-field appearance="fill" class="w-100">
+							<mat-label>note</mat-label>
+							<mat-select formControlName="noteId">
+								<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div class="col-3">
+						<mat-form-field class="w-100">
+							<mat-label>price</mat-label>
+							<input matInput formControlName="price" />
+						</mat-form-field>
+					</div>
+					<div class="col-1">
+						<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+		<!-- end order details -->
+		<div class="row">
+			<div class="col-4">
+				<mat-form-field class="w-100">
+					<mat-label>Total Price</mat-label>
+					<input matInput formControlName="totalPrice" />
+				</mat-form-field>
+			</div>
+			<div class="col-4">
+				<mat-form-field class="w-100">
+					<mat-label>Paid</mat-label>
+					<input matInput formControlName="paid" />
+				</mat-form-field>
+			</div>
+			<div class="col-4">
+				<mat-form-field class="w-100">
+					<mat-label>Rest</mat-label>
+					<input matInput formControlName="rest" />
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="my-2 d-flex flex-row-reverse">
+			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !orderForm.valid }}">save</button>
+			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+		</div>
+	</form>
+</section>
