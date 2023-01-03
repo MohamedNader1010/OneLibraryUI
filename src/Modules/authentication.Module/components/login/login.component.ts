@@ -26,10 +26,11 @@ export class LoginComponent {
 	handleRegister() {
 		this.router.navigate(["auth/register"]);
 	}
+
 	handleSubmit() {
 		if (this.loginForm.valid) {
 			localStorage.setItem("Securitytoken", "testtesttest");
-			localStorage.setItem("expiresOn", new Date().toUTCString());
+			localStorage.setItem("expiresOn", new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toUTCString());
 			localStorage.setItem("userName", "test");
 			this.router.navigate([""]);
 			// this._login.login(this.loginForm.value).subscribe({
