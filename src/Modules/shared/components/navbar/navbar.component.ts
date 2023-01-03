@@ -12,11 +12,13 @@ export class NavbarComponent {
 	@Output() toggleSidenav = new EventEmitter<boolean>();
 	constructor(public data: AuthService, private router: Router) {}
 	handleLogout() {
-		localStorage.removeItem("token");
+		localStorage.removeItem("Securitytoken");
+		localStorage.removeItem("expiresOn");
+		localStorage.removeItem("userName");
 		this.router.navigate(["/auth/login"]);
 	}
 	handleLogin() {
-		this.router.navigate(["/auth/login"]);
+		this.router.navigate([""]);
 	}
 	toggleParentSidenave() {
 		this.toggleSidenav.emit(this.opened);
