@@ -1,17 +1,15 @@
 <section class="wraper">
-	<div class="d-flex justify-content-between">
-		<div class="row flex-nowrap mx-5 w-100">
-			<mat-form-field>
-				<mat-label>Filter</mat-label>
-				<input matInput (keyup)="applyFilter($event)" #input />
-			</mat-form-field>
-			<button type="button" mat-fab matTooltip="Primary" color="primary" aria-label="new" (click)="HandleNew()">
-				<mat-icon>add</mat-icon>
-			</button>
-		</div>
+	<div class="d-flex align-items-center align-content-center justify-content-between mx-5 mt-3 flex-nowrap">
+		<mat-form-field class="w-50">
+			<mat-label>Filter</mat-label>
+			<input matInput (keyup)="applyFilter($event)" #input />
+		</mat-form-field>
+		<button type="button" mat-icon-button matTooltip="new" color="primary" aria-label="new" (click)="HandleNew()">
+			<mat-icon>add</mat-icon>
+		</button>
 	</div>
 	<section class="example-container mat-elevation-z8" tabindex="0">
-		<table #servicesTable mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" cdkDropList cdkDropListOrientation="horizontal" class="mat-elevation-z8">
+		<table #matTable mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)" cdkDropList cdkDropListOrientation="horizontal" class="mat-elevation-z8">
 			<ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
 				<th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header sortActionDescription="Sort by column">{{ column.header }}</th>
 				<td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
