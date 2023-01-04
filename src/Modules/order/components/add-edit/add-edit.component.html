@@ -40,7 +40,7 @@
 					<div class="col-3">
 						<mat-form-field class="w-100">
 							<mat-label>price</mat-label>
-							<input matInput formControlName="price" />
+							<input type="number" matInput formControlName="price" />
 						</mat-form-field>
 					</div>
 					<div class="col-1">
@@ -56,20 +56,23 @@
 			<div class="col-4">
 				<mat-form-field class="w-100">
 					<mat-label>Total Price</mat-label>
-					<input matInput formControlName="totalPrice" />
+					<input type="number" matInput formControlName="totalPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
 					<mat-label>Paid</mat-label>
-					<input matInput formControlName="paid" />
+					<input type="number" matInput formControlName="paid" />
 				</mat-form-field>
 			</div>
-			<div class="col-4">
+			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>Rest</mat-label>
-					<input matInput formControlName="rest" />
+					<input type="number" matInput formControlName="rest" />
 				</mat-form-field>
+			</div>
+			<div class="col-1">
+				<mat-checkbox formControlName="status" color="primary"> completed </mat-checkbox>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
