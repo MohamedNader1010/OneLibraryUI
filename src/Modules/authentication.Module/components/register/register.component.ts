@@ -1,6 +1,7 @@
-import {Component} from "@angular/core";
+import {Component, OnDestroy} from "@angular/core";
 import {FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, AbstractControl, ValidationErrors} from "@angular/forms";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {CustomValidators} from "../../customeValidators/confirmPassword";
 import {AuthService} from "../../services/auth.service";
 
@@ -9,7 +10,8 @@ import {AuthService} from "../../services/auth.service";
 	templateUrl: "./register.component.html",
 	styleUrls: ["./register.component.css"],
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnDestroy {
+	subscriptions: Subscription[] = [];
 	registerForm: FormGroup;
 	hide = true;
 	constructor(private router: Router, private _login: AuthService, private fb: FormBuilder) {
@@ -41,19 +43,24 @@ export class RegisterComponent {
 	handleSubmit() {
 		if (this.registerForm.valid) {
 			this.router.navigate(["auth/login"]);
-			// this._login.login(this.registerForm.value).subscribe({
-			// 	next: (data: any) => {
-			// 		// this.toastr.success("loged in successfully", "logged in");
-			// 		this.router.navigate(["dashboard"]);
-			// 		localStorage.setItem("token", data.token);
-			// 		localStorage.setItem("expires", data.expiresOn);
-			// 		localStorage.setItem("uname", data.name);
-			// 	},
-			// 	error: (e) => {
-			// 		this._login.isLogged = false;
-			// 		// this.toastr.error(e.error.message, "unauthorized");
-			// 	},
-			// });
+			// this.subscriptions.push(
+			// 	this._login.login(this.registerForm.value).subscribe({
+			// 		next: (data: any) => {
+			// 			this.toastr.success("loged in successfully", "logged in");
+			// 			this.router.navigate(["dashboard"]);
+			// 			localStorage.setItem("token", data.token);
+			// 			localStorage.setItem("expires", data.expiresOn);
+			// 			localStorage.setItem("uname", data.name);
+			// 		},
+			// 		error: (e) => {
+			// 			this._login.isLogged = false;
+			// 			this.toastr.error(e.error.message, "unauthorized");
+			// 		},
+			// 	})
+			// );
 		}
+	}
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
 	}
 }

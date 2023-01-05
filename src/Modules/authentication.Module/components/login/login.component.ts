@@ -1,6 +1,7 @@
-import {Component} from "@angular/core";
+import {Component, OnDestroy} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
+import {Subscription} from "rxjs";
 import {AuthService} from "./../../services/auth.service";
 
 @Component({
@@ -8,7 +9,8 @@ import {AuthService} from "./../../services/auth.service";
 	templateUrl: "./login.component.html",
 	styleUrls: ["./login.component.css"],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
+	subscriptions: Subscription[] = [];
 	loginForm: FormGroup;
 	hide = true;
 	constructor(private router: Router, private _login: AuthService, private fb: FormBuilder) {
@@ -26,26 +28,30 @@ export class LoginComponent {
 	handleRegister() {
 		this.router.navigate(["auth/register"]);
 	}
-
 	handleSubmit() {
 		if (this.loginForm.valid) {
 			localStorage.setItem("Securitytoken", "testtesttest");
 			localStorage.setItem("expiresOn", new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toUTCString());
 			localStorage.setItem("userName", "test");
 			this.router.navigate([""]);
-			// this._login.login(this.loginForm.value).subscribe({
-			// 	next: (data: any) => {
-			// 		this.toastr.success("loged in successfully", "logged in");
-			// 		this.router.navigate([""]);
-			// 		localStorage.setItem("token", data.token);
-			// 		localStorage.setItem("expires", data.expiresOn);
-			// 		localStorage.setItem("uname", data.name);
-			// 	},
-			// 	error: (e) => {
-			// 		this._login.isLogged = false;
-			// 		this.toastr.error(e.error.message, "unauthorized");
-			// 	},
-			// });
+			// this.subscriptions.push(
+			// 	this._login.login(this.loginForm.value).subscribe({
+			// 		next: (data: any) => {
+			// 			this.toastr.success("loged in successfully", "logged in");
+			// 			this.router.navigate([""]);
+			// 			localStorage.setItem("token", data.token);
+			// 			localStorage.setItem("expires", data.expiresOn);
+			// 			localStorage.setItem("uname", data.name);
+			// 		},
+			// 		error: (e) => {
+			// 			this._login.isLogged = false;
+			// 			this.toastr.error(e.error.message, "unauthorized");
+			// 		},
+			// 	})
+			// );
 		}
+	}
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
 	}
 }

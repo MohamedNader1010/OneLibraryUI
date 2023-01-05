@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {MatDialog} from "@angular/material/dialog";
-import {Observable, BehaviorSubject, of} from "rxjs";
+import {Observable, BehaviorSubject, of, Subscription} from "rxjs";
 import {Order} from "../../interfaces/Iorder";
 import {OrderService} from "../../services/orders.service";
 @Component({
@@ -8,7 +8,8 @@ import {OrderService} from "../../services/orders.service";
 	templateUrl: "./all.component.html",
 	styleUrls: ["./all.component.css"],
 })
-export class AllComponent implements OnInit {
+export class AllComponent implements OnInit, OnDestroy {
+	subscriptions: Subscription[] = [];
 	tableColumns = new Observable();
 	tableData = new BehaviorSubject([]);
 	columns = [
@@ -59,6 +60,9 @@ export class AllComponent implements OnInit {
 		this.tableColumns = of(this.columns).pipe();
 		this.getAll();
 	}
-	getAll = () => this._order.getAll().subscribe((data: any) => this.tableData.next(data));
-	handleDelete = (id: number) => this._order.delete(id).subscribe(() => this.getAll());
+	getAll = () => this.subscriptions.push(this._order.getAll().subscribe((data: any) => this.tableData.next(data)));
+	handleDelete = (id: number) => this.subscriptions.push(this._order.delete(id).subscribe(() => this.getAll()));
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
+	}
 }

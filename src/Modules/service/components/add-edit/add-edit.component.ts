@@ -1,6 +1,7 @@
-import {Component, OnInit} from "@angular/core";
-import {FormBuilder, FormControl, FormGroup, NgForm, Validators} from "@angular/forms";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
+import {Subscription} from "rxjs";
 import {Material} from "src/Modules/material/interfaces/Imaterial";
 import {MaterialService} from "src/Modules/material/services/material.service";
 import {ServiceType} from "src/Modules/serviceType/interFaces/IserviceType";
@@ -12,9 +13,11 @@ import {ServicesService} from "../../services/services.service";
 	templateUrl: "./add-edit.component.html",
 	styleUrls: ["./add-edit.component.css"],
 })
-export class AddEditComponent implements OnInit {
-	servicesForm: FormGroup;
+export class AddEditComponent implements OnInit, OnDestroy {
+	subscriptions: Subscription[] = [];
+	Form: FormGroup;
 	id!: number;
+	controllerName: string = "services";
 	MaterialDataSource: Material[] = [];
 	ServiceTypeDataSource: ServiceType[] = [];
 	constructor(
@@ -25,7 +28,7 @@ export class AddEditComponent implements OnInit {
 		private _type: ServicesTypeService,
 		private fb: FormBuilder
 	) {
-		this.servicesForm = this.fb.group({
+		this.Form = this.fb.group({
 			name: ["", [Validators.required, Validators.maxLength(100)]],
 			material: ["", [Validators.required]],
 			type: ["", [Validators.required]],
@@ -34,28 +37,20 @@ export class AddEditComponent implements OnInit {
 	ngOnInit(): void {
 		this.getAllMaterials();
 		this.getAllServicesTypes();
-		this.route.queryParams.subscribe((params) => (this.id = params["id"]));
+		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params["id"])));
 		if (this.id) this.getSingle(this.id);
 	}
-	getSingle = (id: number) => this._service.getOne(id).subscribe((data) => {});
-	getAllMaterials = () => this._material.getAll().subscribe({next: (data) => (this.MaterialDataSource = data)});
-	getAllServicesTypes = () => this._type.getAll().subscribe({next: (data) => (this.ServiceTypeDataSource = data)});
-	back = () => this.router.navigate(["services"]);
+	getSingle = (id: number) => this.subscriptions.push(this._service.getOne(id).subscribe((data) => {}));
+	getAllMaterials = () => this.subscriptions.push(this._material.getAll().subscribe({next: (data) => (this.MaterialDataSource = data)}));
+	getAllServicesTypes = () => this.subscriptions.push(this._type.getAll().subscribe({next: (data) => (this.ServiceTypeDataSource = data)}));
+	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
-		if (this.servicesForm.valid) {
-			if (this.id) {
-				this._service.update(this.id, this.servicesForm.value).subscribe({
-					next: () => {
-						this.router.navigate(["services"]);
-					},
-				});
-			} else {
-				this._service.add(this.servicesForm.value).subscribe({
-					next: () => {
-						this.router.navigate(["services"]);
-					},
-				});
-			}
+		if (this.Form.valid) {
+			if (this.id) this.subscriptions.push(this._service.update(this.id, this.Form.value).subscribe(() => this.back()));
+			else this.subscriptions.push(this._service.add(this.Form.value).subscribe(() => this.back()));
 		}
+	}
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
 	}
 }
