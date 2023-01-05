@@ -9,7 +9,7 @@ import {SharedService} from "./../../shared/services/shared.service";
 	providedIn: "root",
 })
 export class ServicesService {
-	constructor(private http: HttpClient, private data: SharedService) {}
+	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Service/`;
 	getAll = () => this.http.get<Service[]>(`${this.uri}GetServices`);
 	getOne = (id: number) => this.http.get<Service>(`${environment.apiUrl}GetServicesById/GetById/${id}`);

@@ -1,0 +1,41 @@
+<h2 class="w-100 text-center" *ngIf="id; else update">Client Details</h2>
+<ng-template #update>
+	<h2 class="w-100 text-center">New Client</h2>
+</ng-template>
+<section class="container d-flex justify-content-center">
+	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-50">
+		<div class="row">
+			<div class="col">
+				<mat-form-field class="w-100">
+					<mat-label>Name</mat-label>
+					<input matInput formControlName="name" />
+					<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<mat-form-field appearance="fill" class="w-100">
+					<mat-label>Phone Number</mat-label>
+					<input type="tel" matInput formControlName="phoneNumber" />
+					<mat-icon matSuffix>phone</mat-icon>
+					<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> Please enter a valid phone number </mat-error>
+					<mat-error *ngIf="phone.errors?.['required']"> phone number is <strong>required</strong> </mat-error>
+				</mat-form-field>
+			</div>
+			<div class="col">
+				<mat-form-field appearance="fill" class="w-100">
+					<mat-label>Type</mat-label>
+					<mat-select formControlName="clientType">
+						<mat-option *ngFor="let type of ClientTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
+					</mat-select>
+					<mat-error *ngIf="phone.errors?.['required']"> client type is <strong>required</strong> </mat-error>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="my-2 d-flex flex-row-reverse">
+			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !Form.valid }}">save</button>
+			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+		</div>
+	</form>
+</section>

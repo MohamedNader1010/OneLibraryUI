@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Subscription} from "rxjs";
 import {ServicesTypeService} from "../../services/serviceType.service";
@@ -18,6 +18,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.Form = this.fb.group({
 			name: ["", [Validators.required, Validators.maxLength(100)]],
 		});
+	}
+	get name(): FormControl {
+		return this.Form.get("name") as FormControl;
 	}
 	ngOnInit(): void {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params["id"])));

@@ -1,7 +1,6 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {Material} from "../interfaces/Imaterial";
-import {SharedService} from "./../../shared/services/shared.service";
 import {_HttpOptions} from "./../../../Persistents/consts";
 import {environment} from "src/environments/environment";
 
@@ -9,7 +8,7 @@ import {environment} from "src/environments/environment";
 	providedIn: "root",
 })
 export class MaterialService {
-	constructor(private http: HttpClient, private data: SharedService) {}
+	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Material/`;
 
 	getAll = () => this.http.get<Material[]>(`${this.uri}GetMaterial`);

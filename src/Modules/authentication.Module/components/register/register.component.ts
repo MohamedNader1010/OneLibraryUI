@@ -18,7 +18,7 @@ export class RegisterComponent implements OnDestroy {
 		this.registerForm = this.fb.group(
 			{
 				name: ["", [Validators.required, Validators.maxLength(100)]],
-				phone: ["", [Validators.required, Validators.pattern("01[0125][0-9]{8}")]],
+				phoneNumber: ["", [Validators.required, Validators.pattern("01[0125][0-9]{8}")]],
 				password: ["", [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
 				confirmPassword: ["", [Validators.required, Validators.maxLength(100)]],
 			},
@@ -29,7 +29,7 @@ export class RegisterComponent implements OnDestroy {
 		return this.registerForm.get("name") as FormControl;
 	}
 	get phone(): FormControl {
-		return this.registerForm.get("phone") as FormControl;
+		return this.registerForm.get("phoneNumber") as FormControl;
 	}
 	get confirmPassword(): FormControl {
 		return this.registerForm.get("confirmPassword") as FormControl;

@@ -1,6 +1,6 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">Service Details</h2>
+<h2 class="w-100 text-center" *ngIf="id; else update">Order Details</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">New Service</h2>
+	<h2 class="w-100 text-center">New Order</h2>
 </ng-template>
 <section class="container">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">

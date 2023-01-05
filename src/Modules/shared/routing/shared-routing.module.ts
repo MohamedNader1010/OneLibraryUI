@@ -13,6 +13,8 @@ const routes: Routes = [
 			{path: "orders", loadChildren: () => import("../../order/order.module").then((m) => m.OrderModule)},
 			{path: "materials", loadChildren: () => import("../../material/material.module").then((m) => m.MaterialModule)},
 			{path: "serviceTypes", loadChildren: () => import("../../serviceType/serviceType.module").then((m) => m.ServiceTypeModule)},
+			{path: "clients", loadChildren: () => import("../../client/client.module").then((m) => m.ClientModule)},
+			{path: "clientTypes", loadChildren: () => import("../../clientType/clientType.module").then((m) => m.ClientTypeModule)},
 		],
 	},
 	{path: "**", component: NotfoundComponent, title: "404 - not found"},

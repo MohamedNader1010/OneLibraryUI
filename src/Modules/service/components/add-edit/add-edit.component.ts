@@ -34,6 +34,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			type: ["", [Validators.required]],
 		});
 	}
+	get name(): FormControl {
+		return this.Form.get("name") as FormControl;
+	}
 	ngOnInit(): void {
 		this.getAllMaterials();
 		this.getAllServicesTypes();

@@ -1,17 +1,17 @@
-import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {ServiceTypeComponent} from "./serviceType.component";
-import {ServiceTypesRoutingModule} from "./routing/serviceType-routing.module";
+import {NgModule} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatComponentsModule} from "../mat-components.Module/mat-components.module";
 import {SharedModule} from "../shared/shared.module";
+import {ClientTypeComponent} from "./clientType.component";
 import {AddEditComponent} from "./components/add-edit/add-edit.component";
 import {AllComponent} from "./components/all/all.component";
-import {ServicesTypeService} from "./services/serviceType.service";
+import {ServiceTypesRoutingModule} from "./routing/serviceType-routing.module";
+import {ClientTypeService} from "./services/clientType.service";
 
 @NgModule({
-	declarations: [ServiceTypeComponent, AllComponent, AddEditComponent],
+	declarations: [ClientTypeComponent, AllComponent, AddEditComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceTypesRoutingModule, MatComponentsModule, SharedModule],
-	providers: [ServicesTypeService],
+	providers: [ClientTypeService],
 })
-export class ServiceTypeModule {}
+export class ClientTypeModule {}
