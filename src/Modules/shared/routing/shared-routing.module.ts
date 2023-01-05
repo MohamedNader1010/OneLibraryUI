@@ -11,6 +11,8 @@ const routes: Routes = [
 		children: [
 			{path: "services", loadChildren: () => import("../../service/service.module").then((m) => m.ServiceModule)},
 			{path: "orders", loadChildren: () => import("../../order/order.module").then((m) => m.OrderModule)},
+			{path: "materials", loadChildren: () => import("../../material/material.module").then((m) => m.MaterialModule)},
+			{path: "serviceTypes", loadChildren: () => import("../../serviceType/serviceType.module").then((m) => m.ServiceTypeModule)},
 		],
 	},
 	{path: "**", component: NotfoundComponent, title: "404 - not found"},

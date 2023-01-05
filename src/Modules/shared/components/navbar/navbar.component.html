@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-light">
+<nav class="navbar navbar-expand-lg">
 	<div class="container-fluid">
 		<!-- <a class="navbar-brand" [routerLink]="['']"> -->
 		<!-- <img src="/assets/OCEANDRO_Icon.ico" width="30" height="30" class="d-inline-block align-top" alt="oceandro shipyard" /> -->
@@ -7,27 +7,33 @@
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-		<div class="collapse navbar-collapse" id="navbarNav" *ngIf="data.isLogged">
-			<ul class="navbar-nav">
+		<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+			<ul class="navbar-nav" *ngIf="data.isLogged">
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">dashboard</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active link-danger" [routerLinkActiveOptions]="{exact: true}">dashboard</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['services']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">services</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['services']" routerLinkActive="active link-danger">services</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">orders</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">orders</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" aria-current="page" [routerLink]="['materials']" routerLinkActive="active link-danger">materials</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" aria-current="page" [routerLink]="['serviceTypes']" routerLinkActive="active link-danger">service Types</a>
 				</li>
 			</ul>
-		</div>
-		<div class="navbar-nav">
-			<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['#']" routerLinkActive="active">welcome {{ data.username }}!</a>
-			<button type="button" (click)="handleLogout()" *ngIf="data.isLogged" mat-button color="warn">logout</button>
-			<button type="button" (click)="handleLogin()" *ngIf="!data.isLogged" mat-button color="primary">login</button>
-			<button type="button" mat-icon-button (click)="toggleParentSidenave()" color="primary" aria-label="toggle side nav">
-				<mat-icon *ngIf="!opened">menu</mat-icon>
-				<mat-icon *ngIf="opened">close</mat-icon>
-			</button>
+			<div class="navbar-nav align-items-start">
+				<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['#']" routerLinkActive="active">welcome {{ data.username }}!</a>
+				<button type="button" (click)="handleLogout()" *ngIf="data.isLogged" mat-button color="warn">logout</button>
+				<button type="button" (click)="handleLogin()" *ngIf="!data.isLogged" mat-button color="primary">login</button>
+				<button type="button" mat-icon-button (click)="toggleParentSidenave()" color="primary" aria-label="toggle side nav">
+					<mat-icon *ngIf="!opened">menu</mat-icon>
+					<mat-icon *ngIf="opened">close</mat-icon>
+				</button>
+			</div>
 		</div>
 	</div>
 </nav>
