@@ -10,9 +10,9 @@ import {Client} from "../interFaces/Iclient";
 export class ClientService {
 	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Client/`;
-	getAll = () => this.http.get<Client[]>(`${this.uri}GetClients`);
-	getOne = (id: number) => this.http.get<Client>(`${this.uri}GetClientsById/GetById/${id}`);
-	add = (client: Client) => this.http.post<Client>(`${this.uri}AddClient`, client, _HttpOptions);
-	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}EditClient/${id}`, {...Client, id}, _HttpOptions);
-	delete = (id: number) => this.http.delete<Client>(`${this.uri}DeleteClient?id=${id}`, _HttpOptions);
+	getAll = () => this.http.get<Client[]>(`${this.uri}`);
+	add = (client: Client) => this.http.post<Client>(`${this.uri}`, client, _HttpOptions);
+	getOne = (id: number) => this.http.get<Client>(`${this.uri}GetById?Id=${id}`);
+	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}?Id=${id}`, {...Client, id}, _HttpOptions);
+	delete = (id: number) => this.http.delete<Client>(`${this.uri}?Id=${id}`, _HttpOptions);
 }

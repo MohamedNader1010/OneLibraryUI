@@ -26,7 +26,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	ClientsDataSource: any[] = [];
 	constructor(private router: Router, private route: ActivatedRoute, private _order: OrderService, private _material: MaterialService, private _type: ServicesTypeService, private fb: FormBuilder) {
 		this.Form = this.createFormItem("init");
+		this.RestControl.disable();
 	}
+
 	ngOnInit(): void {
 		// this.getAllDetails();
 		// this.getAllTransactions();
@@ -53,24 +55,31 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			},
 		],
 	};
+	get RestControl(): FormControl {
+		return this.Form.get("rest") as FormControl;
+	}
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
 		switch (type) {
 			case "init":
 				formItem = this.fb.group({
 					totalPrice: ["", [Validators.required]],
+					finalPrice: [""],
+					descountAmount: [""],
+					descountPercent: [""],
 					rest: ["", [Validators.required]],
 					paid: ["", [Validators.required]],
 					status: ["", [Validators.required]],
 					clientId: ["", [Validators.required]],
 					details: this.fb.array([]),
+					remarks: [""],
 				});
 				break;
 			case "detail":
 				formItem = this.fb.group({
 					price: ["", [Validators.required]],
-					serviceId: ["", [Validators.required]],
-					noteId: ["", [Validators.required]],
+					serviceId: [""],
+					noteId: [""],
 				});
 				break;
 		}

@@ -3,7 +3,6 @@ import {Injectable} from "@angular/core";
 import {environment} from "src/environments/environment";
 import {_HttpOptions} from "src/Persistents/consts";
 import {Service} from "../interfaces/Iservice";
-import {SharedService} from "./../../shared/services/shared.service";
 
 @Injectable({
 	providedIn: "root",
@@ -11,9 +10,9 @@ import {SharedService} from "./../../shared/services/shared.service";
 export class ServicesService {
 	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Service/`;
-	getAll = () => this.http.get<Service[]>(`${this.uri}GetServices`);
-	getOne = (id: number) => this.http.get<Service>(`${environment.apiUrl}GetServicesById/GetById/${id}`);
+	getAll = () => this.http.get<Service[]>(`${this.uri}`);
 	add = (service: Service) => this.http.post<Service>(`${this.uri}AddService`, service, _HttpOptions);
-	update = (id: number, service: Service) => this.http.put<Service>(`${this.uri}EditService/${id}`, {...service, id}, _HttpOptions);
-	delete = (id: number) => this.http.delete<Service>(`${this.uri}DeleteService?id=${id}`, _HttpOptions);
+	getOne = (id: number) => this.http.get<Service>(`${environment.apiUrl}/GetById?Id=${id}`);
+	update = (id: number, service: Service) => this.http.put<Service>(`${this.uri}?Id=${id}`, {...service, id}, _HttpOptions);
+	delete = (id: number) => this.http.delete<Service>(`${this.uri}?Id=${id}`, _HttpOptions);
 }

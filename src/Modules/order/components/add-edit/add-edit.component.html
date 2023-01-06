@@ -61,6 +61,26 @@
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
+					<mat-label>Discount amount</mat-label>
+					<input type="number" matInput formControlName="descountAmount" />
+				</mat-form-field>
+			</div>
+			<div class="col-3">
+				<mat-form-field class="w-100">
+					<mat-label>Discount Percent</mat-label>
+					<input type="number" matInput formControlName="descountPercent" />
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-4">
+				<mat-form-field class="w-100">
+					<mat-label>Final Price</mat-label>
+					<input type="number" matInput formControlName="finalPrice" />
+				</mat-form-field>
+			</div>
+			<div class="col-4">
+				<mat-form-field class="w-100">
 					<mat-label>Paid</mat-label>
 					<input type="number" matInput formControlName="paid" />
 				</mat-form-field>
@@ -71,8 +91,13 @@
 					<input type="number" matInput formControlName="rest" />
 				</mat-form-field>
 			</div>
-			<div class="col-1">
-				<mat-checkbox formControlName="status" color="primary"> completed </mat-checkbox>
+		</div>
+		<div class="row">
+			<div class="col-11">
+				<mat-form-field class="w-100">
+					<mat-label>Remarks</mat-label>
+					<textarea matInput formControlName="remarks"></textarea>
+				</mat-form-field>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
