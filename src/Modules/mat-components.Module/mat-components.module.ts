@@ -31,6 +31,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatSortModule} from "@angular/material/sort";
+
 @NgModule({
 	declarations: [],
 
@@ -60,3 +61,5 @@ import {MatSortModule} from "@angular/material/sort";
 	],
 })
 export class MatComponentsModule {}
+
+
