@@ -23,6 +23,8 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() dialogDisplayName!: string;
 	@Input() tableColumns: any;
 	@Input() tableData: any;
+	@Input() canView: boolean = false;
+	@Input() hasTransaction: boolean = false;
 	@Output() OnDelete = new EventEmitter<any>();
 	columns: any[] = [];
 	displayedColumns: any[] = [];
@@ -45,6 +47,8 @@ export class TableComponent implements OnInit, OnDestroy {
 	};
 	HandleNew = () => this._router.navigate([`${this.controllerName}/new`]);
 	handleEdit = (row: any) => this._router.navigate([`${this.controllerName}/edit`], {queryParams: {id: row.id}});
+	handleView = (row: any) => this._router.navigate([`${this.controllerName}/details`], {queryParams: {id: row.id}});
+	handleTransaction = (row: any) => this._router.navigate([`${this.controllerName}/transaction`], {queryParams: {id: row.id}});
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
 			this.dialog

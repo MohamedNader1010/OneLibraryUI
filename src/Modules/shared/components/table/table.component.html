@@ -17,7 +17,13 @@
 			<ng-container matColumnDef="actions" stickyEnd="true">
 				<th mat-header-cell *matHeaderCellDef></th>
 				<td mat-cell *matCellDef="let row">
-					<button mat-icon-button matTooltip="edit" color="primary" aria-label="Edit selected row" (click)="handleEdit(row)">
+					<button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row)">
+						<mat-icon>paid</mat-icon>
+					</button>
+					<button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row)">
+						<mat-icon>info</mat-icon>
+					</button>
+					<button mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
 						<mat-icon>edit</mat-icon>
 					</button>
 					<button mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
