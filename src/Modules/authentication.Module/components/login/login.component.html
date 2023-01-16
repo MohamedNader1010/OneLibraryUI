@@ -1,4 +1,7 @@
-<mat-card class="container">
+<mat-card class="container shadow-lg py-5">
+	<div class="text-center my-5">
+		<img src="src/assets/Layer.png" alt="One Library" width="100" />
+	</div>
 	<form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
 		<mat-card-header>
 			<mat-card-title>login</mat-card-title>
@@ -14,7 +17,7 @@
 				<mat-label>Password</mat-label>
 				<input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
 				<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-					<mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+					<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
 				</button>
 				<mat-error *ngIf="password.errors?.['minlength'] && !password.errors?.['required']">
 					password must be greater than {{password.errors?.['minlength']?.['requiredLength']}} character

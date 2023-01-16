@@ -1,46 +1,52 @@
-import {LiveAnnouncer} from "@angular/cdk/a11y";
-import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild} from "@angular/core";
-import {MatDialog} from "@angular/material/dialog";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatSort, Sort} from "@angular/material/sort";
-import {MatTable, MatTableDataSource} from "@angular/material/table";
-import {Router} from "@angular/router";
-import {Subscription} from "rxjs";
-import {DialogComponent} from "../dialog/dialog.component";
+import {LiveAnnouncer} from '@angular/cdk/a11y';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort, Sort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
+import {Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {DialogComponent} from '../dialog/dialog.component';
 
 @Component({
-	selector: "app-table[controllerName][dialogDisplayName][tableColumns][tableData]",
-	templateUrl: "./table.component.html",
-	styleUrls: ["./table.component.css"],
+	selector: 'app-table[controllerName][dialogDisplayName][tableColumns][tableData]',
+	templateUrl: './table.component.html',
+	styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	@ViewChild(MatTable) matTable!: MatTable<any>;
-	@ViewChild(MatPaginator) paginator!: MatPaginator;
-	@ViewChild(MatSort) sort!: MatSort;
-	dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-	@Input() controllerName!: string;
+	public dataSource = new MatTableDataSource<any>([]);
+	public displayedColumns!: string[];
+	private paginator!: MatPaginator;
+	private sort!: MatSort;
+	@Output() OnDelete = new EventEmitter<any>();
 	@Input() dialogDisplayName!: string;
+	@Input() controllerName!: string;
+	@Input() loading: any;
 	@Input() tableColumns: any;
-	@Input() tableData: any;
 	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
-	@Output() OnDelete = new EventEmitter<any>();
-	columns: any[] = [];
-	displayedColumns: any[] = [];
-	constructor(private _router: Router, private _liveAnnouncer: LiveAnnouncer, public dialog: MatDialog) {}
-	ngOnInit(): void {
-		this.subscriptions.push(this.tableData.subscribe((data: any) => (this.dataSource.data = data)));
-		this.subscriptions.push(
-			this.tableColumns.subscribe((data: any) => {
-				this.columns = data;
-				this.displayedColumns = [...data.map((c: any) => c.columnDef), "actions"];
-			})
-		);
+	@ViewChild(MatSort) set matSort(ms: MatSort) {
+		this.sort = ms;
+		this.setDataSourceAttributes();
+	}
+	@ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
+		this.paginator = mp;
+		this.setDataSourceAttributes();
+	}
+	@Input() set tableData(data: any[]) {
+		this.dataSource = new MatTableDataSource<any>(data);
+		this.setDataSourceAttributes();
+	}
+	setDataSourceAttributes() {
 		this.dataSource.paginator = this.paginator;
 		this.dataSource.sort = this.sort;
 	}
-	announceSortChange = (sortState: Sort) => (sortState.direction ? this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`) : this._liveAnnouncer.announce("Sorting cleared"));
+	columns: any[] = [];
+	constructor(private _router: Router, public dialog: MatDialog) {}
+	ngOnInit(): void {
+		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
+	}
 	applyFilter = (event: Event) => {
 		this.dataSource.filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
 		if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
@@ -52,7 +58,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
 			this.dialog
-				.open(DialogComponent, {data: {location: "controllerName", msg: `are you sure you want to delete "${row[this.dialogDisplayName]}"?`}})
+				.open(DialogComponent, {data: {location: 'controllerName', msg: `are you sure you want to delete "${row[this.dialogDisplayName]}"?`}})
 				.afterClosed()
 				.subscribe(() => this.OnDelete.emit(row.id))
 		);
