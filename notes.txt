@@ -21,11 +21,11 @@ material=>
 -edit (front done)
 -delete (front done)
 note=>
--all/////////////////////////////
--all by teacher id///////////////
--add/////////////////////////////
--edit////////////////////////////
--delete//////////////////////////
+-all (front done)
+-all by teacher id (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
 -single//////////////////////////
 order=>
 -all (front done)
