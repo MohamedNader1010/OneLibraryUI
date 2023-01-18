@@ -5,7 +5,7 @@ import {Component, OnInit} from '@angular/core';
 	templateUrl: './note.component.html',
 	styleUrls: ['./note.component.css'],
 })
-export class OrderComponent implements OnInit {
+export class NoteComponent implements OnInit {
 	constructor() {}
 
 	ngOnInit(): void {}

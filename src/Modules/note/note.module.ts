@@ -6,14 +6,14 @@ import {SharedModule} from '../shared/shared.module';
 import {AddEditComponent} from './components/add-edit/add-edit.component';
 import {AllComponent} from './components/all/all.component';
 import {DetailsComponent} from './components/single/details.component';
-import {OrderComponent} from './note.component';
-import {OrderRoutingModule} from './routing/note-routing.module';
-import {OrderService} from './services/note.service';
+import {NoteComponent} from './note.component';
+import {NoteRoutingModule} from './routing/note-routing.module';
+import {NoteService} from './services/note.service';
 import {AllByTeacherIdComponent} from './components/allByTeacherId/allByTeacherId.component';
 
 @NgModule({
-	declarations: [OrderComponent, AllComponent, AddEditComponent, DetailsComponent, AllByTeacherIdComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule],
-	providers: [OrderService],
+	declarations: [NoteComponent, AllComponent, AddEditComponent, DetailsComponent, AllByTeacherIdComponent],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, NoteRoutingModule, SharedModule, MatComponentsModule],
+	providers: [NoteService],
 })
-export class OrderModule {}
+export class NoteModule {}

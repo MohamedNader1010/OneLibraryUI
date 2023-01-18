@@ -1,16 +1,15 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {OrderComponent} from '../note.component';
+import {NoteComponent} from '../note.component';
 import {AllComponent} from '../components/all/all.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
-import {TransactionComponent} from '../../order/components/transaction/transaction.component';
 import {DetailsComponent} from '../components/single/details.component';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: OrderComponent,
-		title: 'orders',
+		component: NoteComponent,
+		title: 'notes',
 		children: [
 			{path: 'all', component: AllComponent, title: 'all notes'},
 			{path: 'allByTeacherId', component: AllComponent, title: 'all notes by teacher'},
@@ -26,4 +25,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class OrderRoutingModule {}
+export class NoteRoutingModule {}
