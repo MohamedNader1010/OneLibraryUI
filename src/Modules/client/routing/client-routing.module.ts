@@ -1,19 +1,21 @@
-import {NgModule} from "@angular/core";
-import {Routes, RouterModule} from "@angular/router";
-import {ClientComponent} from "../client.component";
-import {AddEditComponent} from "../components/add-edit/add-edit.component";
-import {AllComponent} from "../components/all/all.component";
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
+import {ClientComponent} from '../client.component';
+import {AddEditComponent} from '../components/add-edit/add-edit.component';
+import {AllComponent} from '../components/all/all.component';
+import {SingleComponent} from '../components/single/single.component';
 
 const routes: Routes = [
 	{
-		path: "",
+		path: '',
 		component: ClientComponent,
-		title: "clients",
+		title: 'clients',
 		children: [
-			{path: "all", component: AllComponent, title: "all clients"},
-			{path: "new", component: AddEditComponent, title: "add new client"},
-			{path: "edit", component: AddEditComponent, title: "edit client data"},
-			{path: "", redirectTo: "all", pathMatch: "full"},
+			{path: 'all', component: AllComponent, title: 'all clients'},
+			{path: 'new', component: AddEditComponent, title: 'add new client'},
+			{path: 'edit', component: AddEditComponent, title: 'edit client data'},
+			{path: 'single', component: SingleComponent, title: 'client data'},
+			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},
 ];
