@@ -3,9 +3,9 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {shareReplay} from 'rxjs';
 import {Login} from '../interfaces/Ilogin';
-import {SharedService} from './../../shared/services/shared.service';
 import {environment} from 'src/environments/environment';
 import {Auth} from '../interfaces/IAuth';
+import {Register} from '../interfaces/IRegister';
 
 @Injectable({
 	providedIn: 'root',
@@ -13,9 +13,12 @@ import {Auth} from '../interfaces/IAuth';
 export class AuthService {
 	public isLogged: boolean = !!localStorage.getItem('token');
 	public username: string = localStorage.getItem('uname') ?? '';
-	constructor(private http: HttpClient, private data: SharedService) {}
+	constructor(private http: HttpClient) {}
 	login(login: Login) {
 		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/LogIn`, login, _HttpOptions).pipe(shareReplay());
+	}
+	register(reister: Register) {
+		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/register`, reister, _HttpOptions).pipe(shareReplay());
 	}
 	refreshToken(token: string) {
 		return this.http.get<Auth>(`${environment.apiUrl}Authorzation/refreshToken?refreshToken=${token}`, _HttpOptions);
