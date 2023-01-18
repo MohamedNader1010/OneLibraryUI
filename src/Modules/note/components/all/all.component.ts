@@ -1,0 +1,76 @@
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable, BehaviorSubject, of, Subscription} from 'rxjs';
+import {Order} from '../../interfaces/Iorder';
+import {OrderService} from '../../services/note.service';
+@Component({
+	selector: 'app-all',
+	templateUrl: './all.component.html',
+	styleUrls: ['./all.component.css'],
+})
+export class AllComponent implements OnInit, OnDestroy {
+	subscriptions: Subscription[] = [];
+	tableColumns!: any[];
+	tableData!: [];
+	loading!: boolean;
+	constructor(private _order: OrderService, public dialog: MatDialog) {}
+	ngOnInit(): void {
+		this.tableColumns = [
+			{
+				columnDef: 'id',
+				header: 'id',
+				cell: (element: Order) => `${element.id}`,
+			},
+			{
+				columnDef: 'TotalPrice',
+				header: 'Total Price',
+				cell: (element: Order) => `${element.totalPrice}`,
+			},
+			{
+				columnDef: 'rest',
+				header: 'Rest',
+				cell: (element: Order) => `${element.rest}`,
+			},
+			{
+				columnDef: 'Paid',
+				header: 'Paid',
+				cell: (element: Order) => `${element.paid}`,
+			},
+			{
+				columnDef: 'Status',
+				header: 'Status',
+				cell: (element: Order) => `${element.status}`,
+			},
+			{
+				columnDef: 'ClientId',
+				header: 'Client Id',
+				cell: (element: Order) => `${element.clientId}`,
+			},
+			{
+				columnDef: 'Details',
+				header: 'Details',
+				cell: (element: Order) => {
+					let details = '';
+					element.orderDetails.map((detail) => {
+						details += `${detail.noteId} ,`;
+					});
+					return details;
+				},
+			},
+		];
+		this.getAll();
+	}
+	getAll() {
+		this.loading = true;
+		this.subscriptions.push(
+			this._order.getAll().subscribe((data: any) => {
+				this.tableData = data;
+				this.loading = false;
+			})
+		);
+	}
+	handleDelete = (id: number) => this.subscriptions.push(this._order.delete(id).subscribe(() => this.getAll()));
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
+	}
+}
