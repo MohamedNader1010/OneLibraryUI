@@ -1,12 +1,12 @@
-import {Injectable} from "@angular/core";
-import {CanActivate, CanActivateChild, CanLoad, Router} from "@angular/router";
-import {AuthService} from "../services/auth.service";
+import {Injectable} from '@angular/core';
+import {CanActivate, CanActivateChild, CanLoad, Router} from '@angular/router';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
-	providedIn: "root",
+	providedIn: 'root',
 })
 export class AccessLoginPageGuard implements CanActivate, CanLoad, CanActivateChild {
-	constructor(private _router: Router) {}
+	constructor(private _router: Router, private jwtHelper: JwtHelperService) {}
 	canActivateChild() {
 		return this.Auth();
 	}
@@ -17,12 +17,11 @@ export class AccessLoginPageGuard implements CanActivate, CanLoad, CanActivateCh
 		return this.Auth();
 	}
 	Auth() {
-		let expiresOn: string = localStorage.getItem("expiresOn") ?? "";
-		let isLogged: boolean = !!localStorage.getItem("Securitytoken");
-		if (isLogged && expiresOn != "" && new Date(expiresOn) > new Date()) {
-			this._router.navigate([""]);
-			return false;
-		}
+		// let refreshToken = localStorage.getItem('refreshToken');
+		// if (refreshToken) {
+		// 	this._router.navigate(['']);
+		// 	return false;
+		// }
 		return true;
 	}
 }

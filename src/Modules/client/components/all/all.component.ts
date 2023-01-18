@@ -43,9 +43,11 @@ export class AllComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._client.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._client.getAll().subscribe({
+				next: (data: any) => {
+					this.tableData = data;
+				},
+				complete: () => (this.loading = false),
 			})
 		);
 	}
