@@ -46,7 +46,7 @@ service type=>
 -edit (front done)
 -delete (front done)
 service price per client=>
--all/////////////////////////////
+-all (front done)
 -add/////////////////////////////
 -edit////////////////////////////
--delete//////////////////////////
+-delete (front done)
