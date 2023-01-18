@@ -1,0 +1,52 @@
+auth =>
+-login (front done)
+-register (front done)
+-add role////////////////////////
+-refresh token///////////////////
+-revoke token////////////////////
+client=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+-single//////////////////////////
+client type=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+material=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+note=>
+-all/////////////////////////////
+-all by teacher id///////////////
+-add/////////////////////////////
+-edit////////////////////////////
+-delete//////////////////////////
+-single//////////////////////////
+order=>
+-all (front done)
+-all by client id////////////////
+-all between dates///////////////
+-add (front done)
+-add transaction/////////////////
+-single//////////////////////////
+service=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+-single//////////////////////////
+service type=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+service price per client=>
+-all/////////////////////////////
+-add/////////////////////////////
+-edit////////////////////////////
+-delete//////////////////////////
