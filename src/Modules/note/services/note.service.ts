@@ -9,14 +9,11 @@ import {environment} from 'src/environments/environment';
 })
 export class NoteService {
 	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}Order/`;
-	getAll = () => this.http.get<Order[]>(`${this.uri}`);
-	getOne = (id: number) => this.http.get<Order>(`${this.uri}GetOrderById?Id=${id}`);
-	add = (order: Order) => this.http.post<Order>(`${this.uri}AddOrder`, order, _HttpOptions);
-	// update order api =>
-	update = (id: number, order: Order) => this.http.put<Order>(`${this.uri}?Id=${id}`, {...order, id}, _HttpOptions);
-	// delete order api =>
-	delete = (id: number) => this.http.delete<Order>(`${this.uri}?Id=${id}`, _HttpOptions);
-	// remaining apis =>
-	// add order transaction, get order by client id , get order within date interval
+	uri: string = `${environment.apiUrl}Note/`;
+	getAll = () => this.http.get<Note[]>(`${this.uri}`);
+	update = (id: number, note: Note) => this.http.put<Note>(`${this.uri}?Id=${id}`, {...note, id}, _HttpOptions);
+	delete = (id: number) => this.http.delete<Note>(`${this.uri}?Id=${id}`, _HttpOptions);
+	getOne = (id: number) => this.http.get<Note>(`${this.uri}GetNotesById?Id=${id}`);
+	getOneByTeacher = (id: number) => this.http.get<Note>(`${this.uri}GetNotesByTeacherId?Id=${id}`);
+	add = (note: Note) => this.http.post<Note>(`${this.uri}AddNote`, note, _HttpOptions);
 }

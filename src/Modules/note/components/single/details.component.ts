@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable, BehaviorSubject, of, Subscription} from 'rxjs';
-import {Order} from '../../interfaces/Iorder';
-import {OrderService} from '../../services/note.service';
+import {Subscription} from 'rxjs';
+import {Note} from '../../interfaces/Inote';
+import {NoteService} from '../../services/note.service';
 @Component({
 	selector: 'app-details',
 	templateUrl: './details.component.html',
@@ -12,51 +12,16 @@ import {OrderService} from '../../services/note.service';
 })
 export class DetailsComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	Form: FormGroup;
 	id!: number;
-	controllerName: string = 'orders';
-	orderDetails!: Order;
-	constructor(private _order: OrderService, private router: Router, private route: ActivatedRoute, public dialog: MatDialog, private fb: FormBuilder) {
-		this.Form = this.createFormItem('init');
-	}
+	controllerName: string = 'notes';
+	noteDetails!: Note;
+	constructor(private _note: NoteService, private router: Router, private route: ActivatedRoute, public dialog: MatDialog, private fb: FormBuilder) {}
 	ngOnInit(): void {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
-		// if (this.id) this.getSingle(this.id);
+		if (this.id) this.getSingle(this.id);
 	}
-	createFormItem(type: string): FormGroup {
-		let formItem: FormGroup = this.fb.group({});
-		switch (type) {
-			case 'init':
-				formItem = this.fb.group({
-					totalPrice: ['', [Validators.required]],
-					finalPrice: [''],
-					descountAmount: [''],
-					descountPercent: [''],
-					rest: ['', [Validators.required]],
-					paid: ['', [Validators.required]],
-					status: ['', [Validators.required]],
-					clientId: ['', [Validators.required]],
-					details: this.fb.array([]),
-					remarks: [''],
-				});
-				break;
-			case 'detail':
-				formItem = this.fb.group({
-					price: ['', [Validators.required]],
-					serviceId: [''],
-					noteId: [''],
-				});
-				break;
-		}
-		return formItem;
-	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => (this.orderDetails = data)));
+	getSingle = (id: number) => this.subscriptions.push(this._note.getOne(id).subscribe((data) => (this.noteDetails = data)));
 	back = () => this.router.navigate([this.controllerName]);
-	handleSubmit() {
-		if (this.Form.valid) {
-			if (this.id) this.subscriptions.push(this._order.update(this.id, this.Form.value).subscribe(() => this.back()));
-		}
-	}
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}
