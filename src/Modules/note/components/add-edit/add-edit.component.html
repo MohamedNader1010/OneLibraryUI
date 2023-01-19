@@ -2,8 +2,8 @@
 <ng-template #update>
 	<h2 class="w-100 text-center">New Note</h2>
 </ng-template>
-<section class="container">
-	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+<section class="container d-flex justify-content-center w-100">
+	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
 				<mat-label>Teacher</mat-label>
@@ -51,7 +51,7 @@
 					<input type="number" matInput formControlName="teacherPrice" />
 				</mat-form-field>
 			</div>
-			<div class="col-3">
+			<div class="col-4">
 				<mat-form-field class="w-100">
 					<mat-label>Final Price</mat-label>
 					<input type="number" matInput formControlName="finalPrice" />
