@@ -11,8 +11,8 @@
 <ng-container *ngIf="!loading">
 	<section class="example-container mat-elevation-z8" tabindex="0">
 		<table #matTable mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-			<ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
-				<th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
+			<ng-container *ngFor="let column of tableColumns; let first = first" [matColumnDef]="column.columnDef" [sticky]="first">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
 				<td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
 			</ng-container>
 			<ng-container matColumnDef="actions" stickyEnd="true">
@@ -35,7 +35,7 @@
 			<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
 			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 			<tr mat-row *matNoDataRow>
-				<td class="mat-cell text-center" [colSpan]="columns.length + 1">No data found</td>
+				<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
 			</tr>
 		</table>
 	</section>
