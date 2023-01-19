@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
 import {ServicesService} from '../../services/services.service';
+import {Service} from '../../interfaces/Iservice';
 
 @Component({
 	selector: 'app-all',
@@ -11,7 +12,7 @@ import {ServicesService} from '../../services/services.service';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Service[];
 	loading!: boolean;
 	constructor(private _service: ServicesService, public dialog: MatDialog) {}
 	ngOnInit(): void {
@@ -19,22 +20,22 @@ export class AllComponent implements OnInit, OnDestroy {
 			{
 				columnDef: 'id',
 				header: 'id',
-				cell: (element: any) => element.id,
+				cell: (element: Service) => element.id,
 			},
 			{
 				columnDef: 'Name',
 				header: 'Name',
-				cell: (element: any) => element.name,
+				cell: (element: Service) => element.name,
 			},
 			{
 				columnDef: 'Material',
 				header: 'Material',
-				cell: (element: any) => element.material?.name,
+				cell: (element: Service) => element.material.name,
 			},
 			{
 				columnDef: 'Type',
 				header: 'Type',
-				cell: (element: any) => element.serivceType?.name,
+				cell: (element: Service) => element.serviceType.name,
 			},
 		];
 		this.getAll();
@@ -42,7 +43,7 @@ export class AllComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._service.getAll().subscribe((data: any) => {
+			this._service.getAll().subscribe((data: Service[]) => {
 				this.tableData = data;
 				this.loading = false;
 			})
