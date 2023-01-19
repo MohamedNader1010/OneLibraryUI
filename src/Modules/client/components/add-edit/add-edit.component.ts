@@ -1,38 +1,39 @@
-import {Component, OnInit, OnDestroy} from "@angular/core";
-import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
-import {Router, ActivatedRoute} from "@angular/router";
-import {Subscription} from "rxjs";
-import {ClientType} from "src/Modules/clientType/interFaces/IclientType";
-import {ClientTypeService} from "src/Modules/clientType/services/clientType.service";
-import {ClientService} from "../../services/client.service";
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {ClientService} from '../../services/client.service';
 
 @Component({
-	selector: "app-add-edit",
-	templateUrl: "./add-edit.component.html",
-	styleUrls: ["./add-edit.component.css"],
+	selector: 'app-add-edit',
+	templateUrl: './add-edit.component.html',
+	styleUrls: ['./add-edit.component.css'],
 })
 export class AddEditComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	Form: FormGroup;
 	id!: number;
-	controllerName: string = "clients";
+	controllerName: string = 'clients';
+	isSubmitted: boolean = false;
 	ClientTypeDataSource: ClientType[] = [];
 	constructor(private router: Router, private route: ActivatedRoute, private _client: ClientService, private _clientType: ClientTypeService, private fb: FormBuilder) {
 		this.Form = this.fb.group({
-			name: ["", [Validators.required, Validators.maxLength(100)]],
-			phoneNumber: ["", [Validators.required, Validators.pattern("01[0125][0-9]{8}")]],
-			clientType: ["", [Validators.required]],
+			name: ['', [Validators.required, Validators.maxLength(100)]],
+			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
+			clientType: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {
-		return this.Form.get("name") as FormControl;
+		return this.Form.get('name') as FormControl;
 	}
 	get phone(): FormControl {
-		return this.Form.get("phoneNumber") as FormControl;
+		return this.Form.get('phoneNumber') as FormControl;
 	}
 	ngOnInit(): void {
 		this.getAllClientTypes();
-		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params["id"])));
+		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
 	getAllClientTypes = () => this.subscriptions.push(this._clientType.getAll().subscribe({next: (data) => (this.ClientTypeDataSource = data)}));
@@ -40,8 +41,20 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {
-			if (this.id) this.subscriptions.push(this._client.update(this.id, this.Form.value).subscribe(() => this.back()));
-			else this.subscriptions.push(this._client.add(this.Form.value).subscribe(() => this.back()));
+			if (this.id)
+				this.subscriptions.push(
+					this._client.update(this.id, this.Form.value).subscribe(() => {
+						this.isSubmitted = true;
+						this.back();
+					})
+				);
+			else
+				this.subscriptions.push(
+					this._client.add(this.Form.value).subscribe(() => {
+						this.isSubmitted = true;
+						this.back();
+					})
+				);
 		}
 	}
 	ngOnDestroy() {

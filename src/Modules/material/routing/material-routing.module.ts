@@ -1,19 +1,20 @@
-import {NgModule} from "@angular/core";
-import {RouterModule, Routes} from "@angular/router";
-import {MaterialComponent} from "../material.component";
-import {AllComponent} from "../components/all/all.component";
-import {AddEditComponent} from "../components/add-edit/add-edit.component";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {MaterialComponent} from '../material.component';
+import {AllComponent} from '../components/all/all.component';
+import {AddEditComponent} from '../components/add-edit/add-edit.component';
+import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
 
 const routes: Routes = [
 	{
-		path: "",
+		path: '',
 		component: MaterialComponent,
-		title: "materils",
+		title: 'materils',
 		children: [
-			{path: "all", component: AllComponent, title: "all materils"},
-			{path: "new", component: AddEditComponent, title: "add new materil"},
-			{path: "edit", component: AddEditComponent, title: "edit materil data"},
-			{path: "", redirectTo: "all", pathMatch: "full"},
+			{path: 'all', component: AllComponent, title: 'all materils'},
+			{path: 'new', component: AddEditComponent, title: 'add new materil', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'edit materil data', canDeactivate: [CanDeactivateGuard]},
+			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},
 ];

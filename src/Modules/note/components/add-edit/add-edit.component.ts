@@ -14,6 +14,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	Form: FormGroup;
 	id!: number;
 	controllerName: string = 'notes';
+	isSubmitted: boolean = false;
 	NotesDataSource: any[] = [];
 	TermsDataSource: any[] = [];
 	StagesDataSource: any[] = [];
@@ -38,8 +39,20 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {
-			if (this.id) this.subscriptions.push(this._note.update(this.id, this.Form.value).subscribe(() => this.back()));
-			else this.subscriptions.push(this._note.add(this.Form.value).subscribe(() => this.back()));
+			if (this.id)
+				this.subscriptions.push(
+					this._note.update(this.id, this.Form.value).subscribe(() => {
+						this.isSubmitted = true;
+						this.back();
+					})
+				);
+			else
+				this.subscriptions.push(
+					this._note.add(this.Form.value).subscribe(() => {
+						this.isSubmitted = true;
+						this.back();
+					})
+				);
 		}
 	}
 	ngOnDestroy() {

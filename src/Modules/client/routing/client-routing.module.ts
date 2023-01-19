@@ -4,6 +4,7 @@ import {ClientComponent} from '../client.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {AllComponent} from '../components/all/all.component';
 import {SingleComponent} from '../components/single/single.component';
+import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
 
 const routes: Routes = [
 	{
@@ -12,8 +13,8 @@ const routes: Routes = [
 		title: 'clients',
 		children: [
 			{path: 'all', component: AllComponent, title: 'all clients'},
-			{path: 'new', component: AddEditComponent, title: 'add new client'},
-			{path: 'edit', component: AddEditComponent, title: 'edit client data'},
+			{path: 'new', component: AddEditComponent, title: 'add new client', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'edit client data', canDeactivate: [CanDeactivateGuard]},
 			{path: 'single', component: SingleComponent, title: 'client data'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],

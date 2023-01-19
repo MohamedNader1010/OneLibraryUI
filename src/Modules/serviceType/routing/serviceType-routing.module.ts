@@ -1,19 +1,20 @@
-import {NgModule} from "@angular/core";
-import {RouterModule, Routes} from "@angular/router";
-import {AllComponent} from "../components/all/all.component";
-import {AddEditComponent} from "../components/add-edit/add-edit.component";
-import {ServiceTypeComponent} from "../serviceType.component";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {AllComponent} from '../components/all/all.component';
+import {AddEditComponent} from '../components/add-edit/add-edit.component';
+import {ServiceTypeComponent} from '../serviceType.component';
+import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
 
 const routes: Routes = [
 	{
-		path: "",
+		path: '',
 		component: ServiceTypeComponent,
-		title: "service Types",
+		title: 'service Types',
 		children: [
-			{path: "all", component: AllComponent, title: "all service Types"},
-			{path: "new", component: AddEditComponent, title: "add new service Type"},
-			{path: "edit", component: AddEditComponent, title: "edit service Type data"},
-			{path: "", redirectTo: "all", pathMatch: "full"},
+			{path: 'all', component: AllComponent, title: 'all service Types'},
+			{path: 'new', component: AddEditComponent, title: 'add new service Type', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'edit service Type data', canDeactivate: [CanDeactivateGuard]},
+			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},
 ];
