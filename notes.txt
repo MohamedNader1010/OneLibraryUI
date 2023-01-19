@@ -1,3 +1,7 @@
+arabic text =>
+role management=>
+user profile(change password/update date/...)=>
+admin dashboard=>
 auth =>
 -login (front done)
 -register (front done)
