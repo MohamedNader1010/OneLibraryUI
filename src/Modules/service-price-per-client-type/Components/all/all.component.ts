@@ -18,22 +18,22 @@ export class AllComponent implements OnInit {
 		this.tableColumns = [
 			{
 				columnDef: 'Id',
-				header: 'Id',
+				header: '#',
 				cell: (element: ServicePricePerClientType) => `${element.id}`,
 			},
 			{
 				columnDef: 'Price',
-				header: 'Price',
+				header: 'السعر',
 				cell: (element: ServicePricePerClientType) => `${element.price}`,
 			},
 			{
 				columnDef: 'Service Name',
-				header: 'Service Name',
+				header: 'الأسم',
 				cell: (element: ServicePricePerClientType) => `${element.serviceName}`,
 			},
 			{
 				columnDef: 'Client Type',
-				header: 'CLient Type',
+				header: 'نوع العميل',
 				cell: (element: ServicePricePerClientType) => `${element.clientType}`,
 			},
 		];

@@ -10,12 +10,12 @@ const routes: Routes = [
 	{
 		path: '',
 		component: ClientComponent,
-		title: 'clients',
+		title: 'العملاء',
 		children: [
-			{path: 'all', component: AllComponent, title: 'all clients'},
-			{path: 'new', component: AddEditComponent, title: 'add new client', canDeactivate: [CanDeactivateGuard]},
-			{path: 'edit', component: AddEditComponent, title: 'edit client data', canDeactivate: [CanDeactivateGuard]},
-			{path: 'single', component: SingleComponent, title: 'client data'},
+			{path: 'all', component: AllComponent, title: 'جميع العملاء'},
+			{path: 'new', component: AddEditComponent, title: 'عميل جديد', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'تعديل العميل', canDeactivate: [CanDeactivateGuard]},
+			{path: 'single', component: SingleComponent, title: 'بيانات العميل'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},

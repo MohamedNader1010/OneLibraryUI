@@ -1,76 +1,76 @@
 <nav class="navbar navbar-expand-lg">
 	<div class="container-fluid">
-		<!-- <a class="navbar-brand" [routerLink]="['']"> -->
-		<!-- <img src="/assets/OCEANDRO_Icon.ico" width="30" height="30" class="d-inline-block align-top" alt="oceandro shipyard" /> -->
-		<!-- </a> -->
-		<a class="navbar-brand text-danger" routerLink="">One Library</a>
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<a class="navbar-brand" [routerLink]="['']">
+			<img src="/assets/Layer.png" width="30" height="30" class="d-inline-block align-top" alt="oceandro shipyard" />
+		</a>
+		<!-- <a class="navbar-brand text-danger" routerLink="">One Library</a> -->
+		<button class="navbar-toggler" color="basic" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
 			<ul class="navbar-nav" *ngIf="data.isLogged">
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active link-danger" [routerLinkActiveOptions]="{exact: true}">dashboard</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active link-danger" [routerLinkActiveOptions]="{exact: true}">الرئيسية</a>
 				</li>
 				<li class="nav-item dropdown">
-					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">manage services</span>
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الخدمات</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
-							<a class="nav-link" [routerLink]="['services']" routerLinkActive="active link-danger">services</a>
+							<a class="nav-link" [routerLink]="['services']" routerLinkActive="active link-danger">الخدمات</a>
 						</li>
 						<li class="dropdown-item">
-							<a class="nav-link" [routerLink]="['serviceTypes']" routerLinkActive="active link-danger">service Types</a>
+							<a class="nav-link" [routerLink]="['serviceTypes']" routerLinkActive="active link-danger">انواع الخدمات</a>
 						</li>
 						<li class="dropdown-item">
-							<a class="nav-link disabled" [routerLink]="['servicePricePerClient']" routerLinkActive="active link-danger">service price per client</a>
+							<a class="nav-link disabled" [routerLink]="['servicePricePerClient']" routerLinkActive="active link-danger">خدمة لكل فئة</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item dropdown">
-					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">manage clients</span>
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة العملاء</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
-							<a class="nav-link" [routerLink]="['clients']" routerLinkActive="active link-danger">clients</a>
+							<a class="nav-link" [routerLink]="['clients']" routerLinkActive="active link-danger">العملاء</a>
 						</li>
 						<li class="dropdown-item">
-							<a class="nav-link" [routerLink]="['clientTypes']" routerLinkActive="active link-danger">client Types</a>
+							<a class="nav-link" [routerLink]="['clientTypes']" routerLinkActive="active link-danger">أنواع العملاء</a>
 						</li>
 						<li class="dropdown-item">
-							<a class="nav-link disabled" [routerLink]="['clientfeedback']" routerLinkActive="active link-danger">client feedback</a>
+							<a class="nav-link disabled" [routerLink]="['clientfeedback']" routerLinkActive="active link-danger">تعليقات العملاء</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item dropdown">
-					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">manage employees</span>
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الموظفون</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
-							<a class="nav-link disabled" [routerLink]="['attendance']" routerLinkActive="active link-danger">attendance</a>
+							<a class="nav-link disabled" [routerLink]="['attendance']" routerLinkActive="active link-danger">الحضور والانصراف</a>
 						</li>
 						<li class="dropdown-item">
-							<a class="nav-link disabled" [routerLink]="['employees']" routerLinkActive="active link-danger">employees</a>
+							<a class="nav-link disabled" [routerLink]="['employees']" routerLinkActive="active link-danger">الموظفون</a>
 						</li>
 					</ul>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['materials']" routerLinkActive="active link-danger">materials</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['materials']" routerLinkActive="active link-danger">الخامات</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['notes']" routerLinkActive="active link-danger">notes & books</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['notes']" routerLinkActive="active link-danger">المذكرات</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" aria-current="page" [routerLink]="['stages']" routerLinkActive="active link-danger">stages</a>
+					<a class="nav-link disabled" aria-current="page" [routerLink]="['stages']" routerLinkActive="active link-danger">المراحل الدراسية</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link disabled" aria-current="page" [routerLink]="['terms']" routerLinkActive="active link-danger">terms</a>
+					<a class="nav-link disabled" aria-current="page" [routerLink]="['terms']" routerLinkActive="active link-danger">التيرمات</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">orders</a>
+					<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">الطلبات</a>
 				</li>
 			</ul>
 			<div class="navbar-nav align-items-start">
-				<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['#']" routerLinkActive="active">welcome {{ data.username }}!</a>
-				<button type="button" (click)="handleLogout()" *ngIf="data.isLogged" mat-button color="warn">logout</button>
-				<button type="button" (click)="handleLogin()" *ngIf="!data.isLogged" mat-button color="primary">login</button>
+				<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['#']" routerLinkActive="active">مرحبا {{ data.username }}!</a>
+				<button type="button" (click)="handleLogout()" *ngIf="data.isLogged" mat-button color="warn">تسجيل خر,ج</button>
+				<button type="button" (click)="handleLogin()" *ngIf="!data.isLogged" mat-button color="primary">تسجيل الدخول</button>
 				<button type="button" mat-icon-button (click)="toggleParentSidenave()" color="primary" aria-label="toggle side nav">
 					<mat-icon *ngIf="!opened">menu</mat-icon>
 					<mat-icon *ngIf="opened">close</mat-icon>

@@ -3,6 +3,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Observable, BehaviorSubject, of, Subscription} from 'rxjs';
 import {Order} from '../../interfaces/Iorder';
 import {OrderService} from '../../services/orders.service';
+import {Client} from './../../../client/interFaces/Iclient';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -18,44 +19,33 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: 'id',
+				header: '#',
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
 				columnDef: 'TotalPrice',
-				header: 'Total Price',
+				header: 'السعر الكلي',
 				cell: (element: Order) => `${element.totalPrice}`,
 			},
 			{
 				columnDef: 'rest',
-				header: 'Rest',
+				header: 'الباقي',
 				cell: (element: Order) => `${element.rest}`,
 			},
 			{
 				columnDef: 'Paid',
-				header: 'Paid',
+				header: 'المدفوع',
 				cell: (element: Order) => `${element.paid}`,
 			},
 			{
 				columnDef: 'Status',
-				header: 'Status',
+				header: 'الحالة',
 				cell: (element: Order) => `${element.status}`,
 			},
 			{
-				columnDef: 'ClientId',
-				header: 'Client Id',
-				cell: (element: Order) => `${element.clientId}`,
-			},
-			{
-				columnDef: 'Details',
-				header: 'Details',
-				cell: (element: Order) => {
-					let details = '';
-					element.orderDetails.map((detail) => {
-						details += `${detail.noteId} ,`;
-					});
-					return details;
-				},
+				columnDef: 'Client',
+				header: 'العميل',
+				cell: (element: Order) => `${element.client.name}`,
 			},
 		];
 		this.getAll();

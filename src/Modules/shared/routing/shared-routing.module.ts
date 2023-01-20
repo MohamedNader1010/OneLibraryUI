@@ -7,7 +7,7 @@ const routes: Routes = [
 	{
 		path: '',
 		component: SharedComponent,
-		title: 'dashboard',
+		title: 'الرئيسية',
 		children: [
 			{path: 'services', loadChildren: () => import('../../service/service.module').then((m) => m.ServiceModule)},
 			{path: 'orders', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule)},

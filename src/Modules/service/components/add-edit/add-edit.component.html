@@ -1,13 +1,13 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">Service Details</h2>
+<h2 class="w-100 text-center" *ngIf="id; else update">تعديل الخدمات</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">New Service</h2>
+	<h2 class="w-100 text-center">خدمة جديدة</h2>
 </ng-template>
 <section class="container d-flex justify-content-center">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-50">
 		<div class="row">
 			<div class="col">
 				<mat-form-field class="w-100">
-					<mat-label>Name</mat-label>
+					<mat-label>الأسم</mat-label>
 					<input matInput formControlName="name" />
 					<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
 				</mat-form-field>
@@ -15,21 +15,21 @@
 		</div>
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-6">
-				<mat-label>Material</mat-label>
+				<mat-label>الخامة</mat-label>
 				<mat-select formControlName="material">
 					<mat-option *ngFor="let mat of MaterialDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-6">
-				<mat-label>Type</mat-label>
+				<mat-label>النوع</mat-label>
 				<mat-select formControlName="type">
 					<mat-option *ngFor="let type of ServiceTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !Form.valid }}">save</button>
-			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
 		</div>
 	</form>
 </section>

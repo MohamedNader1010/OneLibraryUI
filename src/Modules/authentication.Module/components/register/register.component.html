@@ -1,11 +1,11 @@
 <mat-card class="container">
 	<form [formGroup]="registerForm" (ngSubmit)="handleSubmit()">
 		<mat-card-header>
-			<mat-card-title>Registeration</mat-card-title>
+			<mat-card-title>تسجيل حساب جديد</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
 			<mat-form-field appearance="fill" class="w-100">
-				<mat-label>Username</mat-label>
+				<mat-label>أسم المستخدم</mat-label>
 				<input matInput formControlName="username" />
 				<mat-error *ngIf="username.errors?.['required']"> username is <strong>required</strong> </mat-error>
 				<mat-error *ngIf="username.hasError('maxlength') && !username.errors?.['required']">
@@ -20,7 +20,7 @@
 				<mat-error *ngIf="phone.errors?.['required']"> phone number is <strong>required</strong> </mat-error>
 			</mat-form-field> -->
 			<mat-form-field appearance="fill" class="w-100">
-				<mat-label>Password</mat-label>
+				<mat-label>الرقم السري</mat-label>
 				<input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
 				<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
 					<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -31,7 +31,7 @@
 				<mat-error *ngIf="password.errors?.['required']"> Password is <strong>required</strong> </mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="w-100">
-				<mat-label>Confirm Password</mat-label>
+				<mat-label>تاكيد الرقم السري</mat-label>
 				<input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" />
 				<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
 					<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -41,9 +41,8 @@
 			<mat-error *ngIf="registerForm.hasError('mismatch') &&!confirmPassword.errors?.['required']"> confirm Password is incorrect </mat-error>
 		</mat-card-content>
 		<mat-card-actions align="end">
-			<button type="button" mat-button color="primary" (click)="handleLogin()">login</button>
-			<button mat-flat-button color="primary" [disabled]="!registerForm.valid">register</button>
+			<button mat-flat-button color="warn" [disabled]="!registerForm.valid">إنشاء الحساب</button>
+			<button type="button" mat-button color="basic" (click)="handleLogin()">لديك حساب بالفعل</button>
 		</mat-card-actions>
 	</form>
 </mat-card>
-{{ registerForm.value | json }}

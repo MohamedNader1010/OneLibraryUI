@@ -9,8 +9,8 @@ import {ServiceType} from '../interFaces/IserviceType';
 })
 export class ServicesTypeService {
 	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}	/`;
-	getAll = () => this.http.get<ServiceType[]>(`${this.uri}	`);
+	uri: string = `${environment.apiUrl}ServiceType/`;
+	getAll = () => this.http.get<ServiceType[]>(`${this.uri}`);
 	add = (serviceType: ServiceType) => this.http.post<ServiceType>(`${this.uri}`, serviceType, _HttpOptions);
 	update = (id: number, serviceType: ServiceType) => this.http.put<ServiceType>(`${this.uri}?id=${id}`, {...serviceType, id}, _HttpOptions);
 	getOne = (id: number) => this.http.get<ServiceType>(`${this.uri}?id=${id}`);

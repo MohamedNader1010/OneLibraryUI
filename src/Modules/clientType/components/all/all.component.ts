@@ -18,12 +18,12 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: 'id',
+				header: '#',
 				cell: (element: any) => element.id,
 			},
 			{
 				columnDef: 'Name',
-				header: 'Name',
+				header: 'الأسم',
 				cell: (element: any) => element.name,
 			},
 		];

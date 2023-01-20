@@ -7,15 +7,15 @@
 		<div class="row">
 			<div class="col">
 				<mat-form-field class="w-100">
-					<mat-label>Name</mat-label>
+					<mat-label>الأسم</mat-label>
 					<input matInput formControlName="name" />
 					<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
 				</mat-form-field>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !Form.valid }}">save</button>
-			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
 		</div>
 	</form>
 </section>

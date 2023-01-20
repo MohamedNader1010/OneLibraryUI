@@ -9,11 +9,11 @@ const routes: Routes = [
 	{
 		path: '',
 		component: MaterialComponent,
-		title: 'materils',
+		title: 'الخامات',
 		children: [
-			{path: 'all', component: AllComponent, title: 'all materils'},
-			{path: 'new', component: AddEditComponent, title: 'add new materil', canDeactivate: [CanDeactivateGuard]},
-			{path: 'edit', component: AddEditComponent, title: 'edit materil data', canDeactivate: [CanDeactivateGuard]},
+			{path: 'all', component: AllComponent, title: 'جميع الخامات'},
+			{path: 'new', component: AddEditComponent, title: 'اضافة خامة جديدة', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'تعديل الخامات', canDeactivate: [CanDeactivateGuard]},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},

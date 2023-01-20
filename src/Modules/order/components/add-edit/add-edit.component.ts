@@ -33,27 +33,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
-		this.fillFormWithData(this.formDatasource);
 	}
-	formDatasource: any = {
-		totalPrice: 3,
-		rest: 0,
-		paid: 3,
-		status: false,
-		clientId: 1,
-		details: [
-			{
-				price: 1,
-				serviceId: 1,
-				noteId: 1,
-			},
-			{
-				price: 2,
-				serviceId: 2,
-				noteId: 2,
-			},
-		],
-	};
 	get RestControl(): FormControl {
 		return this.Form.get('rest') as FormControl;
 	}
@@ -91,7 +71,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get OrderDetails(): FormArray {
 		return this.Form.get('details') as FormArray;
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => (this.formDatasource = data)));
+	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => this.OrderDetails.push(this.createFormItem('detail'));
 	handleDeleteDetail = (index: number) => this.OrderDetails.removeAt(index);

@@ -18,47 +18,47 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: 'id',
+				header: '#',
 				cell: (element: Note) => `${element.id}`,
 			},
 			{
 				columnDef: 'name',
-				header: 'name',
+				header: 'الأسم',
 				cell: (element: Note) => `${element.name}`,
 			},
 			{
 				columnDef: 'teacher',
-				header: 'teacher',
+				header: 'المدرس',
 				cell: (element: Note) => `${element.client.name}`,
 			},
 			{
 				columnDef: 'term',
-				header: 'term',
+				header: 'الترم',
 				cell: (element: Note) => `${element.term.name}`,
 			},
 			{
 				columnDef: 'stage',
-				header: 'stage',
+				header: 'المرحلة',
 				cell: (element: Note) => `${element.stage.name}`,
 			},
 			{
 				columnDef: 'quantity',
-				header: 'quantity',
+				header: 'الكمية',
 				cell: (element: Note) => `${element.quantity}`,
 			},
 			{
 				columnDef: 'actualPrice',
-				header: 'actual Price',
+				header: 'السعر الفعلي',
 				cell: (element: Note) => `${element.actualPrice}`,
 			},
 			{
 				columnDef: 'teacherPrice',
-				header: 'teacher Price',
+				header: 'سعر المدرس',
 				cell: (element: Note) => `${element.teacherPrice}`,
 			},
 			{
 				columnDef: 'finalPrice',
-				header: 'final Price',
+				header: 'السعر النهائي',
 				cell: (element: Note) => `${element.finalPrice}`,
 			},
 		];

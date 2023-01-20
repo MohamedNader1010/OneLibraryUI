@@ -31,7 +31,7 @@ export class LoginGuard implements CanActivate, CanLoad, CanActivateChild {
 		const token = localStorage.getItem('token');
 		let isRefreshSuccess: boolean = false;
 		if (!token || !refreshToken) return false;
-		this._auth.refreshToken(refreshToken).subscribe({
+		this._auth.refreshToken().subscribe({
 			next: (res: Auth) => {
 				localStorage.setItem('token', res.token);
 				localStorage.setItem('refreshToken', res.refreshToken);

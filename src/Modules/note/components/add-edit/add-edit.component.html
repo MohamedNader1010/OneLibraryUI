@@ -1,24 +1,24 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">Note Details</h2>
+<h2 class="w-100 text-center" *ngIf="id; else update">تعديل المذكرة</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">New Note</h2>
+	<h2 class="w-100 text-center">مذكرة جديدة</h2>
 </ng-template>
 <section class="container d-flex justify-content-center w-100">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
-				<mat-label>Teacher</mat-label>
+				<mat-label>المدرس</mat-label>
 				<mat-select formControlName="client">
 					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-4">
-				<mat-label>Stage</mat-label>
+				<mat-label>المرحلة</mat-label>
 				<mat-select formControlName="stage">
 					<mat-option *ngFor="let mat of StagesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-4">
-				<mat-label>Term</mat-label>
+				<mat-label>الترم</mat-label>
 				<mat-select formControlName="term">
 					<mat-option *ngFor="let mat of TermsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
@@ -27,13 +27,13 @@
 		<div class="row">
 			<div class="col-6">
 				<mat-form-field class="w-100">
-					<mat-label>Name</mat-label>
+					<mat-label>أسم المذكرة</mat-label>
 					<input type="number" matInput formControlName="name" />
 				</mat-form-field>
 			</div>
 			<div class="col-6">
 				<mat-form-field class="w-100">
-					<mat-label>Quantity</mat-label>
+					<mat-label>الكمية</mat-label>
 					<input type="number" matInput formControlName="quantity" />
 				</mat-form-field>
 			</div>
@@ -41,26 +41,26 @@
 		<div class="row">
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Actual Price</mat-label>
+					<mat-label>السعر الفعلي</mat-label>
 					<input type="number" matInput formControlName="actualPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Teacher Price</mat-label>
+					<mat-label>سعر المدرس</mat-label>
 					<input type="number" matInput formControlName="teacherPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Final Price</mat-label>
+					<mat-label>السعر النهائي</mat-label>
 					<input type="number" matInput formControlName="finalPrice" />
 				</mat-form-field>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !Form.valid }}">save</button>
-			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
 		</div>
 	</form>
 </section>

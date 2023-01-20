@@ -9,11 +9,11 @@ const routes: Routes = [
 	{
 		path: '',
 		component: ServiceComponent,
-		title: 'services',
+		title: 'الخدمات',
 		children: [
-			{path: 'all', component: AllComponent, title: 'all services'},
-			{path: 'new', component: AddEditComponent, title: 'add new service', canDeactivate: [CanDeactivateGuard]},
-			{path: 'edit', component: AddEditComponent, title: "edit service's data", canDeactivate: [CanDeactivateGuard]},
+			{path: 'all', component: AllComponent, title: 'جميع الخدمات'},
+			{path: 'new', component: AddEditComponent, title: 'اضافة خدمة جديدة', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'تعديل الخدمة', canDeactivate: [CanDeactivateGuard]},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},

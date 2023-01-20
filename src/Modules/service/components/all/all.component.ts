@@ -19,22 +19,22 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: 'id',
+				header: '#',
 				cell: (element: Service) => element.id,
 			},
 			{
 				columnDef: 'Name',
-				header: 'Name',
+				header: 'الأسم',
 				cell: (element: Service) => element.name,
 			},
 			{
 				columnDef: 'Material',
-				header: 'Material',
+				header: 'الخامة',
 				cell: (element: Service) => element.material.name,
 			},
 			{
 				columnDef: 'Type',
-				header: 'Type',
+				header: 'النوع',
 				cell: (element: Service) => element.serviceType.name,
 			},
 		];

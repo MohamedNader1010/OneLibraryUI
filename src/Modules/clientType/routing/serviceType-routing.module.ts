@@ -9,11 +9,11 @@ const routes: Routes = [
 	{
 		path: '',
 		component: ClientTypeComponent,
-		title: 'client Types',
+		title: 'انواع العملاء',
 		children: [
-			{path: 'all', component: AllComponent, title: 'all client Types'},
-			{path: 'new', component: AddEditComponent, title: 'add new client Type', canDeactivate: [CanDeactivateGuard]},
-			{path: 'edit', component: AddEditComponent, title: 'edit client Type data', canDeactivate: [CanDeactivateGuard]},
+			{path: 'all', component: AllComponent, title: 'جميع انواع العملاء'},
+			{path: 'new', component: AddEditComponent, title: 'اضافة نوع عميل جديد', canDeactivate: [CanDeactivateGuard]},
+			{path: 'edit', component: AddEditComponent, title: 'تعديل نوع العميل', canDeactivate: [CanDeactivateGuard]},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},

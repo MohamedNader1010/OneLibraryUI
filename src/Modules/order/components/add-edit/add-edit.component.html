@@ -1,12 +1,12 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">Order Details</h2>
+<h2 class="w-100 text-center" *ngIf="id; else update">تعديل الطلب</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">New Order</h2>
+	<h2 class="w-100 text-center">طلب جديد</h2>
 </ng-template>
 <section class="container">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-11">
-				<mat-label>Client</mat-label>
+				<mat-label>العميل</mat-label>
 				<mat-select formControlName="clientId">
 					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
@@ -23,7 +23,7 @@
 				<ng-container [formGroupName]="i">
 					<div class="col-4">
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>service</mat-label>
+							<mat-label>الخدمات</mat-label>
 							<mat-select formControlName="serviceId">
 								<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 							</mat-select>
@@ -31,7 +31,7 @@
 					</div>
 					<div class="col-4">
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>note</mat-label>
+							<mat-label>المذكرات</mat-label>
 							<mat-select formControlName="noteId">
 								<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 							</mat-select>
@@ -39,7 +39,7 @@
 					</div>
 					<div class="col-3">
 						<mat-form-field class="w-100">
-							<mat-label>price</mat-label>
+							<mat-label>السعر</mat-label>
 							<input type="number" matInput formControlName="price" />
 						</mat-form-field>
 					</div>
@@ -55,19 +55,19 @@
 		<div class="row">
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Total Price</mat-label>
+					<mat-label>السعر الاجمالي</mat-label>
 					<input type="number" matInput formControlName="totalPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Discount amount</mat-label>
+					<mat-label>خصم مبلغ</mat-label>
 					<input type="number" matInput formControlName="descountAmount" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
-					<mat-label>Discount Percent</mat-label>
+					<mat-label>خصم نسبة</mat-label>
 					<input type="number" matInput formControlName="descountPercent" />
 				</mat-form-field>
 			</div>
@@ -75,19 +75,19 @@
 		<div class="row">
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Final Price</mat-label>
+					<mat-label>السعر النهائي</mat-label>
 					<input type="number" matInput formControlName="finalPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>Paid</mat-label>
+					<mat-label>المدفوع</mat-label>
 					<input type="number" matInput formControlName="paid" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
-					<mat-label>Rest</mat-label>
+					<mat-label>الباقي</mat-label>
 					<input type="number" matInput formControlName="rest" />
 				</mat-form-field>
 			</div>
@@ -95,14 +95,14 @@
 		<div class="row">
 			<div class="col-11">
 				<mat-form-field class="w-100">
-					<mat-label>Remarks</mat-label>
+					<mat-label>ملحوظات العميل</mat-label>
 					<textarea matInput formControlName="remarks"></textarea>
 				</mat-form-field>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="primary" class="mx-2 px-4" disabled="{{ !Form.valid }}">save</button>
-			<button mat-stroked-button color="warn" (click)="back()">cancel</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
 		</div>
 	</form>
 </section>

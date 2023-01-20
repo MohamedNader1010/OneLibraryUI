@@ -20,7 +20,7 @@ export class AuthService {
 	register(reister: Register) {
 		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/register`, reister, _HttpOptions).pipe(shareReplay());
 	}
-	refreshToken(token: string) {
-		return this.http.get<Auth>(`${environment.apiUrl}Authorzation/refreshToken?refreshToken=${token}`, _HttpOptions);
+	refreshToken() {
+		return this.http.get<Auth>(`${environment.apiUrl}Authorzation/refreshToken?t=${localStorage.getItem('refreshToken')}`, _HttpOptions);
 	}
 }
