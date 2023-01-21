@@ -6,12 +6,14 @@ import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {DetailsComponent} from '../components/details/details.component';
 import {TransactionComponent} from '../components/transaction/transaction.component';
 import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
+import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: OrderComponent,
 		title: 'الطلبات',
+		canActivateChild: [LoginGuard],
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع الطلبات'},
 			{path: 'new', component: AddEditComponent, title: 'طلب جديد', canDeactivate: [CanDeactivateGuard]},

@@ -17,11 +17,11 @@ export class AccessLoginPageGuard implements CanActivate, CanLoad, CanActivateCh
 		return this.Auth();
 	}
 	Auth() {
-		// let refreshToken = localStorage.getItem('refreshToken');
-		// if (refreshToken) {
-		// 	this._router.navigate(['']);
-		// 	return false;
-		// }
+		let refreshToken = localStorage.getItem('refreshToken');
+		if (refreshToken) {
+			this._router.navigate(['']);
+			return false;
+		}
 		return true;
 	}
 }

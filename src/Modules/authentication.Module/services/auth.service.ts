@@ -15,12 +15,12 @@ export class AuthService {
 	public username: string = localStorage.getItem('uname') ?? '';
 	constructor(private http: HttpClient) {}
 	login(login: Login) {
-		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/LogIn`, login, _HttpOptions).pipe(shareReplay());
+		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/LogIn`, login).pipe(shareReplay());
 	}
 	register(reister: Register) {
-		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/register`, reister, _HttpOptions).pipe(shareReplay());
+		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/register`, reister).pipe(shareReplay());
 	}
 	refreshToken() {
-		return this.http.get<Auth>(`${environment.apiUrl}Authorzation/refreshToken?t=${localStorage.getItem('refreshToken')}`, _HttpOptions);
+		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/refreshToken`, {token: localStorage.getItem('refreshToken')});
 	}
 }

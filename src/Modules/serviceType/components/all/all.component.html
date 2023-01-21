@@ -1,1 +1,8 @@
-<app-table [loading]="loading" controllerName="serviceTypes" dialogDisplayName="name" [tableColumns]="tableColumns" [tableData]="tableData" (OnDelete)="handleDelete($event)"></app-table>
+<app-table
+	[loading]="loading"
+	dialogLocationAR="نوع الخدمة"
+	controllerName="serviceTypes"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[tableData]="tableData"
+	(OnDelete)="handleDelete($event)"></app-table>

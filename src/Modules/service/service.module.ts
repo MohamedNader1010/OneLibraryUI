@@ -10,10 +10,11 @@ import {ServicesService} from './services/services.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../shared/shared.module';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
+import {LoginGuard} from '../authentication.Module/guards/login.guard';
 
 @NgModule({
 	declarations: [ServiceComponent, AllComponent, AddEditComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceRoutingModule, MatComponentsModule, SharedModule],
-	providers: [ServicesService, CanDeactivateGuard],
+	providers: [LoginGuard, ServicesService, CanDeactivateGuard],
 })
 export class ServiceModule {}

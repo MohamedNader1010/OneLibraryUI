@@ -6,6 +6,7 @@ import {AccessLoginPageGuard} from '../guards/AccessLoginPage.guard';
 const routes: Routes = [
 	{path: 'login', component: LoginComponent, title: 'تسجيل الدخول', canActivate: [AccessLoginPageGuard]},
 	{path: 'register', component: RegisterComponent, title: 'حساب جديد'},
+	{path: 'auth', redirectTo: 'login', pathMatch: 'full'},
 	{path: '', redirectTo: '/', pathMatch: 'full'},
 ];
 

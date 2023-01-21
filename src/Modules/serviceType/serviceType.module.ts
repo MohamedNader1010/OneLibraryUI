@@ -9,10 +9,11 @@ import {AddEditComponent} from './components/add-edit/add-edit.component';
 import {AllComponent} from './components/all/all.component';
 import {ServicesTypeService} from './services/serviceType.service';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
+import {LoginGuard} from '../authentication.Module/guards/login.guard';
 
 @NgModule({
 	declarations: [ServiceTypeComponent, AllComponent, AddEditComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceTypesRoutingModule, MatComponentsModule, SharedModule],
-	providers: [ServicesTypeService, CanDeactivateGuard],
+	providers: [LoginGuard, ServicesTypeService, CanDeactivateGuard],
 })
 export class ServiceTypeModule {}

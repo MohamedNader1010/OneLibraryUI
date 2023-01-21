@@ -4,12 +4,14 @@ import {AllComponent} from '../components/all/all.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {ServiceTypeComponent} from '../serviceType.component';
 import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
+import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: ServiceTypeComponent,
 		title: 'نوع الخدمة',
+		canActivateChild: [LoginGuard],
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع انواع الخدمات'},
 			{path: 'new', component: AddEditComponent, title: 'اضافة نوع خدمة جديد', canDeactivate: [CanDeactivateGuard]},

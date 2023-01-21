@@ -1,8 +1,8 @@
-<h2 mat-dialog-title>delete {{ data.location }}</h2>
+<h2 mat-dialog-title>{{ data.location }}</h2>
 <mat-dialog-content class="mat-typography">
 	<h3>{{ data.msg }}</h3>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-	<button mat-button [mat-dialog-close]="false" cdkFocusInitial>no</button>
-	<button mat-button [mat-dialog-close]="true">yes</button>
+	<button mat-button [mat-dialog-close]="true">نعم</button>
+	<button mat-button [mat-dialog-close]="false" cdkFocusInitial>لا</button>
 </mat-dialog-actions>

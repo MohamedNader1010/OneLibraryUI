@@ -13,7 +13,7 @@ export class MaterialService {
 
 	getAll = () => this.http.get<Material[]>(`${this.uri}`);
 	getOne = (id: number) => this.http.get<Material>(`${this.uri}${id}?id=`);
-	add = (material: Material) => this.http.post<Material>(`${this.uri}`, material, _HttpOptions);
-	update = (id: number, material: Material) => this.http.put<Material>(`${this.uri}?id=${id}`, {...material, id}, _HttpOptions);
-	delete = (id: number) => this.http.delete<Material>(`${this.uri}?id=${id}`, _HttpOptions);
+	add = (material: Material) => this.http.post<Material>(`${this.uri}`, material);
+	update = (id: number, material: Material) => this.http.put<Material>(`${this.uri}?id=${id}`, {...material, id});
+	delete = (id: number) => this.http.delete<Material>(`${this.uri}?id=${id}`);
 }

@@ -4,12 +4,14 @@ import {MaterialComponent} from '../material.component';
 import {AllComponent} from '../components/all/all.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
+import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: MaterialComponent,
 		title: 'الخامات',
+		canActivateChild: [LoginGuard],
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع الخامات'},
 			{path: 'new', component: AddEditComponent, title: 'اضافة خامة جديدة', canDeactivate: [CanDeactivateGuard]},

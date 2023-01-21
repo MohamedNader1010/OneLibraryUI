@@ -2,6 +2,7 @@ import {formatCurrency} from '@angular/common';
 import {Component, OnDestroy} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, AbstractControl, ValidationErrors} from '@angular/forms';
 import {Router} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {CustomValidators} from '../../customeValidators/confirmPassword';
 import {Register} from '../../interfaces/IRegister';
@@ -16,7 +17,7 @@ export class RegisterComponent implements OnDestroy {
 	subscriptions: Subscription[] = [];
 	registerForm: FormGroup;
 	hide = true;
-	constructor(private router: Router, private _auth: AuthService, private fb: FormBuilder) {
+	constructor(private router: Router, private _auth: AuthService, private fb: FormBuilder, private toastr: ToastrService) {
 		this.registerForm = this.fb.group(
 			{
 				username: ['', [Validators.required, Validators.maxLength(100)]],
@@ -51,15 +52,14 @@ export class RegisterComponent implements OnDestroy {
 			this.subscriptions.push(
 				this._auth.register(register).subscribe({
 					next: (data: any) => {
-						// this.toastr.success("loged in successfully", "logged in");
+						this.toastr.success('loged in successfully', 'logged in');
 						localStorage.setItem('token', data.token);
 						localStorage.setItem('refreshToken', data.refreshToken);
 						localStorage.setItem('uname', data.username);
 						this.router.navigate(['']);
 					},
 					error: (e) => {
-						console.log(e);
-						// this.toastr.error(e.error.message, "unauthorized");
+						this.toastr.error(e.error.message, 'unauthorized');
 					},
 				})
 			);

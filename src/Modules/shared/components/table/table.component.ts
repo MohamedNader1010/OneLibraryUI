@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs';
 import {DialogComponent} from '../dialog/dialog.component';
 
 @Component({
-	selector: 'app-table[controllerName][dialogDisplayName][tableColumns][tableData]',
+	selector: 'app-table[controllerName][dialogLocationAR][dialogDisplayName][tableColumns][tableData]',
 	templateUrl: './table.component.html',
 	styleUrls: ['./table.component.css'],
 })
@@ -22,6 +22,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Output() OnDelete = new EventEmitter<any>();
 	@Input() dialogDisplayName!: string;
 	@Input() controllerName!: string;
+	@Input() dialogLocationAR!: string;
 	@Input() loading: any;
 	@Input() tableColumns: any;
 	@Input() canView: boolean = false;
@@ -58,7 +59,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
 			this.dialog
-				.open(DialogComponent, {data: {location: 'controllerName', msg: `are you sure you want to delete "${row[this.dialogDisplayName]}"?`}})
+				.open(DialogComponent, {data: {location: `حذف ${this.dialogLocationAR}`, msg: `are you sure you want to delete "${row[this.dialogDisplayName]}"?`}})
 				.afterClosed()
 				.subscribe(() => this.OnDelete.emit(row.id))
 		);

@@ -1,1 +1,9 @@
-<app-table [loading]="loading" [canView]="true" controllerName="notes" dialogDisplayName="name" [tableColumns]="tableColumns" [tableData]="tableData" (OnDelete)="handleDelete($event)"></app-table>
+<app-table
+	[loading]="loading"
+	dialogLocationAR="المذكرة"
+	[canView]="true"
+	controllerName="notes"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[tableData]="tableData"
+	(OnDelete)="handleDelete($event)"></app-table>
