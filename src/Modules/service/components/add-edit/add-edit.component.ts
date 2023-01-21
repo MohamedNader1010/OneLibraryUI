@@ -31,8 +31,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	) {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
-			material: ['', [Validators.required]],
-			type: ['', [Validators.required]],
+			materialId: ['', [Validators.required]],
+			serviceTypeId: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {
@@ -44,12 +44,21 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._service.getOne(id).subscribe((data) => {}));
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._service.getOne(id).subscribe((data) => {
+				console.log(data);
+				this.Form.patchValue(data);
+				console.log(this.Form.value);
+			})
+		);
 	getAllMaterials = () => this.subscriptions.push(this._material.getAll().subscribe({next: (data) => (this.MaterialDataSource = data)}));
 	getAllServicesTypes = () => this.subscriptions.push(this._type.getAll().subscribe({next: (data) => (this.ServiceTypeDataSource = data)}));
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {
+			console.log(this.Form.value);
+
 			if (this.id)
 				this.subscriptions.push(
 					this._service.update(this.id, this.Form.value).subscribe(() => {

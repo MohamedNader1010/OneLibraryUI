@@ -2,7 +2,9 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, NgForm, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {ClientService} from 'src/Modules/client/services/client.service';
 import {MaterialService} from 'src/Modules/material/services/material.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.service';
 import {OrderDetail} from '../../interfaces/IorderDetail';
 import {OrderTransaction} from '../../interfaces/IorderTransaction';
@@ -25,14 +27,31 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	ServicesDataSource: any[] = [];
 	NotesDataSource: any[] = [];
 	ClientsDataSource: any[] = [];
-	constructor(private router: Router, private route: ActivatedRoute, private _order: OrderService, private _material: MaterialService, private _type: ServicesTypeService, private fb: FormBuilder) {
+	constructor(
+		private router: Router,
+		private route: ActivatedRoute,
+		private _client: ClientService,
+		private _service: ServicesService,
+		private _order: OrderService,
+		private _material: MaterialService,
+		private _type: ServicesTypeService,
+		private fb: FormBuilder
+	) {
 		this.Form = this.createFormItem('init');
 		this.RestControl.disable();
 	}
 
 	ngOnInit(): void {
+		this.getAllClients();
+		this.getAllServices();
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
+	}
+	getAllClients() {
+		this.subscriptions.push(this._client.getAll().subscribe((data: any) => (this.ClientsDataSource = data)));
+	}
+	getAllServices() {
+		this.subscriptions.push(this._client.getAll().subscribe((data: any) => (this.ServicesDataSource = data)));
 	}
 	get RestControl(): FormControl {
 		return this.Form.get('rest') as FormControl;
@@ -71,7 +90,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get OrderDetails(): FormArray {
 		return this.Form.get('details') as FormArray;
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data)));
+	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data[0])));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => this.OrderDetails.push(this.createFormItem('detail'));
 	handleDeleteDetail = (index: number) => this.OrderDetails.removeAt(index);

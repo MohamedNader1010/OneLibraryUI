@@ -12,7 +12,7 @@ export class MaterialService {
 	uri: string = `${environment.apiUrl}Material/`;
 
 	getAll = () => this.http.get<Material[]>(`${this.uri}`);
-	getOne = (id: number) => this.http.get<Material>(`${this.uri}${id}?id=`);
+	getOne = (id: number) => this.http.get<Material[]>(`${this.uri}?id=${id}`);
 	add = (material: Material) => this.http.post<Material>(`${this.uri}`, material);
 	update = (id: number, material: Material) => this.http.put<Material>(`${this.uri}?id=${id}`, {...material, id});
 	delete = (id: number) => this.http.delete<Material>(`${this.uri}?id=${id}`);

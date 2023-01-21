@@ -47,6 +47,7 @@ export class AllComponent implements OnInit, OnDestroy {
 				next: (data: any) => {
 					this.tableData = data;
 				},
+				error: () => (this.loading = false),
 				complete: () => (this.loading = false),
 			})
 		);

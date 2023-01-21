@@ -26,7 +26,7 @@
 			<div class="col">
 				<mat-form-field appearance="fill" class="w-100">
 					<mat-label>النوع</mat-label>
-					<mat-select formControlName="clientType">
+					<mat-select formControlName="clientTypeId">
 						<mat-option *ngFor="let type of ClientTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 					</mat-select>
 					<mat-error *ngIf="phone.errors?.['required']"> client type is <strong>required</strong> </mat-error>

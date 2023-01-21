@@ -22,7 +22,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
-			clientType: ['', [Validators.required]],
+			clientTypeId: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {
@@ -37,7 +37,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		if (this.id) this.getSingle(this.id);
 	}
 	getAllClientTypes = () => this.subscriptions.push(this._clientType.getAll().subscribe({next: (data) => (this.ClientTypeDataSource = data)}));
-	getSingle = (id: number) => this.subscriptions.push(this._client.getOne(id).subscribe((data) => {}));
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._client.getOne(id).subscribe((data) => {
+				console.log(data);
+				this.Form.patchValue(data);
+				console.log(this.Form.value);
+			})
+		);
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

@@ -10,8 +10,8 @@ export class ClientService {
 	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Client/`;
 	getAll = () => this.http.get<Client[]>(`${this.uri}`);
-	add = (client: Client) => this.http.post<Client>(`${this.uri}`, client);
-	getOne = (id: number) => this.http.get<Client>(`${this.uri}GetById?Id=${id}`);
-	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}?Id=${id}`, {...Client, id});
+	add = (client: Client) => this.http.post<Client>(`${this.uri}`, client); //////////////////////////////////////
+	getOne = (id: number) => this.http.get<Client[]>(`${this.uri}GetById?Id=${id}`);
+	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}?Id=${id}`, {...Client, id}); //////////////////
 	delete = (id: number) => this.http.delete<Client>(`${this.uri}?Id=${id}`);
 }

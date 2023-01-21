@@ -16,13 +16,13 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-6">
 				<mat-label>الخامة</mat-label>
-				<mat-select formControlName="material">
+				<mat-select formControlName="materialId">
 					<mat-option *ngFor="let mat of MaterialDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-6">
 				<mat-label>النوع</mat-label>
-				<mat-select formControlName="type">
+				<mat-select formControlName="serviceTypeId">
 					<mat-option *ngFor="let type of ServiceTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
