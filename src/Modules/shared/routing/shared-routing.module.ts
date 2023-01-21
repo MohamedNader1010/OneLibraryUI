@@ -22,6 +22,8 @@ const routes: Routes = [
 				canLoad: [LoginGuard],
 			},
 			{path: 'notes', loadChildren: () => import('../../note/note.module').then((m) => m.NoteModule), canLoad: [LoginGuard]},
+			{path: 'terms', loadChildren: () => import('../../term/term.module').then((m) => m.TermModule), canLoad: [LoginGuard]},
+			{path: 'stages', loadChildren: () => import('../../stage/stage.module').then((m) => m.StageModule), canLoad: [LoginGuard]},
 		],
 	},
 	{path: '**', component: NotfoundComponent, title: '404 - not found'},
