@@ -51,6 +51,7 @@ export class AllComponent implements OnInit {
 			this._sp.getAll().subscribe((data: any) => {
 				this.tableData = data;
 				this.loading = false;
+				console.log('Data is loaded succefully!!')
 			})
 		);
 	}

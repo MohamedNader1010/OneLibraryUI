@@ -5,9 +5,10 @@ import {ServicePricePerClientTypeRoutingModule} from './service-price-per-client
 import {AllComponent} from './Components/all/all.component';
 import {SharedModule} from '../shared/shared.module';
 import {LoginComponent} from '../authentication.Module/components/login/login.component';
+import { AddEditComponent } from './Components/add-edit/add-edit.component';
 
 @NgModule({
-	declarations: [AllComponent],
+	declarations: [AllComponent, AddEditComponent],
 	imports: [CommonModule, ServicePricePerClientTypeRoutingModule, SharedModule],
 	providers: [LoginComponent],
 })
