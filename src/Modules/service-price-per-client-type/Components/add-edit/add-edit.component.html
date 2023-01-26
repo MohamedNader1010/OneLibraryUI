@@ -1,0 +1,71 @@
+<br /><br />
+<section class="container d-flex justify-content-center m-auto">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column">
+    <h1>Add Price to Service</h1>
+    <!-- SERVICES LIST -->
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="fill" class="col-12">
+          <mat-label>الخدمات</mat-label>
+          <mat-select formControlName="serviceId">
+            <mat-option
+              *ngFor="let serviceName of servicesNames"
+              [value]="serviceName.id"
+              >{{ serviceName.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <span *ngIf="f['serviceId']?.touched && f['serviceId']?.invalid"
+          ><mat-error *ngIf="f['serviceId']?.errors?.['required']">
+            serviceName is <strong>required</strong>
+          </mat-error></span
+        >
+      </div>
+    </div>
+    <!-- END OF SERVICES LISTS -->
+
+    <!-- CLIENT TYPE LIST -->
+    <div class="row">
+      <div class="col">
+        <mat-form-field appearance="fill" class="col-12">
+          <mat-label>نوع العميل</mat-label>
+          <mat-select formControlName="clientTypeId">
+            <mat-option
+              *ngFor="let clientType of clientsType"
+              [value]="clientType.id"
+              >{{ clientType.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <span *ngIf="f['clientTypeId']?.touched && f['clientTypeId']?.invalid"
+          ><mat-error *ngIf="f['clientTypeId']?.errors?.['required']">
+            clientType is <strong>required</strong>
+          </mat-error></span
+        >
+      </div>
+    </div>
+    <!-- END OF CLIENT TYPE LIST -->
+
+    <!-- PRICE TEXT FIELD -->
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="w-100">
+          <mat-label>السعر</mat-label>
+          <input type="number" matInput formControlName="price" />
+        </mat-form-field>
+        <span *ngIf="f['price']?.touched && f['price']?.invalid"
+          ><mat-error *ngIf="f['price']?.errors?.['required']">
+            Price is <strong>required</strong>
+          </mat-error></span
+        >
+      </div>
+    </div>
+    <!-- END OF PRICE TEXT FIELD -->
+
+    <mat-card-actions text-align="center">
+      <button mat-flat-button color="primary" [disabled]="!form.valid">
+        حفـــظ
+      </button>
+    </mat-card-actions>
+  </form>
+</section>
