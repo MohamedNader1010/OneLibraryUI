@@ -17,3 +17,5 @@ export interface Service {
 	isDeleted: boolean;
 	servicePricePerClientTypes: any;
 }
+
+
