@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {ServiceType} from '../../interFaces/IserviceType';
 import {ServicesTypeService} from '../../services/serviceType.service';
 
 @Component({
@@ -27,7 +28,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._serviceType.getOne(id).subscribe((data) => {}));
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._serviceType.getOne(id).subscribe((data: ServiceType[]) => {
+				console.log(data[0]);
+				this.Form.patchValue(data[0]);
+			})
+		);
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {
