@@ -1,9 +1,11 @@
 <app-table
 	[loading]="loading"
+	dialogHeader="حذف الطلب"
 	[canView]="true"
 	[hasTransaction]="true"
 	controllerName="orders"
 	dialogDisplayName="id"
 	[tableColumns]="tableColumns"
 	[tableData]="tableData"
-	(OnDelete)="handleDelete($event)"></app-table>
+	(OnDelete)="handleDelete($event)"
+	(OnView)="handleOrderDetails($event)"></app-table>

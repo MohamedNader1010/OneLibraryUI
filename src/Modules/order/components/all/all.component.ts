@@ -1,8 +1,10 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 import {Observable, BehaviorSubject, of, Subscription} from 'rxjs';
 import {Order} from '../../interfaces/Iorder';
 import {OrderService} from '../../services/orders.service';
+import {DetailsComponent} from '../details/details.component';
 import {Client} from './../../../client/interFaces/Iclient';
 @Component({
 	selector: 'app-all',
@@ -12,9 +14,9 @@ import {Client} from './../../../client/interFaces/Iclient';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Order[];
 	loading!: boolean;
-	constructor(private _order: OrderService, public dialog: MatDialog) {}
+	constructor(private _order: OrderService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -53,10 +55,26 @@ export class AllComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._order.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._order.getAll().subscribe({
+				next: (data) => {
+					this.tableData = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
+		);
+	}
+	handleOrderDetails(data: any) {
+		this.subscriptions.push(
+			this.dialog
+				.open(DetailsComponent)
+				.afterClosed()
+				.subscribe(() => {})
 		);
 	}
 	handleDelete = (id: number) => this.subscriptions.push(this._order.delete(id).subscribe(() => this.getAll()));

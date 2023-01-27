@@ -1,1 +1,79 @@
-<h1>order details</h1>
+<h2 mat-dialog-title>تفاصيل الطلب</h2>
+<mat-dialog-content class="mat-typography">
+	<div class="info">
+		<div class="row">
+			<div class="col-7">
+				<span id="heading">التاريخ</span><br />
+				<span id="details">10 October 2018</span>
+			</div>
+			<div class="col-5 pull-right">
+				<span id="heading">كود الطلب</span><br />
+				<span id="details">1243</span>
+			</div>
+		</div>
+	</div>
+	<div class="pricing">
+		<div class="row">
+			<div class="col-6">
+				<h4>الصنف</h4>
+			</div>
+			<div class="col-3">
+				<h4>الكمية</h4>
+			</div>
+			<div class="col-3">
+				<h4>السعر</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<h5>BEATS Solo 3 Wireless Headphones</h5>
+			</div>
+			<div class="col-3">
+				<h5>&pound;299.99</h5>
+			</div>
+			<div class="col-3">
+				<h5>&pound;299.99</h5>
+			</div>
+		</div>
+	</div>
+	<div class="total">
+		<div class="row">
+			<div class="col-9">الأجمالي</div>
+			<div class="col-3"><strong>&pound;262.99</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-9">الخصم بالمبلغ</div>
+			<div class="col-3"><strong>&pound;262.99</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-9">نسبة الخصم</div>
+			<div class="col-3"><strong>% 0</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-9">السعر النهائي</div>
+			<div class="col-3"><strong>&pound;262.99</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-9">المدفوع</div>
+			<div class="col-3"><strong>&pound;262.99</strong></div>
+		</div>
+		<div class="row">
+			<div class="col-9">المتبقي</div>
+			<div class="col-3"><strong>&pound;262.99</strong></div>
+		</div>
+	</div>
+	<h3>تتبع الطلب</h3>
+	<div class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
+		<mat-progress-bar class="row w-100" mode="determinate" value="75" color="warn"></mat-progress-bar>
+		<ul class="tracklist row w-100">
+			<li class="col-3 text-nowrap me-0">تسجيل الطلب</li>
+			<li class="col-3 text-nowrap me-0">تحت التجهيز</li>
+			<li class="col-3 text-nowrap me-0">جاهز للاستلام</li>
+			<li class="col-3 text-nowrap me-0">تم التسليم</li>
+		</ul>
+	</div>
+</mat-dialog-content>
+<!-- <mat-dialog-actions align="end">
+	<button mat-button mat-dialog-close>Cancel</button>
+	<button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button>
+</mat-dialog-actions> -->

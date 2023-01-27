@@ -1,0 +1,33 @@
+:host {
+	width: 100%;
+}
+.info {
+	padding: 0 8% 5%;
+}
+.info .col-5 {
+	padding: 0;
+}
+#heading {
+	color: grey;
+	line-height: 6vh;
+}
+.pricing {
+	background-color: #ddd3;
+	padding: 2vh 8%;
+	font-weight: 400;
+	line-height: 2.5;
+}
+.pricing .col-3 {
+	padding: 0;
+}
+.total {
+	padding: 2vh 8%;
+	font-weight: bold;
+}
+.total .col-3 {
+	padding: 0;
+}
+.tracklist {
+	list-style: none;
+	padding: 0;
+}

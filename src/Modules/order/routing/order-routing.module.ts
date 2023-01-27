@@ -17,7 +17,7 @@ const routes: Routes = [
 			{path: 'new', component: AddEditComponent, title: 'طلب جديد', canDeactivate: [CanDeactivateGuard]},
 			{path: 'edit', component: AddEditComponent, title: 'تعديل الطلب', canDeactivate: [CanDeactivateGuard]},
 			{path: 'transaction', component: TransactionComponent, title: 'تعاملات مالية علي الطلب'},
-			{path: 'details', component: DetailsComponent, title: 'تفاصيل الطلب'},
+			// {path: 'details', component: DetailsComponent, title: 'تفاصيل الطلب'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},
