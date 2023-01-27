@@ -23,7 +23,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => (this.orderDetails = data)));
+	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => (this.orderDetails = data[0])));
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {MatComponentsModule} from '../mat-components.Module/mat-components.module';
 import {SharedModule} from '../shared/shared.module';
 import {ClientComponent} from './client.component';
@@ -14,6 +15,6 @@ import {ClientService} from './services/client.service';
 @NgModule({
 	declarations: [ClientComponent, AllComponent, AddEditComponent, SingleComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, ClientRoutingModule, MatComponentsModule, SharedModule],
-	providers: [ClientService, CanDeactivateGuard],
+	providers: [LoginGuard, ClientService, CanDeactivateGuard],
 })
 export class ClientModule {}

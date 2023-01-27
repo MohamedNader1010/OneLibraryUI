@@ -6,3 +6,5 @@ export interface Service {
 	serviceTypeId: number;
 	serviceType: string;
 }
+
+

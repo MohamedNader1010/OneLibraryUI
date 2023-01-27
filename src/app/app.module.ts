@@ -34,12 +34,12 @@ export function tokenGetter() {
 	],
 	bootstrap: [AppComponent],
 	providers: [
+		LoginGuard,
 		{
 			provide: HTTP_INTERCEPTORS,
 			useClass: TokenInterceptor,
 			multi: true,
 		},
-		LoginGuard,
 	],
 })
 export class AppModule {}

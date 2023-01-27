@@ -1,4 +1,4 @@
-arabic text =>
+arabic text => done
 role management=>
 user profile(change password/update date/...)=>
 admin dashboard=>
@@ -68,3 +68,14 @@ service price per client=>
 -add/////////////////////////////
 -edit////////////////////////////
 -delete (front done)
+term=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+stage=>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+

@@ -5,7 +5,8 @@ import {DialogComponent} from 'src/Modules/shared/components/dialog/dialog.compo
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 
 @Injectable()
-export class CanDeactivateGuard implements CanDeactivate<AddEditComponent> {
+// implements CanDeactivate<AddEditComponent>
+export class CanDeactivateGuard {
 	constructor(public dialog: MatDialog) {}
 	async canDeactivate(component: AddEditComponent) {
 		if ((component.Form.touched && component.Form.dirty && component.isSubmitted) || component.Form.untouched) return true;

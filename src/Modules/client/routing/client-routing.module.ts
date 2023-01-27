@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
+import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 import {ClientComponent} from '../client.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {AllComponent} from '../components/all/all.component';
@@ -11,6 +12,7 @@ const routes: Routes = [
 		path: '',
 		component: ClientComponent,
 		title: 'العملاء',
+		canActivateChild: [LoginGuard],
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع العملاء'},
 			{path: 'new', component: AddEditComponent, title: 'عميل جديد', canDeactivate: [CanDeactivateGuard]},

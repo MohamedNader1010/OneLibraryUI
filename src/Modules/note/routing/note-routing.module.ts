@@ -5,12 +5,14 @@ import {AllComponent} from '../components/all/all.component';
 import {AddEditComponent} from '../components/add-edit/add-edit.component';
 import {DetailsComponent} from '../components/single/details.component';
 import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
+import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: NoteComponent,
 		title: 'المذكرات',
+		canActivateChild: [LoginGuard],
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع المذكرات'},
 			{path: 'allByTeacherId', component: AllComponent, title: 'جميع المذكرات للمدرس'},

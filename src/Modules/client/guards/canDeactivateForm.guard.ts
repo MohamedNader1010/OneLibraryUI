@@ -16,7 +16,6 @@ export class CanDeactivateGuard implements CanDeactivate<AddEditComponent> {
 				.afterClosed()
 				.subscribe({
 					next: (res) => resolve(res),
-					error: (e) => reject(() => console.log(e)),
 				});
 		});
 		return res;

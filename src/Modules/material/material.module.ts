@@ -10,10 +10,11 @@ import {MaterialsRoutingModule} from './routing/material-routing.module';
 import {AllComponent} from './components/all/all.component';
 import {AddEditComponent} from './components/add-edit/add-edit.component';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
+import {LoginGuard} from '../authentication.Module/guards/login.guard';
 
 @NgModule({
 	declarations: [MaterialComponent, AllComponent, AddEditComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, MaterialsRoutingModule, MatComponentsModule, SharedModule],
-	providers: [MaterialService, CanDeactivateGuard],
+	providers: [LoginGuard, MaterialService, CanDeactivateGuard],
 })
 export class MaterialModule {}

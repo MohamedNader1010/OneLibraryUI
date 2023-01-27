@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {MatComponentsModule} from '../mat-components.Module/mat-components.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddEditComponent} from './components/add-edit/add-edit.component';
@@ -15,6 +16,6 @@ import {OrderService} from './services/orders.service';
 @NgModule({
 	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule],
-	providers: [OrderService, CanDeactivateGuard],
+	providers: [LoginGuard, OrderService, CanDeactivateGuard],
 })
 export class OrderModule {}

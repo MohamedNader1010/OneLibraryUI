@@ -28,6 +28,8 @@ export class SingleComponent implements OnInit, OnDestroy {
 				next: (data) => {
 					this.client = data[0];
 				},
+
+				error: () => (this.loading = false),
 				complete: () => (this.loading = false),
 			})
 		);
