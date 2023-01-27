@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {Material} from 'src/Modules/material/interfaces/Imaterial';
 import {MaterialService} from 'src/Modules/material/services/material.service';
 import {ServiceType} from 'src/Modules/serviceType/interFaces/IserviceType';
 import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.service';
+import {Service} from '../../interfaces/Iservice';
 import {ServicesService} from '../../services/services.service';
 
 @Component({
@@ -27,12 +29,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		private _service: ServicesService,
 		private _material: MaterialService,
 		private _type: ServicesTypeService,
-		private fb: FormBuilder
+		private fb: FormBuilder,
+		private toastr: ToastrService
 	) {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
-			material: ['', [Validators.required]],
-			type: ['', [Validators.required]],
+			materialId: ['', [Validators.required]],
+			serviceTypeId: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {
@@ -41,12 +44,42 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.getAllMaterials();
 		this.getAllServicesTypes();
-		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
-		if (this.id) this.getSingle(this.id);
+		this.subscriptions.push(
+			this.route.queryParams.subscribe((params) => {
+				this.id = params['id'];
+				if (this.id) this.getSingle(this.id);
+			})
+		);
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._service.getOne(id).subscribe((data) => {}));
-	getAllMaterials = () => this.subscriptions.push(this._material.getAll().subscribe({next: (data) => (this.MaterialDataSource = data)}));
-	getAllServicesTypes = () => this.subscriptions.push(this._type.getAll().subscribe({next: (data) => (this.ServiceTypeDataSource = data)}));
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._service.getOne(id).subscribe((data: Service[]) => {
+				console.log(data[0]);
+				this.Form.patchValue(data[0]);
+			})
+		);
+	getAllMaterials = () =>
+		this.subscriptions.push(
+			this._material.getAll().subscribe({
+				next: (data) => {
+					this.MaterialDataSource = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				},
+			})
+		);
+	getAllServicesTypes = () =>
+		this.subscriptions.push(
+			this._type.getAll().subscribe({
+				next: (data) => {
+					this.ServiceTypeDataSource = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				},
+			})
+		);
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {
