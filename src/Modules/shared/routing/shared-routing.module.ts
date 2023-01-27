@@ -17,6 +17,7 @@ const routes: Routes = [
 			{path: 'clientTypes', loadChildren: () => import('../../clientType/clientType.module').then((m) => m.ClientTypeModule)},
 			{path: 'servicePrice', loadChildren: () => import('../../service-price-per-client-type/service-price-per-client-type.module').then((m) => m.ServicePricePerClientTypeModule)},
 			{path: 'notes', loadChildren: () => import('../../note/note.module').then((m) => m.NoteModule)},
+			{path: 'employees', loadChildren: () => import('../../employee/employee.module').then((m) => m.EmployeeModule)},
 		],
 	},
 	{path: '**', component: NotfoundComponent, title: '404 - not found'},
