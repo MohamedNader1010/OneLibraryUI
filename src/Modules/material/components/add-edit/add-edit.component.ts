@@ -18,6 +18,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	constructor(private router: Router, private route: ActivatedRoute, private _material: MaterialService, private fb: FormBuilder) {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
+			originalPrice: ['', [Validators.required]],
+			quantity: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {

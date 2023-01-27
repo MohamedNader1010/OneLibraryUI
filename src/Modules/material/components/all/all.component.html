@@ -1,1 +1,8 @@
-<app-table [loading]="loading" controllerName="materials" dialogDisplayName="name" [tableColumns]="tableColumns" [tableData]="tableData" (OnDelete)="handleDelete($event)"></app-table>
+<app-table
+	dialogHeader="حذف الخامة"
+	[loading]="loading"
+	controllerName="materials"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[tableData]="tableData"
+	(OnDelete)="handleDelete($event)"></app-table>

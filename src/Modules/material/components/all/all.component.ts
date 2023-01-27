@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
+import {Material} from '../../interfaces/Imaterial';
 import {MaterialService} from '../../services/material.service';
 
 @Component({
@@ -11,20 +13,30 @@ import {MaterialService} from '../../services/material.service';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Material[];
 	loading!: boolean;
-	constructor(private _material: MaterialService, public dialog: MatDialog) {}
+	constructor(private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
 				header: '#',
-				cell: (element: any) => element.id,
+				cell: (element: Material) => element.id,
 			},
 			{
 				columnDef: 'Name',
 				header: 'الأسم',
-				cell: (element: any) => element.name,
+				cell: (element: Material) => element.name,
+			},
+			{
+				columnDef: 'originalPrice',
+				header: 'سعر الجملة',
+				cell: (element: Material) => element.originalPrice,
+			},
+			{
+				columnDef: 'CurrentQty',
+				header: 'الكمية الحالية',
+				cell: (element: Material) => element.quantity,
 			},
 		];
 		this.getAll();
@@ -32,9 +44,17 @@ export class AllComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._material.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._material.getAll().subscribe({
+				next: (data) => {
+					this.tableData = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}
