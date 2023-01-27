@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
+import {ClientType} from '../../interFaces/IclientType';
 import {ClientTypeService} from '../../services/clientType.service';
 
 @Component({
@@ -11,9 +13,9 @@ import {ClientTypeService} from '../../services/clientType.service';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: ClientType[];
 	loading!: boolean;
-	constructor(private _clientType: ClientTypeService, public dialog: MatDialog) {}
+	constructor(private _clientType: ClientTypeService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -32,9 +34,17 @@ export class AllComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._clientType.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._clientType.getAll().subscribe({
+				next: (data) => {
+					this.tableData = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}

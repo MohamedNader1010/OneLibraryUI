@@ -12,7 +12,7 @@ export class CanDeactivateGuard implements CanDeactivate<AddEditComponent> {
 		let res: boolean = await new Promise<boolean>((resolve, reject) => {
 			this.dialog.closeAll();
 			this.dialog
-				.open(DialogComponent, {disableClose: true, data: {location: 'unsaved changes', msg: `you are about to leave this page without saving your changes,are you sure?`}})
+				.open(DialogComponent, {disableClose: true, data: {location: 'لم يتم حفظ التعديلات', msg: `لقد قمت بتعديل بعض البيانات ولم تقم بحفظها,هل انت متاكد من مغادرة الصفحة`}})
 				.afterClosed()
 				.subscribe({
 					next: (res) => resolve(res),

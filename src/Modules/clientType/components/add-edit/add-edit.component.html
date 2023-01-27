@@ -1,6 +1,6 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">تعديل نوع العميل</h2>
+<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل نوع العميل</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">نوع عميل جديد</h2>
+	<h2 class="w-100 text-center mt-3">نوع عميل جديد</h2>
 </ng-template>
 <section class="container d-flex justify-content-center">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-50">
