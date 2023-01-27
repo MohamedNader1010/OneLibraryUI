@@ -1,0 +1,8 @@
+<app-table
+	dialogHeader="حذف الموظف"
+	[loading]="loading"
+	controllerName="employees"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[tableData]="tableData"
+	(OnDelete)="handleDelete($event)"></app-table>
