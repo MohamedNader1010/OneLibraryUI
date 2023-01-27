@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {Note} from '../../interfaces/Inote';
 import {NoteService} from '../../services/note.service';
@@ -11,9 +12,9 @@ import {NoteService} from '../../services/note.service';
 export class AllByTeacherIdComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Note[];
 	loading!: boolean;
-	constructor(private _note: NoteService, public dialog: MatDialog) {}
+	constructor(private _note: NoteService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -67,9 +68,17 @@ export class AllByTeacherIdComponent implements OnInit, OnDestroy {
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._note.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._note.getAll().subscribe({
+				next: (data) => {
+					this.tableData = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}

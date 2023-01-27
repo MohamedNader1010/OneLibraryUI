@@ -3,6 +3,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {Note} from './../../interfaces/Inote';
+import {ToastrService} from 'ngx-toastr';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -11,9 +12,9 @@ import {Note} from './../../interfaces/Inote';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Note[];
 	loading!: boolean;
-	constructor(private _note: NoteService, public dialog: MatDialog) {}
+	constructor(private _note: NoteService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -68,10 +69,16 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.subscriptions.push(
 			this._note.getAll().subscribe({
-				next: (data: any) => {
+				next: (data) => {
 					this.tableData = data;
 				},
-				complete: () => (this.loading = false),
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}

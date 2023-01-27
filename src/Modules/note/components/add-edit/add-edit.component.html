@@ -1,25 +1,31 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">تعديل المذكرة</h2>
+<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل المذكرة</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">مذكرة جديدة</h2>
+	<h2 class="w-100 text-center mt-3">مذكرة جديدة</h2>
 </ng-template>
 <section class="container d-flex justify-content-center w-100">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
 		<div class="row">
-			<mat-form-field appearance="fill" class="col-4">
-				<mat-label>المدرس</mat-label>
-				<mat-select formControlName="client">
+			<mat-form-field appearance="fill" class="col-3">
+				<mat-label>نوع العميل</mat-label>
+				<mat-select (selectionChange)="changeClientType($event)">
+					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field appearance="fill" class="col-3">
+				<mat-label>الأسم</mat-label>
+				<mat-select formControlName="clientId">
 					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<mat-form-field appearance="fill" class="col-4">
+			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>المرحلة</mat-label>
-				<mat-select formControlName="stage">
+				<mat-select formControlName="stageId">
 					<mat-option *ngFor="let mat of StagesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
-			<mat-form-field appearance="fill" class="col-4">
+			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>الترم</mat-label>
-				<mat-select formControlName="term">
+				<mat-select formControlName="termId">
 					<mat-option *ngFor="let mat of TermsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>

@@ -14,7 +14,7 @@ const routes: Routes = [
 		children: [
 			{path: 'all', component: AllComponent, title: 'جميع المذكرات'},
 			{path: 'allByTeacherId', component: AllComponent, title: 'جميع المذكرات للمدرس'},
-			{path: 'new', component: AddEditComponent, title: 'تجسل مذكرة جديدة', canDeactivate: [CanDeactivateGuard]},
+			{path: 'new', component: AddEditComponent, title: 'أضافة مذكرة جديدة', canDeactivate: [CanDeactivateGuard]},
 			{path: 'edit', component: AddEditComponent, title: 'تعديل المذكرة', canDeactivate: [CanDeactivateGuard]},
 			{path: 'details', component: DetailsComponent, title: 'تفاصيل المذكرة'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
