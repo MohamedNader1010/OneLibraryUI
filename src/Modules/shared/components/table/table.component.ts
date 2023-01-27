@@ -9,7 +9,7 @@ import {Subscription} from 'rxjs';
 import {DialogComponent} from '../dialog/dialog.component';
 
 @Component({
-	selector: 'app-table[controllerName][dialogDisplayName][tableColumns][tableData]',
+	selector: 'app-table[controllerName][dialogDisplayName][tableColumns][tableData][dialogHeader]',
 	templateUrl: './table.component.html',
 	styleUrls: ['./table.component.css'],
 })
@@ -20,8 +20,10 @@ export class TableComponent implements OnInit, OnDestroy {
 	private paginator!: MatPaginator;
 	private sort!: MatSort;
 	@Output() OnDelete = new EventEmitter<any>();
+	@Output() OnView = new EventEmitter<any>();
 	@Input() dialogDisplayName!: string;
 	@Input() controllerName!: string;
+	@Input() dialogHeader!: string;
 	@Input() loading: any;
 	@Input() tableColumns: any;
 	@Input() canView: boolean = false;
@@ -53,15 +55,18 @@ export class TableComponent implements OnInit, OnDestroy {
 	};
 	HandleNew = () => this._router.navigate([`${this.controllerName}/new`]);
 	handleEdit = (row: any) => this._router.navigate([`${this.controllerName}/edit`], {queryParams: {id: row.id}});
-	handleView = (row: any) => this._router.navigate([`${this.controllerName}/details`], {queryParams: {id: row.id}});
+	// handleView = (row: any) => this._router.navigate([`${this.controllerName}/details`], {queryParams: {id: row.id}});
 	handleTransaction = (row: any) => this._router.navigate([`${this.controllerName}/transaction`], {queryParams: {id: row.id}});
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
 			this.dialog
-				.open(DialogComponent, {data: {location: 'controllerName', msg: `are you sure you want to delete "${row[this.dialogDisplayName]}"?`}})
+				.open(DialogComponent, {data: {location: this.dialogHeader, msg: `هل انت متاكد من حذف "${row[this.dialogDisplayName]}"؟`}})
 				.afterClosed()
 				.subscribe(() => this.OnDelete.emit(row.id))
 		);
+	};
+	handleView = (row: any) => {
+		this.OnView.emit(row.id);
 	};
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());

@@ -7,7 +7,7 @@
 		<mat-icon>add</mat-icon>
 	</button>
 </div>
-<mat-spinner *ngIf="loading" class="mx-auto mt-5"></mat-spinner>
+<mat-spinner *ngIf="loading" class="mx-auto mt-5" color="warn"></mat-spinner>
 <ng-container *ngIf="!loading">
 	<section class="example-container mat-elevation-z8" tabindex="0">
 		<table #matTable mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">

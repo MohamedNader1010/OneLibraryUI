@@ -8,22 +8,32 @@ auth =>
 -add role////////////////////////
 -refresh token///////////////////
 -revoke token////////////////////
+
+employees=>
+dto===>
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+
 client=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
--single//////////////////////////
+-all (front done) -service done
+-add (front done) -service done
+-edit (front done) -service done
+-delete (front done) -service done
+
 client type=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all (front done) -service done
+-add (front done) -service done
+-edit (front done) -service done
+-delete (front done) - error in cascading
+
 material=>
 -all (front done)
 -add (front done)
 -edit (front done)
 -delete (front done)
+
 note=>
 -all (front done)
 -all by teacher id (front done)
@@ -31,24 +41,28 @@ note=>
 -edit (front done)
 -delete (front done)
 -single//////////////////////////
+
 order=>
 -all (front done)
 -all by client id////////////////
 -all between dates///////////////
 -add (front done)
 -add transaction/////////////////
--single//////////////////////////
-service=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
--single//////////////////////////
+-single (front done)
+
+service=> 
+dto==>
+-all (front done) -service done
+-add (front done) -service done
+-edit (front done) -service done
+-delete (front done) -service done
+
 service type=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all (front done) - service done
+-add (front done) - service done
+-edit (front done) -service done
+-delete (front done) - error in cascading
+
 service price per client=>
 -all (front done)
 -add/////////////////////////////

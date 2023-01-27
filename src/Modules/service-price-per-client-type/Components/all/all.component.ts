@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 
 import {Subscription} from 'rxjs';
 import {ServicePricePerClientTypeService} from '../../API_Services/service-price-per-client-type.service';
@@ -12,7 +13,7 @@ import {ServicePricePerClientType} from './../../Interfaces/ServicePricePerClien
 	styleUrls: ['./all.component.css'],
 })
 export class AllComponent implements OnInit {
-	constructor(private _sp: ServicePricePerClientTypeService, public dialog: MatDialog) {}
+	constructor(private _sp: ServicePricePerClientTypeService, public dialog: MatDialog, private toastr: ToastrService) {}
 
 	ngOnInit(): void {
 		this.tableColumns = [
@@ -42,15 +43,23 @@ export class AllComponent implements OnInit {
 
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: any[];
 	loading!: boolean;
 
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
-			this._sp.getAll().subscribe((data: any) => {
-				this.tableData = data;
-				this.loading = false;
+			this._sp.getAll().subscribe({
+				next: (data) => {
+					this.tableData = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}
