@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
 import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
 import {ClientService} from '../../services/client.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
 	selector: 'app-add-edit',
@@ -18,11 +19,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	controllerName: string = 'clients';
 	isSubmitted: boolean = false;
 	ClientTypeDataSource: ClientType[] = [];
-	constructor(private router: Router, private route: ActivatedRoute, private _client: ClientService, private _clientType: ClientTypeService, private fb: FormBuilder) {
+	constructor(private router: Router, private toastr: ToastrService, private route: ActivatedRoute, private _client: ClientService, private _clientType: ClientTypeService, private fb: FormBuilder) {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
-			clientType: ['', [Validators.required]],
+			clientTypeId: ['', [Validators.required]],
 		});
 	}
 	get name(): FormControl {
@@ -31,13 +32,32 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get phone(): FormControl {
 		return this.Form.get('phoneNumber') as FormControl;
 	}
+	get clientTypeId(): FormControl {
+		return this.Form.get('clientTypeId') as FormControl;
+	}
 	ngOnInit(): void {
 		this.getAllClientTypes();
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
-	getAllClientTypes = () => this.subscriptions.push(this._clientType.getAll().subscribe({next: (data) => (this.ClientTypeDataSource = data)}));
-	getSingle = (id: number) => this.subscriptions.push(this._client.getOne(id).subscribe((data) => {}));
+	getAllClientTypes = () =>
+		this.subscriptions.push(
+			this._clientType.getAll().subscribe({
+				next: (data) => {
+					this.ClientTypeDataSource = data;
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				},
+			})
+		);
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._client.getOne(id).subscribe((data) => {
+				console.log(data[0]);
+				this.Form.patchValue(data[0]);
+			})
+		);
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

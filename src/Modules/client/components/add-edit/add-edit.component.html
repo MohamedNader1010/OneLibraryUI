@@ -1,6 +1,6 @@
-<h2 class="w-100 text-center" *ngIf="id; else update">تعديل العميل</h2>
+<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل العميل</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center">عميل جديد</h2>
+	<h2 class="w-100 text-center mt-3">عميل جديد</h2>
 </ng-template>
 <section class="container d-flex justify-content-center">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-50">
@@ -26,10 +26,10 @@
 			<div class="col">
 				<mat-form-field appearance="fill" class="w-100">
 					<mat-label>النوع</mat-label>
-					<mat-select formControlName="clientType">
+					<mat-select formControlName="clientTypeId">
 						<mat-option *ngFor="let type of ClientTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 					</mat-select>
-					<mat-error *ngIf="phone.errors?.['required']"> client type is <strong>required</strong> </mat-error>
+					<mat-error *ngIf="clientTypeId.errors?.['required']"> client type is <strong>required</strong> </mat-error>
 				</mat-form-field>
 			</div>
 		</div>

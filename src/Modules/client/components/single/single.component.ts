@@ -25,8 +25,8 @@ export class SingleComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.subscriptions.push(
 			this._client.getOne(this.id).subscribe({
-				next: (data: Client) => {
-					this.client = data;
+				next: (data) => {
+					this.client = data[0];
 				},
 				complete: () => (this.loading = false),
 			})

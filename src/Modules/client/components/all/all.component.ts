@@ -1,7 +1,9 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
+import {Client} from '../../interFaces/Iclient';
 import {ClientService} from './../../services/client.service';
+import {ToastrService} from 'ngx-toastr';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -10,10 +12,10 @@ import {ClientService} from './../../services/client.service';
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
-	tableData!: [];
+	tableData!: Client[];
 	loading!: boolean;
 
-	constructor(private _client: ClientService, public dialog: MatDialog) {}
+	constructor(private _client: ClientService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -34,7 +36,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			{
 				columnDef: 'type',
 				header: 'النوع',
-				cell: (element: any) => element.clientType?.name,
+				cell: (element: any) => element.clientType,
 			},
 		];
 		this.getAll();
@@ -44,10 +46,16 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.subscriptions.push(
 			this._client.getAll().subscribe({
-				next: (data: any) => {
+				next: (data) => {
 					this.tableData = data;
 				},
-				complete: () => (this.loading = false),
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.loading = false;
+				},
+				complete: () => {
+					this.loading = false;
+				},
 			})
 		);
 	}
