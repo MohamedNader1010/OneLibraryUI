@@ -9,6 +9,8 @@ import {ClientTypeService} from 'src/Modules/clientType/services/clientType.serv
 import {Client} from 'src/Modules/client/interFaces/Iclient';
 import {Note} from '../../interfaces/Inote';
 import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {Stage} from '../../interfaces/IStage';
+import {Term} from '../../interfaces/ITerm';
 
 @Component({
 	selector: 'app-add-edit',
@@ -22,8 +24,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	controllerName: string = 'notes';
 	isSubmitted: boolean = false;
 	NotesDataSource: Note[] = [];
-	TermsDataSource: any[] = [];
-	StagesDataSource: any[] = [];
+	TermsDataSource: Term[] = [];
+	StagesDataSource: Stage[] = [];
 	ClientsDataSource: Client[] = [];
 	ClientTypesDataSource: ClientType[] = [];
 	constructor(
@@ -37,17 +39,20 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	) {
 		this.Form = this.fb.group({
 			name: ['', [Validators.required]],
-			quantity: ['', [Validators.required]],
-			actualPrice: ['', [Validators.required]],
 			teacherPrice: ['', [Validators.required]],
-			finalPrice: ['', [Validators.required]],
 			clientId: ['', [Validators.required]],
 			termId: ['', [Validators.required]],
 			stageId: ['', [Validators.required]],
+			actualPrice: [{value: ''}],
+			originalPrice: [{value: '', disabled: true}],
+			earning: [{value: '', disabled: true}],
+			finalPrice: [{value: '', disabled: true}],
 		});
 	}
 	ngOnInit(): void {
 		this.getAllClientTypes();
+		this.getTerms();
+		this.getSTages();
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
@@ -86,6 +91,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		);
 	}
 	getSingle = (id: number) => this.subscriptions.push(this._note.getOne(id).subscribe((data) => this.Form.patchValue(data)));
+	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
+	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

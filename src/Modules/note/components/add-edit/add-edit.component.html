@@ -34,30 +34,36 @@
 			<div class="col-6">
 				<mat-form-field class="w-100">
 					<mat-label>أسم المذكرة</mat-label>
-					<input type="number" matInput formControlName="name" />
+					<input type="text" matInput formControlName="name" />
 				</mat-form-field>
 			</div>
 			<div class="col-6">
 				<mat-form-field class="w-100">
-					<mat-label>الكمية</mat-label>
-					<input type="number" matInput formControlName="quantity" />
+					<mat-label>هامش ربح المدرس</mat-label>
+					<input type="number" matInput formControlName="teacherPrice" />
 				</mat-form-field>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-4">
+			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>السعر الفعلي</mat-label>
 					<input type="number" matInput formControlName="actualPrice" />
 				</mat-form-field>
 			</div>
-			<div class="col-4">
+			<div class="col-3">
 				<mat-form-field class="w-100">
-					<mat-label>سعر المدرس</mat-label>
-					<input type="number" matInput formControlName="teacherPrice" />
+					<mat-label>السعر التكلفة</mat-label>
+					<input type="number" matInput formControlName="originalPrice" />
 				</mat-form-field>
 			</div>
-			<div class="col-4">
+			<div class="col-3">
+				<mat-form-field class="w-100">
+					<mat-label>هامش الربح</mat-label>
+					<input type="number" matInput formControlName="earning" />
+				</mat-form-field>
+			</div>
+			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>السعر النهائي</mat-label>
 					<input type="number" matInput formControlName="finalPrice" />
