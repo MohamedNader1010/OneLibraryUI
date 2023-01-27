@@ -11,8 +11,8 @@ export class EmployeeService {
 	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}Authorization/Users`;
 	getAll = () => this.http.get<Employee[]>(`${this.uri}`);
-	add = (employee: Employee) => this.http.post<Employee>(`${this.uri}`, employee, _HttpOptions);
-	update = (id: number, Employee: Employee) => this.http.put<Employee>(`${this.uri}?id=${id}`, {...Employee, id}, _HttpOptions);
+	add = (employee: Employee) => this.http.post<Employee>(`${this.uri}`, employee);
+	update = (id: number, Employee: Employee) => this.http.put<Employee>(`${this.uri}?id=${id}`, {...Employee, id});
 	getOne = (id: number) => this.http.get<Employee[]>(`${this.uri}?id=${id}`);
-	delete = (id: number) => this.http.delete<Employee>(`${this.uri}?id=${id}`, _HttpOptions);
+	delete = (id: number) => this.http.delete<Employee>(`${this.uri}?id=${id}`);
 }
