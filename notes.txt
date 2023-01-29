@@ -6,15 +6,15 @@ auth =>
 -login (front done)
 -register (front done)
 -add role////////////////////////
--refresh token///////////////////
+-refresh token done
 -revoke token////////////////////
 
 employees=>
 dto===>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all (front done) ->pinding connect with backend and test
+-add (front done) ->pinding connect with backend and test
+-edit (front done) ->pinding connect with backend and test
+-delete (front done) ->pinding connect with backend and test
 
 client=>
 -all (front done) -service done
@@ -26,29 +26,29 @@ client type=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
--delete (front done) - error in cascading
+-delete (front done) -service done
 
 material=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all (front done) -service done
+-add (front done) -service done
+-edit (front done) -service done
+-delete (front done) -service done
 
 note=>
--all (front done)
--all by teacher id (front done)
--add (front done)
--edit (front done)
+-all (front done) -service done ->pinding dto
+-all by teacher id (front done) //may be removed
+-add (front done) ->pinding connect with backend and test
+-edit (front done) ->pinding connect with backend and test
 -delete (front done)
 -single//////////////////////////
 
 order=>
--all (front done)
--all by client id////////////////
--all between dates///////////////
--add (front done)
+-all (front done) -service done
+-all by client id//////////////// //may be removed
+-all between dates/////////////// //may be removed
+-add (front done) ->pinding connect with backend and test
 -add transaction/////////////////
--single (front done)
+-single (front done) ->pinding connect with backend and test
 
 service=> 
 dto==>
@@ -61,19 +61,9 @@ service type=>
 -all (front done) - service done
 -add (front done) - service done
 -edit (front done) -service done
--delete (front done) - error in cascading
+-delete (front done) -service done
 
 service price per client=>
--all (front done)
--add/////////////////////////////
--edit////////////////////////////
--delete (front done)
-term=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
-stage=>
 -all (front done)
 -add (front done)
 -edit (front done)
