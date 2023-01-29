@@ -7,7 +7,7 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
 				<mat-label>نوع العميل</mat-label>
-				<mat-select (selectionChange)="changeClientType($event)">
+				<mat-select formControlName="clientTypeId" (selectionChange)="changeClientType($event)">
 					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
@@ -18,7 +18,7 @@
 				</mat-select>
 			</mat-form-field>
 			<div class="col-1">
-				<button type="button" mat-icon-button matTooltip="add" color="primary" aria-label="add order detail row" (click)="handleNewDetail()">
+				<button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>

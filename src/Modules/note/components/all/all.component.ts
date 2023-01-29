@@ -30,22 +30,17 @@ export class AllComponent implements OnInit, OnDestroy {
 			{
 				columnDef: 'teacher',
 				header: 'المدرس',
-				cell: (element: Note) => `${element.client.name}`,
+				cell: (element: Note) => `${element.client}`,
 			},
 			{
 				columnDef: 'term',
 				header: 'الترم',
-				cell: (element: Note) => `${element.term.name}`,
+				cell: (element: Note) => `${element.term}`,
 			},
 			{
 				columnDef: 'stage',
 				header: 'المرحلة',
-				cell: (element: Note) => `${element.stage.name}`,
-			},
-			{
-				columnDef: 'quantity',
-				header: 'الكمية',
-				cell: (element: Note) => `${element.quantity}`,
+				cell: (element: Note) => `${element.stage}`,
 			},
 			{
 				columnDef: 'actualPrice',
