@@ -11,7 +11,7 @@ export interface Note {
 	term: string;
 	stageId: number;
 	stage: string;
-	noteComponents: NoteComponent[];
+	// noteComponents: NoteComponent[];
 	originalPrice: string;
 	earning: string;
 }

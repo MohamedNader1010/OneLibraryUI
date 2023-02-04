@@ -84,8 +84,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		return formItem;
 	}
 	fillFormWithData(datasource: Note) {
-		console.log('datas', datasource.noteComponents);
-		datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
+		// datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
 		this.Form.patchValue(datasource);
 	}
 	get noteComponents(): FormArray {
@@ -135,7 +134,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	getSingle = (id: number) =>
 		this.subscriptions.push(
-			this._note.getOne(id).subscribe((data) => {
+			this._note.getOne(id).subscribe((data: any) => {
 				this.fillFormWithData(data);
 			})
 		);
