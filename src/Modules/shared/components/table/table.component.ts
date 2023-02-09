@@ -4,12 +4,12 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
-import {Router} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {DialogComponent} from '../dialog/dialog.component';
 
 @Component({
-	selector: 'app-table[controllerName][dialogDisplayName][tableColumns][tableData][dialogHeader]',
+	selector: 'app-table[dialogDisplayName][tableColumns][tableData][dialogHeader]',
 	templateUrl: './table.component.html',
 	styleUrls: ['./table.component.css'],
 })
@@ -20,9 +20,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	private paginator!: MatPaginator;
 	private sort!: MatSort;
 	@Output() OnDelete = new EventEmitter<any>();
-	@Output() OnView = new EventEmitter<any>();
 	@Input() dialogDisplayName!: string;
-	@Input() controllerName!: string;
 	@Input() dialogHeader!: string;
 	@Input() loading: any;
 	@Input() tableColumns: any;
@@ -45,7 +43,7 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.dataSource.sort = this.sort;
 	}
 	columns: any[] = [];
-	constructor(private _router: Router, public dialog: MatDialog) {}
+	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute) {}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
 	}
@@ -53,9 +51,10 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.dataSource.filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
 		if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
 	};
-	HandleNew = () => this._router.navigate([`${this.controllerName}/new`]);
-	handleEdit = (row: any) => this._router.navigate([`${this.controllerName}/edit`], {queryParams: {id: row.id}});
-	handleTransaction = (row: any) => this._router.navigate([`${this.controllerName}/transaction`], {queryParams: {id: row.id}});
+	HandleNew = () => this._router.navigate([`../new`], {relativeTo: this.route});
+	handleEdit = (row: any) => this._router.navigate([`../edit`], {queryParams: {id: row.id}, relativeTo: this.route});
+	handleView = (row: any) => this._router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
+	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
 			this.dialog
@@ -63,9 +62,6 @@ export class TableComponent implements OnInit, OnDestroy {
 				.afterClosed()
 				.subscribe(() => this.OnDelete.emit(row.id))
 		);
-	};
-	handleView = (row: any) => {
-		this.OnView.emit(row.id);
 	};
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());

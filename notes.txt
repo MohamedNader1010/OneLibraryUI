@@ -16,7 +16,7 @@ auth =>
 -register (front done)
 -login (front done)
 -add role////////////////////////
--refresh token///////////////////
+-refresh token done
 -revoke token////////////////////
 -confirm email //////////////////
 -forget password ////////////////
@@ -46,10 +46,10 @@ dto===>
 -change password (front done)
 
 material=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all (front done) -service done
+-add (front done) -service done
+-edit (front done) -service done
+-delete (front done) -service done
 
 note=>
 -all (front done)
@@ -89,7 +89,7 @@ service type=>
 -all (front done) - service done
 -add (front done) - service done
 -edit (front done) -service done
--delete (front done) - error in cascading
+-delete (front done) -service done
 
 term=>
 -all ////////////////////////////

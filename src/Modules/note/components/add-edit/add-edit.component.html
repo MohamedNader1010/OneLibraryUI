@@ -2,8 +2,8 @@
 <ng-template #update>
 	<h2 class="w-100 text-center mt-3">مذكرة جديدة</h2>
 </ng-template>
-<section class="container d-flex justify-content-center w-100">
-	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
+<section class="container">
+	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>نوع العميل</mat-label>
@@ -37,13 +37,45 @@
 					<input type="text" matInput formControlName="name" />
 				</mat-form-field>
 			</div>
-			<div class="col-6">
+			<div class="col-5">
 				<mat-form-field class="w-100">
 					<mat-label>هامش ربح المدرس</mat-label>
 					<input type="number" matInput formControlName="teacherPrice" />
 				</mat-form-field>
 			</div>
+			<div class="col-1">
+				<button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add note component row" (click)="handleNewNoteComponent()">
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
 		</div>
+		<!-- note components -->
+		<div formArrayName="noteComponents" *ngIf="noteComponents.controls.length">
+			<div class="row" *ngFor="let component of noteComponents.controls; let i = index">
+				<ng-container [formGroupName]="i">
+					<div class="col-6">
+						<mat-form-field appearance="fill" class="w-100">
+							<mat-label>الخدمات</mat-label>
+							<mat-select formControlName="serviceId">
+								<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{ service.name }}</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+					<div class="col-5">
+						<mat-form-field appearance="fill" class="w-100">
+							<mat-label>الكمية</mat-label>
+							<input type="number" matInput formControlName="quantity" />
+						</mat-form-field>
+					</div>
+					<div class="col-1">
+						<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteNoteComponent(i)">
+							<mat-icon>delete</mat-icon>
+						</button>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+		<!-- end note components -->
 		<div class="row">
 			<div class="col-3">
 				<mat-form-field class="w-100">

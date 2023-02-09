@@ -1,15 +1,17 @@
-import {Client} from 'src/Modules/client/interFaces/Iclient';
-import {Stage} from './IStage';
-import {Term} from './ITerm';
-
+import {NoteComponent} from './noteComponent';
 export interface Note {
 	id: number;
 	name: string;
-	quantity: number;
 	actualPrice: string;
 	teacherPrice: string;
 	finalPrice: string;
-	client: Client;
-	term: Term;
-	stage: Stage;
+	clientId: number;
+	client: string;
+	termId: number;
+	term: string;
+	stageId: number;
+	stage: string;
+	// noteComponents: NoteComponent[];
+	originalPrice: string;
+	earning: string;
 }
