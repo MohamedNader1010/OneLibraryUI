@@ -1,34 +1,38 @@
+we need to validate all finished work , 
+determine remaining parts,and finish them ASAP
+
 arabic text => done
-role management=>
-user profile(change password/update date/...)=>
-admin dashboard=>
+role management======================>
 
-attendance=>
--all by dates and id ////////////
--all by id //////////////////////
--all by dates ///////////////////
--check in ///////////////////////
--check out //////////////////////
--edit check /////////////////////
--add check //////////////////////
+admin dashboard======================>
 
-auth =>
+reports =============================>
+attendance===========================>
+-all by dates and id /////////////////////////////////
+-all by id ///////////////////////////////////////////
+-all by dates ////////////////////////////////////////
+-check in ////////////////////////////////////////////
+-check out ///////////////////////////////////////////
+-edit check //////////////////////////////////////////
+-add check ///////////////////////////////////////////
+
+auth ================================>
 -register (front done)
 -login (front done)
--add role////////////////////////
+-add role/////////////////////////////////////////////
 -refresh token done
--revoke token////////////////////
--confirm email //////////////////
--forget password ////////////////
--reset password /////////////////
+-revoke token/////////////////////////////////////////
+-confirm email ///////////////////////////////////////
+-forget password /////////////////////////////////////
+-reset password //////////////////////////////////////
 
 client=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
--get by id ////////////////////// 
--get by client type id //////////
+-get by id ///////////////////////////////////////////
+-get by client type id ///////////////////////////////
 
 client type=>
 -all (front done) -service done
@@ -36,8 +40,9 @@ client type=>
 -edit (front done) -service done
 -delete (front done) - service done
 
-employees=>
+employees===========================>
 dto===>
+user profile(change password/update data/...)=>
 -get by id (front done)
 -all (front done)
 -add (front done)
@@ -51,39 +56,39 @@ material=>
 -edit (front done) -service done
 -delete (front done) -service done
 
-note=>
+note=================================>
 -all (front done)
 -edit (front done)
 -delete (front done)
--get by id //////////////////////
+-get by id ///////////////////////////////////////////
 -all by teacher id (front done)
 -add (front done)
--get note components ////////////
+-get note components /////////////////////////////////
 
-order=>
+order=================================>
 -all (front done)
 -add (front done)
--add transaction/////////////////
--all by client id////////////////
--get by id //////////////////////
--all by dates////////////////////
--get order details //////////////
--update status //////////////////
+-add transaction//////////////////////////////////////
+-all by client id/////////////////////////////////////
+-get by id ///////////////////////////////////////////
+-all by dates/////////////////////////////////////////
+-get order details ///////////////////////////////////
+-update status ///////////////////////////////////////
 
-service=> 
+service================================> 
 dto==>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
--get by id //////////////////////
+-get by id ///////////////////////////////////////////
 
 service price per client=>
 -all (front done)
--add/////////////////////////////
--edit////////////////////////////
+-add//////////////////////////////////////////////////
+-edit/////////////////////////////////////////////////
 -delete (front done)
--get service price per client type /
+-get service price per client type ///////////////////
 
 service type=>
 -all (front done) - service done
@@ -92,7 +97,8 @@ service type=>
 -delete (front done) -service done
 
 term=>
--all ////////////////////////////
+-all /////////////////////////////////////////////////
+(if stage 3 remove term)========>
 
 stage=>
--all ////////////////////////////
+-all /////////////////////////////////////////////////
