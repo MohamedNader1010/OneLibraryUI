@@ -3,6 +3,8 @@
 	<mat-sidenav-container class="w-100 h-100" autosize>
 		<mat-sidenav #sidenav mode="side" position="end">
 			<p>Auto Resizing Side Nav</p>
+			<div id="print-section">hello world</div>
+			<button [printStyle]="{h1: {color: 'red'}, h2: {border: 'solid 1px'}}" printSectionId="print-section" ngxPrint>print</button>
 		</mat-sidenav>
 		<mat-sidenav-content class="h-100">
 			<router-outlet></router-outlet>

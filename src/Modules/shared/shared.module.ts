@@ -11,10 +11,11 @@ import {MatComponentsModule} from '../mat-components.Module/mat-components.modul
 import {AuthService} from '../authentication.Module/services/auth.service';
 import {TableComponent} from './components/table/table.component';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
 	declarations: [SharedComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
-	imports: [CommonModule, SharedRoutingModule, MatComponentsModule],
+	imports: [CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule],
 	exports: [TableComponent],
 	providers: [LoginGuard, AuthService],
 })
