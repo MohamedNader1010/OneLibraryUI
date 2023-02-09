@@ -2,31 +2,48 @@ arabic text => done
 role management=>
 user profile(change password/update date/...)=>
 admin dashboard=>
+
+attendance=>
+-all by dates and id ////////////
+-all by id //////////////////////
+-all by dates ///////////////////
+-check in ///////////////////////
+-check out //////////////////////
+-edit check /////////////////////
+-add check //////////////////////
+
 auth =>
--login (front done)
 -register (front done)
+-login (front done)
 -add role////////////////////////
 -refresh token///////////////////
 -revoke token////////////////////
-
-employees=>
-dto===>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-confirm email //////////////////
+-forget password ////////////////
+-reset password /////////////////
 
 client=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
+-get by id ////////////////////// 
+-get by client type id //////////
 
 client type=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
--delete (front done) - error in cascading
+-delete (front done) - service done
+
+employees=>
+dto===>
+-get by id (front done)
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+-change password (front done)
 
 material=>
 -all (front done)
@@ -36,19 +53,22 @@ material=>
 
 note=>
 -all (front done)
--all by teacher id (front done)
--add (front done)
 -edit (front done)
 -delete (front done)
--single//////////////////////////
+-get by id //////////////////////
+-all by teacher id (front done)
+-add (front done)
+-get note components ////////////
 
 order=>
 -all (front done)
--all by client id////////////////
--all between dates///////////////
 -add (front done)
 -add transaction/////////////////
--single (front done)
+-all by client id////////////////
+-get by id //////////////////////
+-all by dates////////////////////
+-get order details //////////////
+-update status //////////////////
 
 service=> 
 dto==>
@@ -56,6 +76,14 @@ dto==>
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
+-get by id //////////////////////
+
+service price per client=>
+-all (front done)
+-add/////////////////////////////
+-edit////////////////////////////
+-delete (front done)
+-get service price per client type /
 
 service type=>
 -all (front done) - service done
@@ -63,19 +91,8 @@ service type=>
 -edit (front done) -service done
 -delete (front done) - error in cascading
 
-service price per client=>
--all (front done)
--add/////////////////////////////
--edit////////////////////////////
--delete (front done)
 term=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
-stage=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all ////////////////////////////
 
+stage=>
+-all ////////////////////////////
