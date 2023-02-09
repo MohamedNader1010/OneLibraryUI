@@ -15,7 +15,7 @@ import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
 	declarations: [SharedComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
-	imports: [CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule],
+	imports: [LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule],
 	exports: [TableComponent],
 	providers: [LoginGuard, AuthService],
 })
