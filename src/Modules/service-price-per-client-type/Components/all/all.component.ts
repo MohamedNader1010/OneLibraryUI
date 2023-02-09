@@ -2,44 +2,44 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 
-import { Subscription } from "rxjs";
-import { ServicePricePerClientTypeService } from "../../API_Services/service-price-per-client-type.service";
+import {Subscription} from 'rxjs';
+import {ServicePricePerClientTypeService} from '../../API_Services/service-price-per-client-type.service';
 
-import { ServicePricePerClientType } from "./../../Interfaces/ServicePricePerClientType";
+import {ServicePricePerClientType} from './../../Interfaces/ServicePricePerClientType';
 
 @Component({
-  selector: "app-all",
-  templateUrl: "./all.component.html",
-  styleUrls: ["./all.component.css"],
+	selector: 'app-all',
+	templateUrl: './all.component.html',
+	styleUrls: ['./all.component.css'],
 })
 export class AllComponent implements OnInit {
 	constructor(private _sp: ServicePricePerClientTypeService, public dialog: MatDialog, private toastr: ToastrService) {}
 
-  ngOnInit(): void {
-    this.tableColumns = [
-      {
-        columnDef: "Id",
-        header: "#",
-        cell: (element: ServicePricePerClientType) => `${element.id}`,
-      },
-      {
-        columnDef: "Price",
-        header: "السعر",
-        cell: (element: ServicePricePerClientType) => `${element.price}`,
-      },
-      {
-        columnDef: "Service Name",
-        header: "الأسم",
-        cell: (element: ServicePricePerClientType) => `${element.serviceId}`,
-      },
-      {
-        columnDef: "Client Type",
-        header: "نوع العميل",
-        cell: (element: ServicePricePerClientType) => `${element.clientTypeId}`,
-      },
-    ];
-    this.getAll();
-  }
+	ngOnInit(): void {
+		this.tableColumns = [
+			{
+				columnDef: 'Id',
+				header: '#',
+				cell: (element: ServicePricePerClientType) => `${element.id}`,
+			},
+			{
+				columnDef: 'Price',
+				header: 'السعر',
+				cell: (element: ServicePricePerClientType) => `${element.price}`,
+			},
+			{
+				columnDef: 'Service Name',
+				header: 'الأسم',
+				cell: (element: ServicePricePerClientType) => `${element.serviceId}`,
+			},
+			{
+				columnDef: 'Client Type',
+				header: 'نوع العميل',
+				cell: (element: ServicePricePerClientType) => `${element.clientTypeId}`,
+			},
+		];
+		this.getAll();
+	}
 
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
@@ -65,7 +65,7 @@ export class AllComponent implements OnInit {
 	}
 	handleDelete = (id: number) => this.subscriptions.push(this._sp.delete(id).subscribe(() => this.getAll()));
 
-  ngOnDestroy() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
+	ngOnDestroy() {
+		this.subscriptions.forEach((s) => s.unsubscribe());
+	}
 }

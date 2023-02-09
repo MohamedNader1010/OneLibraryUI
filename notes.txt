@@ -76,7 +76,7 @@ order=================================>
 -update status ///////////////////////////////////////
 
 service================================> 
-dto==>
+dto====================================>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
@@ -84,6 +84,7 @@ dto==>
 -get by id ///////////////////////////////////////////
 
 service price per client=>
+dto=>
 -all (front done)
 -add//////////////////////////////////////////////////
 -edit/////////////////////////////////////////////////

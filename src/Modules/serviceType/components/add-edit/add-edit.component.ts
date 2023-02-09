@@ -18,7 +18,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	isSubmitted: boolean = false;
 	constructor(private router: Router, private route: ActivatedRoute, private _serviceType: ServicesTypeService, private fb: FormBuilder) {
 		this.Form = this.fb.group({
-			id: '',
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 		});
 	}
