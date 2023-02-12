@@ -2,9 +2,9 @@ import {NoteComponent} from './noteComponent';
 export interface Note {
 	id: number;
 	name: string;
-	actualPrice: string;
-	teacherPrice: string;
-	finalPrice: string;
+	actualPrice: number;
+	teacherPrice: number;
+	finalPrice: number;
 	clientId: number;
 	client: string;
 	clientTypeId: number;
@@ -14,7 +14,7 @@ export interface Note {
 	stageId: number;
 	stage: string;
 	noteComponents: NoteComponent[];
-	originalPrice: string;
-	earning: string;
+	originalPrice: number;
+	earning: number;
 	quantity: number;
 }
