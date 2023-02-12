@@ -11,7 +11,7 @@ export class ServicePricePerClientTypeService {
 
 	constructor(private _http: HttpClient) {}
 	add = (model: ServicePricePerClientType) => this._http.post(`${this.uri}`, model);
-	getOne = (id: number) => this._http.get<ServicePricePerClientType[]>(`${this.uri}?id=${id}`);
+	getOne = (id: number) => this._http.get<ServicePricePerClientType[]>(`${this.uri}GetById?id=${id}`);
 
 	getAll = () => this._http.get<ServicePricePerClientTypeService[]>(`${this.uri}`);
 
