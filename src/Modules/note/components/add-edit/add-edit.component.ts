@@ -82,8 +82,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					name: [null, [Validators.required]],
 					originalPrice: [{value: null, disabled: true}],
 					earning: [{value: null, disabled: true}],
-					actualPrice: [{value: null}],
-					teacherPrice: [null, [Validators.required]],
+					actualPrice: [{value: null, disabled: true}],
+					teacherPrice: [null, [Validators.required, Validators.min(0)]],
 					finalPrice: [{value: null, disabled: true}],
 					clientTypeId: [null],
 					clientId: [null, [Validators.required]],
@@ -100,6 +100,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					serviceId: [null, [Validators.required]],
 					quantity: [null, [Validators.required, Validators.min(1)]],
 					price: [{value: 0, disabled: true}],
+					originalPrice: [0],
 					totalPrice: [0],
 				});
 				break;
@@ -118,13 +119,25 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get clientId(): FormControl {
 		return this.Form.get('clientId') as FormControl;
 	}
+	get originalPrice(): FormControl {
+		return this.Form.get('originalPrice') as FormControl;
+	}
+	get teacherPrice(): FormControl {
+		return this.Form.get('teacherPrice') as FormControl;
+	}
 	get actualPrice(): FormControl {
 		return this.Form.get('actualPrice') as FormControl;
 	}
+	get earning(): FormControl {
+		return this.Form.get('earning') as FormControl;
+	}
+	get finalPrice(): FormControl {
+		return this.Form.get('finalPrice') as FormControl;
+	}
 	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
+	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
 	serviceTotalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('totalPrice') as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
-
 	changeClientType(data: any) {
 		this.subscriptions.push(
 			this._client.getAllByType(data.value).subscribe({
@@ -158,6 +171,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._servicePrice.getPrice(this.clientTypeId.value, data.value).subscribe({
 				next: (res: any) => {
+					console.log(res);
+					this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
 					this.servicePriceFormControl(index).setValue(res.price);
 					this.calculateActualPrice();
 				},
@@ -168,7 +183,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		);
 	}
 	handleServiceQuantityChange(data: any, index: number) {
-		console.log(456);
 		this.serviceQuantityFormControl(index)
 			.valueChanges.pipe(pairwise())
 			.subscribe(([prev, next]: [number, number]) => {});
@@ -176,20 +190,33 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	calculateActualPrice() {
 		let noteActualPrice = 0;
+		let noteoriginalPrice = 0;
+		//if no components
 		for (let index = 0; index < this.noteComponents.length; index++) {
+			if (!this.noteComponents.value[index].serviceId) continue;
 			this.subscriptions.push(
 				this._servicePrice.getPrice(this.clientTypeId.value, this.noteComponents.value[index].serviceId).subscribe({
 					next: (res: any) => {
 						this.servicePriceFormControl(index).setValue(res.price);
 						noteActualPrice += res.price * this.noteComponents.value[index].quantity;
+						this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
+						noteoriginalPrice += res.originalPrice * this.noteComponents.value[index].quantity;
 					},
 					error: (e) => {
 						this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
 					},
-					complete: () => this.actualPrice.setValue(noteActualPrice),
+					complete: () => {
+						this.originalPrice.setValue(noteoriginalPrice);
+						this.actualPrice.setValue(noteActualPrice);
+						this.earning.setValue(noteActualPrice - noteoriginalPrice);
+						this.finalPrice.setValue(this.actualPrice.value + this.teacherPrice.value);
+					},
 				})
 			);
 		}
+	}
+	handleTeacherPriceChange(data: any) {
+		this.finalPrice.setValue(this.actualPrice.value + data.target.value);
 	}
 	filterClientss = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
 	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
