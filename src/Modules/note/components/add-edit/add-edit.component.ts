@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {map, Observable, startWith, Subscription} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {ToastrService} from 'ngx-toastr';
 import {ClientService} from 'src/Modules/client/services/client.service';
@@ -30,8 +30,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	TermsDataSource: Term[] = [];
 	StagesDataSource: Stage[] = [];
 	ClientsDataSource: Client[] = [];
-	ClientTypesDataSource: ClientType[] = [];
+	ClientTypesDataSource: any[] = [];
 	ServicesDataSource: Service[] = [];
+	clientsFilteredOptions!: Observable<Client[]>;
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -55,36 +56,55 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				if (this.id) this.getSingle(this.id);
 			})
 		);
+		this.clientsFilteredOptions = this.clientId.valueChanges.pipe(
+			startWith(''),
+			map((value) => {
+				let filtered = [];
+				let name;
+				if (typeof value === 'string') name = value;
+				if (name) {
+					filtered = this.filterClientss(name as string);
+					if (filtered.length) return filtered;
+					else {
+						this.clientId.setErrors({notFound: true});
+						return this.ClientsDataSource.slice();
+					}
+				} else return [];
+			})
+		);
 	}
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
 		switch (type) {
 			case 'init':
 				formItem = this.fb.group({
-					name: ['', [Validators.required]],
-					originalPrice: [{value: '', disabled: true}],
-					earning: [{value: '', disabled: true}],
-					actualPrice: [{value: ''}],
-					teacherPrice: ['', [Validators.required]],
-					finalPrice: [{value: '', disabled: true}],
-					clientTypeId: [''], ///////////////////////////////
-					clientId: ['', [Validators.required]],
-					termId: ['', [Validators.required]],
-					stageId: ['', [Validators.required]],
+					name: [null, [Validators.required]],
+					originalPrice: [{value: null, disabled: true}],
+					earning: [{value: null, disabled: true}],
+					actualPrice: [{value: null}],
+					teacherPrice: [null, [Validators.required]],
+					finalPrice: [{value: null, disabled: true}],
+					clientTypeId: [null],
+					clientId: [null, [Validators.required]],
+					termId: [null, [Validators.required]],
+					stageId: [null, [Validators.required]],
 					noteComponents: this.fb.array([]),
+					quantity: [0],
 				});
 				break;
 			case 'noteComponent':
 				formItem = this.fb.group({
-					serviceId: ['', [Validators.required]],
-					quantity: ['', [Validators.required]],
+					serviceId: [null, [Validators.required]],
+					quantity: [null, [Validators.required]],
+					price: [null],
+					totalPrice: [null],
 				});
 				break;
 		}
 		return formItem;
 	}
 	fillFormWithData(datasource: Note) {
-		// datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
+		datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
 		this.Form.patchValue(datasource);
 	}
 	get noteComponents(): FormArray {
@@ -92,6 +112,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	get clientTypeId(): FormControl {
 		return this.Form.get('clientTypeId') as FormControl;
+	}
+	get clientId(): FormControl {
+		return this.Form.get('clientId') as FormControl;
 	}
 	changeClientType(data: any) {
 		this.getAllClientsByType(data.value);
@@ -112,7 +135,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._clientType.getAll().subscribe({
 				next: (data) => {
-					this.ClientTypesDataSource = data;
+					this.ClientTypesDataSource = data.map((t) => {
+						return {clientTypeId: t.id, name: t.name};
+					});
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
@@ -120,6 +145,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
+	filterClientss = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
+	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
 	getAllServices() {
 		this.subscriptions.push(
 			this._service.getAll().subscribe({
@@ -142,7 +169,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewNoteComponent = () => {
-		console.log('handle');
 		this.noteComponents.push(this.createFormItem('noteComponent'));
 	};
 	handleDeleteNoteComponent = (index: number) => this.noteComponents.removeAt(index);

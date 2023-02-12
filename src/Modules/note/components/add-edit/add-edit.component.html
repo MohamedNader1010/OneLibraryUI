@@ -7,15 +7,19 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>نوع العميل</mat-label>
-				<mat-select (selectionChange)="changeClientType($event)">
-					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+				<mat-select (selectionChange)="changeClientType($event)" formControlName="clientTypeId">
+					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.clientTypeId">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
+
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>الأسم</mat-label>
-				<mat-select formControlName="clientId">
-					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-				</mat-select>
+				<input type="text" matInput formControlName="clientId" [matAutocomplete]="clientAuto" />
+				<mat-autocomplete #clientAuto="matAutocomplete" [displayWith]="clientDisplayFn">
+					<mat-option *ngFor="let option of clientsFilteredOptions | async" [value]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</mat-autocomplete>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>المرحلة</mat-label>
@@ -37,10 +41,16 @@
 					<input type="text" matInput formControlName="name" />
 				</mat-form-field>
 			</div>
-			<div class="col-5">
+			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>هامش ربح المدرس</mat-label>
 					<input type="number" matInput formControlName="teacherPrice" />
+				</mat-form-field>
+			</div>
+			<div class="col-2">
+				<mat-form-field class="w-100">
+					<mat-label>الكمية</mat-label>
+					<input type="number" matInput formControlName="quantity" />
 				</mat-form-field>
 			</div>
 			<div class="col-1">
