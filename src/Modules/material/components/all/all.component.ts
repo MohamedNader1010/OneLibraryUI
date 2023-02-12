@@ -29,9 +29,9 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Material) => element.name,
 			},
 			{
-				columnDef: 'originalPrice',
+				columnDef: 'price',
 				header: 'سعر الجملة',
-				cell: (element: Material) => element.originalPrice,
+				cell: (element: Material) => element.price,
 			},
 			{
 				columnDef: 'CurrentQty',
