@@ -18,4 +18,5 @@ export class ServicePricePerClientTypeService {
 	delete = (id: number) => this._http.delete<ServicePricePerClientTypeService>(`${this.uri}?Id=${id}`);
 
 	update = (id: number, model: ServicePricePerClientType) => this._http.put<ServicePricePerClientType>(`${this.uri}?Id=${id}`, {...model, id});
+	getPrice = (clientTypeId: number, serviceId: number) => this._http.get(`${this.uri}GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 }

@@ -1,19 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
-import {map, Observable, startWith, Subscription} from 'rxjs';
+import {map, Observable, pairwise, startWith, Subscription} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {ToastrService} from 'ngx-toastr';
 import {ClientService} from 'src/Modules/client/services/client.service';
 import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
 import {Client} from 'src/Modules/client/interFaces/Iclient';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
 import {Stage} from '../../interfaces/IStage';
 import {Term} from '../../interfaces/ITerm';
 import {NoteComponent} from '../../interfaces/noteComponent';
 import {Service} from 'src/Modules/service/interfaces/Iservice';
 import {ServicesService} from 'src/Modules/service/services/services.service';
-import {Note} from '../../interfaces/Inote';
+import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
 
 @Component({
 	selector: 'app-add-edit',
@@ -41,7 +40,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		private toastr: ToastrService,
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
-		private _service: ServicesService
+		private _service: ServicesService,
+		private _servicePrice: ServicePricePerClientTypeService
 	) {
 		this.Form = this.createFormItem('init');
 	}
@@ -98,17 +98,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					id: [0],
 					noteId: [this.noteId.value],
 					serviceId: [null, [Validators.required]],
-					quantity: [null, [Validators.required]],
-					price: [null],
-					totalPrice: [null],
+					quantity: [null, [Validators.required, Validators.min(1)]],
+					price: [{value: 0, disabled: true}],
+					totalPrice: [0],
 				});
 				break;
 		}
 		return formItem;
-	}
-	fillFormWithData(datasource: Note) {
-		datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
-		this.Form.patchValue(datasource);
 	}
 	get noteId(): FormControl {
 		return this.Form.get('id') as FormControl;
@@ -122,18 +118,24 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get clientId(): FormControl {
 		return this.Form.get('clientId') as FormControl;
 	}
-	changeClientType(data: any) {
-		this.getAllClientsByType(data.value);
+	get actualPrice(): FormControl {
+		return this.Form.get('actualPrice') as FormControl;
 	}
-	getAllClientsByType(id: number) {
+	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
+	serviceTotalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('totalPrice') as FormControl;
+	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
+
+	changeClientType(data: any) {
 		this.subscriptions.push(
-			this._client.getAllByType(id).subscribe({
+			this._client.getAllByType(data.value).subscribe({
 				next: (data) => {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
 				},
+				//loop over all services and get new prices
+				complete: () => this.calculateActualPrice(),
 			})
 		);
 	}
@@ -150,6 +152,44 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				},
 			})
 		);
+	}
+	handleServicePriceChange(data: any, index: number) {
+		console.log(123);
+		this.subscriptions.push(
+			this._servicePrice.getPrice(this.clientTypeId.value, data.value).subscribe({
+				next: (res: any) => {
+					this.servicePriceFormControl(index).setValue(res.price);
+					this.calculateActualPrice();
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
+				},
+			})
+		);
+	}
+	handleServiceQuantityChange(data: any, index: number) {
+		console.log(456);
+		this.serviceQuantityFormControl(index)
+			.valueChanges.pipe(pairwise())
+			.subscribe(([prev, next]: [number, number]) => {});
+		this.calculateActualPrice();
+	}
+	calculateActualPrice() {
+		let noteActualPrice = 0;
+		for (let index = 0; index < this.noteComponents.length; index++) {
+			this.subscriptions.push(
+				this._servicePrice.getPrice(this.clientTypeId.value, this.noteComponents.value[index].serviceId).subscribe({
+					next: (res: any) => {
+						this.servicePriceFormControl(index).setValue(res.price);
+						noteActualPrice += res.price * this.noteComponents.value[index].quantity;
+					},
+					error: (e) => {
+						this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
+					},
+					complete: () => this.actualPrice.setValue(noteActualPrice),
+				})
+			);
+		}
 	}
 	filterClientss = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
 	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
@@ -168,7 +208,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	getSingle = (id: number) =>
 		this.subscriptions.push(
 			this._note.getOne(id).subscribe((data: any) => {
-				this.fillFormWithData(data);
+				data.noteComponents.forEach(() => {
+					this.handleNewNoteComponent();
+				});
+				this.Form.patchValue(data);
+				this.calculateActualPrice();
 			})
 		);
 	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
@@ -177,7 +221,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	handleNewNoteComponent = () => {
 		this.noteComponents.push(this.createFormItem('noteComponent'));
 	};
-	handleDeleteNoteComponent = (index: number) => this.noteComponents.removeAt(index);
+	handleDeleteNoteComponent = (index: number) => {
+		this.noteComponents.removeAt(index);
+		this.calculateActualPrice();
+	};
 	handleSubmit() {
 		if (this.Form.valid) {
 			console.log(this.Form.value);
