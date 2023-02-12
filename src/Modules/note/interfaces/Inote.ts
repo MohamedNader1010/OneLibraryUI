@@ -7,11 +7,14 @@ export interface Note {
 	finalPrice: string;
 	clientId: number;
 	client: string;
+	clientTypeId: number;
+	clientType: string;
 	termId: number;
 	term: string;
 	stageId: number;
 	stage: string;
-	// noteComponents: NoteComponent[];
+	noteComponents: NoteComponent[];
 	originalPrice: string;
 	earning: string;
+	quantity: number;
 }
