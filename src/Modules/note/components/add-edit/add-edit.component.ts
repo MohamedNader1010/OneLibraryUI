@@ -78,6 +78,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		switch (type) {
 			case 'init':
 				formItem = this.fb.group({
+					id: [0],
 					name: [null, [Validators.required]],
 					originalPrice: [{value: null, disabled: true}],
 					earning: [{value: null, disabled: true}],
@@ -94,6 +95,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				break;
 			case 'noteComponent':
 				formItem = this.fb.group({
+					id: [0],
+					noteId: [this.noteId.value],
 					serviceId: [null, [Validators.required]],
 					quantity: [null, [Validators.required]],
 					price: [null],
@@ -106,6 +109,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	fillFormWithData(datasource: Note) {
 		datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
 		this.Form.patchValue(datasource);
+	}
+	get noteId(): FormControl {
+		return this.Form.get('id') as FormControl;
 	}
 	get noteComponents(): FormArray {
 		return this.Form.get('noteComponents') as FormArray;
@@ -177,19 +183,21 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			console.log(this.Form.value);
 			if (this.id)
 				this.subscriptions.push(
-					this._note.update(this.id, this.Form.value).subscribe(() => {
-						this.isSubmitted = true;
-						this.back();
+					this._note.update(this.id, this.Form.value).subscribe({
+						next: () => {
+							this.isSubmitted = true;
+							this.back();
+						},
+						error: (e) => console.log(e),
 					})
 				);
-			else
-				this.subscriptions.push(
-					this._note.add(this.Form.value).subscribe(() => {
-						this.isSubmitted = true;
-						this.back();
-					})
-				);
-		}
+		} else
+			this.subscriptions.push(
+				this._note.add(this.Form.value).subscribe(() => {
+					this.isSubmitted = true;
+					this.back();
+				})
+			);
 	}
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
