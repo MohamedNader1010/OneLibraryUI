@@ -49,14 +49,29 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Note) => `${element.actualPrice}`,
 			},
 			{
+				columnDef: 'originalPrice',
+				header: 'سعر التكلفة',
+				cell: (element: Note) => `${element.originalPrice}`,
+			},
+			{
+				columnDef: 'earning',
+				header: 'الربح',
+				cell: (element: Note) => `${element.earning}`,
+			},
+			{
 				columnDef: 'teacherPrice',
-				header: 'سعر المدرس',
+				header: 'ربح المدرس',
 				cell: (element: Note) => `${element.teacherPrice}`,
 			},
 			{
 				columnDef: 'finalPrice',
 				header: 'السعر النهائي',
 				cell: (element: Note) => `${element.finalPrice}`,
+			},
+			{
+				columnDef: 'quantity',
+				header: 'الكمية',
+				cell: (element: Note) => `${element.quantity}`,
 			},
 		];
 		this.getAll();
@@ -66,6 +81,7 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._note.getAll().subscribe({
 				next: (data) => {
+					console.log(data);
 					this.tableData = data;
 				},
 				error: (e) => {

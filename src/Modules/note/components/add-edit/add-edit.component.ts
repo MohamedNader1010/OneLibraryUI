@@ -21,6 +21,7 @@ import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-cl
 })
 export class AddEditComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
+	loading: boolean = false;
 	Form: FormGroup;
 	id!: number;
 	controllerName: string = 'notes';
@@ -80,11 +81,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				formItem = this.fb.group({
 					id: [0],
 					name: [null, [Validators.required]],
-					originalPrice: [{value: null, disabled: true}],
-					earning: [{value: null, disabled: true}],
-					actualPrice: [{value: null, disabled: true}],
+					originalPrice: [{value: null}],
+					earning: [{value: null}],
+					actualPrice: [{value: null}],
 					teacherPrice: [null, [Validators.required, Validators.min(0)]],
-					finalPrice: [{value: null, disabled: true}],
+					finalPrice: [{value: null}],
 					clientTypeId: [null],
 					clientId: [null, [Validators.required]],
 					termId: [null, [Validators.required]],
@@ -192,27 +193,34 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		let noteActualPrice = 0;
 		let noteoriginalPrice = 0;
 		//if no components
-		for (let index = 0; index < this.noteComponents.length; index++) {
-			if (!this.noteComponents.value[index].serviceId) continue;
-			this.subscriptions.push(
-				this._servicePrice.getPrice(this.clientTypeId.value, this.noteComponents.value[index].serviceId).subscribe({
-					next: (res: any) => {
-						this.servicePriceFormControl(index).setValue(res.price);
-						noteActualPrice += res.price * this.noteComponents.value[index].quantity;
-						this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-						noteoriginalPrice += res.originalPrice * this.noteComponents.value[index].quantity;
-					},
-					error: (e) => {
-						this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
-					},
-					complete: () => {
-						this.originalPrice.setValue(noteoriginalPrice);
-						this.actualPrice.setValue(noteActualPrice);
-						this.earning.setValue(noteActualPrice - noteoriginalPrice);
-						this.finalPrice.setValue(this.actualPrice.value + this.teacherPrice.value);
-					},
-				})
-			);
+		if (!this.noteComponents.length) {
+			this.originalPrice.setValue(null);
+			this.actualPrice.setValue(null);
+			this.earning.setValue(null);
+			this.finalPrice.setValue(null);
+		} else {
+			for (let index = 0; index < this.noteComponents.length; index++) {
+				if (!this.noteComponents.value[index].serviceId) continue;
+				this.subscriptions.push(
+					this._servicePrice.getPrice(this.clientTypeId.value, this.noteComponents.value[index].serviceId).subscribe({
+						next: (res: any) => {
+							this.servicePriceFormControl(index).setValue(res.price);
+							noteActualPrice += res.price * this.noteComponents.value[index].quantity;
+							this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
+							noteoriginalPrice += res.originalPrice * this.noteComponents.value[index].quantity;
+						},
+						error: (e) => {
+							this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
+						},
+						complete: () => {
+							this.originalPrice.setValue(noteoriginalPrice);
+							this.actualPrice.setValue(noteActualPrice);
+							this.earning.setValue(noteActualPrice - noteoriginalPrice);
+							this.finalPrice.setValue(parseFloat(this.actualPrice.value) + parseFloat(this.teacherPrice.value));
+						},
+					})
+				);
+			}
 		}
 	}
 	handleTeacherPriceChange(data: any) {
@@ -254,7 +262,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	};
 	handleSubmit() {
 		if (this.Form.valid) {
-			console.log(this.Form.value);
+			this.loading = true;
 			if (this.id)
 				this.subscriptions.push(
 					this._note.update(this.id, this.Form.value).subscribe({
@@ -263,15 +271,21 @@ export class AddEditComponent implements OnInit, OnDestroy {
 							this.back();
 						},
 						error: (e) => console.log(e),
+						complete: () => (this.loading = false),
 					})
 				);
-		} else
-			this.subscriptions.push(
-				this._note.add(this.Form.value).subscribe(() => {
-					this.isSubmitted = true;
-					this.back();
-				})
-			);
+			else
+				this.subscriptions.push(
+					this._note.add(this.Form.value).subscribe({
+						next: () => {
+							this.isSubmitted = true;
+							this.back();
+						},
+						error: (e) => console.log(e),
+						complete: () => (this.loading = false),
+					})
+				);
+		}
 	}
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
