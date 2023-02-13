@@ -24,9 +24,10 @@
 				<mat-error *ngIf="password.errors?.['required']"> Password is <strong>required</strong> </mat-error>
 			</mat-form-field>
 		</mat-card-content>
-		<mat-card-actions align="end">
-			<button type="button" mat-button color="basic" (click)="handleRegister()">حساب جديد</button>
+
+		<mat-card-actions align="start" class="justify-content-between">
 			<button mat-flat-button color="warn" [disabled]="!loginForm.valid">تسجيل الدخول</button>
+			<a color="basic" routerLink="" class="nav-link">نسيت كلمة السر؟</a>
 		</mat-card-actions>
 		<!-- <mat-card-footer>
 			<mat-progress-bar mode="query"></mat-progress-bar>

@@ -15,6 +15,7 @@ table {
 .mat-column-id {
 	width: 100px;
 	text-align: right;
+	white-space: nowrap;
 }
 .mat-column-actions {
 	width: 250px;

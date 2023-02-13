@@ -5,11 +5,49 @@
 <section class="container d-flex justify-content-center">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-50">
 		<div class="row">
+			<div class="col-6">
+				<mat-form-field class="w-100">
+					<mat-label>الأسم الأول</mat-label>
+					<input matInput formControlName="firstName" />
+					<mat-error *ngIf="firstName.errors?.['required']">يجب إدخال الأسم الأول</mat-error>
+					<mat-error *ngIf="firstName.errors?.['maxlength']">غير مسموح بأكثر من 50 حرف</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="col-6">
+				<mat-form-field class="w-100">
+					<mat-label>الأسم الأخير</mat-label>
+					<input matInput formControlName="lastName" />
+					<mat-error *ngIf="lastName.errors?.['required']">يجب إدخال الأسم الأخير</mat-error>
+					<mat-error *ngIf="lastName.errors?.['maxlength']">غير مسموح بأكثر من 50 حرف</mat-error>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6">
+				<mat-form-field class="w-100">
+					<mat-label>أسم المستخدم</mat-label>
+					<input matInput formControlName="userName" />
+					<mat-hint>مسموح فقط بالارقام و الاحرف الانجليزية</mat-hint>
+					<mat-error *ngIf="userName.errors?.['required']">يجب إدخال أسم المستخدم</mat-error>
+					<mat-error *ngIf="userName.errors?.['maxlength']">غير مسموح بأكثر من 50 حرف</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="col-6">
+				<mat-form-field class="w-100">
+					<mat-label>رقم التليفون</mat-label>
+					<input matInput formControlName="phoneNumber" />
+					<mat-error *ngIf="phoneNumber.errors?.['required']">يجب إدخال رقم التليفون</mat-error>
+					<mat-error *ngIf="phoneNumber.errors?.['pattern']">رقم التليفون غير صحيح</mat-error>
+				</mat-form-field>
+			</div>
+		</div>
+		<div class="row">
 			<div class="col">
 				<mat-form-field class="w-100">
-					<mat-label>الأسم</mat-label>
-					<input matInput formControlName="name" />
-					<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
+					<mat-label>البريد الالكتروني</mat-label>
+					<input matInput formControlName="email" />
+					<mat-error *ngIf="email.errors?.['required']">يجب إدخال البريد الألكتروني</mat-error>
+					<mat-error *ngIf="email.errors?.['email']||email.errors?.['pattern']">البريد الألكتروني غير صحيح</mat-error>
 				</mat-form-field>
 			</div>
 		</div>

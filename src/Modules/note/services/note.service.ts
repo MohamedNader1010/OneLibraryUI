@@ -16,8 +16,9 @@ export class NoteService {
 	getAll = () => this.http.get<Note[]>(`${this.uri}`);
 	update = (id: number, note: Note) => this.http.put<Note>(`${this.uri}?Id=${id}`, {...note, id});
 	delete = (id: number) => this.http.delete<Note>(`${this.uri}?Id=${id}`);
-	getOne = (id: number) => this.http.get(`${this.uri}GetNotesById?Id=${id}`);
+	getOne = (id: number) => this.http.get<Note>(`${this.uri}GetNotesById?Id=${id}`);
 	getOneByTeacher = (id: number) => this.http.get<Note>(`${this.uri}GetNotesByTeacherId?Id=${id}`);
 	add = (note: Note) => this.http.post<Note>(`${this.uri}AddNote`, note);
 	getNoteCompnents = (id: number) => this.http.get(`${this.uri}GetNoteComponent?id=${id}`);
+	deleteNoteComponents = (ids: number[]) => this.http.delete(`${this.uri}DeleteNoteComponent`, {body: ids});
 }

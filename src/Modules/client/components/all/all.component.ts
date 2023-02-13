@@ -30,7 +30,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			},
 			{
 				columnDef: 'PhoneNumber',
-				header: 'رقم التلفون',
+				header: 'رقم التليفون',
 				cell: (element: any) => element.phoneNumber,
 			},
 			{

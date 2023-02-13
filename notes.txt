@@ -1,32 +1,54 @@
-arabic text => done
-role management=>
-user profile(change password/update date/...)=>
-admin dashboard=>
-auth =>
--login (front done)
--register (front done)
--add role////////////////////////
--refresh token done
--revoke token////////////////////
+we need to validate all finished work , 
+determine remaining parts,and finish them ASAP
 
-employees=>
-dto===>
--all (front done) ->pinding connect with backend and test
--add (front done) ->pinding connect with backend and test
--edit (front done) ->pinding connect with backend and test
--delete (front done) ->pinding connect with backend and test
+arabic text => done
+role management======================>
+
+admin dashboard======================>
+
+reports =============================>
+attendance===========================>
+-all by dates and id /////////////////////////////////
+-all by id ///////////////////////////////////////////
+-all by dates ////////////////////////////////////////
+-check in ////////////////////////////////////////////
+-check out ///////////////////////////////////////////
+-edit check //////////////////////////////////////////
+-add check ///////////////////////////////////////////
+
+auth ================================>
+-register (front done)
+-login (front done)
+-add role/////////////////////////////////////////////
+-refresh token done
+-revoke token/////////////////////////////////////////
+-confirm email ///////////////////////////////////////
+-forget password /////////////////////////////////////
+-reset password //////////////////////////////////////
 
 client=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
+-get by id ///////////////////////////////////////////
+-get by client type id ///////////////////////////////
 
 client type=>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
--delete (front done) -service done
+-delete (front done) - service done
+
+employees===========================>
+dto===>
+user profile(change password/update data/...)=>
+-get by id (front done)
+-all (front done)
+-add (front done)
+-edit (front done)
+-delete (front done)
+-change password (front done)
 
 material=>
 -all (front done) -service done
@@ -34,28 +56,40 @@ material=>
 -edit (front done) -service done
 -delete (front done) -service done
 
-note=>
--all (front done) -service done ->pinding dto
--all by teacher id (front done) //may be removed
--add (front done) ->pinding connect with backend and test
--edit (front done) ->pinding connect with backend and test
+note=================================>
+-all (front done)
+-edit (front done)
 -delete (front done)
--single//////////////////////////
+-get by id ///////////////////////////////////////////
+-all by teacher id (front done)
+-add (front done)
+-get note components /////////////////////////////////
 
-order=>
--all (front done) -service done
--all by client id//////////////// //may be removed
--all between dates/////////////// //may be removed
--add (front done) ->pinding connect with backend and test
--add transaction/////////////////
--single (front done) ->pinding connect with backend and test
+order=================================>
+-all (front done)
+-add (front done)
+-add transaction//////////////////////////////////////
+-all by client id/////////////////////////////////////
+-get by id ///////////////////////////////////////////
+-all by dates/////////////////////////////////////////
+-get order details ///////////////////////////////////
+-update status ///////////////////////////////////////
 
-service=> 
-dto==>
+service================================> 
+dto====================================>
 -all (front done) -service done
 -add (front done) -service done
 -edit (front done) -service done
 -delete (front done) -service done
+-get by id ///////////////////////////////////////////
+
+service price per client=>
+dto=>
+-all (front done)
+-add//////////////////////////////////////////////////
+-edit/////////////////////////////////////////////////
+-delete (front done)
+-get service price per client type ///////////////////
 
 service type=>
 -all (front done) - service done
@@ -63,9 +97,9 @@ service type=>
 -edit (front done) -service done
 -delete (front done) -service done
 
-service price per client=>
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+term=>
+-all /////////////////////////////////////////////////
+(if stage 3 remove term)========>
 
+stage=>
+-all /////////////////////////////////////////////////

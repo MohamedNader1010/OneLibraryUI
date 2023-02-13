@@ -7,15 +7,18 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>نوع العميل</mat-label>
-				<mat-select (selectionChange)="changeClientType($event)">
-					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+				<mat-select (selectionChange)="changeClientType($event)" formControlName="clientTypeId">
+					<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.clientTypeId">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>الأسم</mat-label>
-				<mat-select formControlName="clientId">
-					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-				</mat-select>
+				<input type="text" matInput formControlName="clientId" [matAutocomplete]="clientAuto" />
+				<mat-autocomplete #clientAuto="matAutocomplete" [displayWith]="clientDisplayFn">
+					<mat-option *ngFor="let option of clientsFilteredOptions | async" [value]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</mat-autocomplete>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>المرحلة</mat-label>
@@ -37,10 +40,16 @@
 					<input type="text" matInput formControlName="name" />
 				</mat-form-field>
 			</div>
-			<div class="col-5">
+			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>هامش ربح المدرس</mat-label>
-					<input type="number" matInput formControlName="teacherPrice" />
+					<input type="number" matInput formControlName="teacherPrice" (change)="handleTeacherPriceChange($event)" />
+				</mat-form-field>
+			</div>
+			<div class="col-2">
+				<mat-form-field class="w-100">
+					<mat-label>الكمية</mat-label>
+					<input type="number" matInput formControlName="quantity" />
 				</mat-form-field>
 			</div>
 			<div class="col-1">
@@ -56,15 +65,21 @@
 					<div class="col-6">
 						<mat-form-field appearance="fill" class="w-100">
 							<mat-label>الخدمات</mat-label>
-							<mat-select formControlName="serviceId">
+							<mat-select formControlName="serviceId" (selectionChange)="handleServicePriceChange($event, i)">
 								<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{ service.name }}</mat-option>
 							</mat-select>
 						</mat-form-field>
 					</div>
-					<div class="col-5">
+					<div class="col-3">
+						<mat-form-field appearance="fill" class="w-100">
+							<mat-label>السعر</mat-label>
+							<input type="number" matInput formControlName="price" />
+						</mat-form-field>
+					</div>
+					<div class="col-2">
 						<mat-form-field appearance="fill" class="w-100">
 							<mat-label>الكمية</mat-label>
-							<input type="number" matInput formControlName="quantity" />
+							<input type="number" matInput formControlName="quantity" (change)="handleServiceQuantityChange($event, i)" />
 						</mat-form-field>
 					</div>
 					<div class="col-1">
@@ -80,31 +95,31 @@
 			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>السعر الفعلي</mat-label>
-					<input type="number" matInput formControlName="actualPrice" />
+					<input type="number" matInput [readonly]="true" formControlName="actualPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>السعر التكلفة</mat-label>
-					<input type="number" matInput formControlName="originalPrice" />
+					<input type="number" matInput [readonly]="true" formControlName="originalPrice" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>هامش الربح</mat-label>
-					<input type="number" matInput formControlName="earning" />
+					<input type="number" matInput [readonly]="true" formControlName="earning" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>السعر النهائي</mat-label>
-					<input type="number" matInput formControlName="finalPrice" />
+					<input type="number" matInput [readonly]="true" formControlName="finalPrice" />
 				</mat-form-field>
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
-			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || !noteComponents.length || loading">حفظ</button>
+			<button type="button" mat-stroked-button color="basic" (click)="back()" [disabled]="loading">رجوع</button>
 		</div>
 	</form>
 </section>

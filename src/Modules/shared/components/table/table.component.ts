@@ -20,6 +20,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	private paginator!: MatPaginator;
 	private sort!: MatSort;
 	@Output() OnDelete = new EventEmitter<any>();
+	@Output() OnView = new EventEmitter<any>();
 	@Input() dialogDisplayName!: string;
 	@Input() dialogHeader!: string;
 	@Input() loading: any;
@@ -53,7 +54,10 @@ export class TableComponent implements OnInit, OnDestroy {
 	};
 	HandleNew = () => this._router.navigate([`../new`], {relativeTo: this.route});
 	handleEdit = (row: any) => this._router.navigate([`../edit`], {queryParams: {id: row.id}, relativeTo: this.route});
-	handleView = (row: any) => this._router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
+	handleView = (row: any) => {
+		this.OnView.emit(row);
+		// this._router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
+	};
 	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
 	handleDelete = (row: any) => {
 		this.subscriptions.push(
