@@ -34,6 +34,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	ClientTypesDataSource: any[] = [];
 	ServicesDataSource: Service[] = [];
 	clientsFilteredOptions!: Observable<Client[]>;
+	deletedComponents: number[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -136,6 +137,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get finalPrice(): FormControl {
 		return this.Form.get('finalPrice') as FormControl;
 	}
+	getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get('id') as FormControl;
 	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
 	serviceTotalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('totalPrice') as FormControl;
@@ -258,13 +260,25 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.noteComponents.push(this.createFormItem('noteComponent'));
 	};
 	handleDeleteNoteComponent = (index: number) => {
+		if (this.id) this.deletedComponents.push(this.getNoteComponentId(index).value);
 		this.noteComponents.removeAt(index);
 		this.calculateActualPrice();
 	};
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.loading = true;
-			if (this.id)
+			if (this.id) {
+				console.log(this.deletedComponents);
+
+				if (this.deletedComponents.length)
+					this.subscriptions.push(
+						this._note.deleteNoteComponents(this.deletedComponents).subscribe({
+							next: () => {},
+							error: (e) => {
+								console.log(e);
+							},
+						})
+					);
 				this.subscriptions.push(
 					this._note.update(this.id, this.Form.value).subscribe({
 						next: () => {
@@ -275,7 +289,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 						complete: () => (this.loading = false),
 					})
 				);
-			else
+			} else
 				this.subscriptions.push(
 					this._note.add(this.Form.value).subscribe({
 						next: () => {

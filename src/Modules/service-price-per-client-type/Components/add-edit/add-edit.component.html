@@ -1,7 +1,10 @@
 <br /><br />
 <section class="container d-flex justify-content-center m-auto">
 	<form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column">
-		<h1>Add Price to Service</h1>
+		<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل سعر الخدمة</h2>
+		<ng-template #update>
+			<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
+		</ng-template>
 		<!-- SERVICES LIST -->
 		<div class="row">
 			<div class="col">

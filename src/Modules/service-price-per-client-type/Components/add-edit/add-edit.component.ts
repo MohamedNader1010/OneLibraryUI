@@ -19,7 +19,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	public form: FormGroup;
 	public servicesNames: KeyValuePairs[] = [];
 	public clientsType: KeyValuePairs[] = [];
-	private id!: any;
+	public id!: any;
 	isSubmitted: boolean = false;
 	constructor(
 		private service: ServicePricePerClientTypeService,

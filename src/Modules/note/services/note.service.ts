@@ -20,4 +20,5 @@ export class NoteService {
 	getOneByTeacher = (id: number) => this.http.get<Note>(`${this.uri}GetNotesByTeacherId?Id=${id}`);
 	add = (note: Note) => this.http.post<Note>(`${this.uri}AddNote`, note);
 	getNoteCompnents = (id: number) => this.http.get(`${this.uri}GetNoteComponent?id=${id}`);
+	deleteNoteComponents = (ids: number[]) => this.http.delete(`${this.uri}DeleteNoteComponent`, {body: ids});
 }
