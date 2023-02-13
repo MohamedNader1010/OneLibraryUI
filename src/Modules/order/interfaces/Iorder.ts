@@ -9,7 +9,7 @@ export interface Order {
 	discountPercent: string;
 	discount: string;
 	remarks: string;
-	status: number;
+	orderStatus: number;
 	clientId: number;
 	client: string;
 	orderDetails: OrderDetail[];
