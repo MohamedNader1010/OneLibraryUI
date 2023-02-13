@@ -49,19 +49,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 					originalPrice: data.originalPrice,
 					earning: data.earning,
 					noteComponents: data.noteComponents,
-					// noteComponents: (): any[] => {
-					// 	data.noteComponents.forEach((el: any) => {
-					// 		let notecomp: NoteComponent = {
-					// 			serviceId: el.serviceId,
-					// 			id: el.id,
-					// 			service: el.service.name,
-					// 			quantity: el.quantity,
-					// 			noteId: el.noteId,
-					// 		};
-					// 		this.noteComponents.push(notecomp);
-					// 	});
-					// 	return this.noteComponents;
-					// },
+					quantity: data.quantity,
 				};
 			})
 		);

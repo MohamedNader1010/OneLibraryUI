@@ -18,15 +18,35 @@ export class AllComponent implements OnInit, OnDestroy {
 	constructor(private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
-			{
-				columnDef: 'id',
-				header: '#',
-				cell: (element: any) => element.id,
-			},
+			// {
+			// 	columnDef: 'id',
+			// 	header: '#',
+			// 	cell: (element: Employee) => element.id,
+			// },
 			{
 				columnDef: 'Name',
 				header: 'الأسم',
-				cell: (element: any) => element.name,
+				cell: (element: Employee) => element.name,
+			},
+			{
+				columnDef: 'userName',
+				header: 'أسم المستخدم',
+				cell: (element: Employee) => element.userName,
+			},
+			{
+				columnDef: 'phoneNumber',
+				header: 'رقم التليفون',
+				cell: (element: Employee) => element.phoneNumber,
+			},
+			{
+				columnDef: 'Email',
+				header: 'البريد الالكتروني',
+				cell: (element: Employee) => element.email,
+			},
+			{
+				columnDef: 'EmailConfirmed',
+				header: 'حالة البريد الالكتروني',
+				cell: (element: Employee) => (element.emailConfirmed ? 'مفعل' : 'غير مفعل'),
 			},
 		];
 		this.getAll();
@@ -48,7 +68,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
-	handleDelete = (id: number) => this.subscriptions.push(this._employee.delete(id).subscribe(() => this.getAll()));
+	handleDelete = (id: string) => this.subscriptions.push(this._employee.delete(id).subscribe(() => this.getAll()));
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

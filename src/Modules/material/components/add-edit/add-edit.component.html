@@ -17,15 +17,15 @@
 			<div class="col-6">
 				<mat-form-field class="w-100">
 					<mat-label>سعر الجملة</mat-label>
-					<input matInput type="number" formControlName="originalPrice" />
-					<mat-error *ngIf="name.errors?.['required']"> price is <strong>required</strong> </mat-error>
+					<input matInput type="number" formControlName="price" />
+					<mat-error *ngIf="price.errors?.['required']"> price is <strong>required</strong> </mat-error>
 				</mat-form-field>
 			</div>
 			<div class="col-6">
 				<mat-form-field class="w-100">
 					<mat-label>الكمية</mat-label>
 					<input matInput type="number" formControlName="quantity" />
-					<mat-error *ngIf="name.errors?.['required']"> quantity is <strong>required</strong> </mat-error>
+					<mat-error *ngIf="quantity.errors?.['required']"> quantity is <strong>required</strong> </mat-error>
 				</mat-form-field>
 			</div>
 		</div>
