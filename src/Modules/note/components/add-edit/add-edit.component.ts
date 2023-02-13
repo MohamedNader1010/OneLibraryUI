@@ -24,6 +24,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	Form: FormGroup;
 	id!: number;
+	clientTId!: number;
 	controllerName: string = 'notes';
 	isSubmitted: boolean = false;
 	NoteComponentsDataSource: NoteComponent[] = [];
@@ -61,30 +62,32 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		switch (type) {
 			case 'init':
 				formItem = this.fb.group({
-					name: ['', [Validators.required]],
-					originalPrice: [{value: '', disabled: true}],
-					earning: [{value: '', disabled: true}],
-					actualPrice: [{value: ''}],
-					teacherPrice: ['', [Validators.required]],
-					finalPrice: [{value: '', disabled: true}],
-					clientTypeId: [''], ///////////////////////////////
-					clientId: ['', [Validators.required]],
-					termId: ['', [Validators.required]],
-					stageId: ['', [Validators.required]],
+					name: [null, [Validators.required]],
+					originalPrice: [{value: null, disabled: true}],
+					earning: [{value: null, disabled: true}],
+					actualPrice: [{value: null}],
+					teacherPrice: [null, [Validators.required]],
+					finalPrice: [{value: null, disabled: true}],
+					clientTypeId: [null],
+					clientId: [null, [Validators.required]],
+					termId: [null, [Validators.required]],
+					stageId: [null, [Validators.required]],
 					noteComponents: this.fb.array([]),
 				});
 				break;
 			case 'noteComponent':
 				formItem = this.fb.group({
-					serviceId: ['', [Validators.required]],
-					quantity: ['', [Validators.required]],
+					serviceId: [null, [Validators.required]],
+					quantity: [null, [Validators.required]],
+					price: [null],
+					totalPrice: [null],
 				});
 				break;
 		}
 		return formItem;
 	}
 	fillFormWithData(datasource: Note) {
-		// datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
+		datasource.noteComponents.forEach(() => this.handleNewNoteComponent());
 		this.Form.patchValue(datasource);
 	}
 	get noteComponents(): FormArray {
@@ -94,7 +97,23 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		return this.Form.get('clientTypeId') as FormControl;
 	}
 	changeClientType(data: any) {
+		this.clientTId = data.value;
 		this.getAllClientsByType(data.value);
+	}
+	getServicePrice(data: any, index: number) {
+		console.log(data.value, this.clientTId);
+
+		this.subscriptions.push(
+			this._service.getPrice(data.value, this.clientTId).subscribe({
+				next: (data) => {
+					console.log(data);
+				},
+				error: (e) => {
+					console.log(e);
+				},
+				complete: () => {},
+			})
+		);
 	}
 	getAllClientsByType(id: number) {
 		this.subscriptions.push(
@@ -135,14 +154,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	getSingle = (id: number) =>
 		this.subscriptions.push(
 			this._note.getOne(id).subscribe((data: any) => {
+				console.log(data);
 				this.fillFormWithData(data);
 			})
 		);
-	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
+	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = [{id: 0, name: 'بدون'}, ...data])));
 	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewNoteComponent = () => {
-		console.log('handle');
 		this.noteComponents.push(this.createFormItem('noteComponent'));
 	};
 	handleDeleteNoteComponent = (index: number) => this.noteComponents.removeAt(index);

@@ -56,7 +56,7 @@
 					<div class="col-6">
 						<mat-form-field appearance="fill" class="w-100">
 							<mat-label>الخدمات</mat-label>
-							<mat-select formControlName="serviceId">
+							<mat-select formControlName="serviceId" (selectionChange)="getServicePrice($event,i)">
 								<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{ service.name }}</mat-option>
 							</mat-select>
 						</mat-form-field>

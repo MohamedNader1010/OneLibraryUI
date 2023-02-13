@@ -25,8 +25,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		return this.Form.get('name') as FormControl;
 	}
 	ngOnInit(): void {
-		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
-		if (this.id) this.getSingle(this.id);
+		this.subscriptions.push(
+			this.route.queryParams.subscribe((params) => {
+				this.id = params['id'];
+				console.log(this.id);
+
+				if (this.id) this.getSingle(this.id);
+			})
+		);
 	}
 	getSingle = (id: number) =>
 		this.subscriptions.push(

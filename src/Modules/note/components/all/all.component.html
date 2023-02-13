@@ -1,8 +1,2 @@
-<app-table
-	dialogHeader="حذف المذكرة"
-	[loading]="loading"
-	[canView]="true"
-	dialogDisplayName="name"
-	[tableColumns]="tableColumns"
-	[tableData]="tableData"
-	(OnDelete)="handleDelete($event)"></app-table>
+<app-table dialogHeader="حذف المذكرة" [loading]="loading" dialogDisplayName="name" [tableColumns]="tableColumns" [tableData]="tableData" (OnDelete)="handleDelete($event)"></app-table>
+<!-- [canView]="true" (OnView)="handleView($event)" -->

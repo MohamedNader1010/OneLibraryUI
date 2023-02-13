@@ -78,6 +78,9 @@ export class AllComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
+	handleView(row: any) {
+		this.router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
+	}
 	handleDelete = (id: number) => this.subscriptions.push(this._note.delete(id).subscribe(() => this.getAll()));
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
