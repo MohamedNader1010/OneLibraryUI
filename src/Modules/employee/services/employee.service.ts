@@ -9,10 +9,10 @@ import {Employee} from '../interFaces/Iemployee';
 })
 export class EmployeeService {
 	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}Authorization/Users`;
-	getAll = () => this.http.get<Employee[]>(`${this.uri}`);
+	uri: string = `${environment.apiUrl}Employee/`;
+	getAll = () => this.http.get<Employee[]>(`${this.uri}GetEmployee`);
+	getOne = (id: string) => this.http.get<Employee[]>(`${this.uri}?id=${id}`);
 	add = (employee: Employee) => this.http.post<Employee>(`${this.uri}`, employee);
-	update = (id: number, Employee: Employee) => this.http.put<Employee>(`${this.uri}?id=${id}`, {...Employee, id});
-	getOne = (id: number) => this.http.get<Employee[]>(`${this.uri}?id=${id}`);
-	delete = (id: number) => this.http.delete<Employee>(`${this.uri}?id=${id}`);
+	update = (id: string, Employee: Employee) => this.http.put<Employee>(`${this.uri}EditEmployee?id=${id}`, {...Employee, id});
+	delete = (id: string) => this.http.delete<Employee>(`${this.uri}DeleteEmployee?id=${id}`);
 }
