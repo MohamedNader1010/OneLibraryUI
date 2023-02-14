@@ -35,7 +35,7 @@ export class AllComponent implements OnInit {
 			{
 				columnDef: 'Client Type',
 				header: 'نوع العميل',
-				cell: (element: ServicePricePerClientType) => `${element.client}`,
+				cell: (element: ServicePricePerClientType) => `${element.clientType}`,
 			},
 		];
 		this.getAll();
