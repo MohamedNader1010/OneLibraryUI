@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
-import {map, Observable, pairwise, startWith, Subscription} from 'rxjs';
+import {map, Observable, startWith, Subscription, pairwise} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {ToastrService} from 'ngx-toastr';
 import {ClientService} from 'src/Modules/client/services/client.service';
@@ -13,6 +13,8 @@ import {NoteComponent} from '../../interfaces/noteComponent';
 import {Service} from 'src/Modules/service/interfaces/Iservice';
 import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
+import {Note} from '../../interfaces/Inote';
 
 @Component({
 	selector: 'app-add-edit',
@@ -48,68 +50,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	) {
 		this.Form = this.createFormItem('init');
 	}
-	ngOnInit(): void {
-		this.getAllClientTypes();
-		this.getTerms();
-		this.getSTages();
-		this.getAllServices();
-		this.subscriptions.push(
-			this.route.queryParams.subscribe((params) => {
-				this.id = params['id'];
-				if (this.id) this.getSingle(this.id);
-			})
-		);
-		this.clientsFilteredOptions = this.clientId.valueChanges.pipe(
-			startWith(''),
-			map((value) => {
-				let filtered = [];
-				let name;
-				if (typeof value === 'string') name = value;
-				if (name) {
-					filtered = this.filterClientss(name as string);
-					if (filtered.length) return filtered;
-					else {
-						this.clientId.setErrors({notFound: true});
-						return this.ClientsDataSource.slice();
-					}
-				} else return [];
-			})
-		);
-	}
-	createFormItem(type: string): FormGroup {
-		let formItem: FormGroup = this.fb.group({});
-		switch (type) {
-			case 'init':
-				formItem = this.fb.group({
-					id: [0],
-					name: [null, [Validators.required]],
-					originalPrice: [{value: null}],
-					earning: [{value: null}],
-					actualPrice: [{value: null}],
-					teacherPrice: [null, [Validators.required, Validators.min(0)]],
-					finalPrice: [{value: null}],
-					clientTypeId: [null],
-					clientId: [null, [Validators.required]],
-					termId: [null, [Validators.required]],
-					stageId: [null, [Validators.required]],
-					noteComponents: this.fb.array([]),
-					quantity: [0],
-				});
-				break;
-			case 'noteComponent':
-				formItem = this.fb.group({
-					id: [0],
-					noteId: [this.noteId.value],
-					serviceId: [null, [Validators.required]],
-					quantity: [null, [Validators.required, Validators.min(1)]],
-					price: [{value: 0, disabled: true}],
-					originalPrice: [0],
-					totalPrice: [0],
-				});
-				break;
-		}
-		return formItem;
-	}
 	get noteId(): FormControl {
 		return this.Form.get('id') as FormControl;
 	}
@@ -138,21 +78,129 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		return this.Form.get('finalPrice') as FormControl;
 	}
 	getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get('id') as FormControl;
+	getNoteComponentServiceId = (index: number): FormControl => this.noteComponents.at(index).get('serviceId') as FormControl;
 	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
-	serviceTotalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('totalPrice') as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
-	changeClientType(data: any) {
+	ngOnInit(): void {
+		this.getAllClientTypes();
+		this.getTerms();
+		this.getSTages();
+		this.getAllServices();
 		this.subscriptions.push(
-			this._client.getAllByType(data.value).subscribe({
-				next: (data) => {
-					this.ClientsDataSource = data;
-				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
-				},
-				//loop over all services and get new prices
-				complete: () => this.calculateActualPrice(),
+			this.route.queryParams.subscribe((params) => {
+				this.id = params['id'];
+				if (this.id) this.getSingle(this.id);
+			})
+		);
+		this.clientsFilteredOptions = this.clientId.valueChanges.pipe(
+			startWith(null),
+			map((value) => {
+				let filtered = [];
+				let name;
+				if (typeof value === 'string') name = value;
+				if (name) {
+					filtered = this.filterClients(name as string);
+					if (filtered.length) return filtered;
+					else {
+						this.clientId.setErrors({notFound: true});
+						return this.ClientsDataSource.slice();
+					}
+				} else return [];
+			})
+		);
+		this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value));
+	}
+	filterClients = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
+	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
+	createFormItem(type: string): FormGroup {
+		let formItem: FormGroup = this.fb.group({});
+		switch (type) {
+			case 'init':
+				formItem = this.fb.group({
+					id: [0],
+					name: ['', [Validators.required]],
+					originalPrice: [0],
+					earning: [0],
+					actualPrice: [0],
+					teacherPrice: [0, [Validators.required, Validators.min(0)]],
+					finalPrice: [0],
+					clientTypeId: [null],
+					clientId: [null, [Validators.required]],
+					termId: [null, [Validators.required]],
+					stageId: [null, [Validators.required]],
+					noteComponents: this.fb.array([]),
+					quantity: [0],
+				});
+				break;
+			case 'noteComponent':
+				formItem = this.fb.group({
+					id: [0],
+					noteId: [this.noteId.value],
+					serviceId: [null, [Validators.required]],
+					quantity: [1, [Validators.required, Validators.min(1)]],
+					price: [0],
+					originalPrice: [0],
+				});
+				break;
+		}
+		return formItem;
+	}
+	handleNewNoteComponent = () => {
+		let index = this.noteComponents.length;
+		this.noteComponents.push(this.createFormItem('noteComponent'));
+		this.subscribeQuantityChanges(index);
+		this.subscribeServiceChanges(index);
+	};
+	handleDeleteNoteComponent = (index: number) => {
+		if (this.id) this.deletedComponents.push(this.getNoteComponentId(index).value);
+		//remove service price
+		let quantity = this.serviceQuantityFormControl(index).value;
+		this.setOriginalAndActualPrices(-1, index, quantity);
+		this.calculateFinalPriceAndEarning();
+		this.noteComponents.removeAt(index);
+		if (!this.noteComponents.length) {
+			this.originalPrice.setValue(0);
+			this.actualPrice.setValue(0);
+			this.earning.setValue(0);
+			this.finalPrice.setValue(0);
+		}
+	};
+	subscribeQuantityChanges(index: number) {
+		this.serviceQuantityFormControl(index)
+			.valueChanges.pipe(startWith(this.serviceQuantityFormControl(index).value), pairwise())
+			.subscribe(([old, value]) => {
+				this.setOriginalAndActualPrices(1, index, value - old);
+				this.calculateFinalPriceAndEarning();
+			});
+	}
+	subscribeServiceChanges(index: number) {
+		this.getNoteComponentServiceId(index).valueChanges.subscribe((id) => {
+			let quantity = this.serviceQuantityFormControl(index).value;
+			this.subscriptions.push(
+				this._servicePrice.getPrice(this.clientTypeId.value, id).subscribe({
+					next: (res: ServicePricePerClientType) => {
+						//remove service price
+						this.setOriginalAndActualPrices(-1, index, quantity);
+						//add new service price
+						this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
+						this.servicePriceFormControl(index).setValue(res.price);
+						this.setOriginalAndActualPrices(1, index, quantity);
+						this.calculateFinalPriceAndEarning();
+					},
+					error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
+				})
+			);
+		});
+	}
+	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? '';
+	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
+	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
+	getAllServices() {
+		this.subscriptions.push(
+			this._service.getAll().subscribe({
+				next: (data) => (this.ServicesDataSource = data),
+				error: (e) => this.toastr.error(e.message, 'لايمكن تحميل ابيانات '),
 			})
 		);
 	}
@@ -165,118 +213,92 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					});
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
 				},
 			})
 		);
 	}
-	handleServicePriceChange(data: any, index: number) {
-		console.log(123);
+	handleClientTypeChange(id: any) {
 		this.subscriptions.push(
-			this._servicePrice.getPrice(this.clientTypeId.value, data.value).subscribe({
-				next: (res: any) => {
-					console.log(res);
-					this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-					this.servicePriceFormControl(index).setValue(res.price);
-					this.calculateActualPrice();
+			this._client.getAllByType(id).subscribe({
+				next: (data) => {
+					this.ClientsDataSource = data;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
+					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
 				},
+				complete: () => this.calculateNotePrice(),
 			})
 		);
 	}
-	handleServiceQuantityChange(data: any, index: number) {
-		this.serviceQuantityFormControl(index)
-			.valueChanges.pipe(pairwise())
-			.subscribe(([prev, next]: [number, number]) => {});
-		this.calculateActualPrice();
+	setOriginalAndActualPrices(sign: number, index: number, quantity: number) {
+		this.originalPrice.setValue(+this.originalPrice.value + sign * (+this.serviceOriginalPriceFormControl(index).value * quantity));
+		this.actualPrice.setValue(+this.actualPrice.value + sign * (+this.servicePriceFormControl(index).value * quantity));
 	}
-	calculateActualPrice() {
-		let noteActualPrice = 0;
-		let noteoriginalPrice = 0;
-		//if no components
+	calculateFinalPriceAndEarning() {
+		this.earning.setValue(+this.actualPrice.value - +this.originalPrice.value);
+		this.finalPrice.setValue(+this.actualPrice.value + +this.teacherPrice.value);
+	}
+	getSingle = (id: number) => {
+		this.subscriptions.push(
+			this._note.getOne(id).subscribe((data: Note) => {
+				data.noteComponents.forEach((c: NoteComponent) => {
+					this.noteComponents.push(this.createFormItem('noteComponent'));
+					this._servicePrice.getPrice(data.clientTypeId, c.serviceId).subscribe({
+						next: (res) => {
+							this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
+							this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
+							this.Form.patchValue(data);
+							this.subscribeQuantityChanges(data.noteComponents.indexOf(c));
+							this.subscribeServiceChanges(data.noteComponents.indexOf(c));
+						},
+						error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
+						complete: () => {},
+					});
+				});
+			})
+		);
+	};
+	async calculateNotePrice() {
+		let noteActualPrice = 0,
+			noteoriginalPrice = 0;
 		if (!this.noteComponents.length) {
-			this.originalPrice.setValue(null);
-			this.actualPrice.setValue(null);
-			this.earning.setValue(null);
-			this.finalPrice.setValue(null);
-		} else {
-			for (let index = 0; index < this.noteComponents.length; index++) {
-				if (!this.noteComponents.value[index].serviceId) continue;
-				this.subscriptions.push(
-					this._servicePrice.getPrice(this.clientTypeId.value, this.noteComponents.value[index].serviceId).subscribe({
-						next: (res: any) => {
-							this.servicePriceFormControl(index).setValue(res.price);
-							noteActualPrice += res.price * this.noteComponents.value[index].quantity;
-							this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-							noteoriginalPrice += res.originalPrice * this.noteComponents.value[index].quantity;
-						},
-						error: (e) => {
-							this.toastr.error(e.message, 'لايمكن تحميل الأسعار ');
-						},
-						complete: () => {
-							this.originalPrice.setValue(noteoriginalPrice);
-							this.actualPrice.setValue(noteActualPrice);
-							this.earning.setValue(noteActualPrice - noteoriginalPrice);
-							this.finalPrice.setValue(parseFloat(this.actualPrice.value) + parseFloat(this.teacherPrice.value));
-						},
-					})
-				);
+			this.originalPrice.setValue(0);
+			this.actualPrice.setValue(0);
+			this.earning.setValue(0);
+			this.finalPrice.setValue(0);
+			return;
+		}
+		for (let index = 0; index < this.noteComponents.length; index++) {
+			if (!this.getNoteComponentServiceId(index).value) {
+				this.servicePriceFormControl(index).setValue(0);
+				this.serviceOriginalPriceFormControl(index).setValue(0);
+			} else {
+				let res: {price: number; originalPrice: number} = await new Promise<{price: number; originalPrice: number}>((resolve) => {
+					this._servicePrice.getPrice(this.clientTypeId.value, this.getNoteComponentServiceId(index).value).subscribe({
+						next: (res) => resolve({price: res.price, originalPrice: res.originalPrice}),
+						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
+					});
+				});
+				noteActualPrice += res.price * this.serviceQuantityFormControl(index).value;
+				noteoriginalPrice += res.originalPrice * this.serviceQuantityFormControl(index).value;
+				this.servicePriceFormControl(index).setValue(res.price);
+				this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
 			}
 		}
+		this.originalPrice.setValue(noteoriginalPrice);
+		this.actualPrice.setValue(noteActualPrice);
+		this.calculateFinalPriceAndEarning();
 	}
-	handleTeacherPriceChange(data: any) {
-		this.finalPrice.setValue(this.actualPrice.value + data.target.value);
-	}
-	filterClientss = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
-	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
-	getAllServices() {
-		this.subscriptions.push(
-			this._service.getAll().subscribe({
-				next: (data) => {
-					this.ServicesDataSource = data;
-				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
-				},
-			})
-		);
-	}
-	getSingle = (id: number) =>
-		this.subscriptions.push(
-			this._note.getOne(id).subscribe((data: any) => {
-				data.noteComponents.forEach(() => {
-					this.handleNewNoteComponent();
-				});
-				this.Form.patchValue(data);
-				this.calculateActualPrice();
-			})
-		);
-	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = [{id: 0, name: 'بدون'}, ...data])));
-	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
-	back = () => this.router.navigate([this.controllerName]);
-	handleNewNoteComponent = () => {
-		this.noteComponents.push(this.createFormItem('noteComponent'));
-	};
-	handleDeleteNoteComponent = (index: number) => {
-		if (this.id) this.deletedComponents.push(this.getNoteComponentId(index).value);
-		this.noteComponents.removeAt(index);
-		this.calculateActualPrice();
-	};
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.loading = true;
 			if (this.id) {
-				console.log(this.deletedComponents);
-
 				if (this.deletedComponents.length)
 					this.subscriptions.push(
 						this._note.deleteNoteComponents(this.deletedComponents).subscribe({
 							next: () => {},
-							error: (e) => {
-								console.log(e);
-							},
+							error: (e) => {},
 						})
 					);
 				this.subscriptions.push(
@@ -302,7 +324,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				);
 		}
 	}
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+	back = () => this.router.navigate([this.controllerName]);
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }
