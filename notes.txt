@@ -22,7 +22,7 @@ auth ================================>
 -add role/////////////////////////////////////////////
 -refresh token done
 -revoke token/////////////////////////////////////////
--confirm email ///////////////////////////////////////
+-confirm email done
 -forget password /////////////////////////////////////
 -reset password //////////////////////////////////////
 
@@ -41,29 +41,32 @@ client type=>
 -delete (front done) - service done
 
 employees===========================>
-dto===>
 user profile(change password/update data/...)=>
--get by id (front done)
--all (front done)
--add (front done)
--edit (front done)
--delete (front done)
+-all done
+-add done
+-edit done
+-delete done
 -change password (front done)
 
 material=>
--all (front done) -service done
--add (front done) -service done
--edit (front done) -service done
--delete (front done) -service done
+-all done
+-add done
+-edit done
+-delete done
 
 note=================================>
--all (front done)
--edit (front done)
--delete (front done)
--get by id ///////////////////////////////////////////
--all by teacher id (front done)
--add (front done)
+-all done
+-edit done
+-delete done
+-add done
 -get note components /////////////////////////////////
+-get by client id ////////////////////////////////////
+
+needed:
+ - get sum for each not in all orders per dates (start date , end date)
+ including all related order details (order id , status,note id, quantity,...)
+ - update order details status to 'ready' with the gevin order details ids
+ -handle unused stock of notes
 
 order=================================>
 -all (front done)
@@ -77,29 +80,22 @@ order=================================>
 
 service================================> 
 dto====================================>
--all (front done) -service done
--add (front done) -service done
--edit (front done) -service done
--delete (front done) -service done
+-all done
+-add done
+-edit done
+-delete done
 -get by id ///////////////////////////////////////////
 
 service price per client=>
 dto=>
--all (front done)
--add//////////////////////////////////////////////////
--edit/////////////////////////////////////////////////
--delete (front done)
+-all done
+-add done
+-edit done
+-delete done
 -get service price per client type ///////////////////
 
 service type=>
--all (front done) - service done
--add (front done) - service done
--edit (front done) -service done
--delete (front done) -service done
-
-term=>
--all /////////////////////////////////////////////////
-(if stage 3 remove term)========>
-
-stage=>
--all /////////////////////////////////////////////////
+-all done
+-add done
+-edit done
+-delete done

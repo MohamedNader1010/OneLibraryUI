@@ -248,12 +248,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 						next: (res) => {
 							this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
 							this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
+						},
+						error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
+						complete: () => {
 							this.Form.patchValue(data);
 							this.subscribeQuantityChanges(data.noteComponents.indexOf(c));
 							this.subscribeServiceChanges(data.noteComponents.indexOf(c));
 						},
-						error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
-						complete: () => {},
 					});
 				});
 			})
