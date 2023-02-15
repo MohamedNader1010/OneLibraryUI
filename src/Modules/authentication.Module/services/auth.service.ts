@@ -20,13 +20,11 @@ export class AuthService {
 	register(reister: Register) {
 		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/register`, reister).pipe(shareReplay());
 	}
+	confirmEmail(userId: string, token: string) {
+		return this.http.get<Auth>(`${environment.apiUrl}Authorzation/confirmEmail`, {params: {userid: userId, token: token}});
+	}
 	refreshToken() {
 		return this.http.post<Auth>(`${environment.apiUrl}Authorzation/refreshToken`, {token: localStorage.getItem('refreshToken')}).pipe(
-			// 	tap((data) => {
-			// 		localStorage.setItem('token', data.token);
-			// 		localStorage.setItem('refreshToken', data.refreshToken);
-			// 		localStorage.setItem('uname', data.username);
-			// 	}),
 			catchError(() => {
 				this.username = null;
 				localStorage.removeItem('token');
