@@ -1,5 +1,6 @@
 we need to validate all finished work , 
-determine remaining parts,and finish them ASAP
+determine remaining parts,and finish them ASAP,
+handle errors and exceptions with readable messages
 
 arabic text => done
 role management======================>
@@ -54,6 +55,11 @@ material=>
 -edit done
 -delete done
 
+needed:
+ - material stock table (material,quantity,transaction status(in/out),price,date,time,user)
+ this endpoint allows user to track material quantity changes
+
+
 note=================================>
 -all done
 -edit done
@@ -65,7 +71,7 @@ note=================================>
 needed:
  - get sum for each not in all orders per dates (start date , end date)
  including all related order details (order id , status,note id, quantity,...)
- - update order details status to 'ready' with the gevin order details ids
+ - update order details status to 'ready' with the gevin order details ids , calculate original price for material passed on current quantity
  -handle unused stock of notes
 
 order=================================>
@@ -77,6 +83,8 @@ order=================================>
 -all by dates/////////////////////////////////////////
 -get order details ///////////////////////////////////
 -update status ///////////////////////////////////////
+if order is completed user cant delete or update it
+if order status is delivered user cant delete it ,can only update status to 'مرتجع'
 
 service================================> 
 dto====================================>

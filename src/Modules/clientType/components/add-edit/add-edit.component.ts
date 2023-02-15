@@ -27,13 +27,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
-	getSingle = (id: number) =>
-		this.subscriptions.push(
-			this._clientType.getOne(id).subscribe((data) => {
-				console.log(data[0]);
-				this.Form.patchValue(data[0]);
-			})
-		);
+	getSingle = (id: number) => this.subscriptions.push(this._clientType.getOne(id).subscribe((data) => this.Form.patchValue(data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

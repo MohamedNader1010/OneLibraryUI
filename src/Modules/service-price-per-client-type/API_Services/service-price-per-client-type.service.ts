@@ -7,11 +7,11 @@ import {ServicePricePerClientType} from '../Interfaces/ServicePricePerClientType
 	providedIn: 'root',
 })
 export class ServicePricePerClientTypeService {
-	uri: string = `${environment.apiUrl}ServicePricePerClientType/`;
+	uri: string = `${environment.apiUrl}ServicePricePerClientType`;
 
 	constructor(private _http: HttpClient) {}
 	add = (model: ServicePricePerClientType) => this._http.post(`${this.uri}`, model);
-	getOne = (id: number) => this._http.get<ServicePricePerClientType[]>(`${this.uri}GetById?id=${id}`);
+	getOne = (id: number) => this._http.get<ServicePricePerClientType[]>(`${this.uri}/GetById?id=${id}`);
 
 	getAll = () => this._http.get<ServicePricePerClientTypeService[]>(`${this.uri}`);
 
@@ -23,5 +23,5 @@ export class ServicePricePerClientTypeService {
 			id,
 		});
 
-	getPrice = (clientTypeId: number, serviceId: number) => this._http.get<ServicePricePerClientType>(`${this.uri}GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
+	getPrice = (clientTypeId: number, serviceId: number) => this._http.get<ServicePricePerClientType>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 }

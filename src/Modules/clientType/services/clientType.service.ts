@@ -10,7 +10,7 @@ export class ClientTypeService {
 	constructor(private http: HttpClient) {}
 	uri: string = `${environment.apiUrl}ClientType`;
 	getAll = () => this.http.get<ClientType[]>(`${this.uri}`);
-	getOne = (id: number) => this.http.get<ClientType[]>(`${this.uri}?id=${id}`);
+	getOne = (id: number) => this.http.get<ClientType>(`${this.uri}/GetClientTypeById?id=${id}`);
 	add = (clientType: ClientType) => this.http.post<ClientType>(`${this.uri}`, clientType);
 	update = (id: number, clientType: ClientType) => this.http.put<ClientType>(`${this.uri}?id=${id}`, {...clientType, id});
 	delete = (id: number) => this.http.delete<ClientType>(`${this.uri}?id=${id}`);
