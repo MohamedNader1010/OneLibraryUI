@@ -12,6 +12,6 @@ export class ServicesTypeService {
 	getAll = () => this.http.get<ServiceType[]>(`${this.uri}`);
 	add = (serviceType: ServiceType) => this.http.post<ServiceType>(`${this.uri}`, serviceType);
 	update = (id: number, serviceType: ServiceType) => this.http.put<ServiceType>(`${this.uri}?id=${id}`, {...serviceType, id});
-	getOne = (id: number) => this.http.get<ServiceType[]>(`${this.uri}?id=${id}`);
+	getOne = (id: number) => this.http.get<ServiceType[]>(`${this.uri}GetServicetTypeById?id=${id}`);
 	delete = (id: number) => this.http.delete<ServiceType>(`${this.uri}?id=${id}`);
 }

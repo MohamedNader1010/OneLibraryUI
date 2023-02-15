@@ -25,7 +25,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			},
 			{
 				columnDef: 'Name',
-				header: 'الأسم',
+				header: 'نوع الخدمة',
 				cell: (element: any) => element.name,
 			},
 		];

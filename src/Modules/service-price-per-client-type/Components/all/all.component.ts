@@ -23,19 +23,19 @@ export class AllComponent implements OnInit {
 				cell: (element: ServicePricePerClientType) => `${element.id}`,
 			},
 			{
-				columnDef: 'Price',
-				header: 'السعر',
-				cell: (element: ServicePricePerClientType) => `${element.price}`,
-			},
-			{
 				columnDef: 'Service Name',
-				header: 'الأسم',
+				header: 'الخدمة',
 				cell: (element: ServicePricePerClientType) => `${element.service}`,
 			},
 			{
 				columnDef: 'Client Type',
 				header: 'نوع العميل',
 				cell: (element: ServicePricePerClientType) => `${element.clientType}`,
+			},
+			{
+				columnDef: 'Price',
+				header: 'السعر',
+				cell: (element: ServicePricePerClientType) => `${element.price}`,
 			},
 		];
 		this.getAll();
