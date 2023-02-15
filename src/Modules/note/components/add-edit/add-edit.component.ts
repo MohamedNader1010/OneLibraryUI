@@ -15,7 +15,6 @@ import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
 import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
-
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -26,7 +25,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	loading: boolean = false;
 	Form: FormGroup;
 	id!: number;
-	clientTId!: number;
+	clientTembId: number | null = null;
 	controllerName: string = 'notes';
 	isSubmitted: boolean = false;
 	NoteComponentsDataSource: NoteComponent[] = [];
@@ -87,14 +86,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.getTerms();
 		this.getSTages();
 		this.getAllServices();
-		this.subscriptions.push(
-			this.route.queryParams.subscribe((params) => {
-				this.id = params['id'];
-				if (this.id) this.getSingle(this.id);
-			})
-		);
+		this.subscriptions.push(this.clientTypeId.valueChanges.pipe(startWith(this.clientTypeId.value)).subscribe((value) => this.handleClientTypeChange(value)));
 		this.clientsFilteredOptions = this.clientId.valueChanges.pipe(
-			startWith(null),
+			startWith(this.clientId.value),
 			map((value) => {
 				let filtered = [];
 				let name;
@@ -109,7 +103,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				} else return [];
 			})
 		);
-		this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value));
+		this.subscriptions.push(this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value)));
+		this.subscriptions.push(
+			this.route.queryParams.subscribe((params) => {
+				this.id = params['id'];
+				if (this.id) this.getSingle(this.id);
+			})
+		);
 	}
 	filterClients = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
 	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
@@ -167,31 +167,35 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		}
 	};
 	subscribeQuantityChanges(index: number) {
-		this.serviceQuantityFormControl(index)
-			.valueChanges.pipe(startWith(this.serviceQuantityFormControl(index).value), pairwise())
-			.subscribe(([old, value]) => {
-				this.setOriginalAndActualPrices(1, index, value - old);
-				this.calculateFinalPriceAndEarning();
-			});
+		this.subscriptions.push(
+			this.serviceQuantityFormControl(index)
+				.valueChanges.pipe(startWith(this.serviceQuantityFormControl(index).value), pairwise())
+				.subscribe(([old, value]) => {
+					this.setOriginalAndActualPrices(1, index, value - old);
+					this.calculateFinalPriceAndEarning();
+				})
+		);
 	}
 	subscribeServiceChanges(index: number) {
-		this.getNoteComponentServiceId(index).valueChanges.subscribe((id) => {
-			let quantity = this.serviceQuantityFormControl(index).value;
-			this.subscriptions.push(
-				this._servicePrice.getPrice(this.clientTypeId.value, id).subscribe({
-					next: (res: ServicePricePerClientType) => {
-						//remove service price
-						this.setOriginalAndActualPrices(-1, index, quantity);
-						//add new service price
-						this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-						this.servicePriceFormControl(index).setValue(res.price);
-						this.setOriginalAndActualPrices(1, index, quantity);
-						this.calculateFinalPriceAndEarning();
-					},
-					error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
-				})
-			);
-		});
+		this.subscriptions.push(
+			this.getNoteComponentServiceId(index).valueChanges.subscribe((id) => {
+				let quantity = this.serviceQuantityFormControl(index).value;
+				this.subscriptions.push(
+					this._servicePrice.getPrice(this.clientTypeId.value, id).subscribe({
+						next: (res: ServicePricePerClientType) => {
+							//remove service price
+							this.setOriginalAndActualPrices(-1, index, quantity);
+							//add new service price
+							this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
+							this.servicePriceFormControl(index).setValue(res.price);
+							this.setOriginalAndActualPrices(1, index, quantity);
+							this.calculateFinalPriceAndEarning();
+						},
+						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
+					})
+				);
+			})
+		);
 	}
 	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? '';
 	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
@@ -218,16 +222,25 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
-	handleClientTypeChange(id: any) {
+	handleClientTypeChange(id: number) {
+		if (id === null) return;
 		this.subscriptions.push(
 			this._client.getAllByType(id).subscribe({
 				next: (data) => {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
+					this.ClientsDataSource = [];
+					this.clientId.reset();
 					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
 				},
-				complete: () => this.calculateNotePrice(),
+				complete: () => {
+					if (this.clientTembId) {
+						this.clientId.setValue(this.clientTembId);
+						this.clientTembId = null;
+					} else this.clientId.reset();
+					this.calculateNotePrice();
+				},
 			})
 		);
 	}
@@ -241,22 +254,27 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	getSingle = (id: number) => {
 		this.subscriptions.push(
-			this._note.getOne(id).subscribe((data: Note) => {
-				data.noteComponents.forEach((c: NoteComponent) => {
-					this.noteComponents.push(this.createFormItem('noteComponent'));
-					this._servicePrice.getPrice(data.clientTypeId, c.serviceId).subscribe({
-						next: (res) => {
-							this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
-							this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
-						},
-						error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
-						complete: () => {
-							this.Form.patchValue(data);
-							this.subscribeQuantityChanges(data.noteComponents.indexOf(c));
-							this.subscribeServiceChanges(data.noteComponents.indexOf(c));
-						},
+			this._note.getOne(id).subscribe({
+				next: (res) => {
+					let data: Note = res.body;
+					data.noteComponents.forEach((c: NoteComponent) => {
+						this.noteComponents.push(this.createFormItem('noteComponent'));
+						this._servicePrice.getPrice(data.clientTypeId, c.serviceId).subscribe({
+							next: (res) => {
+								this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
+								this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
+							},
+							error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
+							complete: () => {
+								this.subscribeQuantityChanges(data.noteComponents.indexOf(c));
+								this.subscribeServiceChanges(data.noteComponents.indexOf(c));
+							},
+						});
 					});
-				});
+					this.Form.patchValue(data);
+					this.clientTembId = data.clientId;
+				},
+				error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 			})
 		);
 	};
@@ -298,28 +316,27 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				if (this.deletedComponents.length)
 					this.subscriptions.push(
 						this._note.deleteNoteComponents(this.deletedComponents).subscribe({
-							next: () => {},
-							error: (e) => {},
+							error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 						})
 					);
 				this.subscriptions.push(
 					this._note.update(this.id, this.Form.value).subscribe({
-						next: () => {
+						next: (res) => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						error: (e) => console.log(e),
+						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 						complete: () => (this.loading = false),
 					})
 				);
 			} else
 				this.subscriptions.push(
 					this._note.add(this.Form.value).subscribe({
-						next: () => {
+						next: (res) => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						error: (e) => console.log(e),
+						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 						complete: () => (this.loading = false),
 					})
 				);

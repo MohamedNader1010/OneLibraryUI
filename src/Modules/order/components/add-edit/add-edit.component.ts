@@ -172,7 +172,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._note.getAll().subscribe({
 				next: (data) => {
-					this.NotesDataSource = data;
+					this.NotesDataSource = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');

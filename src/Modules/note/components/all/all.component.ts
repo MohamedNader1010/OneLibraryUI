@@ -80,12 +80,13 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.subscriptions.push(
 			this._note.getAll().subscribe({
-				next: (data) => {
-					console.log(data);
-					this.tableData = data;
+				next: (res) => {
+					if (res.body) {
+						this.tableData = res.body;
+					} else this.toastr.error(res.message);
 				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				error: (res) => {
+					this.toastr.error(res.error.body.Message, res.error.message);
 					this.loading = false;
 				},
 				complete: () => {
@@ -97,7 +98,13 @@ export class AllComponent implements OnInit, OnDestroy {
 	handleView(row: any) {
 		this.router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
 	}
-	handleDelete = (id: number) => this.subscriptions.push(this._note.delete(id).subscribe(() => this.getAll()));
+	handleDelete = (id: number) =>
+		this.subscriptions.push(
+			this._note.delete(id).subscribe({
+				error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
+				complete: () => this.getAll(),
+			})
+		);
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

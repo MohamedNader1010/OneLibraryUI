@@ -74,6 +74,8 @@ needed:
  - update order details status to 'ready' with the gevin order details ids , calculate original price for material passed on current quantity
  -handle unused stock of notes
 
+ -display only services which has prices and enough stock===>
+
 order=================================>
 -all (front done)
 -add (front done)

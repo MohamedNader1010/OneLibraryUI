@@ -65,7 +65,7 @@ export class AllByTeacherIdComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._note.getAll().subscribe({
 				next: (data) => {
-					this.tableData = data;
+					this.tableData = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
