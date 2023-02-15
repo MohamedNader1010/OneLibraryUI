@@ -1,13 +1,12 @@
-<br /><br />
-<section class="container d-flex justify-content-center m-auto">
-	<form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column">
-		<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل سعر الخدمة</h2>
-		<ng-template #update>
-			<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
-		</ng-template>
+<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل سعر الخدمة</h2>
+<ng-template #update>
+	<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
+</ng-template>
+<section class="container d-flex justify-content-center">
+	<form [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column w-50">
 		<!-- SERVICES LIST -->
 		<div class="row">
-			<div class="col">
+			<div class="col-6">
 				<mat-form-field appearance="fill" class="col-12">
 					<mat-label>الخدمات</mat-label>
 					<mat-select formControlName="serviceId">
@@ -18,12 +17,9 @@
 					><mat-error *ngIf="f['serviceId']?.errors?.['required']"> serviceName is <strong>required</strong> </mat-error></span
 				>
 			</div>
-		</div>
-		<!-- END OF SERVICES LISTS -->
-
-		<!-- CLIENT TYPE LIST -->
-		<div class="row">
-			<div class="col">
+			<!-- END OF SERVICES LISTS -->
+			<!-- CLIENT TYPE LIST -->
+			<div class="col-6">
 				<mat-form-field appearance="fill" class="col-12">
 					<mat-label>نوع العميل</mat-label>
 					<mat-select formControlName="clientTypeId">
@@ -36,7 +32,6 @@
 			</div>
 		</div>
 		<!-- END OF CLIENT TYPE LIST -->
-
 		<!-- PRICE TEXT FIELD -->
 		<div class="row">
 			<div class="col">
@@ -50,10 +45,9 @@
 			</div>
 		</div>
 		<!-- END OF PRICE TEXT FIELD -->
-
-		<mat-card-actions text-align="center">
+		<div class="my-2 d-flex flex-row-reverse">
 			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !form.valid }}">حفظ</button>
 			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
-		</mat-card-actions>
+		</div>
 	</form>
 </section>
