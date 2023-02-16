@@ -24,7 +24,6 @@ export class LoginGuard implements CanActivate, CanLoad, CanActivateChild {
 		if (token && !this.jwtHelper.isTokenExpired(token)) return true;
 		if (token) return true;
 		const isRefreshSuccess = await this.refreshingTokens(token);
-		console.log('auth', isRefreshSuccess);
 		if (!isRefreshSuccess) this._router.navigate(['/auth/login']);
 		return isRefreshSuccess;
 	}
@@ -34,7 +33,6 @@ export class LoginGuard implements CanActivate, CanLoad, CanActivateChild {
 		let isRefreshSuccess: boolean;
 		try {
 			const res = await lastValueFrom(this._auth.refreshToken());
-			console.log('res', res);
 			localStorage.setItem('token', (<any>res).token);
 			localStorage.setItem('refreshToken', (<any>res).refreshToken);
 			localStorage.setItem('uname', (<any>res).username);

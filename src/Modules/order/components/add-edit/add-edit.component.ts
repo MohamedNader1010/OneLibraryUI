@@ -283,7 +283,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				let price = +(note.finalPrice == null ? 10 : note.finalPrice);
 				let qty = this.OrderDetails.controls[index].get('quantity')?.value;
 				let priceInput = this.OrderDetails.controls[index].get('price');
-				console.log(qty);
 				qty ? priceInput?.setValue(price * +qty) : priceInput?.setValue(price);
 			}
 			this.computeTotalPrice();
@@ -338,7 +337,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 						},
 						(err) => {
 							this.toastr.error(err.error.Message, 'ERROR');
-							console.log(err);
 						}
 					)
 				);
@@ -352,7 +350,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 						},
 						(err) => {
 							this.toastr.error(err.error.Message, 'ERROR');
-							console.log(err);
 						}
 					)
 				);

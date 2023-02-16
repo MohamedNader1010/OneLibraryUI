@@ -20,7 +20,6 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
 				this.subscriptions.push(
 					this._auth.confirmEmail(res.userid, res.token).subscribe({
 						next: (data: Auth) => {
-							console.log(data);
 							localStorage.setItem('token', data.token);
 							localStorage.setItem('refreshToken', data.refreshToken);
 							localStorage.setItem('uname', data.username);

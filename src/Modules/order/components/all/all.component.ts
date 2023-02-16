@@ -59,7 +59,6 @@ export class AllComponent implements OnInit, OnDestroy {
 			this._order.getAll().subscribe({
 				next: (data) => {
 					this.tableData = data;
-					console.log(data);
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');

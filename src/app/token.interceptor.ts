@@ -23,16 +23,12 @@ export class TokenInterceptor implements HttpInterceptor {
 		);
 	}
 	private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-		console.log('unauthorized');
 		if (!this.isRefreshing) {
 			this.isRefreshing = true;
 			this.refreshTokenSubject.next(null);
-			console.log('intcptr');
-
 			return this._auth.refreshToken().pipe(
 				switchMap((res: any) => {
 					this.isRefreshing = false;
-					console.log('intcptr res', res);
 					localStorage.setItem('token', res.token);
 					localStorage.setItem('refreshToken', res.refreshToken);
 					localStorage.setItem('uname', res.username);
@@ -45,7 +41,6 @@ export class TokenInterceptor implements HttpInterceptor {
 				filter((sub) => sub != null),
 				take(1),
 				switchMap((token) => {
-					console.log(token);
 					return next.handle(request.clone({setHeaders: {Authorization: token}}));
 				})
 			);
