@@ -55,11 +55,11 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.loading = true;
 		this.subscriptions.push(
 			this._employee.getAll().subscribe({
-				next: (data) => {
-					this.tableData = data;
+				next: (res) => {
+					this.tableData = res.body;
 				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				error: (res) => {
+					this.toastr.error(res.error.body.Message, res.error.message);
 					this.loading = false;
 				},
 				complete: () => {
@@ -68,7 +68,13 @@ export class AllComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
-	handleDelete = (id: string) => this.subscriptions.push(this._employee.delete(id).subscribe(() => this.getAll()));
+	handleDelete = (id: string) =>
+		this.subscriptions.push(
+			this._employee.delete(id).subscribe({
+				error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
+				complete: () => this.getAll(),
+			})
+		);
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

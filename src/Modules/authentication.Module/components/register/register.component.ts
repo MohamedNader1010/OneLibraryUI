@@ -4,7 +4,6 @@ import {FormGroup, FormBuilder, Validators, FormControl, ValidatorFn, AbstractCo
 import {Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
-import {CustomValidators} from '../../customeValidators/confirmPassword';
 import {Register} from '../../interfaces/IRegister';
 import {AuthService} from '../../services/auth.service';
 
@@ -24,8 +23,8 @@ export class RegisterComponent implements OnDestroy {
 				// phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
 				password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
 				confirmPassword: ['', [Validators.required, Validators.maxLength(100)]],
-			},
-			{validators: CustomValidators.MatchValidator('password', 'confirmPassword')}
+			}
+			// {validators: CustomValidators.MatchValidator('password', 'confirmPassword')}
 		);
 	}
 	get username(): FormControl {

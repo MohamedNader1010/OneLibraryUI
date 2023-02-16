@@ -2,9 +2,9 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {Employee} from '../../interFaces/Iemployee';
 import {EmployeeService} from '../../services/employee.service';
 import {ToastrService} from 'ngx-toastr';
+import {EmailValidator} from 'src/Modules/authentication.Module/customeValidators/CustomValidators';
 
 @Component({
 	selector: 'app-add-edit',
@@ -22,7 +22,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			firstName: ['', [Validators.required, Validators.maxLength(50)]],
 			lastName: ['', [Validators.required, Validators.maxLength(50)]],
 			userName: ['', [Validators.required, Validators.maxLength(50)]],
-			email: ['', [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)]],
+			email: [
+				'',
+				{
+					validators: [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)],
+					asyncValidators: [EmailValidator(_employee, 'email')],
+					updateOn: 'blur',
+				},
+			],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
 		});
 	}
@@ -47,9 +54,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	getSingle = (id: string) =>
 		this.subscriptions.push(
-			this._employee.getOne(id).subscribe((data: Employee[]) => {
-				console.log(data);
-				this.Form.patchValue(data);
+			this._employee.getOne(id).subscribe({
+				next: (data) => {
+					this.Form.patchValue(data.body);
+				},
+				error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 			})
 		);
 	back = () => this.router.navigate([this.controllerName]);
@@ -62,9 +71,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 							this.isSubmitted = true;
 							this.back();
 						},
-						error: (e) => {
-							this.toastr.error(e.error.Message, 'خطأ أثناء حفظ البيانات');
-						},
+						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 					})
 				);
 			else
@@ -74,10 +81,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 							this.isSubmitted = true;
 							this.back();
 						},
-						error: (e) => {
-							console.log(e);
-							this.toastr.error(e.error.Message, 'خطأ أثناء حفظ البيانات');
-						},
+						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
 					})
 				);
 		}
