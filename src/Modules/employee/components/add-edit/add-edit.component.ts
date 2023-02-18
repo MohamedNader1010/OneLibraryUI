@@ -25,9 +25,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			email: [
 				'',
 				{
-					validators: [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)],
-					asyncValidators: [EmailValidator(_employee, 'email')],
-					updateOn: 'blur',
+					validators: [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)]
+					// asyncValidators: [EmailValidator(_employee, 'email')],
+					// updateOn: 'blur',
 				},
 			],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],

@@ -33,9 +33,10 @@ export class LoginGuard implements CanActivate, CanLoad, CanActivateChild {
 		let isRefreshSuccess: boolean;
 		try {
 			const res = await lastValueFrom(this._auth.refreshToken());
-			localStorage.setItem('token', (<any>res).token);
-			localStorage.setItem('refreshToken', (<any>res).refreshToken);
-			localStorage.setItem('uname', (<any>res).username);
+			console.log('from login guard');
+				localStorage.setItem('token', (<any>res).token);
+				localStorage.setItem('refreshToken', (<any>res).refreshToken);
+				localStorage.setItem('uname', (<any>res).username);
 			if ((<any>res).expiresOn) localStorage.setItem('expiresOn', (<any>res).expiresOn.toString());
 			isRefreshSuccess = true;
 		} catch (ex) {

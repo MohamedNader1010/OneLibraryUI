@@ -35,9 +35,9 @@
 						<li class="dropdown-item">
 							<a class="nav-link" [routerLink]="['clientTypes']" routerLinkActive="active link-danger">أنواع العملاء</a>
 						</li>
-						<li class="dropdown-item">
+						<!-- <li class="dropdown-item">
 							<a class="nav-link disabled" [routerLink]="['feadback']" routerLinkActive="active link-danger">تعليقات العملاء</a>
-						</li>
+						</li> -->
 					</ul>
 				</li>
 				<li class="nav-item dropdown">
@@ -46,9 +46,9 @@
 						<li class="dropdown-item">
 							<a class="nav-link" [routerLink]="['employees']" routerLinkActive="active link-danger">الموظفون</a>
 						</li>
-						<li class="dropdown-item">
+						<!-- <li class="dropdown-item">
 							<a class="nav-link disabled" [routerLink]="['attendance']" routerLinkActive="active link-danger">الحضور والانصراف</a>
-						</li>
+						</li> -->
 					</ul>
 				</li>
 				<li class="nav-item">
@@ -57,9 +57,9 @@
 				<li class="nav-item">
 					<a class="nav-link" aria-current="page" [routerLink]="['notes']" routerLinkActive="active link-danger">المذكرات</a>
 				</li>
-				<li class="nav-item">
+				<!-- <li class="nav-item">
 					<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">الطلبات</a>
-				</li>
+				</li> -->
 			</ul>
 			<div class="navbar-nav align-items-start">
 				<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['#']" routerLinkActive="active">مرحبا {{ data.username }}!</a>

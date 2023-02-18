@@ -57,10 +57,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
 	getSingle = (id: number) =>
 		this.subscriptions.push(
-			this.service.getOne(id).subscribe((data: ServicePricePerClientType[]) => {
+			this.service.getOne(id).subscribe((data) => {
 				this.form.patchValue(data);
 			})
 		);
+		
 	get f() {
 		return this.form.controls;
 	}

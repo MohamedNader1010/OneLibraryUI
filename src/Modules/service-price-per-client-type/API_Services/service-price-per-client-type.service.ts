@@ -11,17 +11,9 @@ export class ServicePricePerClientTypeService {
 
 	constructor(private _http: HttpClient) {}
 	add = (model: ServicePricePerClientType) => this._http.post(`${this.uri}`, model);
-	getOne = (id: number) => this._http.get<ServicePricePerClientType[]>(`${this.uri}/GetById?id=${id}`);
-
+	getOne = (id: number) => this._http.get<ServicePricePerClientType>(`${this.uri}/GetById?id=${id}`);
 	getAll = () => this._http.get<ServicePricePerClientTypeService[]>(`${this.uri}`);
-
 	delete = (id: number) => this._http.delete<ServicePricePerClientTypeService>(`${this.uri}?Id=${id}`);
-
-	update = (id: number, order: ServicePricePerClientType) =>
-		this._http.put<ServicePricePerClientType>(`${this.uri}?Id=${id}`, {
-			...order,
-			id,
-		});
-
+	update = (id: number, order: ServicePricePerClientType) =>this._http.put<ServicePricePerClientType>(`${this.uri}?Id=${id}`, {...order,id});
 	getPrice = (clientTypeId: number, serviceId: number) => this._http.get<ServicePricePerClientType>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 }
