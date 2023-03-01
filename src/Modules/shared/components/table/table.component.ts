@@ -1,4 +1,4 @@
-import {LiveAnnouncer} from '@angular/cdk/a11y';
+import { SendDataFromTableToMatDialoge } from './../../services/sendDataFromTableToMatDialoge.service';
 import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
@@ -14,6 +14,7 @@ import {DialogComponent} from '../dialog/dialog.component';
 	styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements OnInit, OnDestroy {
+
 	subscriptions: Subscription[] = [];
 	public dataSource = new MatTableDataSource<any>([]);
 	public displayedColumns!: string[];
@@ -42,9 +43,12 @@ export class TableComponent implements OnInit, OnDestroy {
 	setDataSourceAttributes() {
 		this.dataSource.paginator = this.paginator;
 		this.dataSource.sort = this.sort;
+		
 	}
 	columns: any[] = [];
-	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute) {}
+	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) {
+
+	}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
 	}
@@ -54,9 +58,9 @@ export class TableComponent implements OnInit, OnDestroy {
 	};
 	HandleNew = () => this._router.navigate([`../new`], {relativeTo: this.route});
 	handleEdit = (row: any) => this._router.navigate([`../edit`], {queryParams: {id: row.id}, relativeTo: this.route});
-	handleView = (row: any) => {
-		this.OnView.emit(row);
-		// this._router.navigate([`../details`], {queryParams: {id: row.id}, relativeTo: this.route});
+	handleView = (id: number) => {
+		this.OnView.emit();
+		this.sendRowId.setOrderId(id);
 	};
 	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
 	handleDelete = (row: any) => {

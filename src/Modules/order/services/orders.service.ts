@@ -1,5 +1,6 @@
+import { OrderDetail } from "./../interfaces/IorderDetail";
 import { OrderTransaction } from "./../interfaces/IorderTransaction";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Order } from "../interfaces/Iorder";
 import { environment } from "src/environments/environment";
@@ -23,4 +24,6 @@ export class OrderService {
   // add order transaction, get order by client id , get order within date interval
   addOrderTransaction = (order: OrderTransaction) =>
     this.http.post<OrderTransaction>(`${this.uri}AddOrderTransaction`, order);
+  getOrderDetails = (id: number) =>
+    this.http.get<OrderDetail[]>(`${this.uri}GetOrderDetails?Id=${id}`);
 }
