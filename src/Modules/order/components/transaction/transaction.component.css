@@ -1,0 +1,21 @@
+mat-card {
+  width: 20%;
+}
+:host {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+}
+
+::ng-deep datepicker-value-example .mat-form-field-label {
+  color: #f84bb3;
+}
+
+::ng-deep .mat-datepicker-toggle {
+  color: #ffaadd;
+}
+::ng-deep .mat-form-field-underline {
+  color: #ffaadd;
+}

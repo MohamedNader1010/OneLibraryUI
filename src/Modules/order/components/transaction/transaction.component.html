@@ -1,1 +1,46 @@
-<h1>new order transaction</h1>
+<mat-card class="container mat-elevation-z15 py-2">
+  <form [formGroup]="Form" (ngSubmit)="handleSubmit()">
+    <mat-card-header>
+      <mat-card-title>Transaction</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="fill" class="w-100" color="accent">
+        <mat-label>order ID</mat-label>
+        <input type="text" matInput formControlName="orderId" readonly />
+        <mat-error *ngIf="f['orderId'].errors?.['required']"
+          >Order ID is required.</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="w-100" color="accent">
+        <mat-label>Paid</mat-label>
+        <input id="paid" matInput type="number" formControlName="paid" />
+        <mat-error *ngIf="f['paid'].errors?.['required']"
+          >Paid Price is required.</mat-error
+        >
+
+        <mat-error *ngIf="f['paid'].hasError('exceed')">
+          Paid should be < or = {{f['paid'].errors?.['value']}}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="w-100" color="accent">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date" />
+        <mat-error *ngIf="f['date'].errors?.['required']"
+          >Date is required.</mat-error
+        >
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker disabled="false"></mat-datepicker>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions align="start" class="justify-content-between">
+      <button mat-flat-button color="warn" [disabled]="!Form.valid">Save</button>
+    </mat-card-actions>
+  </form>
+</mat-card>

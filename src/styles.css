@@ -2,33 +2,23 @@
 
 html,
 body {
-	height: 100%;
-}
-body {
-	margin: 0;
-	font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
-
-html,
-body {
-	height: 100%;
-}
-body {
-	margin: 0;
-	font-family: Roboto, 'Helvetica Neue', sans-serif;
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 ::-webkit-scrollbar-track {
-	border-radius: 3%;
-	background-color: transparent;
-	cursor: pointer;
+  border-radius: 3%;
+  background-color: transparent;
+  cursor: pointer;
 }
 ::-webkit-scrollbar {
-	width: 7px;
-	height: 7px;
-	background-color: transparent;
+  width: 7px;
+  height: 7px;
+  background-color: transparent;
 }
 ::-webkit-scrollbar-thumb {
-	border-radius: 15px;
-	background-color: rgba(85, 85, 85, 0.541);
+  border-radius: 15px;
+  background-color: rgba(85, 85, 85, 0.541);
 }
+
