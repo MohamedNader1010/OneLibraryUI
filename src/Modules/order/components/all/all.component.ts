@@ -6,7 +6,7 @@ import {Status} from '../../Enums/status';
 import {Order} from '../../interfaces/Iorder';
 import {OrderService} from '../../services/orders.service';
 import {DetailsComponent} from '../details/details.component';
-import {Client} from './../../../client/interFaces/Iclient';
+
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -48,7 +48,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			{
 				columnDef: 'Client',
 				header: 'العميل',
-				cell: (element: Order) => `${element.client}`,
+				cell: (element: Order) => `${element.clientName}`,
 			},
 		];
 		this.getAll();
@@ -58,6 +58,7 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._order.getAll().subscribe({
 				next: (data) => {
+					console.log(data)
 					this.tableData = data;
 				},
 				error: (e) => {

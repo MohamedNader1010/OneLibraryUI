@@ -257,7 +257,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	get OrderDetails(): FormArray {
 		return this.Form.get('orderDetails') as FormArray;
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data[0])));
+	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
