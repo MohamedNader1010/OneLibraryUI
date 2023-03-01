@@ -6,4 +6,5 @@ export interface OrderDetail {
 	noteId: number;
 	note: string;
 	orderId: number;
+	quantity:number;
 }
