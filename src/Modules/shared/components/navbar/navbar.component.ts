@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthService} from 'src/Modules/authentication.Module/services/auth.service';
 
@@ -7,10 +7,13 @@ import {AuthService} from 'src/Modules/authentication.Module/services/auth.servi
 	templateUrl: './navbar.component.html',
 	styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
 	@Input() opened: boolean | undefined;
 	@Output() toggleSidenav = new EventEmitter<boolean>();
 	constructor(public data: AuthService, private router: Router) {}
+	ngOnInit(): void {
+		this.data.username.next(localStorage.getItem('uname'));
+	}
 	handleLogout() {
 		localStorage.removeItem('token');
 		localStorage.removeItem('refreshToken');
