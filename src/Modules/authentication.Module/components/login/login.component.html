@@ -1,18 +1,18 @@
-<mat-card class="container mat-elevation-z15 py-2">
-	<div class="text-center my-5">
+<mat-card class="shadow-lg pt-4" style="width: 450px; border: 1px solid #dadce0">
+	<div class="text-center my-2">
 		<img src="/assets/Layer.png" alt="One Library" width="100" />
 	</div>
 	<form [formGroup]="loginForm" (ngSubmit)="handleSubmit()">
 		<mat-card-header>
-			<mat-card-title>تسجيل الدخول</mat-card-title>
+			<mat-card-title class="mb-3">تسجيل الدخول</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
-			<mat-form-field appearance="fill" class="w-100">
+			<mat-form-field appearance="outline" class="w-100">
 				<mat-label>أسم المستخدم</mat-label>
 				<input type="text" matInput formControlName="userName" />
 				<mat-error *ngIf="userName.errors?.['required']">يجب ادخال أسم المستخدم </mat-error>
 			</mat-form-field>
-			<mat-form-field appearance="fill" class="w-100">
+			<mat-form-field appearance="outline" class="w-100">
 				<mat-label>الرقم السري</mat-label>
 				<input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
 				<button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
@@ -26,11 +26,8 @@
 		</mat-card-content>
 
 		<mat-card-actions align="start" class="justify-content-between">
-			<button mat-flat-button color="warn" [disabled]="!loginForm.valid">تسجيل الدخول</button>
-			<a color="basic" routerLink="" class="nav-link">نسيت كلمة السر؟</a>
+			<button mat-raised-button color="primary" [disabled]="!loginForm.valid || logging">تسجيل الدخول</button>
+			<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleForgetPassword()">نسيت كلمة السر؟</button>
 		</mat-card-actions>
-		<!-- <mat-card-footer>
-			<mat-progress-bar mode="query"></mat-progress-bar>
-		</mat-card-footer> -->
 	</form>
 </mat-card>

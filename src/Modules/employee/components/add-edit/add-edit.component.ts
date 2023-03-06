@@ -4,7 +4,6 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {EmployeeService} from '../../services/employee.service';
 import {ToastrService} from 'ngx-toastr';
-import {EmailValidator} from 'src/Modules/authentication.Module/customeValidators/CustomValidators';
 
 @Component({
 	selector: 'app-add-edit',
@@ -25,9 +24,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			email: [
 				'',
 				{
-					validators: [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)]
-					// asyncValidators: [EmailValidator(_employee, 'email')],
-					// updateOn: 'blur',
+					validators: [Validators.required, Validators.email, Validators.pattern(`^.+@.+\..+$`)],
 				},
 			],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],

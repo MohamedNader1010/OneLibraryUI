@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import {Auth} from '../../interfaces/IAuth';
 import {Subscription, lastValueFrom} from 'rxjs';
+import {Response} from './../../../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-confirm-email',
@@ -19,18 +20,22 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
 			this.route.queryParams.subscribe((res: any) => {
 				this.subscriptions.push(
 					this._auth.confirmEmail(res.userid, res.token).subscribe({
-						next: (data: Auth) => {
-							localStorage.setItem('token', data.token);
-							localStorage.setItem('refreshToken', data.refreshToken);
-							localStorage.setItem('uname', data.username);
+						next: (data: Response) => {
+							let auth: Auth = data.body;
+							this._auth.setLocalStorage(auth);
+							this._auth.username.next(auth.username);
+							this._auth.isLogged = true;
+							this.toastr.success(data.message, 'logged in');
 						},
 						error: (e) => {
 							this._auth.isLogged = false;
-							this.toastr.error(e.error, 'unauthorized');
+							this._auth.username.next(null);
+							this._auth.clearLocalStorage();
+							let res: Response = e.error ?? e;
+							this.toastr.error(res.message, 'unauthorized');
 						},
 						complete: () => {
 							this.router.navigate(['']);
-							this.toastr.success('loged in successfully', 'logged in');
 						},
 					})
 				);

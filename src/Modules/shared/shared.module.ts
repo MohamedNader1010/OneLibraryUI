@@ -13,11 +13,13 @@ import {TableComponent} from './components/table/table.component';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {NgxPrintModule} from 'ngx-print';
 import {LoadingBarRouterModule} from '@ngx-loading-bar/router';
-import { FeadbackModule } from '../feadback/feadback.module';
+import {FeadbackModule} from '../feadback/feadback.module';
+import {ProfileComponent} from './components/profile/profile.component';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 
 @NgModule({
-	declarations: [SharedComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
-	imports: [LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule, FeadbackModule],
+	declarations: [SharedComponent, ProfileComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
+	imports: [LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule, ReactiveFormsModule, FormsModule],
 	exports: [TableComponent],
 	providers: [LoginGuard, AuthService],
 })

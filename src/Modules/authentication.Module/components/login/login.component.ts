@@ -5,6 +5,7 @@ import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {Auth} from '../../interfaces/IAuth';
 import {AuthService} from './../../services/auth.service';
+import {Response} from './../../../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent implements OnDestroy {
 	subscriptions: Subscription[] = [];
 	loginForm: FormGroup;
 	hide = true;
+	logging: boolean = false;
 	constructor(private router: Router, private _login: AuthService, private fb: FormBuilder, private toastr: ToastrService) {
 		this.loginForm = this.fb.group({
 			userName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -27,25 +29,31 @@ export class LoginComponent implements OnDestroy {
 	get password(): FormControl {
 		return this.loginForm.get('password') as FormControl;
 	}
-	handleRegister() {
-		this.router.navigate(['auth/register']);
+	handleForgetPassword() {
+		this.router.navigate(['auth/forgetPassword']);
 	}
 	handleSubmit() {
 		if (this.loginForm.valid) {
 			this.subscriptions.push(
 				this._login.login(this.loginForm.value).subscribe({
-					next: (data: Auth) => {
-						this.toastr.success('loged in successfully', 'logged in');
-						localStorage.setItem('token', data.token);
-						localStorage.setItem('refreshToken', data.refreshToken);
-						localStorage.setItem('uname', data.username);
-						this.router.navigate(['']);
+					next: (data: Response) => {
+						let auth: Auth = data.body;
+						this._login.setLocalStorage(auth);
+						this._login.username.next(auth.username);
+						this._login.isLogged = true;
 					},
 					error: (e) => {
-						
+						this.logging = false;
 						this._login.isLogged = false;
-						this.toastr.error(e.error, 'unauthorized');
-						
+						this._login.username.next(null);
+						this._login.clearLocalStorage();
+						let res: Response = e.error ?? e;
+						this.toastr.error(res.message, 'unauthorized');
+					},
+					complete: () => {
+						this.logging = false;
+						this.toastr.success('loged in sucessfully', 'logged in');
+						this.router.navigate(['']);
 					},
 				})
 			);
