@@ -34,6 +34,7 @@ export class LoginComponent implements OnDestroy {
 	}
 	handleSubmit() {
 		if (this.loginForm.valid) {
+			this.logging = true;
 			this.subscriptions.push(
 				this._login.login(this.loginForm.value).subscribe({
 					next: (data: Response) => {
