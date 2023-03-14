@@ -16,6 +16,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	id!: string;
 	controllerName: string = 'employees';
 	isSubmitted: boolean = false;
+
 	constructor(private router: Router, private route: ActivatedRoute, private _employee: EmployeeService, private fb: FormBuilder, private toastr: ToastrService) {
 		this.Form = this.fb.group({
 			firstName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -30,28 +31,35 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
 		});
 	}
+
 	get firstName(): FormControl {
 		return this.Form.get('firstName') as FormControl;
 	}
+
 	get lastName(): FormControl {
 		return this.Form.get('lastName') as FormControl;
 	}
+
 	get userName(): FormControl {
 		return this.Form.get('userName') as FormControl;
 	}
+
 	get email(): FormControl {
 		return this.Form.get('email') as FormControl;
 	}
+
 	get phoneNumber(): FormControl {
 		return this.Form.get('phoneNumber') as FormControl;
 	}
+
 	ngOnInit(): void {
 		this.subscriptions.push(this.route.queryParams.subscribe((params) => (this.id = params['id'])));
 		if (this.id) this.getSingle(this.id);
 	}
+
 	getSingle = (id: string) =>
 		this.subscriptions.push(
-			this._employee.getOne(id).subscribe({
+			this._employee.GetById(id).subscribe({
 				next: (data) => {
 					this.Form.patchValue(data.body);
 				},
@@ -59,6 +67,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			})
 		);
 	back = () => this.router.navigate([this.controllerName]);
+
 	handleSubmit() {
 		if (this.Form.valid) {
 			if (this.id)
@@ -83,6 +92,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				);
 		}
 	}
+
 	ngOnDestroy() {
 		this.subscriptions.forEach((s) => s.unsubscribe());
 	}

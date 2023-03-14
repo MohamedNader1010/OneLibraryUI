@@ -18,11 +18,11 @@ export class AllComponent implements OnInit, OnDestroy {
 	constructor(private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.tableColumns = [
-			// {
-			// 	columnDef: 'id',
-			// 	header: '#',
-			// 	cell: (element: Employee) => element.id,
-			// },
+			{
+				columnDef: 'id',
+				header: '#',
+				cell: (element: Employee) => this.tableData.indexOf(element) + 1,
+			},
 			{
 				columnDef: 'Name',
 				header: 'الأسم',
@@ -56,6 +56,8 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._employee.getAll().subscribe({
 				next: (res) => {
+					console.log(res);
+
 					this.tableData = res.body;
 				},
 				error: (res) => {
