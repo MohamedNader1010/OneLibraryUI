@@ -145,6 +145,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	getAllClientsByType(data: any) {
 		this._clientTypeId = data.value;
+		console.log(data.value, this._clientTypeId);
+		if (!this._clientTypeId) return;
 		this.subscriptions.push(
 			this._client.getAllByType(data.value).subscribe({
 				next: (data) => {

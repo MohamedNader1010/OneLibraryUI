@@ -7,7 +7,7 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
 				<mat-label>نوع العميل</mat-label>
-				<mat-select formControlName="clientTypeId" (selectionChange)="getAllClientsByType($event)">
+				<mat-select (selectionChange)="getAllClientsByType($event)">
 					<mat-option (onSelectionChange)="getAllClientsByType(mat)" *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
