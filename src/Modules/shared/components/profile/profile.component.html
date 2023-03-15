@@ -1,35 +1,35 @@
 <div class="container pt-5">
 	<div class="row d-flex justify-content-center align-items-center">
 		<div class="card" style="border-radius: 0.5rem">
-			<div class="row">
+			<div class="row flex-row-reverse">
 				<div class="col-5 gradient-custom text-white d-flex justify-content-center flex-column align-items-center" style="border-top-left-radius: 0.5rem; border-bottom-left-radius: 0.5rem">
 					<h1>{{ firstName.value + ' ' + lastName.value }}</h1>
 					<h4>{{ title.value }}</h4>
-					<button *ngIf="!IsEdit" class="text-white" mat-stroked-button matTooltip="edit" aria-label="edit user" (click)="handleEdit()"><mat-icon>edit</mat-icon> update profile</button>
+					<button *ngIf="!IsEdit" class="text-white" mat-stroked-button matTooltip="edit" aria-label="edit user" (click)="handleEdit()"><mat-icon>edit</mat-icon> تحديث البيانات</button>
 				</div>
 				<div class="col-7">
 					<div class="card-body p-4">
-						<h3>Information</h3>
+						<h3>المعلومات الشخصية</h3>
 						<hr class="mt-0 mb-4" />
 						<form [formGroup]="form" (ngSubmit)="handleSubmit()">
 							<div class="row">
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>First Name</mat-label>
+										<mat-label>الأسم الاول</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="firstName" />
-										<mat-error *ngIf="firstName.errors?.['required']"> username is <strong>required</strong> </mat-error>
+										<mat-error *ngIf="firstName.errors?.['required']">يجب ادخال الاسم الاول </mat-error>
 										<mat-error *ngIf="firstName.hasError('maxlength') && !firstName.errors?.['required']">
-											first name must be less than {{firstName.errors?.['maxlength']['requiredLength']}} character
+											يجب ان يكون الاسم اقل من {{firstName.errors?.['maxlength']['requiredLength']}} حرف
 										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>Last Name</mat-label>
+										<mat-label>الأسم الاخير</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="lastName" />
-										<mat-error *ngIf="lastName.errors?.['required']"> last name is <strong>required</strong> </mat-error>
+										<mat-error *ngIf="lastName.errors?.['required']"> يجب ادخال الاسم الاخير </mat-error>
 										<mat-error *ngIf="lastName.hasError('maxlength') && !lastName.errors?.['required']">
-											last name must be less than {{lastName.errors?.['maxlength']['requiredLength']}} character
+											يجب ان يكون الاسم الاخير اقل من {{lastName.errors?.['maxlength']['requiredLength']}} حرف
 										</mat-error>
 									</mat-form-field>
 								</div>
@@ -37,94 +37,92 @@
 							<div class="row">
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>Position</mat-label>
+										<mat-label>المكان</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="position" />
 									</mat-form-field>
 								</div>
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>Title</mat-label>
+										<mat-label>المسمى</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="title" />
-										<mat-error *ngIf="title.errors?.['required']"> title is <strong>required</strong> </mat-error>
+										<mat-error *ngIf="title.errors?.['required']"> يجب ادخال المسمى </mat-error>
 									</mat-form-field>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>Username</mat-label>
+										<mat-label>أسم المستخدم</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="userName" />
-										<mat-hint>only English charachters and numbers are allowed</mat-hint>
-										<mat-error *ngIf="userName.errors?.['required']"> username is <strong>required</strong> </mat-error>
+										<mat-hint>مسموح فقط بالأحرف الانجليزية والارقام</mat-hint>
+										<mat-error *ngIf="userName.errors?.['required']"> يجب ادخال اسم المستخدم </mat-error>
 										<mat-error *ngIf="userName.hasError('maxlength') && !userName.errors?.['required']">
-											username must be less than {{userName.errors?.['maxlength']['requiredLength']}} character
+											يجب ان يكون أسم المستخدم اقل من {{userName.errors?.['maxlength']['requiredLength']}} حرف
 										</mat-error>
 									</mat-form-field>
 								</div>
 								<div class="col-6">
 									<mat-form-field appearance="fill" class="w-100">
-										<mat-label>Phone Number</mat-label>
+										<mat-label>رقم الهاتف</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="tel" formControlName="phoneNumber" />
 										<mat-icon matSuffix>phone</mat-icon>
-										<mat-hint>make sure that suppplied phone number has <strong>Whatsapp</strong> account</mat-hint>
-										<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> Please enter a valid phone number </mat-error>
-										<mat-error *ngIf="phone.errors?.['required']"> phone number is <strong>required</strong> </mat-error>
+										<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> يجب ادخال رقم هاتف صحيح </mat-error>
+										<mat-error *ngIf="phone.errors?.['required']"> يجب ادخال رقم الهاتف </mat-error>
 									</mat-form-field>
 								</div>
 							</div>
 							<mat-form-field appearance="fill" class="w-100">
-								<mat-label>Email</mat-label>
+								<mat-label>البريد الالكتروني</mat-label>
 								<input [readonly]="!IsEdit" matInput autocomplete="off" type="email" formControlName="email" />
 								<mat-icon matSuffix>email</mat-icon>
-								<mat-error *ngIf="email.errors?.['required']"> email is <strong>required</strong> </mat-error>
-								<mat-error *ngIf="email.errors?.['email']"> email is <strong>invalid</strong> </mat-error>
+								<mat-error *ngIf="email.errors?.['required']"> يجب ادخال البريد الالكتروني </mat-error>
+								<mat-error *ngIf="email.errors?.['email']"> البريد الالكتروني غير صحيح </mat-error>
 							</mat-form-field>
 							<div *ngIf="IsEdit">
 								<section align="end" class="justify-content-between">
-									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancel()">cancel</button>
-									<button mat-raised-button color="primary" [disabled]="!form.valid || submitting">{{ submitting ? 'wait' : 'save' }}</button>
+									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancel()">إلغاء</button>
+									<button mat-raised-button color="primary" [disabled]="!form.valid || submitting">{{ submitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 								</section>
 							</div>
 						</form>
-						<!-- <mat-icon>admin_panel_settings</mat-icon> -->
-						<h3>Authintication</h3>
+						<h3>الأمان</h3>
 						<hr class="mt-0 mb-4" />
 						<div *ngIf="!updatePassword">
-							<button mat-raised-button extended matTooltip="edit" aria-label="edit user" (click)="handleEditPassword()">update password<mat-icon>edit</mat-icon></button>
+							<button mat-raised-button extended matTooltip="edit" aria-label="edit user" (click)="handleEditPassword()">تغيير كلمة السر <mat-icon>edit</mat-icon></button>
 						</div>
 						<div *ngIf="updatePassword">
 							<form [formGroup]="passwordForm" (ngSubmit)="handleSubmitNewPassword()">
 								<mat-form-field appearance="fill" class="w-100">
-									<mat-label>Old Password</mat-label>
+									<mat-label>كلمة السر السابقة</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="off" [type]="hide ? 'password' : 'text'" formControlName="oldPassword" />
 									<button *ngIf="updatePassword" type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
 										<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
 									</button>
-									<mat-error *ngIf="oldPassword.errors?.['required']"> Password is <strong>required</strong> </mat-error>
+									<mat-error *ngIf="oldPassword.errors?.['required']"> يجب ادخال كلمة السر السابقة </mat-error>
 								</mat-form-field>
 								<mat-form-field appearance="fill" class="w-100">
-									<mat-label>New Password</mat-label>
+									<mat-label>كلمة السر الجديدة</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="new-password" [type]="hideNew ? 'password' : 'text'" formControlName="newPassword" />
 									<button type="button" mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
 										<mat-icon>{{ hideNew ? 'visibility_off' : 'visibility' }}</mat-icon>
 									</button>
 									<mat-error *ngIf="newPassword.errors?.['minlength'] && !newPassword.errors?.['required']">
-										new password must be greater than {{newPassword.errors?.['minlength']?.['requiredLength']}} character
+										يجب ان يكون كلمة السر اقل من {{userName.errors?.['maxlength']['requiredLength']}} حرف
 									</mat-error>
-									<mat-error *ngIf="newPassword.errors?.['required']"> Password is <strong>required</strong> </mat-error>
+									<mat-error *ngIf="newPassword.errors?.['required']"> يجب ادخال كلمة السر </mat-error>
 								</mat-form-field>
 								<mat-form-field appearance="fill" class="w-100">
-									<mat-label>Confirm New Password</mat-label>
+									<mat-label>تأكيد كلمة السر</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="new-password" [type]="hideConfirm ? 'password' : 'text'" formControlName="confirmPassword" />
 									<button type="button" mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide confirm password'" [attr.aria-pressed]="hideConfirm">
 										<mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
 									</button>
-									<mat-error *ngIf="confirmPassword.errors?.['required']"> confirm Password is <strong>required</strong> </mat-error>
+									<mat-error *ngIf="confirmPassword.errors?.['required']"> يجب تأكيد كلمة السر </mat-error>
 								</mat-form-field>
-								<mat-error *ngIf="passwordForm.hasError('mismatch') &&!confirmPassword.errors?.['required']"> confirm Password is incorrect </mat-error>
+								<mat-error *ngIf="passwordForm.hasError('mismatch') &&!confirmPassword.errors?.['required']"> كلمة السر غير متطابقة </mat-error>
 								<section align="end" class="justify-content-between">
-									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancelPasswordEdit()">cancel</button>
-									<button mat-raised-button color="primary" [disabled]="!form.valid || submittingPassword">{{ submittingPassword ? 'wait' : 'save' }}</button>
+									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancelPasswordEdit()">إلغاء</button>
+									<button mat-raised-button color="primary" [disabled]="!form.valid || submittingPassword">{{ submittingPassword ? 'انتظر من فضلك' : 'حفظ' }}</button>
 								</section>
 							</form>
 						</div>
