@@ -19,6 +19,8 @@
 						{{ option.name }}
 					</mat-option>
 				</mat-autocomplete>
+				<mat-error *ngIf="clientId.hasError('notFound')">أسم العميل غير صحيح</mat-error>
+				<mat-error *ngIf="clientId.hasError('required') && (clientId.touched || clientId.dirty)"> يجب ادخال اسم العميل </mat-error>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-3">
 				<mat-label>المرحلة</mat-label>
@@ -53,9 +55,17 @@
 				</mat-form-field>
 			</div>
 			<div class="col-1">
-				<button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add note component row" (click)="handleNewNoteComponent()">
+				<button
+					type="button"
+					mat-icon-button
+					matTooltip="add"
+					color="basic"
+					aria-label="add note component row"
+					(click)="handleNewNoteComponent()"
+					[disabled]="!clientId.value || clientId.invalid">
 					<mat-icon>add</mat-icon>
 				</button>
+				<!-- <mat-hint>test</mat-hint> -->
 			</div>
 		</div>
 		<!-- note components -->
