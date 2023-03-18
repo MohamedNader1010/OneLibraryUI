@@ -1,100 +1,100 @@
 <h2 mat-dialog-title>تفاصيل الطلب</h2>
-<mat-dialog-content class="mat-typography" style="width:800px">
-  <div class="info">
-    <div class="row">
-      <div class="col-7">
-        <span id="heading">التاريخ</span><br />
-        <span id="details">{{ order.createdOn | date }}</span>
-      </div>
-      <div class="col-5 pull-right">
-        <span id="heading">كود الطلب</span><br />
-        <span id="details">{{ order.id }}</span>
-      </div>
-    </div>
-  </div>
-  <div class="pricing">
-    <div class="row">
-      <div class="col-6">
-        <h4>الصنف</h4>
-      </div>
-      <div class="col-3">
-        <h4>الكمية</h4>
-      </div>
-      <div class="col-3">
-        <h4>السعر</h4>
-      </div>
-    </div>
-    <div class="row" *ngFor="let o of order.orderDetails">
-      <div class="col-6">
-        <h5>{{ o.noteId == null ? "service" : "note" }}</h5>
-      </div>
-      <div class="col-3">
-        <h5>&pound;{{ o.quantity }}</h5>
-      </div>
-      <div class="col-3">
-        <h5>&pound;{{ o.price }}</h5>
-      </div>
-    </div>
-  </div>
-  <div class="total">
-    <div class="row">
-      <div class="col-9">الأجمالي</div>
-      <div class="col-3">
-        <strong>&pound;{{ order.totalPrice }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9">الخصم بالمبلغ</div>
-      <div class="col-3">
-        <strong>&pound;{{ order.discount }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9">نسبة الخصم</div>
-      <div class="col-3">
-        <strong>% {{ order.discountPercent }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9">السعر النهائي</div>
-      <div class="col-3">
-        <strong>&pound;{{ order.finalPrice }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9">المدفوع</div>
-      <div class="col-3">
-        <strong>&pound;{{ order.paid }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-9">المتبقي</div>
-      <div class="col-3">
-        <strong>&pound;{{ order.rest }}</strong>
-      </div>
-    </div>
-  </div>
-  <h3>تتبع الطلب</h3>
-  <div
-    class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center"
-  >
-    <mat-progress-bar
-      class="row w-100"
-      mode="determinate"
-      [value]="orderTrackingProgress(order.orderStatus)"
-      color="warn"
-    ></mat-progress-bar>
-    <ul class="tracklist row w-100">
-      <li class="col-nader text-nowrap me-0">مرتجع</li>
-      <li class="col-nader text-nowrap me-0">حجز</li>
-      <li class="col-nader text-nowrap me-0">اعداد</li>
-      <li class="col-nader text-nowrap me-0">غير مكتمل</li>
-      <li class="col-nader text-nowrap me-0">مالك</li>
-      <li class="col-nader text-nowrap me-0">جاهز</li>
-      <li class="col-nader text-nowrap me-0">اكتمل</li>
-      <li class="col-nader text-nowrap me-0">تم التسليم</li>
-    </ul>
-  </div>
+<mat-dialog-content class="mat-typography" style="width: 800px">
+	<div class="info">
+		<div class="row">
+			<div class="col-4">
+				<span id="heading"><strong>التاريخ</strong></span>
+				<br />
+				<span id="details">{{ order.createdOn | date }}</span>
+			</div>
+			<div class="col-4">
+				<span id="heading"><strong>تم بواسطة</strong></span>
+				<br />
+				<span id="details">{{ order.createdBy }}</span>
+			</div>
+			<div class="col-4">
+				<span id="heading"><strong>كود الطلب</strong></span>
+				<br />
+				<span id="details">{{ order.id }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="pricing">
+		<div class="row">
+			<div class="col-6">
+				<h4><strong>الصنف</strong></h4>
+			</div>
+			<div class="col-3">
+				<h4><strong>الكمية</strong></h4>
+			</div>
+			<div class="col-3">
+				<h4><strong>السعر</strong></h4>
+			</div>
+		</div>
+		<div class="row" *ngFor="let o of order.orderDetails">
+			<div class="col-6">
+				<h5>{{ o.noteId == null ? 'service' : 'note' }}</h5>
+			</div>
+			<div class="col-3">
+				<h5>{{ o.quantity }}</h5>
+			</div>
+			<div class="col-3">
+				<h5>&pound;{{ o.price }}</h5>
+			</div>
+		</div>
+	</div>
+	<div class="total">
+		<div class="row">
+			<div class="col-9">الأجمالي</div>
+			<div class="col-3">
+				<strong>&pound;{{ order.totalPrice }}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9">الخصم بالمبلغ</div>
+			<div class="col-3">
+				<strong>&pound;{{ order.discount }}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9">نسبة الخصم</div>
+			<div class="col-3">
+				<strong>% {{ order.discountPercent }}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9">السعر النهائي</div>
+			<div class="col-3">
+				<strong>&pound;{{ order.finalPrice }}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9">المدفوع</div>
+			<div class="col-3">
+				<strong>&pound;{{ order.paid }}</strong>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9">المتبقي</div>
+			<div class="col-3">
+				<strong>&pound;{{ order.rest }}</strong>
+			</div>
+		</div>
+	</div>
+	<h3><strong>تتبع الطلب</strong></h3>
+	<div class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
+		<mat-progress-bar class="row" mode="determinate" [value]="orderTrackingProgress(order.orderStatus)" color="warn"></mat-progress-bar>
+		<ul class="tracklist row w-100 justify-content-between">
+			<!-- <li class="col-nader text-nowrap me-0">مرتجع</li> -->
+			<!-- <li class="col-nader text-nowrap me-0">حجز</li> -->
+			<li class="col-nader text-nowrap me-0">غير مكتمل</li>
+			<li class="col-nader text-nowrap me-0">اعداد</li>
+			<!-- <li class="col-nader text-nowrap me-0">مالك</li> -->
+			<li class="col-nader text-nowrap me-0">جاهز</li>
+			<li class="col-nader text-nowrap me-0">تم التسليم</li>
+			<li class="col-nader text-nowrap me-0">اكتمل</li>
+		</ul>
+	</div>
 </mat-dialog-content>
 <!-- <mat-dialog-actions align="end">
 	<button mat-button mat-dialog-close>Cancel</button>

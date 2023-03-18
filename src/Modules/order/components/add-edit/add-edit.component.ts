@@ -17,6 +17,7 @@ import {ClientTypeService} from 'src/Modules/clientType/services/clientType.serv
 import {ClientService} from 'src/Modules/client/services/client.service';
 import {Status} from '../../Enums/status';
 import {MatSelect} from '@angular/material/select';
+import {Order} from '../../interfaces/Iorder';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -252,8 +253,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		});
 		this.Form.get('totalPrice')?.setValue(this.totalPrice);
 	}
-	fillFormWithData(datasource: any) {
-		datasource.details.forEach(() => this.handleNewDetail());
+	fillFormWithData(datasource: Order) {
+		datasource.orderDetails.forEach(() => this.handleNewDetail());
 		this.Form.patchValue(datasource);
 	}
 	get OrderDetails(): FormArray {
