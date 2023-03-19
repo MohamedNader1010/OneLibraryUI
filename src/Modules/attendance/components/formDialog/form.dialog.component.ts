@@ -8,6 +8,7 @@ import {AttendanceService} from './../../services/attendance.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {Employee} from './../../../employee/interFaces/Iemployee';
 import {EmployeeService} from './../../../employee/services/employee.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
 	selector: 'app-form.dialog',
@@ -25,13 +26,15 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		private _attendance: AttendanceService,
 		private fb: FormBuilder,
 		private toastr: ToastrService,
-		private _employee: EmployeeService
+		private _employee: EmployeeService,
+		private datePipe: DatePipe
 	) {
 		this.form = this.fb.group({
 			id: [null],
 			employeeId: [null, [Validators.required]],
 			checkIn: [null, [Validators.required]],
-			checkOut: [null, [Validators.required]],
+			checkOut: [null],
+			employee: [''],
 		});
 	}
 	get id(): FormControl {
@@ -63,7 +66,15 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 					this.toastr.error(res.message);
 				},
 				complete: () => {
-					if (this.data) this.form.patchValue(this.data);
+					if (this.data) {
+						this.form.patchValue({
+							id: this.data.id,
+							employeeId: this.data.employeeId,
+							employee: this.data.employee,
+							checkIn: this.datePipe.transform(this.data.checkIn, 'HH:mm'),
+							checkOut: this.datePipe.transform(this.data.checkOut, 'HH:mm'),
+						});
+					}
 				},
 			})
 		);

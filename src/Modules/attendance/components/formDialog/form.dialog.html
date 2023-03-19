@@ -4,15 +4,22 @@
 		<h2 mat-dialog-title>تسجيل حضور و انصراف</h2>
 	</ng-template>
 	<mat-dialog-content>
+		<h4 *ngIf="data"><strong>التاريخ :</strong> {{data.checkIn| date : 'dd/MM/yyyy'}}</h4>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
-				<mat-form-field appearance="fill" class="w-100">
+				<mat-form-field appearance="fill" class="w-100" *ngIf="!employeeId.value; else disabled">
 					<mat-label>الموظف</mat-label>
 					<mat-select formControlName="employeeId">
 						<mat-option *ngFor="let emp of EmployeesDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
 					</mat-select>
 					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
 				</mat-form-field>
+				<ng-template #disabled>
+					<mat-form-field appearance="fill" class="w-100">
+						<mat-label>الموظف</mat-label>
+						<input type="text" matInput readonly="true" formControlName="employee" />
+					</mat-form-field>
+				</ng-template>
 			</div>
 			<div class="row">
 				<div class="col-6">
@@ -28,7 +35,6 @@
 						<mat-label>انصراف</mat-label>
 						<mat-hint>HH:MM AM/PM</mat-hint>
 						<input matInput type="time" formControlName="checkOut" />
-						<mat-error *ngIf="checkOut.hasError('required') && (checkOut.touched || checkOut.dirty)"> يجب ادخال وقت الانصراف </mat-error>
 					</mat-form-field>
 				</div>
 			</div>

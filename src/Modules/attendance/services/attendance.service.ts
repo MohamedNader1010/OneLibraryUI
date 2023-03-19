@@ -36,14 +36,12 @@ export class AttendanceService extends GenericService<Attendance, Response> {
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
 				this.loadingData.next(true);
-				console.log(data.body);
-
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {
 				this.loadingData.next(false);
 				let res: Response = e.error ?? e;
-				this.toastr.error(res.message, 'loading failed');
+				this.toastr.error(res.message);
 			},
 			complete: () => this.loadingData.next(false),
 		});

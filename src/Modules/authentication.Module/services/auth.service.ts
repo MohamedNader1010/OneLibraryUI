@@ -43,13 +43,6 @@ export class AuthService {
 	}
 	refreshToken() {
 		return this.http.post<Response>(`${this.uri}refreshToken`, {token: localStorage.getItem('refreshToken')});
-		// .pipe(
-		// 	catchError(() => {
-		// 		this.username.next(null);
-		// 		this.clearLocalStorage();
-		// 		return of(null);
-		// 	})
-		// );
 	}
 	public setLocalStorage(auth: Auth) {
 		localStorage.setItem('token', auth.token);
@@ -59,11 +52,6 @@ export class AuthService {
 		localStorage.setItem('uid', auth.id);
 	}
 	public clearLocalStorage() {
-		// localStorage.removeItem('token');
-		// localStorage.removeItem('refreshToken');
-		// localStorage.removeItem('refreshTokenExp');
-		// localStorage.removeItem('uname');
-		// localStorage.removeItem('uid');
 		localStorage.clear();
 	}
 }
