@@ -127,8 +127,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					finalPrice: [0],
 					clientTypeId: [null],
 					clientId: [null, [Validators.required]],
-					termId: [null, [Validators.required]],
-					stageId: [null, [Validators.required]],
+					termId: [null],
+					stageId: [null],
 					noteComponents: this.fb.array([]),
 					quantity: [0],
 				});
@@ -198,8 +198,28 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		);
 	}
 	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? '';
-	getTerms = () => this.subscriptions.push(this._note.getTerms().subscribe((data) => (this.TermsDataSource = data)));
-	getSTages = () => this.subscriptions.push(this._note.getStages().subscribe((data) => (this.StagesDataSource = data)));
+	getTerms = () =>
+		this.subscriptions.push(
+			this._note.getTerms().subscribe((data) => {
+				this.TermsDataSource = data;
+				let emptyTerm: Term = {
+					id: null,
+					name: 'بدون',
+				};
+				this.TermsDataSource.unshift(emptyTerm);
+			})
+		);
+	getSTages = () =>
+		this.subscriptions.push(
+			this._note.getStages().subscribe((data) => {
+				this.StagesDataSource = data;
+				let emptyStage: Stage = {
+					id: null,
+					name: 'بدون',
+				};
+				this.StagesDataSource.unshift(emptyStage);
+			})
+		);
 	getAllServices() {
 		this.subscriptions.push(
 			this._service.getAll().subscribe({

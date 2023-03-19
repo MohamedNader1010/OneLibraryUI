@@ -1,4 +1,4 @@
 export interface Term {
-	id: number;
+	id: number | null;
 	name: string;
 }

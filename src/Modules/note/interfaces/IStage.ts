@@ -1,4 +1,4 @@
 export interface Stage {
-	id: number;
+	id: number | null;
 	name: string;
 }
