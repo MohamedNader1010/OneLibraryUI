@@ -1,6 +1,6 @@
 export interface Auth {
 	id: string;
-	iSCheckedIn: boolean;
+	isCheckedIn: boolean;
 	isSuccess: boolean;
 	username: string;
 	email: string;

@@ -50,6 +50,7 @@ export class AuthService {
 		localStorage.setItem('refreshTokenExp', auth.refreshTokenExpiration.toString());
 		localStorage.setItem('uname', auth.username);
 		localStorage.setItem('uid', auth.id);
+		localStorage.setItem('iSCheckedIn', auth.isCheckedIn.toString());
 	}
 	public clearLocalStorage() {
 		localStorage.clear();

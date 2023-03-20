@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {Auth} from '../../interfaces/IAuth';
 import {AuthService} from './../../services/auth.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
+import {AttendanceService} from './../../../attendance/services/attendance.service';
 
 @Component({
 	selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent implements OnDestroy {
 	loginForm: FormGroup;
 	hide = true;
 	logging: boolean = false;
-	constructor(private router: Router, private _login: AuthService, private fb: FormBuilder, private toastr: ToastrService) {
+	constructor(private router: Router, private _login: AuthService, private fb: FormBuilder, private toastr: ToastrService, private _attendance: AttendanceService) {
 		this.loginForm = this.fb.group({
 			userName: ['', [Validators.required, Validators.maxLength(100)]],
 			password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
@@ -41,6 +42,7 @@ export class LoginComponent implements OnDestroy {
 						let auth: Auth = data.body;
 						this._login.setLocalStorage(auth);
 						this._login.username.next(auth.username);
+						this._attendance.checkedIn.next(auth.isCheckedIn);
 						this._login.isLogged = true;
 					},
 					error: (e) => {

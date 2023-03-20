@@ -17,6 +17,7 @@ export class AttendanceService extends GenericService<Attendance, Response> {
 	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
 	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	get loading(): boolean {
 		return this.loadingData.value;

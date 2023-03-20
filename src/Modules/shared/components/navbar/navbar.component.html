@@ -79,13 +79,32 @@
 					</ul>
 				</li>
 			</ul>
-			<div class="navbar-nav align-items-start">
-				<a *ngIf="data.isLogged" class="nav-item nav-link" aria-current="page" [routerLink]="['profile']" routerLinkActive="active">مرحبا {{ data.username.getValue() }} !</a>
-				<button type="button" (click)="handleLogout()" *ngIf="data.isLogged" mat-button color="warn">تسجيل خروج</button>
-				<button type="button" (click)="handleLogin()" *ngIf="!data.isLogged" mat-button color="basic">تسجيل الدخول</button>
+			<div class="navbar-nav align-items-center">
+				<li class="nav-item dropdown">
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">مرحبا {{ data.username.getValue() }} !</span>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li class="dropdown-item">
+							<a class="nav-link" aria-current="page" [routerLink]="['profile']" routerLinkActive="active link-danger">الصفحة الشخصية</a>
+						</li>
+						<li class="dropdown-item">
+							<button
+								class="w-100"
+								type="button"
+								(click)="!_attendance.checkedIn.getValue() ? handleCheckIn() : handleCheckOut()"
+								mat-stroked-button
+								[color]="!_attendance.checkedIn.getValue() ? 'basic' : 'warn'">
+								{{ !_attendance.checkedIn.getValue() ? 'تسجيل الحضور' : 'تسجيل الانصراف' }}
+							</button>
+						</li>
+						<li class="dropdown-item">
+							<button class="w-100" type="button" (click)="!data.isLogged ? handleLogin() : handleLogout()" mat-stroked-button [color]="!data.isLogged ? 'basic' : 'warn'">
+								{{ !data.isLogged ? 'تسجيل الدخول' : 'تسجيل خروج' }}
+							</button>
+						</li>
+					</ul>
+				</li>
 				<button type="button" mat-icon-button (click)="toggleParentSidenave()" color="basic" aria-label="toggle side nav">
-					<mat-icon *ngIf="!opened">menu</mat-icon>
-					<mat-icon *ngIf="opened">close</mat-icon>
+					<mat-icon>{{ opened ? 'close' : 'menu' }}</mat-icon>
 				</button>
 			</div>
 		</div>
