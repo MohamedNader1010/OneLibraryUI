@@ -1,0 +1,46 @@
+<div class="container">
+	<h2 mat-dialog-title *ngIf="id.value; else update">تعديل تحركات الخامة</h2>
+	<ng-template #update>
+		<h2 mat-dialog-title>تسجيل شراء الخامات</h2>
+	</ng-template>
+	<mat-dialog-content>
+		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
+			<div class="row">
+				<mat-form-field appearance="fill" class="w-100" *ngIf="!employeeId.value; else disabled">
+					<mat-label>الموظف</mat-label>
+					<mat-select formControlName="employeeId">
+						<mat-option *ngFor="let emp of EmployeesDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
+					</mat-select>
+					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
+				</mat-form-field>
+				<ng-template #disabled>
+					<mat-form-field appearance="fill" class="w-100">
+						<mat-label>الموظف</mat-label>
+						<input type="text" matInput readonly="true" formControlName="employee" />
+					</mat-form-field>
+				</ng-template>
+			</div>
+			<div class="row">
+				<div class="col-6">
+					<mat-form-field appearance="fill" class="w-100">
+						<mat-label>حضور</mat-label>
+						<mat-hint>HH:MM AM/PM</mat-hint>
+						<input matInput type="time" formControlName="checkIn" />
+						<mat-error *ngIf="checkIn.hasError('required') && (checkIn.touched || checkIn.dirty)"> يجب ادخال وقت الحضور </mat-error>
+					</mat-form-field>
+				</div>
+				<div class="col-6">
+					<mat-form-field appearance="fill" class="w-100">
+						<mat-label>انصراف</mat-label>
+						<mat-hint>HH:MM AM/PM</mat-hint>
+						<input matInput type="time" formControlName="checkOut" />
+					</mat-form-field>
+				</div>
+			</div>
+			<div mat-dialog-actions>
+				<button mat-raised-button type="submit" color="primary" [disabled]="!form.valid||isSubmitting" class="mx-2 px-4">{{isSubmitting?'انتظر من فضلك':'حفظ'}}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+			</div>
+		</form>
+	</mat-dialog-content>
+</div>

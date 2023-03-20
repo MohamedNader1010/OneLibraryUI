@@ -22,6 +22,7 @@ const routes: Routes = [
 			{path: 'employees', loadChildren: () => import('../../employee/employee.module').then((m) => m.EmployeeModule)},
 			{path: 'attendance', loadChildren: () => import('../../attendance/attendance.module').then((m) => m.AttendanceModule)},
 			{path: 'feadback', loadChildren: () => import('../../feadback/feadback.module').then((m) => m.FeadbackModule)},
+			{path: 'materialTracking', loadChildren: () => import('../../material-tracking/materialTracking.module').then((m) => m.materialTrackingModule)},
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
 			// {path: '', redirectTo: '', pathMatch: 'full'},
 		],
