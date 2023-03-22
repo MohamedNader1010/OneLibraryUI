@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 	@Output() toggleSidenav = new EventEmitter<boolean>();
 	ngOnInit(): void {
 		this.data.username.next(localStorage.getItem('uname'));
-		this._attendance.checkedIn.next(!!localStorage.getItem('iSCheckedIn'));
+		this._attendance.checkedIn.next(localStorage.getItem('iSCheckedIn')?.toString().toLowerCase() == 'true');
 	}
 	handleLogout() {
 		this.data.clearLocalStorage();
