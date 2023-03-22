@@ -21,22 +21,37 @@ export class AllComponent implements OnInit, OnDestroy {
 			{
 				columnDef: 'id',
 				header: '#',
-				cell: (element: any) => element.id,
+				cell: (element: Client) => element.id,
 			},
 			{
 				columnDef: 'Name',
 				header: 'الأسم',
-				cell: (element: any) => element.name,
+				cell: (element: Client) => element.name,
 			},
 			{
 				columnDef: 'PhoneNumber',
 				header: 'رقم التليفون',
-				cell: (element: any) => element.phoneNumber,
+				cell: (element: Client) => element.phoneNumber,
 			},
 			{
 				columnDef: 'type',
 				header: 'النوع',
-				cell: (element: any) => element.clientType,
+				cell: (element: Client) => element.clientType,
+			},
+			{
+				columnDef: 'total',
+				header: 'اجمالي التعاملات',
+				cell: (element: Client) => element.total,
+			},
+			{
+				columnDef: 'paid',
+				header: 'قام بدفع',
+				cell: (element: Client) => element.paid,
+			},
+			{
+				columnDef: 'rset',
+				header: 'المبلغ المتبقي',
+				cell: (element: Client) => element.rest,
 			},
 		];
 		this.getAll();

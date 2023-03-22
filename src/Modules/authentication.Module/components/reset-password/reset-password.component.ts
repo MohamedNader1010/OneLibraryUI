@@ -56,13 +56,14 @@ export class ResetPasswordComponent {
 		if (this.form.valid) {
 			this.logging = true;
 			this._login.resetPassword(this.form.value).subscribe({
-				next: (data: Response) => {
+				next: (data) => {
 					this._login.clearLocalStorage();
 					this.toastr.success(data.message, 'logged in sucessfully');
 				},
 				error: (e) => {
 					this.logging = false;
-					this.toastr.error(e.error.message, 'unauthorized');
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
 				},
 				complete: () => {
 					this.logging = false;

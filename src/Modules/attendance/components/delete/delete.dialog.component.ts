@@ -3,6 +3,7 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Attendance} from '../../interfaces/attendance';
 import {AttendanceService} from '../../services/attendance.service';
+import {Response} from './../../../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-delete.dialog',
@@ -23,7 +24,8 @@ export class DeleteDialogComponent {
 			},
 			error: (e) => {
 				this.isSubmitting = false;
-				this.toastr.error(e.erorr.message, 'an error occurred');
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
 			},
 			complete: () => {
 				this.isSubmitting = false;

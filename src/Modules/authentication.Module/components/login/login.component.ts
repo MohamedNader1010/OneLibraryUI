@@ -38,7 +38,7 @@ export class LoginComponent implements OnDestroy {
 			this.logging = true;
 			this.subscriptions.push(
 				this._login.login(this.loginForm.value).subscribe({
-					next: (data: Response) => {
+					next: (data) => {
 						let auth: Auth = data.body;
 						this._login.setLocalStorage(auth);
 						this._login.username.next(auth.username);

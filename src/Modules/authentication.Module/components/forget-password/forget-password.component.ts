@@ -30,12 +30,13 @@ export class ForgetPasswordComponent {
 		if (this.form.valid) {
 			this.logging = true;
 			this._login.forgetPassword(this.email.value).subscribe({
-				next: (data: Response) => {
+				next: (data) => {
 					this.toastr.success(data.message, 'check your email');
 				},
 				error: (e) => {
 					this.logging = false;
-					this.toastr.error(e.error.message, 'unauthorized');
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
 				},
 				complete: () => {
 					this.logging = false;
