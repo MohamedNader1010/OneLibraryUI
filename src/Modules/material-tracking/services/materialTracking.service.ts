@@ -11,10 +11,8 @@ import {Response} from '../../shared/interfaces/Iresponse';
 })
 export class MaterialTrackingService extends GenericService<MaterialTracking, Response> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'IncomeOutcome');
+		super(http, 'MaterialIncomeOutcome');
 	}
-
-	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
 	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -22,13 +20,15 @@ export class MaterialTrackingService extends GenericService<MaterialTracking, Re
 		return this.loadingData.value;
 	}
 
+	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
 	get data(): any[] {
 		return this.dataChange.value ?? [];
 	}
 
 	dialogData: any;
 
-	getDialogData() {
+	get DialogData() {
 		return this.dialogData;
 	}
 

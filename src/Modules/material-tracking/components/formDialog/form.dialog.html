@@ -1,39 +1,33 @@
 <div class="container">
-	<h2 mat-dialog-title *ngIf="id.value; else update">تعديل تحركات الخامة</h2>
+	<!-- <h2 mat-dialog-title *ngIf="id.value; else update">تعديل تحركات الخامة</h2>
 	<ng-template #update>
-		<h2 mat-dialog-title>تسجيل شراء الخامات</h2>
-	</ng-template>
+		<h2 mat-dialog-title>تسجيل الخامات الواردة</h2>
+	</ng-template> -->
+	<h2 mat-dialog-title>تسجيل الخامات الواردة</h2>
 	<mat-dialog-content>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
-				<mat-form-field appearance="fill" class="w-100" *ngIf="!employeeId.value; else disabled">
-					<mat-label>الموظف</mat-label>
-					<mat-select formControlName="employeeId">
-						<mat-option *ngFor="let emp of EmployeesDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
-					</mat-select>
-					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
-				</mat-form-field>
-				<ng-template #disabled>
+				<div class="col-9">
 					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>الموظف</mat-label>
-						<input type="text" matInput readonly="true" formControlName="employee" />
-					</mat-form-field>
-				</ng-template>
-			</div>
-			<div class="row">
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>حضور</mat-label>
-						<mat-hint>HH:MM AM/PM</mat-hint>
-						<input matInput type="time" formControlName="checkIn" />
-						<mat-error *ngIf="checkIn.hasError('required') && (checkIn.touched || checkIn.dirty)"> يجب ادخال وقت الحضور </mat-error>
+						<mat-label>الخامة</mat-label>
+						<mat-select formControlName="materialId">
+							<mat-option *ngFor="let emp of MaterialDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
+						</mat-select>
+						<mat-error *ngIf="materialId.hasError('required') && (materialId.touched || materialId.dirty)"> يجب اختيار الخامة</mat-error>
 					</mat-form-field>
 				</div>
-				<div class="col-6">
+				<div class="col-3">
 					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>انصراف</mat-label>
-						<mat-hint>HH:MM AM/PM</mat-hint>
-						<input matInput type="time" formControlName="checkOut" />
+						<mat-label>الكمية</mat-label>
+						<input type="number" matInput formControlName="quantity" />
+					</mat-form-field>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<mat-form-field appearance="fill" class="w-100">
+						<mat-label>ملاحظات</mat-label>
+						<input type="text" matInput formControlName="comment" />
 					</mat-form-field>
 				</div>
 			</div>

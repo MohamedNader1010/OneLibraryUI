@@ -6,10 +6,9 @@ import {Subscription} from 'rxjs';
 import {MaterialTracking} from '../../interfaces/materialTracking';
 import {MaterialTrackingService} from '../../services/materialTracking.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {Employee} from './../../../employee/interFaces/Iemployee';
-import {EmployeeService} from './../../../employee/services/employee.service';
-import {DatePipe} from '@angular/common';
-
+import {MaterialService} from './../../../material/services/material.service';
+import {Material} from './../../../material/interfaces/Imaterial';
+import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
 @Component({
 	selector: 'app-form.dialog',
 	templateUrl: './form.dialog.html',
@@ -19,49 +18,41 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	form: FormGroup;
 	isSubmitting: boolean = false;
-	EmployeesDataSource: Employee[] = [];
+	MaterialDataSource: Material[] = [];
 	constructor(
 		public dialogRef: MatDialogRef<FormDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: MaterialTracking,
-		private _attendance: MaterialTrackingService,
+		private _matTracking: MaterialTrackingService,
+		private _mat: MaterialService,
 		private fb: FormBuilder,
-		private toastr: ToastrService,
-		private _employee: EmployeeService,
-		private datePipe: DatePipe
+		private toastr: ToastrService
 	) {
 		this.form = this.fb.group({
-			id: [null],
-			employeeId: [null, [Validators.required]],
-			checkIn: [null, [Validators.required]],
-			checkOut: [null],
-			employee: [''],
+			// id: [null],
+			materialId: [null, [Validators.required]],
+			status: [IncomeOutcome.وارد],
+			quantity: [0],
+			comment: [''],
 		});
 	}
-	get id(): FormControl {
-		return this.form.get('id') as FormControl;
-	}
-	get employeeId(): FormControl {
-		return this.form.get('employeeId') as FormControl;
-	}
-	get checkIn(): FormControl {
-		return this.form.get('checkIn') as FormControl;
-	}
-	get checkOut(): FormControl {
-		return this.form.get('checkOut') as FormControl;
+	// get id(): FormControl {
+	// 	return this.form.get('id') as FormControl;
+	// }
+	get materialId(): FormControl {
+		return this.form.get('materialId') as FormControl;
 	}
 
 	ngOnInit() {
-		this.getAllEmployees();
+		this.getAllMaterial();
 	}
 
-	getAllEmployees = () =>
+	getAllMaterial = () =>
 		this.subscriptions.push(
-			this._employee.getAll().subscribe({
+			this._mat.getAll().subscribe({
 				next: (data) => {
-					this.EmployeesDataSource = data.body;
+					this.MaterialDataSource = data;
 				},
 				error: (e) => {
-					this.isSubmitting = false;
 					let res: Response = e.error ?? e;
 					this.toastr.error(res.message);
 				},
@@ -79,37 +70,37 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 
 	handleSubmit() {
 		if (this.form.valid) {
-			if (this.id.value) this.update();
-			else this.add();
+			this.isSubmitting = true;
+			// if (this.id.value) this.update();
+			// else
+			this.add();
 		}
 	}
 
-	update() {
-		this.subscriptions.push(
-			this._attendance.update(this.id.value, this.form.value).subscribe({
-				next: (res) => {
-					this.isSubmitting = true;
-					this._attendance.dialogData = res.body;
-					this.dialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
+	// update() {
+	// 	this.subscriptions.push(
+	// 		this._matTracking.update(this.id.value, this.form.value).subscribe({
+	// 			next: (res) => {
+	// 				this._matTracking.dialogData = res.body;
+	// 				this.dialogRef.close({data: res});
+	// 			},
+	// 			error: (e) => {
+	// 				this.isSubmitting = false;
+	// 				let res: Response = e.error ?? e;
+	// 				this.toastr.error(res.message);
+	// 			},
+	// 			complete: () => {
+	// 				this.isSubmitting = false;
+	// 			},
+	// 		})
+	// 	);
+	// }
 
 	add() {
 		this.subscriptions.push(
-			this._attendance.add(this.form.value).subscribe({
+			this._matTracking.add(this.form.value).subscribe({
 				next: (res) => {
-					this.isSubmitting = true;
-					this._attendance.dialogData = res.body;
+					this._matTracking.dialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -124,7 +115,5 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

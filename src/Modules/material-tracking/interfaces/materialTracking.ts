@@ -1,6 +1,14 @@
+import {IncomeOutcome} from '../Enums/IncomeOutcomeEnum';
+
 export interface MaterialTracking {
 	id: number;
-	Status: number;
-	Amount: string;
-	Comment: string;
+	material: string;
+	materialId: number;
+	status: IncomeOutcome;
+	quantity: number;
+	comment: string;
+	createdOn: Date;
+	createdBy: string;
+	// modifiedBy: string;
+	// modifiedOn: Date;
 }
