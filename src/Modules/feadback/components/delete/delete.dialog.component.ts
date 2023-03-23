@@ -1,9 +1,9 @@
 import {Component, Inject} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {MaterialTracking} from '../../interfaces/materialTracking';
-import {MaterialTrackingService} from '../../services/materialTracking.service';
-import { Response } from 'src/Modules/shared/interfaces/Iresponse';
+import {Feadback} from '../../interfaces/feadback';
+import {FeadbackService} from '../../services/feadback.service';
+import {Response} from 'src/Modules/shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-delete.dialog',
@@ -12,12 +12,12 @@ import { Response } from 'src/Modules/shared/interfaces/Iresponse';
 })
 export class DeleteDialogComponent {
 	isSubmitting: boolean = false;
-	constructor(public dialogRef: MatDialogRef<DeleteDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: MaterialTracking, public _mat: MaterialTrackingService, private toastr: ToastrService) {}
+	constructor(public dialogRef: MatDialogRef<DeleteDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Feadback, public _feedback: FeadbackService, private toastr: ToastrService) {}
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
 	confirmDelete(): void {
-		this._mat.delete(this.data.id).subscribe({
+		this._feedback.delete(this.data.id).subscribe({
 			next: (res) => {
 				this.isSubmitting = true;
 				this.dialogRef.close({data: res});

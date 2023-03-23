@@ -30,16 +30,19 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.form = this.fb.group({
 			// id: [null],
 			materialId: [null, [Validators.required]],
-			status: [IncomeOutcome.وارد],
+			status: [null],
 			quantity: [0],
 			comment: [''],
 		});
 	}
-	// get id(): FormControl {
-	// 	return this.form.get('id') as FormControl;
-	// }
+	get quantity(): FormControl {
+		return this.form.get('quantity') as FormControl;
+	}
 	get materialId(): FormControl {
 		return this.form.get('materialId') as FormControl;
+	}
+	get status(): FormControl {
+		return this.form.get('status') as FormControl;
 	}
 
 	ngOnInit() {
@@ -73,6 +76,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			this.isSubmitting = true;
 			// if (this.id.value) this.update();
 			// else
+			this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
 			this.add();
 		}
 	}
