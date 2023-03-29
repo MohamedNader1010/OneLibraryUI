@@ -51,9 +51,9 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Order) => `${element.clientName}`,
 			},
 			{
-				columnDef: 'Notice',
+				columnDef: 'Remarks',
 				header: 'الملحوظات',
-				cell: (element: Order) => element.notice
+				cell: (element: Order) => element.remarks
 			}
 		];
 		this.getAll();

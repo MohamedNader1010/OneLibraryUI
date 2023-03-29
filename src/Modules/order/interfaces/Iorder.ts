@@ -18,5 +18,4 @@ export interface Order {
 	clientTypeId: number;
 	orderDetails: OrderDetail[];
 	ordertransaction: OrderTransaction[];
-	notice: string; 
 }
