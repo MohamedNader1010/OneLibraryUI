@@ -29,6 +29,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
 	@Input() isDisplayDeleteButton: boolean = true;
+	@Input() isDisplayAddButton: boolean = true;
 	@ViewChild(MatSort) set matSort(ms: MatSort) {
 		this.sort = ms;
 		this.setDataSourceAttributes();

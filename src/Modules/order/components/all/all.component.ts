@@ -1,11 +1,11 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
-import {Observable, BehaviorSubject, of, Subscription} from 'rxjs';
-import {Status} from '../../Enums/status';
-import {Order} from '../../interfaces/Iorder';
-import {OrderService} from '../../services/orders.service';
-import {DetailsComponent} from '../details/details.component';
+import { AlertServiceService } from './../../../shared/services/alert-service.service';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { Status } from '../../Enums/status';
+import { Order } from '../../interfaces/Iorder';
+import { OrderService } from '../../services/orders.service';
+import { DetailsComponent } from '../details/details.component';
 
 @Component({
 	selector: 'app-all',
@@ -17,7 +17,7 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Order[];
 	loading!: boolean;
-	constructor(private _order: OrderService, public dialog: MatDialog, private toastr: ToastrService) {}
+	constructor(private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService) { }
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -50,6 +50,11 @@ export class AllComponent implements OnInit, OnDestroy {
 				header: 'العميل',
 				cell: (element: Order) => `${element.clientName}`,
 			},
+			{
+				columnDef: 'Notice',
+				header: 'الملحوظات',
+				cell: (element: Order) => element.notice
+			}
 		];
 		this.getAll();
 	}
@@ -58,11 +63,10 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._order.getAll().subscribe({
 				next: (data) => {
-					console.log(data)
 					this.tableData = data;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.alertService.cantLoadData(e.message);
 					this.loading = false;
 				},
 				complete: () => {
@@ -76,7 +80,7 @@ export class AllComponent implements OnInit, OnDestroy {
 			this.dialog
 				.open(DetailsComponent)
 				.afterClosed()
-				.subscribe(() => {})
+				.subscribe(() => { })
 		);
 	}
 	handleDelete = (id: number) => this.subscriptions.push(this._order.delete(id).subscribe(() => this.getAll()));

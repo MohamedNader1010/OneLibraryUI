@@ -1,35 +1,35 @@
 <mat-card class="container mat-elevation-z15 py-2">
   <form [formGroup]="Form" (ngSubmit)="handleSubmit()">
     <mat-card-header>
-      <mat-card-title>Transaction</mat-card-title>
+      <mat-card-title>عمليه</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
       <mat-form-field appearance="fill" class="w-100" color="accent">
-        <mat-label>order ID</mat-label>
+        <mat-label>رقم الطلب</mat-label>
         <input type="text" matInput formControlName="orderId" readonly />
         <mat-error *ngIf="f['orderId'].errors?.['required']"
-          >Order ID is required.</mat-error
+          >رقم الطلب مطلوب</mat-error
         >
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="w-100" color="accent">
-        <mat-label>Paid</mat-label>
+        <mat-label>المدفوع</mat-label>
         <input id="paid" matInput type="number" formControlName="paid" />
         <mat-error *ngIf="f['paid'].errors?.['required']"
-          >Paid Price is required.</mat-error
+          >المبلغ المدفوع مطلوب</mat-error
         >
 
         <mat-error *ngIf="f['paid'].hasError('exceed')">
-          Paid should be < or = {{f['paid'].errors?.['value']}}
+          المبلغ المدفوع < او = {{f['paid'].errors?.['value']}}
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill" class="w-100" color="accent">
-        <mat-label>Choose a date</mat-label>
+        <mat-label>اختر تاريخ</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="date" />
         <mat-error *ngIf="f['date'].errors?.['required']"
-          >Date is required.</mat-error
+          >التاريخ مطلوب</mat-error
         >
         <mat-datepicker-toggle
           matIconSuffix
@@ -40,7 +40,8 @@
     </mat-card-content>
 
     <mat-card-actions align="start" class="justify-content-between">
-      <button mat-flat-button color="warn" [disabled]="!Form.valid">Save</button>
+      <button mat-flat-button color="warn" [disabled]="!Form.valid">حفظ</button>
+      <button mat-flat-button color="warn" (click)="back()">رجوع</button>
     </mat-card-actions>
   </form>
 </mat-card>

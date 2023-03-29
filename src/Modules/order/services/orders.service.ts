@@ -4,12 +4,13 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Order } from "../interfaces/Iorder";
 import { environment } from "src/environments/environment";
+import { Status } from "../Enums/status";
 
 @Injectable({
   providedIn: "root",
 })
 export class OrderService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
   uri: string = `${environment.apiUrl}Order/`;
   getAll = () => this.http.get<Order[]>(`${this.uri}`);
   getOne = (id: number) =>
@@ -26,4 +27,8 @@ export class OrderService {
     this.http.post<OrderTransaction>(`${this.uri}AddOrderTransaction`, order);
   getOrderDetails = (id: number) =>
     this.http.get<OrderDetail[]>(`${this.uri}GetOrderDetails?Id=${id}`);
+  getOrdersByStatus = (status: Status) =>
+    this.http.get<OrderDetail[]>(`${this.uri}GetByStatus?status=${status}`);
+  updateStatus = (order: Order) =>
+    this.http.put(`${this.uri}UpdateStatus`, order);
 }

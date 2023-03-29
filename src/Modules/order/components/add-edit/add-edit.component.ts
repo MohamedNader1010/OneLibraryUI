@@ -1,36 +1,38 @@
-import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {NoteService} from 'src/Modules/note/services/note.service';
-import {ServicesService} from 'src/Modules/service/services/services.service';
-import {OrderDetail} from '../../interfaces/IorderDetail';
-import {OrderTransaction} from '../../interfaces/IorderTransaction';
-import {OrderService} from '../../services/orders.service';
-import {ToastrService} from 'ngx-toastr';
-import {Service} from 'src/Modules/service/interfaces/Iservice';
-import {Note} from 'src/Modules/note/interfaces/Inote';
-import {Client} from 'src/Modules/client/interFaces/Iclient';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {ClientService} from 'src/Modules/client/services/client.service';
-import {Status} from '../../Enums/status';
-import {MatSelect} from '@angular/material/select';
-import {Order} from '../../interfaces/Iorder';
+import { AlertServiceService } from './../../../shared/services/alert-service.service';
+import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { NoteService } from 'src/Modules/note/services/note.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { OrderDetail } from '../../interfaces/IorderDetail';
+import { OrderTransaction } from '../../interfaces/IorderTransaction';
+import { OrderService } from '../../services/orders.service';
+import { Service } from 'src/Modules/service/interfaces/Iservice';
+import { Note } from 'src/Modules/note/interfaces/Inote';
+import { Client } from 'src/Modules/client/interFaces/Iclient';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { ClientService } from 'src/Modules/client/services/client.service';
+import { Status } from '../../Enums/status';
+import { MatSelect } from '@angular/material/select';
+import { Order } from '../../interfaces/Iorder';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
 	styleUrls: ['./add-edit.component.css'],
 })
-export class AddEditComponent implements OnInit, OnDestroy {
+export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	private _clientTypeId: number = -1;
 	@ViewChild('matNoteId') matNoteId!: MatSelect;
 	@ViewChild('matServiceId') matServiceId!: MatSelect;
-	availableStatus: Status[] = [Status.استلم, Status.حجز];
+	@ViewChild('clientType') clientTypeElement!: ElementRef;
+	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع];
 	subscriptions: Subscription[] = [];
 	Form: FormGroup;
 	id!: number;
+	orderToBeUpdated!: Order;
 	controllerName: string = 'orders';
 	isSubmitted: boolean = false;
 	DetailsDataSource: OrderDetail[] = [];
@@ -39,15 +41,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];
 	ClientTypesDataSource: ClientType[] = [];
+	disableMode: boolean = false;
 	key = 0;
-	prices: {key: number; value: number}[] = [];
-	totalPrice: number = 0;
-	priceDiscount: number = 0;
-	percentDiscount: number = 0.0;
-	paid: number = 0;
-	rest: number = 0;
-	finalPrice: number = 0;
-	notePrice: number = 0;
+	prices: { key: number; value: number }[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -57,10 +53,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		private fb: FormBuilder,
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
-		private toastr: ToastrService,
+		private alertService: AlertServiceService,
 		private servicePriceService: ServicePricePerClientTypeService
 	) {
 		this.Form = this.createFormItem('init');
+	}
+	ngAfterViewInit(): void {
+
 	}
 	ngOnInit(): void {
 		this.getAllNotes();
@@ -69,7 +68,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
-				if (this.id) this.getSingle(this.id);
+				if (this.id) this.getSingle(this.id)
 			})
 		);
 	}
@@ -97,7 +96,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		if (this._clientTypeId == -1) {
 			this.OrderDetails.controls[index].get('serviceId')?.reset();
 			this.onServiceValueChanged(index);
-			return this.toastr.error('Please choose a client type first.', 'Error');
+			return this.alertService.onError('Please choose a client type first.', 'Error');
 		}
 		this.onServiceValueChanged(index);
 		return this.subscriptions.push(
@@ -112,7 +111,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 						this.computeFinalPrice(0);
 					});
 				},
-				error: (err) => this.toastr.error(err.message, 'لايمكن تحميل الأسعار '),
+				error: (err) => this.alertService.onError(err.message, 'لايمكن تحميل الأسعار '),
 			})
 		);
 	}
@@ -125,7 +124,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				if (element.key == index) {
 					let qty = this.OrderDetails.controls[index].get('quantity')?.value;
 					let priceInput = this.OrderDetails.controls[index].get('price');
-					qty ? priceInput?.setValue(element.value * +qty) : priceInput?.setValue(element.value);
+					priceInput?.setValue(element.value * +qty);
 				}
 			});
 		}
@@ -139,7 +138,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					this.ClientTypesDataSource = data;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات');
+					this.alertService.cantLoadData(e.message);
 				},
 			})
 		);
@@ -154,7 +153,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
+					this.alertService.cantLoadData(e.message);;
 				},
 			})
 		);
@@ -166,7 +165,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					this.ServicesDataSource = data;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
+					this.alertService.cantLoadData(e.message);;
 				},
 			})
 		);
@@ -178,7 +177,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					this.NotesDataSource = data.body;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
+					this.alertService.cantLoadData(e.message);
 				},
 			})
 		);
@@ -192,7 +191,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 					finalPrice: [null],
 					discount: [null],
 					discountPercent: [null],
-					rest: [{value: null}, [Validators.required]],
+					rest: [{ value: null }, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					orderDetails: this.fb.array([]),
@@ -201,8 +200,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				break;
 			case 'detail':
 				formItem = this.fb.group({
-					price: [{value: null}],
-					quantity: [null, [Validators.required]],
+					id: [],
+					price: [{ value: null, }],
+					quantity: [1, [Validators.required]],
 					serviceId: [null],
 					noteId: [null],
 					orderStatus: [Status.استلم, [Validators.required]],
@@ -212,17 +212,19 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		return formItem;
 	}
 	computeDiscountPercent(): number {
-		let discountAmount = this.Form.get('discount');
-		let discountPercent = this.Form.get('discountPercent');
-		let percent = ((discountAmount?.value / this.totalPrice) * 100).toFixed(2).toString();
+		const discountAmount = this.Form.get('discount');
+		const discountPercent = this.Form.get('discountPercent');
+		const totalPrice = +this.Form.get('totalPrice')?.value;
+		let percent = ((discountAmount?.value / totalPrice) * 100).toFixed(2).toString();
 		discountPercent?.setValue(percent);
 		this.computeFinalPrice(+discountAmount?.value);
 		return +percent;
 	}
-	computeDiscountAmount(): number {
+	computeDiscountValue(): number {
 		let discountAmount = this.Form.get('discount');
 		let discountPercent = this.Form.get('discountPercent');
-		let value = ((discountPercent?.value / 100) * this.totalPrice).toFixed(2).toString();
+		const totalPrice = +this.Form.get('totalPrice')?.value;
+		let value = ((discountPercent?.value / 100) * totalPrice).toFixed(2).toString();
 		discountAmount?.setValue(value);
 		this.computeFinalPrice(+value);
 		return +value;
@@ -232,28 +234,30 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.OrderDetails.controls[index].get('quantity')?.setValue('1');
 	}
 	private computeFinalPrice(discountValue: number) {
-		let finalPrice = this.Form.get('finalPrice');
-		this.finalPrice = this.totalPrice - +discountValue;
-		finalPrice?.setValue(this.finalPrice);
+		const finalPriceControl = this.Form.get('finalPrice');
+		const totalPrice = +this.Form.get("totalPrice")?.value;
+
+		finalPriceControl?.setValue(totalPrice - discountValue);
 		this.computeRest();
 	}
 	computeRest() {
-		let rest = this.Form.get('rest');
-		let paid = this.Form.get('paid');
-		this.paid = +paid?.value;
-		this.rest = this.finalPrice - this.paid;
-		rest?.setValue(this.rest);
+		const restControl = this.Form.get('rest');
+		const paid = +this.Form.get('paid')?.value;
+		const finalPrice = +this.Form.get('finalPrice')?.value;
+		restControl?.setValue(finalPrice - paid);
 	}
 	private computeTotalPrice() {
-		this.totalPrice = 0;
+		let totalPrice = 0;
+		const totalPriceControl = this.Form.get('totalPrice');
 		this.OrderDetails.controls.forEach((element) => {
 			if (+element.get('price')?.value) {
-				this.totalPrice = this.totalPrice + +element.get('price')?.value;
+				totalPrice = totalPrice + +element.get('price')?.value;
 			}
 		});
-		this.Form.get('totalPrice')?.setValue(this.totalPrice);
+		totalPriceControl?.setValue(totalPrice);
 	}
 	fillFormWithData(datasource: Order) {
+		this.orderToBeUpdated = datasource;
 		datasource.orderDetails.forEach(() => this.handleNewDetail());
 		this.Form.patchValue(datasource);
 	}
@@ -264,8 +268,9 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
+		if (this.id) this.disableAllControls()
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({key: this.key, value: -1});
+		this.prices.push({ key: this.key, value: -1 });
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -286,7 +291,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 				let price = +(note.finalPrice == null ? 10 : note.finalPrice);
 				let qty = this.OrderDetails.controls[index].get('quantity')?.value;
 				let priceInput = this.OrderDetails.controls[index].get('price');
-				qty ? priceInput?.setValue(price * +qty) : priceInput?.setValue(price);
+				priceInput?.setValue(price * +qty) 
 			}
 			this.computeTotalPrice();
 			this.computeFinalPrice(0);
@@ -320,26 +325,55 @@ export class AddEditComponent implements OnInit, OnDestroy {
 			this.clearPriceAndQuantityInput(index);
 		}
 	}
-	private validateDiscountAmountAndPercent() {
-		let discount = this.computeDiscountAmount();
-		let percent = this.computeDiscountPercent();
-		if (discount !== percent) {
-			this.toastr.error('discount amount not equals to discount percent', 'ERROR');
-			this.Form.setErrors({invalid: true});
+	private disableAllControls() {
+		this.disableMode = true;
+		this.Form.disable()
+		if (this.OrderDetails.value) {
+			this.OrderDetails.controls.forEach(
+				control => {
+					control.disable()
+				}
+			)
+			this.OrderDetails.controls.find(control => {
+				if (control.get('orderStatus')?.enable())
+					return;
+			})
 		}
+	}
+	private validateDiscountAmountAndPercent() {
+		const discountValue = this.computeDiscountValue();
+		const discountPercent = this.computeDiscountPercent();
+		const finalPrice = +this.Form.get('finalPrice')?.value;
+		const totalPrice = +this.Form.get('totalPrice')?.value;
+		const isDiscountPercentEqualsDiscountValue = (discountValue + finalPrice) === (((discountPercent / 100) * totalPrice) + finalPrice) ? true : false;
+		if (!isDiscountPercentEqualsDiscountValue) {
+			this.alertService.onError('discount amount not equals to discount percent', 'ERROR');
+			this.Form.setErrors({ invalid: true });
+		}
+	}
+	private setUpdatedOrder(): void {
+		this.orderToBeUpdated.orderDetails.forEach(orderDetail => {
+			this.OrderDetails.controls.forEach(control => {
+				let id = control.get('id')?.value;
+				if (orderDetail.id === id)
+					orderDetail.orderStatus = control.get('orderStatus')?.value;
+			})
+		})
+
 	}
 	handleSubmit() {
 		if (this.Form.valid) {
 			if (this.id) {
-				this.validateDiscountAmountAndPercent();
+				this.setUpdatedOrder()
 				this.subscriptions.push(
-					this._order.update(this.id, this.Form.value).subscribe(
+					this._order.updateStatus(this.orderToBeUpdated).subscribe(
 						() => {
 							this.isSubmitted = true;
 							this.back();
 						},
 						(err) => {
-							this.toastr.error(err.error.Message, 'ERROR');
+							console.log(err)
+							this.alertService.onError(err.error.Message, 'ERROR');
 						}
 					)
 				);
@@ -352,7 +386,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 							this.back();
 						},
 						(err) => {
-							this.toastr.error(err.error.Message, 'ERROR');
+							this.alertService.onError(err.error.Message, 'ERROR');
 						}
 					)
 				);
