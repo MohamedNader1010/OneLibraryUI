@@ -12,9 +12,10 @@ import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {OrderComponent} from './order.component';
 import {OrderRoutingModule} from './routing/order-routing.module';
 import {OrderService} from './services/orders.service';
+import { ReturnsComponent } from './components/returns/returns.component';
 
 @NgModule({
-	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent],
+	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule],
 	providers: [LoginGuard, OrderService, CanDeactivateGuard],
 })

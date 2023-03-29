@@ -1,3 +1,4 @@
+import { ReturnsComponent } from './../components/returns/returns.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {OrderComponent} from '../order.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
 			{path: 'new', component: AddEditComponent, title: 'طلب جديد', canDeactivate: [CanDeactivateGuard]},
 			{path: 'edit', component: AddEditComponent, title: 'تعديل الطلب', canDeactivate: [CanDeactivateGuard]},
 			{path: 'transaction', component: TransactionComponent, title: 'تعاملات مالية علي الطلب'},
+			{path: 'returns', component: ReturnsComponent, title: "المرتجعات"},
 			// {path: 'details', component: DetailsComponent, title: 'تفاصيل الطلب'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],

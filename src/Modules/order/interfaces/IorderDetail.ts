@@ -1,3 +1,4 @@
+import { Status } from './../Enums/status';
 export interface OrderDetail {
 	id: number;
 	price: string;
@@ -7,4 +8,5 @@ export interface OrderDetail {
 	note: string;
 	orderId: number;
 	quantity:number;
+	orderStatus: Status
 }

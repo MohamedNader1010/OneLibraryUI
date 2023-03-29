@@ -7,7 +7,7 @@
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
 				<mat-label>نوع العميل</mat-label>
-				<mat-select (selectionChange)="getAllClientsByType($event)">
+				<mat-select [disabled]="disableMode" (selectionChange)="getAllClientsByType($event)" #clientType>
 					<mat-option (onSelectionChange)="getAllClientsByType(mat)" *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
@@ -18,7 +18,7 @@
 				</mat-select>
 			</mat-form-field>
 			<div class="col-1">
-				<button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
+				<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
@@ -28,6 +28,9 @@
 			<div class="row" *ngFor="let detail of OrderDetails.controls; let i = index">
 				<ng-container [formGroupName]="i">
 					<div class="col-3">
+						<div hidden *ngIf="orderToBeUpdated">
+							<div hidden formControlName="id" *ngFor="let detail of orderToBeUpdated.orderDetails">{{detail.id}}</div>
+						</div>
 						<mat-form-field appearance="fill" class="w-100">
 							<mat-label>الخدمات</mat-label>
 							<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)" [id]="'mat-service-' + i.toString()" #matservice>
@@ -78,7 +81,7 @@
 						</mat-form-field>
 					</div>
 					<div class="col-1">
-						<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+						<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
 							<mat-icon>delete</mat-icon>
 						</button>
 					</div>
@@ -102,7 +105,7 @@
 			<div class="col-3">
 				<mat-form-field class="w-100">
 					<mat-label>خصم نسبة</mat-label>
-					<input type="number" matInput formControlName="discountPercent" (change)="computeDiscountAmount()" />
+					<input type="number" matInput formControlName="discountPercent" (change)="computeDiscountValue()" />
 				</mat-form-field>
 			</div>
 		</div>

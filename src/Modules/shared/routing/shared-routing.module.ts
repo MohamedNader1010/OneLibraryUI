@@ -1,3 +1,4 @@
+import { ReturnsComponent } from './../../order/components/returns/returns.component';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
@@ -24,6 +25,7 @@ const routes: Routes = [
 			{path: 'feadback', loadChildren: () => import('../../feadback/feadback.module').then((m) => m.FeadbackModule)},
 			{path: 'materialTracking', loadChildren: () => import('../../material-tracking/materialTracking.module').then((m) => m.materialTrackingModule)},
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
+			{path:'returns', component:ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)}
 			// {path: '', redirectTo: '', pathMatch: 'full'},
 		],
 	},
