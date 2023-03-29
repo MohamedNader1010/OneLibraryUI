@@ -3,7 +3,7 @@
 		<mat-label>Filter</mat-label>
 		<input matInput (keyup)="applyFilter($event)" #input />
 	</mat-form-field>
-	<button type="button" mat-icon-button matTooltip="new" color="warn" aria-label="new" (click)="HandleNew()">
+	<button [hidden]="isHideAllButtons" type="button" mat-icon-button matTooltip="new" color="warn" aria-label="new" (click)="HandleNew()">
 		<mat-icon>add</mat-icon>
 	</button>
 </div>
@@ -19,16 +19,16 @@
 				<th mat-header-cell *matHeaderCellDef></th>
 				<td mat-cell *matCellDef="let row">
 					
-					<button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row)">
+					<button [hidden]="isHideAllButtons" *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row)">
 						<mat-icon>paid</mat-icon>
 					</button>
-					<button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row.id)">
+					<button [hidden]="isHideAllButtons" *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row.id)">
 						<mat-icon>info</mat-icon>
 					</button>
-					<button mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
+					<button [hidden]="isHideAllButtons" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
 						<mat-icon>edit</mat-icon>
 					</button>					
-					<button  [hidden]="!isDisplayDeleteButton" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
+					<button  [hidden]="!isDisplayDeleteButton || isHideAllButtons" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
 						<mat-icon>delete</mat-icon>
 					</button>
 				</td>

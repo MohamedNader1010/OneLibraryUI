@@ -200,7 +200,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				break;
 			case 'detail':
 				formItem = this.fb.group({
-					id: [],
+					id: [0],
 					price: [{ value: null, }],
 					quantity: [1, [Validators.required]],
 					serviceId: [null],

@@ -1,6 +1,6 @@
 import { Status } from './../Enums/status';
 export interface OrderDetail {
-	id: number;
+	id?: number;
 	price: string;
 	serviceId: number;
 	service: string;
