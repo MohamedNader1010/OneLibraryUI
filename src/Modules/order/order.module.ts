@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -16,7 +17,7 @@ import { ReturnsComponent } from './components/returns/returns.component';
 
 @NgModule({
 	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
 	providers: [LoginGuard, OrderService, CanDeactivateGuard],
 })
 export class OrderModule {}

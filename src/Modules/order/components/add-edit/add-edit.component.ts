@@ -1,23 +1,24 @@
-import {AlertServiceService} from './../../../shared/services/alert-service.service';
-import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {NoteService} from 'src/Modules/note/services/note.service';
-import {ServicesService} from 'src/Modules/service/services/services.service';
-import {OrderDetail} from '../../interfaces/IorderDetail';
-import {OrderTransaction} from '../../interfaces/IorderTransaction';
-import {OrderService} from '../../services/orders.service';
-import {Service} from 'src/Modules/service/interfaces/Iservice';
-import {Note} from 'src/Modules/note/interfaces/Inote';
-import {Client} from 'src/Modules/client/interFaces/Iclient';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {ClientService} from 'src/Modules/client/services/client.service';
-import {Status} from '../../Enums/status';
-import {MatSelect} from '@angular/material/select';
-import {Order} from '../../interfaces/Iorder';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertServiceService } from './../../../shared/services/alert-service.service';
+import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { NoteService } from 'src/Modules/note/services/note.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { OrderDetail } from '../../interfaces/IorderDetail';
+import { OrderTransaction } from '../../interfaces/IorderTransaction';
+import { OrderService } from '../../services/orders.service';
+import { Service } from 'src/Modules/service/interfaces/Iservice';
+import { Note } from 'src/Modules/note/interfaces/Inote';
+import { Client } from 'src/Modules/client/interFaces/Iclient';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { ClientService } from 'src/Modules/client/services/client.service';
+import { Status } from '../../Enums/status';
+import { MatSelect } from '@angular/material/select';
+import { Order } from '../../interfaces/Iorder';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -54,7 +55,8 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private alertService: AlertServiceService,
-		private servicePriceService: ServicePricePerClientTypeService
+		private servicePriceService: ServicePricePerClientTypeService, 
+		private translate: TranslateService
 	) {
 		this.Form = this.createFormItem('init');
 	}
@@ -109,7 +111,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 						this.computeFinalPrice(0);
 					});
 				},
-				error: (err) => this.alertService.onError(err.message, 'لايمكن تحميل الأسعار '),
+				error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
 			})
 		);
 	}
@@ -136,7 +138,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ClientTypesDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);
+					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
 				},
 			})
 		);
@@ -151,7 +153,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);
+					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
 				},
 			})
 		);
@@ -163,7 +165,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ServicesDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);
+					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
 				},
 			})
 		);
@@ -175,7 +177,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.NotesDataSource = data.body;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);
+					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
 				},
 			})
 		);

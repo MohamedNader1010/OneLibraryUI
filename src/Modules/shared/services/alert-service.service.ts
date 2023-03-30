@@ -20,7 +20,5 @@ export class AlertServiceService {
   info(message: string, title: string) {
     return this.toastrService.info(message, title);
   }
-  cantLoadData(message:string) {
-    return this.toastrService.error(message, 'لا يمكن تحميل البيانات');
-  }
+
 }

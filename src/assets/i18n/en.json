@@ -1,0 +1,29 @@
+{
+    "button.save": "حفظ",
+    "button.delete": "حذف",
+    "button.back": "رجوع",
+    
+    "error.cantLoadData": "لا يمكن تحميل البيانات",
+    "error.cantLoadPrices": "لا يمكن تحميل الاسعار",
+    
+    "quantity": "الكميه",
+    
+    "title.main": "الرئيسيه",
+    
+    "service.name": "الخدمات",
+    
+    "order.name": "الطلبات",
+    "order.number": "رقم الطلب",
+    "order.status": "حالة الطلب",
+    "order.rest": "الباقي", 
+    "order.paid": "المدفوع", 
+    "order.delete": "حذف الطلب",
+
+    "note.name": "المذكرات",
+
+    "shared.price": "السعر", 
+    "shared.totalPrice": "السعر الكلي",
+    "shared.client": "العميل", 
+    "shared.notice": "الملحوظات",
+    "shared.clientName":"اسم العميل"
+}

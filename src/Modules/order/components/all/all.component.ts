@@ -6,6 +6,7 @@ import { Status } from '../../Enums/status';
 import { Order } from '../../interfaces/Iorder';
 import { OrderService } from '../../services/orders.service';
 import { DetailsComponent } from '../details/details.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-all',
@@ -17,42 +18,42 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Order[];
 	loading!: boolean;
-	constructor(private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService) { }
+	constructor(private translate:TranslateService, private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService) { }
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: '#',
+				header: this.translate.instant("order.number"),
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
 				columnDef: 'TotalPrice',
-				header: 'السعر الكلي',
+				header: this.translate.instant("shared.totalPrice"),
 				cell: (element: Order) => `${element.totalPrice}`,
 			},
 			{
 				columnDef: 'rest',
-				header: 'الباقي',
+				header: this.translate.instant("order.rest"),
 				cell: (element: Order) => `${element.rest}`,
 			},
 			{
 				columnDef: 'Paid',
-				header: 'المدفوع',
+				header: this.translate.instant("order.paid"),
 				cell: (element: Order) => `${element.paid}`,
 			},
 			{
 				columnDef: 'Status',
-				header: 'الحالة',
+				header: this.translate.instant("order.status"),
 				cell: (element: Order) => `${this.getStatusText(element.orderStatus)}`,
 			},
 			{
 				columnDef: 'Client',
-				header: 'العميل',
+				header: this.translate.instant("shared.clientName"),
 				cell: (element: Order) => `${element.clientName}`,
 			},
 			{
 				columnDef: 'Remarks',
-				header: 'الملحوظات',
+				header: this.translate.instant("shared.notice"),
 				cell: (element: Order) => element.remarks
 			}
 		];
@@ -66,7 +67,7 @@ export class AllComponent implements OnInit, OnDestroy {
 					this.tableData = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);
+					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
 					this.loading = false;
 				},
 				complete: () => {
