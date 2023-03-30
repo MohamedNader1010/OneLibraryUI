@@ -18,7 +18,7 @@
 				</mat-select>
 			</mat-form-field>
 			<div class="col-1">
-				<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
+				<button [disabled]="disableMode || !clientId.value || clientId.invalid" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>

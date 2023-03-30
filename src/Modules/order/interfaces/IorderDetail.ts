@@ -1,12 +1,12 @@
-import { Status } from './../Enums/status';
+import {Status} from './../Enums/status';
 export interface OrderDetail {
 	id?: number;
 	price: string;
-	serviceId: number;
-	service: string;
-	noteId: number;
-	note: string;
+	serviceId: number | null;
+	service: string | null;
+	noteId: number | null;
+	note: string | null;
 	orderId: number;
-	quantity:number;
-	orderStatus: Status
+	quantity: number;
+	orderStatus: Status;
 }

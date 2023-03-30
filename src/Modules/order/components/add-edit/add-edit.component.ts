@@ -1,23 +1,23 @@
-import { AlertServiceService } from './../../../shared/services/alert-service.service';
-import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { NoteService } from 'src/Modules/note/services/note.service';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { OrderDetail } from '../../interfaces/IorderDetail';
-import { OrderTransaction } from '../../interfaces/IorderTransaction';
-import { OrderService } from '../../services/orders.service';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { Note } from 'src/Modules/note/interfaces/Inote';
-import { Client } from 'src/Modules/client/interFaces/Iclient';
-import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { ClientService } from 'src/Modules/client/services/client.service';
-import { Status } from '../../Enums/status';
-import { MatSelect } from '@angular/material/select';
-import { Order } from '../../interfaces/Iorder';
+import {AlertServiceService} from './../../../shared/services/alert-service.service';
+import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {NoteService} from 'src/Modules/note/services/note.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {OrderDetail} from '../../interfaces/IorderDetail';
+import {OrderTransaction} from '../../interfaces/IorderTransaction';
+import {OrderService} from '../../services/orders.service';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {Note} from 'src/Modules/note/interfaces/Inote';
+import {Client} from 'src/Modules/client/interFaces/Iclient';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {ClientService} from 'src/Modules/client/services/client.service';
+import {Status} from '../../Enums/status';
+import {MatSelect} from '@angular/material/select';
+import {Order} from '../../interfaces/Iorder';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -43,7 +43,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	ClientTypesDataSource: ClientType[] = [];
 	disableMode: boolean = false;
 	key = 0;
-	prices: { key: number; value: number }[] = [];
+	prices: {key: number; value: number}[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -58,9 +58,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	) {
 		this.Form = this.createFormItem('init');
 	}
-	ngAfterViewInit(): void {
-
-	}
+	ngAfterViewInit(): void {}
 	ngOnInit(): void {
 		this.getAllNotes();
 		this.getAllClientTypes();
@@ -68,7 +66,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
-				if (this.id) this.getSingle(this.id)
+				if (this.id) this.getSingle(this.id);
 			})
 		);
 	}
@@ -153,7 +151,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);;
+					this.alertService.cantLoadData(e.message);
 				},
 			})
 		);
@@ -165,7 +163,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ServicesDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.cantLoadData(e.message);;
+					this.alertService.cantLoadData(e.message);
 				},
 			})
 		);
@@ -191,7 +189,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					finalPrice: [null],
 					discount: [null],
 					discountPercent: [null],
-					rest: [{ value: null }, [Validators.required]],
+					rest: [{value: null}, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					orderDetails: this.fb.array([]),
@@ -201,7 +199,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 			case 'detail':
 				formItem = this.fb.group({
 					id: [0],
-					price: [{ value: null, }],
+					price: [{value: null}],
 					quantity: [1, [Validators.required]],
 					serviceId: [null],
 					noteId: [null],
@@ -211,6 +209,10 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		}
 		return formItem;
 	}
+	get clientId(): FormArray {
+		return this.Form.get('clientId') as FormArray;
+	}
+
 	computeDiscountPercent(): number {
 		const discountAmount = this.Form.get('discount');
 		const discountPercent = this.Form.get('discountPercent');
@@ -235,7 +237,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 	private computeFinalPrice(discountValue: number) {
 		const finalPriceControl = this.Form.get('finalPrice');
-		const totalPrice = +this.Form.get("totalPrice")?.value;
+		const totalPrice = +this.Form.get('totalPrice')?.value;
 
 		finalPriceControl?.setValue(totalPrice - discountValue);
 		this.computeRest();
@@ -268,9 +270,9 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
-		if (this.id) this.disableAllControls()
+		if (this.id) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({ key: this.key, value: -1 });
+		this.prices.push({key: this.key, value: -1});
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -291,7 +293,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				let price = +(note.finalPrice == null ? 10 : note.finalPrice);
 				let qty = this.OrderDetails.controls[index].get('quantity')?.value;
 				let priceInput = this.OrderDetails.controls[index].get('price');
-				priceInput?.setValue(price * +qty) 
+				priceInput?.setValue(price * +qty);
 			}
 			this.computeTotalPrice();
 			this.computeFinalPrice(0);
@@ -327,17 +329,14 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	}
 	private disableAllControls() {
 		this.disableMode = true;
-		this.Form.disable()
+		this.Form.disable();
 		if (this.OrderDetails.value) {
-			this.OrderDetails.controls.forEach(
-				control => {
-					control.disable()
-				}
-			)
-			this.OrderDetails.controls.find(control => {
-				if (control.get('orderStatus')?.enable())
-					return;
-			})
+			this.OrderDetails.controls.forEach((control) => {
+				control.disable();
+			});
+			this.OrderDetails.controls.find((control) => {
+				if (control.get('orderStatus')?.enable()) return;
+			});
 		}
 	}
 	private validateDiscountAmountAndPercent() {
@@ -345,26 +344,24 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		const discountPercent = this.computeDiscountPercent();
 		const finalPrice = +this.Form.get('finalPrice')?.value;
 		const totalPrice = +this.Form.get('totalPrice')?.value;
-		const isDiscountPercentEqualsDiscountValue = (discountValue + finalPrice) === (((discountPercent / 100) * totalPrice) + finalPrice) ? true : false;
+		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
 			this.alertService.onError('discount amount not equals to discount percent', 'ERROR');
-			this.Form.setErrors({ invalid: true });
+			this.Form.setErrors({invalid: true});
 		}
 	}
 	private setUpdatedOrder(): void {
-		this.orderToBeUpdated.orderDetails.forEach(orderDetail => {
-			this.OrderDetails.controls.forEach(control => {
+		this.orderToBeUpdated.orderDetails.forEach((orderDetail) => {
+			this.OrderDetails.controls.forEach((control) => {
 				let id = control.get('id')?.value;
-				if (orderDetail.id === id)
-					orderDetail.orderStatus = control.get('orderStatus')?.value;
-			})
-		})
-
+				if (orderDetail.id === id) orderDetail.orderStatus = control.get('orderStatus')?.value;
+			});
+		});
 	}
 	handleSubmit() {
 		if (this.Form.valid) {
 			if (this.id) {
-				this.setUpdatedOrder()
+				this.setUpdatedOrder();
 				this.subscriptions.push(
 					this._order.updateStatus(this.orderToBeUpdated).subscribe(
 						() => {
@@ -372,7 +369,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 							this.back();
 						},
 						(err) => {
-							console.log(err)
+							console.log(err);
 							this.alertService.onError(err.error.Message, 'ERROR');
 						}
 					)

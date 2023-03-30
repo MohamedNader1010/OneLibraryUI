@@ -11,15 +11,14 @@ import {MatComponentsModule} from '../mat-components.Module/mat-components.modul
 import {AuthService} from '../authentication.Module/services/auth.service';
 import {TableComponent} from './components/table/table.component';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
-import {NgxPrintModule} from 'ngx-print';
 import {LoadingBarRouterModule} from '@ngx-loading-bar/router';
 import {ProfileComponent} from './components/profile/profile.component';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 
 @NgModule({
 	declarations: [SharedComponent, ProfileComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent],
-	imports: [LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, NgxPrintModule, ReactiveFormsModule, FormsModule],
+	imports: [LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule],
 	exports: [TableComponent],
 	providers: [LoginGuard, AuthService, ToastrService],
 })
