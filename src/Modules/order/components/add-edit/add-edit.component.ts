@@ -4,7 +4,7 @@ import { ServicePricePerClientTypeService } from './../../../service-price-per-c
 import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { forkJoin, map, Subscription, Observable, switchMap, catchError, of } from 'rxjs';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
 import { OrderDetail } from '../../interfaces/IorderDetail';
@@ -44,7 +44,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	ClientTypesDataSource: ClientType[] = [];
 	disableMode: boolean = false;
 	key = 0;
-	prices: {key: number; value: number}[] = [];
+	prices: { key: number; value: number }[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -55,22 +55,42 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private alertService: AlertServiceService,
-		private servicePriceService: ServicePricePerClientTypeService, 
+		private servicePriceService: ServicePricePerClientTypeService,
 		private translate: TranslateService
 	) {
 		this.Form = this.createFormItem('init');
 	}
-	ngAfterViewInit(): void {}
+	ngAfterViewInit(): void { }
 	ngOnInit(): void {
-		this.getAllNotes();
-		this.getAllClientTypes();
-		this.getAllServices();
+		this.forkJoins()
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
 				if (this.id) this.getSingle(this.id);
 			})
 		);
+	}
+
+	private forkJoins() {
+		let services = [this._note.getAll(), this._clientType.getAll(), this._service.getAll()];
+		return forkJoin(services)
+			.pipe(
+				catchError(err => of(err)),
+				map(([notesResponse, clientTypeResponse, serviceResponse]) => {
+					return {
+						notes: notesResponse,
+						clientsType: clientTypeResponse,
+						services: serviceResponse
+					}
+				})
+			)
+			.subscribe(
+				response => {
+					this.NotesDataSource = response.notes.body;
+					this.ServicesDataSource = response.services;
+					this.ClientTypesDataSource = response.clientsType;
+				}
+			)
 	}
 	getStatusLabel(status: Status) {
 		switch (status) {
@@ -131,50 +151,14 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.computeTotalPrice();
 		this.computeFinalPrice(0);
 	}
-	getAllClientTypes() {
-		this.subscriptions.push(
-			this._clientType.getAll().subscribe({
-				next: (data) => {
-					this.ClientTypesDataSource = data;
-				},
-				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
-				},
-			})
-		);
-	}
+
 	getAllClientsByType(data: any) {
 		this._clientTypeId = data.value;
-		console.log(data.value, this._clientTypeId);
 		if (!this._clientTypeId) return;
 		this.subscriptions.push(
 			this._client.getAllByType(data.value).subscribe({
 				next: (data) => {
 					this.ClientsDataSource = data;
-				},
-				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
-				},
-			})
-		);
-	}
-	getAllServices() {
-		this.subscriptions.push(
-			this._service.getAll().subscribe({
-				next: (data) => {
-					this.ServicesDataSource = data;
-				},
-				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
-				},
-			})
-		);
-	}
-	getAllNotes() {
-		this.subscriptions.push(
-			this._note.getAll().subscribe({
-				next: (data) => {
-					this.NotesDataSource = data.body;
 				},
 				error: (e) => {
 					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
@@ -191,7 +175,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					finalPrice: [null],
 					discount: [null],
 					discountPercent: [null],
-					rest: [{value: null}, [Validators.required]],
+					rest: [{ value: null }, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					orderDetails: this.fb.array([]),
@@ -200,8 +184,8 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				break;
 			case 'detail':
 				formItem = this.fb.group({
-					id: [0],
-					price: [{value: null}],
+					id: [{ value: 0 }],
+					price: [{ value: null }],
 					quantity: [1, [Validators.required]],
 					serviceId: [null],
 					noteId: [null],
@@ -261,20 +245,19 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		totalPriceControl?.setValue(totalPrice);
 	}
 	fillFormWithData(datasource: Order) {
-		this.orderToBeUpdated = datasource;
 		datasource.orderDetails.forEach(() => this.handleNewDetail());
 		this.Form.patchValue(datasource);
 	}
 	get OrderDetails(): FormArray {
 		return this.Form.get('orderDetails') as FormArray;
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => this.fillFormWithData(data)));
+	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => { this.orderToBeUpdated = data; this.fillFormWithData(data) }));
 	back = () => this.router.navigate([this.controllerName]);
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
 		if (this.id) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({key: this.key, value: -1});
+		this.prices.push({ key: this.key, value: -1 });
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -349,7 +332,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
 			this.alertService.onError('discount amount not equals to discount percent', 'ERROR');
-			this.Form.setErrors({invalid: true});
+			this.Form.setErrors({ invalid: true });
 		}
 	}
 	private setUpdatedOrder(): void {

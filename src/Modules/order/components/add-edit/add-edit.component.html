@@ -29,7 +29,9 @@
 				<ng-container [formGroupName]="i">
 					<div class="col-3">
 						<div hidden *ngIf="orderToBeUpdated">
-							<div hidden formControlName="id" *ngFor="let detail of orderToBeUpdated.orderDetails">{{detail.id}}</div>
+							<div hidden  *ngFor="let detail of orderToBeUpdated.orderDetails">
+								<input hidden formControlName="id">
+							</div>
 						</div>
 						<mat-form-field appearance="fill" class="w-100">
 							<mat-label>الخدمات</mat-label>
