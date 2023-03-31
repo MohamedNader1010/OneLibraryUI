@@ -4,26 +4,35 @@
     "button.back": "رجوع",
     
     "error.cantLoadData": "لا يمكن تحميل البيانات",
-    "error.cantLoadPrices": "لا يمكن تحميل الاسعار",
-    
+    "error.cantLoadPrices": "لا يمكن تحميل الاسعار",   
+    "error.name": "Error",
+
     "quantity": "الكميه",
     
     "title.main": "الرئيسيه",
     
     "service.name": "الخدمات",
-    
+
+    "order.router.name": "orders",
     "order.name": "الطلبات",
     "order.number": "رقم الطلب",
     "order.status": "حالة الطلب",
-    "order.rest": "الباقي", 
-    "order.paid": "المدفوع", 
     "order.delete": "حذف الطلب",
+    "order.new": "طلب جديد",
+    "order.edit": "تعديل الطلب",
 
     "note.name": "المذكرات",
 
     "shared.price": "السعر", 
     "shared.totalPrice": "السعر الكلي",
-    "shared.client": "العميل", 
+    "shared.finalPrice": "السعر النهائي", 
+    "shared.discountValue": "خصم مبلغ", 
+    "shared.discountPercent":"خصم نسبه",
+    "shared.paid" : "المدفوع", 
+    "shared.rest": "الباقي", 
+    "shared.clientRemarks":"ملحوظات العميل",
+    "shared.client": "العميل",
+    "shared.clientType": "نوع العميل",
     "shared.notice": "الملحوظات",
     "shared.clientName":"اسم العميل"
 }

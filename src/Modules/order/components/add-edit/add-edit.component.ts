@@ -7,8 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin, map, Subscription, Observable, switchMap, catchError, of } from 'rxjs';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
-import { OrderDetail } from '../../interfaces/IorderDetail';
-import { OrderTransaction } from '../../interfaces/IorderTransaction';
 import { OrderService } from '../../services/orders.service';
 import { Service } from 'src/Modules/service/interfaces/Iservice';
 import { Note } from 'src/Modules/note/interfaces/Inote';
@@ -34,10 +32,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	Form: FormGroup;
 	id!: number;
 	orderToBeUpdated!: Order;
-	controllerName: string = 'orders';
 	isSubmitted: boolean = false;
-	DetailsDataSource: OrderDetail[] = [];
-	TransactionsDataSource: OrderTransaction[] = [];
 	ServicesDataSource: Service[] = [];
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];
@@ -161,7 +156,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					this.ClientsDataSource = data;
 				},
 				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
+					this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
 				},
 			})
 		);
@@ -251,8 +246,16 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	get OrderDetails(): FormArray {
 		return this.Form.get('orderDetails') as FormArray;
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._order.getOne(id).subscribe((data) => { this.orderToBeUpdated = data; this.fillFormWithData(data) }));
-	back = () => this.router.navigate([this.controllerName]);
+	getSingle =
+		(id: number) =>
+			this.subscriptions.push(
+				this._order.getOne(id)
+					.subscribe((data) => {
+						this.orderToBeUpdated = data; this.fillFormWithData(data)
+					}));
+
+	back = () => this.router.navigate([this.translate.instant('order.router.name')]);
+
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
 		if (this.id) this.disableAllControls();
@@ -264,7 +267,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.OrderDetails.removeAt(index);
 		this.deleteSelectedElementFromMappedObject(index);
 	};
-	deleteSelectedElementFromMappedObject(index: number) {
+	private deleteSelectedElementFromMappedObject(index: number) {
 		for (let i = index + 1; i < this.prices.length; i++) {
 			this.prices[i].key--;
 			this.key--;
@@ -295,20 +298,20 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		serviceMaterial?.disable();
 		this.getNotePrice(index);
 	}
-	enableAndDisableDDL(index: number, obj: MatSelect) {
+	enableAndDisableDDL(index: number, matSelect: MatSelect) {
 		let serviceMaterial = this.OrderDetails.controls[index].get('serviceId');
 		let noteMaterial = this.OrderDetails.controls[index].get('noteId');
 		if (serviceMaterial?.disabled) {
 			serviceMaterial?.enable();
 			noteMaterial?.disable();
 			noteMaterial?.reset();
-			obj.close();
+			matSelect.close();
 			this.clearPriceAndQuantityInput(index);
 		} else {
 			noteMaterial?.enable();
 			serviceMaterial?.disable();
 			serviceMaterial?.reset();
-			obj.close();
+			matSelect.close();
 			this.clearPriceAndQuantityInput(index);
 		}
 	}
@@ -331,7 +334,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		const totalPrice = +this.Form.get('totalPrice')?.value;
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
-			this.alertService.onError('discount amount not equals to discount percent', 'ERROR');
+			this.alertService.onError('discount amount not equals to discount percent', this.translate.instant('error.name'));
 			this.Form.setErrors({ invalid: true });
 		}
 	}
@@ -355,7 +358,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 						},
 						(err) => {
 							console.log(err);
-							this.alertService.onError(err.error.Message, 'ERROR');
+							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
 						}
 					)
 				);
@@ -368,7 +371,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 							this.back();
 						},
 						(err) => {
-							this.alertService.onError(err.error.Message, 'ERROR');
+							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
 						}
 					)
 				);
