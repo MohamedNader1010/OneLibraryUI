@@ -15,6 +15,7 @@ import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
 import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
+import {Response} from './../../../shared/interfaces/Iresponse';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -332,35 +333,53 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.loading = true;
-			if (this.id) {
-				if (this.deletedComponents.length)
-					this.subscriptions.push(
-						this._note.deleteNoteComponents(this.deletedComponents).subscribe({
-							error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
-						})
-					);
-				this.subscriptions.push(
-					this._note.update(this.id, this.Form.value).subscribe({
-						next: (res) => {
-							this.isSubmitted = true;
-							this.back();
-						},
-						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
-						complete: () => (this.loading = false),
-					})
-				);
-			} else
-				this.subscriptions.push(
-					this._note.add(this.Form.value).subscribe({
-						next: (res) => {
-							this.isSubmitted = true;
-							this.back();
-						},
-						error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
-						complete: () => (this.loading = false),
-					})
-				);
+			if (this.id) this.update();
+			else this.add();
 		}
+	}
+	update() {
+		if (this.deletedComponents.length)
+			this.subscriptions.push(
+				this._note.deleteNoteComponents(this.deletedComponents).subscribe({
+					error: (e) => {
+						this.loading = false;
+						let res: Response = e.error ?? e;
+						this.toastr.error(res.message);
+					},
+				})
+			);
+		this.subscriptions.push(
+			this._note.update(this.id, this.Form.value).subscribe({
+				next: (res) => {
+					this.isSubmitted = true;
+					this.loading = true;
+					this.back();
+				},
+				error: (e) => {
+					this.loading = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => (this.loading = false),
+			})
+		);
+	}
+	add() {
+		this.subscriptions.push(
+			this._note.add(this.Form.value).subscribe({
+				next: (res) => {
+					this.isSubmitted = true;
+					this.loading = true;
+					this.back();
+				},
+				error: (e) => {
+					this.loading = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => (this.loading = false),
+			})
+		);
 	}
 	back = () => this.router.navigate([this.controllerName]);
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

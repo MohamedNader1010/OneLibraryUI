@@ -134,7 +134,7 @@
 			</div>
 		</div>
 		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || !noteComponents.length || loading">حفظ</button>
+			<button mat-flat-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || !noteComponents.length || loading">{{ loading ? 'انتظر من فضلك' : 'حفظ' }}</button>
 			<button type="button" mat-stroked-button color="basic" (click)="back()" [disabled]="loading">رجوع</button>
 		</div>
 	</form>
