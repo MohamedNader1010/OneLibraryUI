@@ -4,14 +4,6 @@
 	"newProjectRoot": "projects",
 	"projects": {
 		"OneLibraryUI": {
-			"i18n": {
-        "sourceLocale": "ar-EG",
-        "locales": {
-          "ar": {
-            "translation": "src/assets/i18n/ar.json",
-            "baseHref": ""
-          }
-        }},
 			"projectType": "application",
 			"schematics": {},
 			"root": "",
