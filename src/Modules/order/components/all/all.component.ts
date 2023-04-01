@@ -23,37 +23,37 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
-				header: this.translate.instant('order.number'),
+				header: '#',
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
 				columnDef: 'TotalPrice',
-				header: this.translate.instant('shared.totalPrice'),
+				header: 'الاجمالي',
 				cell: (element: Order) => `${element.totalPrice}`,
 			},
 			{
 				columnDef: 'rest',
-				header: this.translate.instant('order.rest'),
+				header: 'المتبقي',
 				cell: (element: Order) => `${element.rest}`,
 			},
 			{
 				columnDef: 'Paid',
-				header: this.translate.instant('order.paid'),
+				header: 'المدفوع',
 				cell: (element: Order) => `${element.paid}`,
 			},
 			{
 				columnDef: 'Status',
-				header: this.translate.instant('order.status'),
+				header: 'حالة الطلب',
 				cell: (element: Order) => `${this.getStatusText(element.orderStatus)}`,
 			},
 			{
 				columnDef: 'Client',
-				header: this.translate.instant('shared.clientName'),
+				header: 'العميل',
 				cell: (element: Order) => `${element.clientName}`,
 			},
 			{
 				columnDef: 'Remarks',
-				header: this.translate.instant('shared.notice'),
+				header: 'ملاحظات',
 				cell: (element: Order) => element.remarks,
 			},
 		];
@@ -67,7 +67,7 @@ export class AllComponent implements OnInit, OnDestroy {
 					this.tableData = data;
 				},
 				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('cantLoadData'));
+					this.alertService.onError(e.message, '');
 					this.loading = false;
 				},
 				complete: () => {

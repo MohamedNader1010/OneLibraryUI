@@ -1,4 +1,4 @@
-import {TranslateService} from '@ngx-translate/core';
+// import {TranslateService} from '@ngx-translate/core';
 import {AlertServiceService} from './../../../shared/services/alert-service.service';
 import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
 import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
@@ -17,6 +17,7 @@ import {ClientService} from 'src/Modules/client/services/client.service';
 import {Status} from '../../Enums/status';
 import {MatSelect} from '@angular/material/select';
 import {Order} from '../../interfaces/Iorder';
+import {Response} from './../../../shared/interfaces/Iresponse';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -50,8 +51,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private alertService: AlertServiceService,
-		private servicePriceService: ServicePricePerClientTypeService,
-		private translate: TranslateService
+		private servicePriceService: ServicePricePerClientTypeService // private translate: TranslateService
 	) {
 		this.Form = this.createFormItem('init');
 	}
@@ -124,7 +124,12 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 						this.computeFinalPrice(0);
 					});
 				},
-				error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
+				// error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
+				error: (e) => {
+					// this.loading = false;
+					let res: Response = e.error ?? e;
+					this.alertService.onError(res.message, '');
+				},
 			})
 		);
 	}
@@ -153,8 +158,13 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				next: (data) => {
 					this.ClientsDataSource = data;
 				},
+				// error: (e) => {
+				// 	this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
+				// },
 				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
+					// this.loading = false;
+					let res: Response = e.error ?? e;
+					this.alertService.onError(res.message, '');
 				},
 			})
 		);
@@ -252,7 +262,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 			})
 		);
 
-	back = () => this.router.navigate([this.translate.instant('order.router.name')]);
+	back = () => this.router.navigate(['orders']);
 
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
@@ -332,7 +342,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		const totalPrice = +this.Form.get('totalPrice')?.value;
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
-			this.alertService.onError('discount amount not equals to discount percent', this.translate.instant('error.name'));
+			this.alertService.onError('discount amount not equals to discount percent', '');
 			this.Form.setErrors({invalid: true});
 		}
 	}
@@ -349,29 +359,32 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 			if (this.id) {
 				this.setUpdatedOrder();
 				this.subscriptions.push(
-					this._order.updateStatus(this.orderToBeUpdated).subscribe(
-						() => {
+					this._order.updateStatus(this.orderToBeUpdated).subscribe({
+						next: () => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						(err) => {
-							console.log(err);
-							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
-						}
-					)
+						error: (e) => {
+							// this.loading = false;
+							let res: Response = e.error ?? e;
+							this.alertService.onError(res.message, '');
+						},
+					})
 				);
 			} else {
 				this.validateDiscountAmountAndPercent();
 				this.subscriptions.push(
-					this._order.add(this.Form.value).subscribe(
-						() => {
+					this._order.add(this.Form.value).subscribe({
+						next: () => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						(err) => {
-							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
-						}
-					)
+						error: (e) => {
+							// this.loading = false;
+							let res: Response = e.error ?? e;
+							this.alertService.onError(res.message, '');
+						},
+					})
 				);
 			}
 		}
