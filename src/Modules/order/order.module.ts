@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -13,11 +13,36 @@ import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {OrderComponent} from './order.component';
 import {OrderRoutingModule} from './routing/order-routing.module';
 import {OrderService} from './services/orders.service';
-import { ReturnsComponent } from './components/returns/returns.component';
+import {ReturnsComponent} from './components/returns/returns.component';
 
 @NgModule({
 	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
+	imports: [
+		FormsModule,
+		ReactiveFormsModule,
+		CommonModule,
+		OrderRoutingModule,
+		SharedModule,
+		MatComponentsModule,
+		TranslateModule
+		//.forRoot({
+		// 	defaultLanguage: 'ar',
+		// 	loader: {
+		// 		provide: TranslateLoader,
+		// 		useFactory: HttpLoaderFactory,
+		// 		deps: [HttpClient],
+		// 	},
+		// }),
+	],
 	providers: [LoginGuard, OrderService, CanDeactivateGuard],
 })
 export class OrderModule {}
+
+// "i18n": {
+//   "sourceLocale": "ar-EG",
+//   "locales": {
+//     "ar": {
+//       "translation": "src/assets/i18n/ar.json",
+//       "baseHref": ""
+//     }
+//   }},

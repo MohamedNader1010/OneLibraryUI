@@ -1,22 +1,23 @@
-import { TranslateService } from '@ngx-translate/core';
-import { AlertServiceService } from './../../../shared/services/alert-service.service';
-import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, map, Subscription, Observable, switchMap, catchError, of } from 'rxjs';
-import { NoteService } from 'src/Modules/note/services/note.service';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { OrderService } from '../../services/orders.service';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { Note } from 'src/Modules/note/interfaces/Inote';
-import { Client } from 'src/Modules/client/interFaces/Iclient';
-import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { ClientService } from 'src/Modules/client/services/client.service';
-import { Status } from '../../Enums/status';
-import { MatSelect } from '@angular/material/select';
-import { Order } from '../../interfaces/Iorder';
+// import {TranslateService} from '@ngx-translate/core';
+import {AlertServiceService} from './../../../shared/services/alert-service.service';
+import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
+import {forkJoin, map, Subscription, Observable, switchMap, catchError, of} from 'rxjs';
+import {NoteService} from 'src/Modules/note/services/note.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {OrderService} from '../../services/orders.service';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {Note} from 'src/Modules/note/interfaces/Inote';
+import {Client} from 'src/Modules/client/interFaces/Iclient';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {ClientService} from 'src/Modules/client/services/client.service';
+import {Status} from '../../Enums/status';
+import {MatSelect} from '@angular/material/select';
+import {Order} from '../../interfaces/Iorder';
+import {Response} from './../../../shared/interfaces/Iresponse';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -39,7 +40,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	ClientTypesDataSource: ClientType[] = [];
 	disableMode: boolean = false;
 	key = 0;
-	prices: { key: number; value: number }[] = [];
+	prices: {key: number; value: number}[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -50,14 +51,13 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private alertService: AlertServiceService,
-		private servicePriceService: ServicePricePerClientTypeService,
-		private translate: TranslateService
+		private servicePriceService: ServicePricePerClientTypeService // private translate: TranslateService
 	) {
 		this.Form = this.createFormItem('init');
 	}
-	ngAfterViewInit(): void { }
+	ngAfterViewInit(): void {}
 	ngOnInit(): void {
-		this.forkJoins()
+		this.forkJoins();
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
@@ -70,22 +70,20 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		let services = [this._note.getAll(), this._clientType.getAll(), this._service.getAll()];
 		return forkJoin(services)
 			.pipe(
-				catchError(err => of(err)),
+				catchError((err) => of(err)),
 				map(([notesResponse, clientTypeResponse, serviceResponse]) => {
 					return {
 						notes: notesResponse,
 						clientsType: clientTypeResponse,
-						services: serviceResponse
-					}
+						services: serviceResponse,
+					};
 				})
 			)
-			.subscribe(
-				response => {
-					this.NotesDataSource = response.notes.body;
-					this.ServicesDataSource = response.services;
-					this.ClientTypesDataSource = response.clientsType;
-				}
-			)
+			.subscribe((response) => {
+				this.NotesDataSource = response.notes.body;
+				this.ServicesDataSource = response.services;
+				this.ClientTypesDataSource = response.clientsType;
+			});
 	}
 	getStatusLabel(status: Status) {
 		switch (status) {
@@ -126,7 +124,12 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 						this.computeFinalPrice(0);
 					});
 				},
-				error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
+				// error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
+				error: (e) => {
+					// this.loading = false;
+					let res: Response = e.error ?? e;
+					this.alertService.onError(res.message, '');
+				},
 			})
 		);
 	}
@@ -155,8 +158,13 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				next: (data) => {
 					this.ClientsDataSource = data;
 				},
+				// error: (e) => {
+				// 	this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
+				// },
 				error: (e) => {
-					this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
+					// this.loading = false;
+					let res: Response = e.error ?? e;
+					this.alertService.onError(res.message, '');
 				},
 			})
 		);
@@ -170,7 +178,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 					finalPrice: [null],
 					discount: [null],
 					discountPercent: [null],
-					rest: [{ value: null }, [Validators.required]],
+					rest: [{value: null}, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					orderDetails: this.fb.array([]),
@@ -179,8 +187,8 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				break;
 			case 'detail':
 				formItem = this.fb.group({
-					id: [{ value: 0 }],
-					price: [{ value: null }],
+					id: [0],
+					price: [null],
 					quantity: [1, [Validators.required]],
 					serviceId: [null],
 					noteId: [null],
@@ -246,21 +254,21 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	get OrderDetails(): FormArray {
 		return this.Form.get('orderDetails') as FormArray;
 	}
-	getSingle =
-		(id: number) =>
-			this.subscriptions.push(
-				this._order.getOne(id)
-					.subscribe((data) => {
-						this.orderToBeUpdated = data; this.fillFormWithData(data)
-					}));
+	getSingle = (id: number) =>
+		this.subscriptions.push(
+			this._order.getOne(id).subscribe((data) => {
+				this.orderToBeUpdated = data;
+				this.fillFormWithData(data);
+			})
+		);
 
-	back = () => this.router.navigate([this.translate.instant('order.router.name')]);
+	back = () => this.router.navigate(['orders']);
 
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
 		if (this.id) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({ key: this.key, value: -1 });
+		this.prices.push({key: this.key, value: -1});
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -334,8 +342,8 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		const totalPrice = +this.Form.get('totalPrice')?.value;
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
-			this.alertService.onError('discount amount not equals to discount percent', this.translate.instant('error.name'));
-			this.Form.setErrors({ invalid: true });
+			this.alertService.onError('discount amount not equals to discount percent', '');
+			this.Form.setErrors({invalid: true});
 		}
 	}
 	private setUpdatedOrder(): void {
@@ -351,29 +359,32 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 			if (this.id) {
 				this.setUpdatedOrder();
 				this.subscriptions.push(
-					this._order.updateStatus(this.orderToBeUpdated).subscribe(
-						() => {
+					this._order.updateStatus(this.orderToBeUpdated).subscribe({
+						next: () => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						(err) => {
-							console.log(err);
-							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
-						}
-					)
+						error: (e) => {
+							// this.loading = false;
+							let res: Response = e.error ?? e;
+							this.alertService.onError(res.message, '');
+						},
+					})
 				);
 			} else {
 				this.validateDiscountAmountAndPercent();
 				this.subscriptions.push(
-					this._order.add(this.Form.value).subscribe(
-						() => {
+					this._order.add(this.Form.value).subscribe({
+						next: () => {
 							this.isSubmitted = true;
 							this.back();
 						},
-						(err) => {
-							this.alertService.onError(err.error.Message, this.translate.instant('error.name'));
-						}
-					)
+						error: (e) => {
+							// this.loading = false;
+							let res: Response = e.error ?? e;
+							this.alertService.onError(res.message, '');
+						},
+					})
 				);
 			}
 		}

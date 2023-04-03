@@ -1,26 +1,35 @@
-<h2 class="w-100 text-center mt-3" *ngIf="id; else update">{{'order.edit' | translate}}</h2>
+<!-- <h2 class="w-100 text-center mt-3" *ngIf="id; else update">{{'order.edit' | translate}}</h2> -->
+<h2 class="w-100 text-center mt-3" *ngIf="id; else update">تعديل الطلب</h2>
 <ng-template #update>
-	<h2 class="w-100 text-center mt-3">{{'order.new' | translate}}</h2>
+	<!-- <h2 class="w-100 text-center mt-3">{{ 'order.new' | translate }}</h2> -->
+	<h2 class="w-100 text-center mt-3">طلب جديد</h2>
 </ng-template>
 <section class="container">
 	<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 		<div class="row">
 			<mat-form-field appearance="fill" class="col-4">
-				<mat-label>{{'shared.clientType' | translate}}</mat-label>
+				<!-- <mat-label>{{'shared.clientType' | translate}}</mat-label> -->
+				<mat-label>نوع العميل</mat-label>
 				<mat-select [disabled]="disableMode" (selectionChange)="getAllClientsByType($event)" #clientType>
-					<mat-option (onSelectionChange)="getAllClientsByType(mat)" *ngFor="let mat of ClientTypesDataSource"
-						[value]="mat.id">{{ mat.name }}</mat-option>
+					<mat-option (onSelectionChange)="getAllClientsByType(mat)" *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<mat-form-field appearance="fill" class="col-7">
-				<mat-label>{{'shared.client' | translate}}</mat-label>
+				<!-- <mat-label>{{'shared.client' | translate}}</mat-label> -->
+				<mat-label>العميل</mat-label>
 				<mat-select formControlName="clientId">
 					<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 				</mat-select>
 			</mat-form-field>
 			<div class="col-1">
-				<button [disabled]="disableMode || !clientId.value || clientId.invalid" type="button" mat-icon-button
-					matTooltip="add" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
+				<button
+					[disabled]="disableMode || !clientId.value || clientId.invalid"
+					type="button"
+					mat-icon-button
+					matTooltip="add"
+					color="basic"
+					aria-label="add order detail row"
+					(click)="handleNewDetail()">
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
@@ -32,20 +41,18 @@
 					<div class="col-3">
 						<div hidden *ngIf="orderToBeUpdated">
 							<div hidden *ngFor="let detail of orderToBeUpdated.orderDetails">
-								<input hidden formControlName="id">
+								<input hidden formControlName="id" />
 							</div>
 						</div>
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>{{'service.name' | translate}}</mat-label>
-							<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)"
-								[id]="'mat-service-' + i.toString()" #matservice>
-								<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name
-									}}</mat-option>
+							<!-- <mat-label>{{'service.name' | translate}}</mat-label> -->
+							<mat-label>الخدمات</mat-label>
+							<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)" [id]="'mat-service-' + i.toString()" #matservice>
+								<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 								<hr />
 								<div class="row no-gutters p-1">
 									<div class="col-sm-12 text-right m-1">
-										<button type="button" class="btn btn-danger"
-											(click)="enableAndDisableDDL(i, matservice)">disable</button>
+										<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matservice)">disable</button>
 									</div>
 								</div>
 							</mat-select>
@@ -53,15 +60,14 @@
 					</div>
 					<div class="col-2">
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>{{'note.name' | translate}}</mat-label>
+							<!-- <mat-label>{{'note.name' | translate}}</mat-label> -->
+							<mat-label>المذكرات</mat-label>
 							<mat-select formControlName="noteId" (selectionChange)="onNoteValueChanged(i)" #matNote>
-								<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name
-									}}</mat-option>
+								<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 								<hr />
 								<div class="row no-gutters p-1">
 									<div class="col-sm-12 text-right m-1">
-										<button type="button" class="btn btn-danger"
-											(click)="enableAndDisableDDL(i, matNote)">disable</button>
+										<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matNote)">disable</button>
 									</div>
 								</div>
 							</mat-select>
@@ -69,20 +75,22 @@
 					</div>
 					<div class="col-2">
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>{{'quantity' | translate}}</mat-label>
-							<input type="number" matInput formControlName="quantity"
-								(change)="getQuantityAndUpdatePriceInputForService(i)" />
+							<!-- <mat-label>{{'quantity' | translate}}</mat-label> -->
+							<mat-label>الكميه</mat-label>
+							<input type="number" matInput formControlName="quantity" (change)="getQuantityAndUpdatePriceInputForService(i)" />
 						</mat-form-field>
 					</div>
 					<div class="col-2">
 						<mat-form-field class="w-100">
-							<mat-label>{{'shared.price' | translate}}</mat-label>
+							<!-- <mat-label>{{ 'shared.price' | translate }}</mat-label> -->
+							<mat-label>السعر</mat-label>
 							<input type="number" matInput formControlName="price" [readonly]="true" #priceRef />
 						</mat-form-field>
 					</div>
 					<div class="col-2">
 						<mat-form-field appearance="fill" class="w-100">
-							<mat-label>{{'order.status' | translate}}</mat-label>
+							<!-- <mat-label>{{'order.status' | translate}}</mat-label> -->
+							<mat-label>حالة الطلب</mat-label>
 							<mat-select formControlName="orderStatus">
 								<mat-option *ngFor="let status of availableStatus" [value]="status">
 									{{ getStatusLabel(status) }}
@@ -91,8 +99,7 @@
 						</mat-form-field>
 					</div>
 					<div class="col-1">
-						<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete" color="warn"
-							aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+						<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
 							<mat-icon>delete</mat-icon>
 						</button>
 					</div>
@@ -103,19 +110,22 @@
 		<div class="row">
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.totalPrice' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.totalPrice' | translate }}</mat-label> -->
+					<mat-label>الاجمالي</mat-label>
 					<input type="number" matInput formControlName="totalPrice" [readonly]="true" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.discountValue' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.discountValue' | translate }}</mat-label> -->
+					<mat-label>خصم مبلغ</mat-label>
 					<input type="number" matInput formControlName="discount" (change)="computeDiscountPercent()" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.discountPercent' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.discountPercent' | translate }}</mat-label> -->
+					<mat-label>نسبة الخصم</mat-label>
 					<input type="number" matInput formControlName="discountPercent" (change)="computeDiscountValue()" />
 				</mat-form-field>
 			</div>
@@ -123,19 +133,22 @@
 		<div class="row">
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.finalPrice' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.finalPrice' | translate }}</mat-label> -->
+					<mat-label>السعر النهائي</mat-label>
 					<input type="number" matInput formControlName="finalPrice" [readonly]="true" />
 				</mat-form-field>
 			</div>
 			<div class="col-4">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.paid' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.paid' | translate }}</mat-label> -->
+					<mat-label>المدفوع</mat-label>
 					<input type="number" matInput formControlName="paid" (change)="computeRest()" />
 				</mat-form-field>
 			</div>
 			<div class="col-3">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.rest' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.rest' | translate }}</mat-label> -->
+					<mat-label>المتبقي</mat-label>
 					<input type="number" matInput formControlName="rest" [readonly]="true" />
 				</mat-form-field>
 			</div>
@@ -143,7 +156,8 @@
 		<div class="row">
 			<div class="col-11">
 				<mat-form-field class="w-100">
-					<mat-label>{{'shared.clientRemarks' | translate}}</mat-label>
+					<!-- <mat-label>{{ 'shared.clientRemarks' | translate }}</mat-label> -->
+					<mat-label>ملاحظات</mat-label>
 					<textarea matInput formControlName="remarks"></textarea>
 				</mat-form-field>
 			</div>
