@@ -35,6 +35,7 @@ export function tokenGetter() {
 		ToastrModule.forRoot({preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing'}),
 		BrowserAnimationsModule,
 		TranslateModule.forRoot({
+			defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
@@ -55,5 +56,5 @@ export function tokenGetter() {
 export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-    return new TranslateHttpLoader(http);
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
