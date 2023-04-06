@@ -1,21 +1,25 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
-import {Material} from '../../interfaces/Imaterial';
-import {MaterialService} from '../../services/material.service';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { Material } from '../../interfaces/Imaterial';
+import { MaterialService } from '../../services/material.service';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+
 
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
-	styleUrls: ['./all.component.css'],
+	styleUrls: ['./all.component.css']
 })
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
 	tableData!: Material[];
 	loading!: boolean;
-	constructor(private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
+	formName = FormDialogNames.MaterialFormDialogComponent;
+	constructor(private dialogService: DialogServiceService, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) { }
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -39,7 +43,13 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Material) => element.quantity,
 			},
 		];
+		this.onDialogClosed()
 		this.getAll();
+	}
+	private onDialogClosed() {
+		this.dialogService.onClose().subscribe(() => {
+			this.getAll()
+		})
 	}
 	getAll() {
 		this.loading = true;

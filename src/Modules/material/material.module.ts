@@ -11,10 +11,12 @@ import {AllComponent} from './components/all/all.component';
 import {AddEditComponent} from './components/add-edit/add-edit.component';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
+import { MaterialFormDialogComponent } from './components/material-form-dialog/material-form-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-	declarations: [MaterialComponent, AllComponent, AddEditComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, MaterialsRoutingModule, MatComponentsModule, SharedModule],
+	declarations: [MaterialComponent, AllComponent, AddEditComponent, MaterialFormDialogComponent],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, MaterialsRoutingModule, MatComponentsModule, SharedModule, TranslateModule],
 	providers: [LoginGuard, MaterialService, CanDeactivateGuard],
 })
 export class MaterialModule {}
