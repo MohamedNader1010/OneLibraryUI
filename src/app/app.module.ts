@@ -5,7 +5,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CommonModule} from '@angular/common';
-import {HttpClientModule, HTTP_INTERCEPTORS,HttpClient} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
 import {TokenInterceptor} from './token.interceptor';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ToastrModule} from 'ngx-toastr';
@@ -35,6 +35,7 @@ export function tokenGetter() {
 		ToastrModule.forRoot({preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing'}),
 		BrowserAnimationsModule,
 		TranslateModule.forRoot({
+
 			defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,
@@ -42,6 +43,7 @@ export function tokenGetter() {
                 deps: [HttpClient]
             }
         })
+
 	],
 	bootstrap: [AppComponent],
 	providers: [
@@ -56,5 +58,7 @@ export function tokenGetter() {
 export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
