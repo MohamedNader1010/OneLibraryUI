@@ -1,10 +1,10 @@
 import { TranslateService } from '@ngx-translate/core';
 import { AlertServiceService } from './../../../shared/services/alert-service.service';
 import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, map, Subscription, Observable, switchMap, catchError, of } from 'rxjs';
+import { forkJoin, map, Subscription, catchError, of } from 'rxjs';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
 import { OrderService } from '../../services/orders.service';
@@ -18,12 +18,15 @@ import { Status } from '../../Enums/status';
 import { MatSelect } from '@angular/material/select';
 import { Order } from '../../interfaces/Iorder';
 import { Response } from './../../../shared/interfaces/Iresponse';
+import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
 @Component({
-	selector: 'app-add-edit',
-	templateUrl: './add-edit.component.html',
-	styleUrls: ['./add-edit.component.css'],
+	selector: 'app-order-form-dialog',
+	templateUrl: './order-form-dialog.component.html',
+	styleUrls: ['./order-form-dialog.component.css']
 })
-export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy, AfterViewInit {
 	private _clientTypeId: number = -1;
 	@ViewChild('matNoteId') matNoteId!: MatSelect;
 	@ViewChild('matServiceId') matServiceId!: MatSelect;
@@ -31,7 +34,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع];
 	subscriptions: Subscription[] = [];
 	Form: FormGroup;
-	id!: number;
+	isLoading = false;
 	orderToBeUpdated!: Order;
 	isSubmitted: boolean = false;
 	ServicesDataSource: Service[] = [];
@@ -52,19 +55,20 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		private _clientType: ClientTypeService,
 		private alertService: AlertServiceService,
 		private servicePriceService: ServicePricePerClientTypeService,
-		private translate: TranslateService
+		private translate: TranslateService,
+		@Inject(MAT_DIALOG_DATA) public data: Order,
+		private matDialogRef: MatDialogRef<OrderFormDialogComponent>,
+		private dialogService: DialogServiceService,
+		private matDialogg: MatDialog
 	) {
+		super(matDialogRef, dialogService, translate, matDialogg);
 		this.Form = this.createFormItem('init');
 	}
 	ngAfterViewInit(): void { }
 	ngOnInit(): void {
 		this.forkJoins();
-		this.subscriptions.push(
-			this.route.queryParams.subscribe((params) => {
-				this.id = params['id'];
-				if (this.id) this.getSingle(this.id);
-			})
-		);
+		if (this.data)
+			this.getSingle(this.data.id);
 	}
 
 	private forkJoins() {
@@ -255,19 +259,21 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 	get OrderDetails(): FormArray {
 		return this.Form.get('orderDetails') as FormArray;
 	}
-	getSingle = (id: number) =>
+	getSingle = (id: number) => {
+		this.isLoading = true; 
 		this.subscriptions.push(
 			this._order.getOne(id).subscribe((data) => {
 				this.orderToBeUpdated = data;
 				this.fillFormWithData(data);
+				this.isLoading = false;
 			})
 		);
+	}
 
-	back = () => this.router.navigate(['orders']);
 
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
-		if (this.id) this.disableAllControls();
+		if (this.data) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
 		this.prices.push({ key: this.key, value: -1 });
 		this.key++;
@@ -354,10 +360,11 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 				if (orderDetail.id === id) orderDetail.orderStatus = control.get('orderStatus')?.value;
 			});
 		});
+		console.log(this.orderToBeUpdated)
 	}
 	handleSubmit() {
 		if (this.Form.valid) {
-			if (this.id) {
+			if (this.data) {
 				this.setUpdatedOrder();
 				this.subscriptions.push(
 					this._order.updateStatus(this.orderToBeUpdated).subscribe({
@@ -366,12 +373,12 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 							this.back();
 						},
 						error: (e) => {
-							// this.loading = false;
 							let res: Response = e.error ?? e;
 							this.alertService.onError(res.message, '');
 						},
 					})
 				);
+
 			} else {
 				this.validateDiscountAmountAndPercent();
 				this.subscriptions.push(
@@ -381,12 +388,12 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 							this.back();
 						},
 						error: (e) => {
-							// this.loading = false;
 							let res: Response = e.error ?? e;
 							this.alertService.onError(res.message, '');
 						},
 					})
 				);
+
 			}
 		}
 	}

@@ -21,6 +21,11 @@ export class AllComponent implements OnInit, OnDestroy {
 	formName = FormDialogNames.MaterialFormDialogComponent;
 	constructor(private dialogService: DialogServiceService, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) { }
 	ngOnInit(): void {
+		this.initiateTableHeaders()
+		this.onDialogClosed()
+		this.getAll();
+	}
+	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
@@ -43,11 +48,9 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Material) => element.quantity,
 			},
 		];
-		this.onDialogClosed()
-		this.getAll();
 	}
 	private onDialogClosed() {
-		this.dialogService.onClose().subscribe(() => {
+		this.dialogService.onClose().subscribe(_ => {
 			this.getAll()
 		})
 	}

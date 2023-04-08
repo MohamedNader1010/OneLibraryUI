@@ -2,13 +2,13 @@ import { SendDataFromTableToMatDialoge } from './../../services/sendDataFromTabl
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { DialogComponent } from '../dialog/dialog.component';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 import { FormHelpers } from '../../classes/form-helpers';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
 	selector: 'app-table[dialogDisplayName][tableColumns][tableData][dialogHeader]',
@@ -62,11 +62,11 @@ export class TableComponent implements OnInit, OnDestroy {
 
 	async HandleNew() {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		this.dialog.open(dialogComponent)
+		this.dialog.open<any>(dialogComponent)
 	}
 	async handleEdit(row: any) {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		this.dialog.open(dialogComponent, { data: row })
+		this.dialog.open<any>(dialogComponent, { data: row })
 
 	}
 	handleView = (id: number) => {
