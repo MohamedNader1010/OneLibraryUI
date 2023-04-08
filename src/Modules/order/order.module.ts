@@ -14,9 +14,10 @@ import {OrderComponent} from './order.component';
 import {OrderRoutingModule} from './routing/order-routing.module';
 import {OrderService} from './services/orders.service';
 import {ReturnsComponent} from './components/returns/returns.component';
+import { OrderFormDialogComponent } from './components/order-form-dialog/order-form-dialog.component';
 
 @NgModule({
-	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent],
+	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent],
 	imports: [
 		FormsModule,
 		ReactiveFormsModule,
@@ -25,24 +26,8 @@ import {ReturnsComponent} from './components/returns/returns.component';
 		SharedModule,
 		MatComponentsModule,
 		TranslateModule
-		//.forRoot({
-		// 	defaultLanguage: 'ar',
-		// 	loader: {
-		// 		provide: TranslateLoader,
-		// 		useFactory: HttpLoaderFactory,
-		// 		deps: [HttpClient],
-		// 	},
-		// }),
 	],
 	providers: [LoginGuard, OrderService, CanDeactivateGuard],
 })
 export class OrderModule {}
 
-// "i18n": {
-//   "sourceLocale": "ar-EG",
-//   "locales": {
-//     "ar": {
-//       "translation": "src/assets/i18n/ar.json",
-//       "baseHref": ""
-//     }
-//   }},

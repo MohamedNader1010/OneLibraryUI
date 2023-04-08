@@ -4,7 +4,8 @@
         <h2 mat-dialog-title>{{'material.new' | translate}}</h2>
     </ng-template>
     <mat-dialog-content>
-        <form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100 justify-content-lg-evenly">
+        <mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
+        <form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100 justify-content-lg-evenly">
             <div class="row">
                 <div class="col-md-6">
                     <mat-form-field class="w-auto">
@@ -13,8 +14,6 @@
                         <mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
                     </mat-form-field>
                 </div>
-                <!-- </div>
-            <div class="row"> -->
                 <div class="col-md-6">
                     <mat-form-field class="w-auto">
                         <mat-label>{{'form.material.label.wholesalePrice' | translate}}</mat-label>
@@ -22,13 +21,6 @@
                         <mat-error *ngIf="price.errors?.['required']"> price is <strong>required</strong> </mat-error>
                     </mat-form-field>
                 </div>
-                <!-- <div class="col-6">
-                    <mat-form-field class="w-100">
-                        <mat-label>الكمية</mat-label>
-                        <input matInput type="number" formControlName="quantity" />
-                        <mat-error *ngIf="quantity.errors?.['required']"> quantity is <strong>required</strong> </mat-error>
-                    </mat-form-field>
-                </div> -->
             </div>
             <div class="my-2 d-flex flex-row-reverse">
                 <button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">{{'button.save' |

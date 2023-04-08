@@ -18,7 +18,7 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
   Form!: FormGroup;
   controllerName: string = 'materials';
   isSubmitted: boolean = false;
-
+  isLoading = false;
   constructor(
     private translate: TranslateService,
     private _material: MaterialService,
@@ -58,12 +58,17 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
 
   }
 
-  getSingle = (id: number) =>
+  getSingle = (id: number) => {
+    this.isLoading = true;
     this.subscriptions.push(
       this._material.getOne(id).subscribe((data) => {
+        this.isLoading = false; 
         this.Form.patchValue(data);
+
       })
     );
+  }
+
 
   handleSubmit() {
     if (this.Form.valid) {
