@@ -101,6 +101,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	// }
 
 	add() {
+		this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
 		this.subscriptions.push(
 			this._matTracking.add(this.form.value).subscribe({
 				next: (res) => {
