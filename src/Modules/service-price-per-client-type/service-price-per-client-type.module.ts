@@ -9,10 +9,12 @@ import {LoginComponent} from '../authentication.Module/components/login/login.co
 import {AddEditComponent} from './Components/add-edit/add-edit.component';
 import {MatComponentsModule} from '../mat-components.Module/mat-components.module';
 import {ReactiveFormsModule} from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { ServiceTypePerClientFormDialogComponent } from './Components/service-type-per-client-form-dialog/service-type-per-client-form-dialog.component';
 
 @NgModule({
-	declarations: [ServicePricePerClientTypeComponent, AllComponent, AddEditComponent],
-	imports: [ReactiveFormsModule, CommonModule, ServicePricePerClientTypeRoutingModule, SharedModule, MatComponentsModule],
+	declarations: [ServicePricePerClientTypeComponent, AllComponent, AddEditComponent, ServiceTypePerClientFormDialogComponent],
+	imports: [ReactiveFormsModule, CommonModule, ServicePricePerClientTypeRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
 	providers: [LoginComponent],
 })
 export class ServicePricePerClientTypeModule {}
