@@ -1,9 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
-import {EmployeeService} from '../../services/employee.service';
-import {Employee} from './../../interFaces/Iemployee';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from './../../interFaces/Iemployee';
+import { ToastrService } from 'ngx-toastr';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 
 @Component({
 	selector: 'app-all',
@@ -12,10 +13,11 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class AllComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
+	formName = FormDialogNames.EmployeeFormDialogComponent
 	tableColumns!: any[];
 	tableData!: Employee[];
 	loading!: boolean;
-	constructor(private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) {}
+	constructor(private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) { }
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
