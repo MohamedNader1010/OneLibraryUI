@@ -20,6 +20,9 @@ export class FormHelpers {
             case FormDialogNames.NoteFormDialogComponent:
                 module = await import('../../note/components/note-form-dialog/note-form-dialog.component')
                 return module.NoteFormDialogComponent;
+            case FormDialogNames.EmployeeFormDialogComponent: 
+                module = await import('../../employee/components/employee-form-dialog/employee-form-dialog.component')
+                return module.EmployeeFormDialogComponent;
         }
     }
 
