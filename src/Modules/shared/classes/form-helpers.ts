@@ -3,7 +3,7 @@ import { FormDialogNames } from "src/Persistents/enums/forms-name";
 
 
 export class FormHelpers {
-    
+
     public static async getAppropriateDialogComponent(formName: FormDialogNames) {
         const appropriateComponent = await FormHelpers.getAppropriateComponent(formName)
         return appropriateComponent;
@@ -17,6 +17,9 @@ export class FormHelpers {
             case FormDialogNames.OrderFormDialogComponent:
                 module = await import('../../order/components/order-form-dialog/order-form-dialog.component');
                 return module.OrderFormDialogComponent;
+            case FormDialogNames.NoteFormDialogComponent:
+                module = await import('../../note/components/note-form-dialog/note-form-dialog.component')
+                return module.NoteFormDialogComponent;
         }
     }
 

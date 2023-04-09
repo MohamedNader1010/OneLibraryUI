@@ -5,6 +5,7 @@ import {NoteService} from '../../services/note.service';
 import {Note} from './../../interfaces/Inote';
 import {ToastrService} from 'ngx-toastr';
 import {Router, ActivatedRoute} from '@angular/router';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -15,6 +16,7 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Note[];
 	loading!: boolean;
+	formName = FormDialogNames.NoteFormDialogComponent;
 	constructor(private _note: NoteService, public dialog: MatDialog, private toastr: ToastrService, private router: Router, private route: ActivatedRoute) {}
 	ngOnInit(): void {
 		this.tableColumns = [

@@ -1,0 +1,148 @@
+<div class="container">
+	<h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل المذكرة</h2>
+	<ng-template #update>
+		<h2 class="w-100 text-center mt-3">مذكرة جديدة</h2>
+	</ng-template>
+	<mat-dialog-content>
+		<mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
+		<form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+			<div class="row">
+				<mat-form-field appearance="fill" class="col-3">
+					<mat-label>نوع العميل</mat-label>
+					<mat-select formControlName="clientTypeId">
+						<mat-option *ngFor="let mat of ClientTypesDataSource" [value]="mat.clientTypeId">{{ mat.name
+							}}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field appearance="fill" class="col-3">
+					<mat-label>أسم العميل</mat-label>
+					<input type="text" matInput formControlName="clientId" [matAutocomplete]="clientAuto" />
+					<mat-autocomplete #clientAuto="matAutocomplete" [displayWith]="clientDisplayFn">
+						<mat-option *ngFor="let option of clientsFilteredOptions | async" [value]="option.id">
+							{{ option.name }}
+						</mat-option>
+					</mat-autocomplete>
+					<mat-error *ngIf="clientId.hasError('notFound')">أسم العميل غير صحيح</mat-error>
+					<mat-error *ngIf="clientId.hasError('required') && (clientId.touched || clientId.dirty)"> يجب ادخال
+						اسم
+						العميل </mat-error>
+				</mat-form-field>
+				<mat-form-field appearance="fill" class="col-3">
+					<mat-label>المرحلة</mat-label>
+					<mat-select formControlName="stageId">
+						<mat-option *ngFor="let mat of StagesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+					</mat-select>
+				</mat-form-field>
+				<mat-form-field appearance="fill" class="col-3">
+					<mat-label>الترم</mat-label>
+					<mat-select formControlName="termId">
+						<mat-option *ngFor="let mat of TermsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+			<div class="row">
+				<div class="col-6">
+					<mat-form-field class="w-100">
+						<mat-label>أسم المذكرة</mat-label>
+						<input type="text" matInput formControlName="name" />
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100">
+						<mat-label>هامش ربح المدرس</mat-label>
+						<input type="number" min="0" matInput formControlName="teacherPrice" />
+					</mat-form-field>
+				</div>
+				<div class="col-2">
+					<mat-form-field class="w-100">
+						<mat-label>الكمية</mat-label>
+						<input type="number" min="0" matInput formControlName="quantity" />
+					</mat-form-field>
+				</div>
+				<div class="col-1">
+					<button type="button" mat-icon-button matTooltip="add" color="basic"
+						aria-label="add note component row" (click)="handleNewNoteComponent()"
+						[disabled]="!clientId.value || clientId.invalid">
+						<mat-icon>add</mat-icon>
+					</button>
+					<!-- <mat-hint>test</mat-hint> -->
+				</div>
+			</div>
+			<!-- note components -->
+			<div formArrayName="noteComponents" *ngIf="noteComponents.controls.length">
+				<div class="row" *ngFor="let component of noteComponents.controls; let i = index">
+					<ng-container [formGroupName]="i">
+						<div class="col-6">
+							<mat-form-field appearance="fill" class="w-100"
+								*ngIf="!component.value['id']; else disabled">
+								<mat-label>الخدمات</mat-label>
+								<mat-select formControlName="serviceId">
+									<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{
+										service.name }}</mat-option>
+								</mat-select>
+							</mat-form-field>
+							<ng-template #disabled>
+								<mat-form-field appearance="fill" class="w-100">
+									<mat-label>الخدمات</mat-label>
+									<input type="text" matInput readonly="true" [value]="getServiceName(i)" />
+								</mat-form-field>
+							</ng-template>
+						</div>
+						<div class="col-3">
+							<mat-form-field appearance="fill" class="w-100">
+								<mat-label>السعر</mat-label>
+								<input type="number" matInput formControlName="price" readonly="true" />
+							</mat-form-field>
+						</div>
+						<div class="col-2">
+							<mat-form-field appearance="fill" class="w-100">
+								<mat-label>الكمية</mat-label>
+								<input type="number" min="0" matInput formControlName="quantity" />
+							</mat-form-field>
+						</div>
+						<div class="col-1">
+							<button type="button" mat-icon-button matTooltip="delete" color="warn"
+								aria-label="delete selected row" (click)="handleDeleteNoteComponent(i)">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+			<!-- end note components -->
+			<div class="row">
+				<div class="col-3">
+					<mat-form-field class="w-100">
+						<mat-label>السعر الفعلي</mat-label>
+						<input type="number" matInput [readonly]="true" formControlName="actualPrice" />
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100">
+						<mat-label>السعر التكلفة</mat-label>
+						<input type="number" matInput [readonly]="true" formControlName="originalPrice" />
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100">
+						<mat-label>هامش الربح</mat-label>
+						<input type="number" matInput [readonly]="true" formControlName="earning" />
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100">
+						<mat-label>السعر النهائي</mat-label>
+						<input type="number" matInput [readonly]="true" formControlName="finalPrice" />
+					</mat-form-field>
+				</div>
+			</div>
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-flat-button color="warn" class="mx-2 px-4"
+					[disabled]="!Form.valid || !noteComponents.length || loading">{{ loading ? 'انتظر من فضلك' : 'حفظ'
+					}}</button>
+				<button type="button" mat-stroked-button color="basic" (click)="back()"
+					[disabled]="loading">رجوع</button>
+			</div>
+		</form>
+	</mat-dialog-content>
+</div>

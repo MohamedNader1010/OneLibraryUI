@@ -12,9 +12,10 @@ import {NoteService} from './services/note.service';
 import {AllByTeacherIdComponent} from './components/allByTeacherId/allByTeacherId.component';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
+import { NoteFormDialogComponent } from './components/note-form-dialog/note-form-dialog.component';
 
 @NgModule({
-	declarations: [NoteComponent, AllComponent, AddEditComponent, DetailsComponent, AllByTeacherIdComponent],
+	declarations: [NoteComponent, AllComponent, AddEditComponent, DetailsComponent, AllByTeacherIdComponent, NoteFormDialogComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, NoteRoutingModule, SharedModule, MatComponentsModule],
 	providers: [LoginGuard, NoteService, CanDeactivateGuard],
 })
