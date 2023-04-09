@@ -23,7 +23,7 @@ export class FormsDialogCommonFunctionality {
     public back = () => {
         this.closeAllOpenedDialogs()
     }
-    public closeAllOpenedDialogs() {
+    private closeAllOpenedDialogs() {
         this.dRef.close();
         this.dService.closeDialog()
         this.onClose.emit();
