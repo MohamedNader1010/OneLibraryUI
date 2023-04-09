@@ -4,7 +4,8 @@ export enum FormDialogNames {
     OrderFormDialogComponent,
     NoteFormDialogComponent,
     EmployeeFormDialogComponent,
-    ClientFormDialogComponent
+    ClientFormDialogComponent,
+    ClientTypeFormDialogComponent,
     // IncomeMaterials , 
     // Employees, 
     // Attendace, 

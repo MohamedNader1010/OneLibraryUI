@@ -26,6 +26,9 @@ export class FormHelpers {
             case FormDialogNames.ClientFormDialogComponent:
                 module = await import('../../client/components/client-form-dialog/client-form-dialog.component')
                 return module.ClientFormDialogComponent;
+            case FormDialogNames.ClientTypeFormDialogComponent:
+                module = await import('../../clientType/components/client-type-form-dialog/client-type-form-dialog.component')
+                return module.ClientTypeFormDialogComponent;
         }
     }
 
