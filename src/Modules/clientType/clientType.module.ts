@@ -11,10 +11,11 @@ import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {ServiceTypesRoutingModule} from './routing/serviceType-routing.module';
 import {ClientTypeService} from './services/clientType.service';
 import { ClientTypeFormDialogComponent } from './components/client-type-form-dialog/client-type-form-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
 	declarations: [ClientTypeComponent, AllComponent, AddEditComponent, ClientTypeFormDialogComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceTypesRoutingModule, MatComponentsModule, SharedModule],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceTypesRoutingModule, MatComponentsModule, SharedModule, TranslateModule],
 	providers: [LoginGuard, ClientTypeService, CanDeactivateGuard],
 })
 export class ClientTypeModule {}
