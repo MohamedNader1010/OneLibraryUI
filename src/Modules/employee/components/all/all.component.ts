@@ -5,6 +5,7 @@ import { EmployeeService } from '../../services/employee.service';
 import { Employee } from './../../interFaces/Iemployee';
 import { ToastrService } from 'ngx-toastr';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
 
 @Component({
 	selector: 'app-all',
@@ -17,8 +18,18 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Employee[];
 	loading!: boolean;
-	constructor(private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) { }
+	constructor(private dialogService: DialogServiceService, private _employee: EmployeeService, public dialog: MatDialog, private toastr: ToastrService) { }
 	ngOnInit(): void {
+		this.initiateTableHeaders()
+		this.getAll();
+		this.onDialogClosed();
+	}
+	private onDialogClosed() {
+		this.dialogService.onClose().subscribe(_ => {
+			this.getAll()
+		})
+	}
+	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
@@ -51,7 +62,6 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Employee) => (element.emailConfirmed ? 'مفعل' : 'غير مفعل'),
 			},
 		];
-		this.getAll();
 	}
 	getAll() {
 		this.loading = true;

@@ -20,9 +20,12 @@ export class FormHelpers {
             case FormDialogNames.NoteFormDialogComponent:
                 module = await import('../../note/components/note-form-dialog/note-form-dialog.component')
                 return module.NoteFormDialogComponent;
-            case FormDialogNames.EmployeeFormDialogComponent: 
+            case FormDialogNames.EmployeeFormDialogComponent:
                 module = await import('../../employee/components/employee-form-dialog/employee-form-dialog.component')
                 return module.EmployeeFormDialogComponent;
+            case FormDialogNames.ClientFormDialogComponent:
+                module = await import('../../client/components/client-form-dialog/client-form-dialog.component')
+                return module.ClientFormDialogComponent;
         }
     }
 
