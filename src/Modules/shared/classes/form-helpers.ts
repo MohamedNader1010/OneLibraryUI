@@ -32,6 +32,9 @@ export class FormHelpers {
             case FormDialogNames.ServiceFormDialogComponent:
                 module = await import('../../service/components/service-form-dialog/service-form-dialog.component');
                 return module.ServiceFormDialogComponent;
+            case FormDialogNames.ServiceTypeFormDialogComponent:
+                module = await import('../../serviceType/components/service-type-form-dialog/service-type-form-dialog.component')
+                return module.ServiceTypeFormDialogComponent
         }
     }
 
