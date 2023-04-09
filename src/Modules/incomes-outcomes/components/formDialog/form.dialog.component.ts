@@ -3,10 +3,9 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
-import {MaterialTracking} from '../../interfaces/materialTracking';
-import {MaterialTrackingService} from '../../services/materialTracking.service';
+import {IncomesOutcomes} from '../../interfaces/Incomes-outcomes';
+import {IncomesOutcomesService} from '../../services/Incomes-outcomes.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {MaterialService} from './../../../material/services/material.service';
 import {Material} from './../../../material/interfaces/Imaterial';
 import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
 @Component({
@@ -21,22 +20,20 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	MaterialDataSource: Material[] = [];
 	constructor(
 		public dialogRef: MatDialogRef<FormDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: MaterialTracking,
-		private _matTracking: MaterialTrackingService,
-		private _mat: MaterialService,
+		@Inject(MAT_DIALOG_DATA) public data: IncomesOutcomes,
+		private _inOut: IncomesOutcomesService,
 		private fb: FormBuilder,
 		private toastr: ToastrService
 	) {
 		this.form = this.fb.group({
 			// id: [null],
-			materialId: [null, [Validators.required]],
 			status: [null],
-			quantity: [0],
+			amount: [0],
 			comment: [''],
 		});
 	}
-	get quantity(): FormControl {
-		return this.form.get('quantity') as FormControl;
+	get amount(): FormControl {
+		return this.form.get('amount') as FormControl;
 	}
 	get materialId(): FormControl {
 		return this.form.get('materialId') as FormControl;
@@ -46,26 +43,10 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.getAllMaterial();
+		if (this.data) {
+			this.form.patchValue(this.data);
+		}
 	}
-
-	getAllMaterial = () =>
-		this.subscriptions.push(
-			this._mat.getAll().subscribe({
-				next: (data) => {
-					this.MaterialDataSource = data;
-				},
-				error: (e) => {
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					if (this.data) {
-						this.form.patchValue(this.data);
-					}
-				},
-			})
-		);
 
 	onNoClick() {
 		this.dialogRef.close();
@@ -82,9 +63,9 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 
 	// update() {
 	// 	this.subscriptions.push(
-	// 		this._matTracking.update(this.id.value, this.form.value).subscribe({
+	// 		this._inOut.update(this.id.value, this.form.value).subscribe({
 	// 			next: (res) => {
-	// 				this._matTracking.dialogData = res.body;
+	// 				this._inOut.dialogData = res.body;
 	// 				this.dialogRef.close({data: res});
 	// 			},
 	// 			error: (e) => {
@@ -100,11 +81,11 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	// }
 
 	add() {
-		this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
+		this.status.setValue(this.amount.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
 		this.subscriptions.push(
-			this._matTracking.add(this.form.value).subscribe({
+			this._inOut.add(this.form.value).subscribe({
 				next: (res) => {
-					this._matTracking.dialogData = res.body;
+					this._inOut.dialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {
