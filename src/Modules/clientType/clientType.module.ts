@@ -10,9 +10,10 @@ import {AllComponent} from './components/all/all.component';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {ServiceTypesRoutingModule} from './routing/serviceType-routing.module';
 import {ClientTypeService} from './services/clientType.service';
+import { ClientTypeFormDialogComponent } from './components/client-type-form-dialog/client-type-form-dialog.component';
 
 @NgModule({
-	declarations: [ClientTypeComponent, AllComponent, AddEditComponent],
+	declarations: [ClientTypeComponent, AllComponent, AddEditComponent, ClientTypeFormDialogComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceTypesRoutingModule, MatComponentsModule, SharedModule],
 	providers: [LoginGuard, ClientTypeService, CanDeactivateGuard],
 })
