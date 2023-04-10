@@ -11,10 +11,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {SharedModule} from '../shared/shared.module';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
+import { TranslateModule } from '@ngx-translate/core';
+import { ServiceFormDialogComponent } from './components/service-form-dialog/service-form-dialog.component';
 
 @NgModule({
-	declarations: [ServiceComponent, AllComponent, AddEditComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceRoutingModule, MatComponentsModule, SharedModule],
+	declarations: [ServiceComponent, AllComponent, AddEditComponent, ServiceFormDialogComponent],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, ServiceRoutingModule, MatComponentsModule, SharedModule,TranslateModule],
 	providers: [LoginGuard, ServicesService, CanDeactivateGuard],
 })
 export class ServiceModule {}

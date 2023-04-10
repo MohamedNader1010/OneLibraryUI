@@ -21,7 +21,7 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableData!: Order[];
 	loading!: boolean;
 	formName = FormDialogNames.OrderFormDialogComponent;
-	constructor(private translate: TranslateService, private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService, private dialogSevice: DialogServiceService) {}
+	constructor(private translate: TranslateService, private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService, private dialogService: DialogServiceService) {}
 	ngOnInit(): void {
 		this.initiateTableHeader()
 		this.onDialogClosed();
@@ -67,7 +67,7 @@ export class AllComponent implements OnInit, OnDestroy {
 		];
 	}
 	private onDialogClosed() {
-		this.dialogSevice.onClose().subscribe(_ => {
+		this.dialogService.onClose().subscribe(_ => {
 			this.getAll()
 		})
 	}

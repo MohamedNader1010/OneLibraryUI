@@ -1,9 +1,11 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
-import {Client} from '../../interFaces/Iclient';
-import {ClientService} from './../../services/client.service';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
+import { Client } from '../../interFaces/Iclient';
+import { ClientService } from './../../services/client.service';
+import { ToastrService } from 'ngx-toastr';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -14,9 +16,19 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Client[];
 	loading!: boolean;
-
-	constructor(private _client: ClientService, public dialog: MatDialog, private toastr: ToastrService) {}
+	formName = FormDialogNames.ClientFormDialogComponent;
+	constructor(private dialogService: DialogServiceService, private _client: ClientService, public dialog: MatDialog, private toastr: ToastrService) { }
 	ngOnInit(): void {
+		this.initiateTableHeaders();
+		this.getAll();
+		this.onDialogClosed();
+	}
+	private onDialogClosed() {
+		this.dialogService.onClose().subscribe(_ => {
+			this.getAll()
+		})
+	}
+	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
 				columnDef: 'id',
@@ -54,9 +66,7 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Client) => element.rest,
 			},
 		];
-		this.getAll();
 	}
-
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(

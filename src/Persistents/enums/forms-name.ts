@@ -1,7 +1,14 @@
 
 export enum FormDialogNames {
     MaterialFormDialogComponent = 1,
-    OrderFormDialogComponent
+    OrderFormDialogComponent,
+    NoteFormDialogComponent,
+    EmployeeFormDialogComponent,
+    ClientFormDialogComponent,
+    ClientTypeFormDialogComponent,
+    ServiceFormDialogComponent , 
+    ServiceTypeFormDialogComponent, 
+    ServiceTypPerClientFormDialogComponent
     // IncomeMaterials , 
     // Employees, 
     // Attendace, 
