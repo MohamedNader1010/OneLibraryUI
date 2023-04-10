@@ -1,2 +1,10 @@
-<app-table dialogHeader="حذف الخامة" [loading]="loading" dialogDisplayName="name" [tableColumns]="tableColumns"
-	[tableData]="tableData" [formName]="formName" (OnDelete)="handleDelete($event)"></app-table>
+<app-table
+	dialogHeader="حذف الخامة"
+	[loading]="loading"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"></app-table>
