@@ -2,18 +2,49 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Material} from '../interfaces/Imaterial';
 import {_HttpOptions} from './../../../Persistents/consts';
-import {environment} from 'src/environments/environment';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {ToastrService} from 'ngx-toastr';
+import {BehaviorSubject} from 'rxjs';
+import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class MaterialService {
-	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}Material`;
+export class MaterialService extends GenericService<Material, Response> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'Material');
+	}
 
-	getAll = () => this.http.get<Material[]>(`${this.uri}`);
-	getOne = (id: number) => this.http.get<Material>(`${this.uri}/GetById?id=${id}`);
-	add = (material: Material) => this.http.post<Material>(`${this.uri}`, material);
-	update = (id: number, material: Material) => this.http.put<Material>(`${this.uri}?id=${id}`, {...material, id});
-	delete = (id: number) => this.http.delete<Material>(`${this.uri}?id=${id}`);
+	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+	get loading(): boolean {
+		return this.loadingData.value;
+	}
+
+	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
+	get data(): any[] {
+		return this.dataChange.value ?? [];
+	}
+
+	dialogData: any;
+
+	get DialogData() {
+		return this.dialogData;
+	}
+
+	getAllMaterials() {
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
 }

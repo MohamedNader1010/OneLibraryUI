@@ -53,7 +53,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._mat.getAll().subscribe({
 				next: (data) => {
-					this.MaterialDataSource = data;
+					this.MaterialDataSource = data.body;
 				},
 				error: (e) => {
 					let res: Response = e.error ?? e;
