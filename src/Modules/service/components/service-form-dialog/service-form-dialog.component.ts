@@ -26,7 +26,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	isSubmitted: boolean = false;
 	MaterialDataSource: Material[] = [];
 	ServiceTypeDataSource: ServiceType[] = [];
-	isLoading = false;
+
 	constructor(
 		private _service: ServicesService,
 		private _material: MaterialService,
@@ -52,17 +52,9 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	ngOnInit(): void {
 		this.getAllMaterials();
 		this.getAllServicesTypes();
-		if (this.data) this.getSingle(this.data.id);
+		if (this.data) this.Form.patchValue(this.data);
 	}
-	getSingle = (id: number) => {
-		this.isLoading = true;
-		this.subscriptions.push(
-			this._service.getOne(id).subscribe((data: Service[]) => {
-				this.isLoading = false;
-				this.Form.patchValue(data);
-			})
-		);
-	};
+
 	getAllMaterials = () =>
 		this.subscriptions.push(
 			this._material.getAll().subscribe({

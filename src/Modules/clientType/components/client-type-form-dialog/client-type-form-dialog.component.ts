@@ -20,7 +20,7 @@ export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionalit
   id!: number;
   controllerName: string = 'clientTypes';
   isSubmitted: boolean = false;
-  isLoading = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -41,19 +41,9 @@ export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionalit
     return this.Form.get('name') as FormControl;
   }
   ngOnInit(): void {
-    if (this.data) this.getSingle(this.data.id);
+    if (this.data) this.Form.patchValue(this.data)
   }
-  getSingle = (id: number) => {
-    this.isLoading = true;
-    this.subscriptions.push(
-      this._clientType
-        .getOne(id)
-        .subscribe((data) => {
-          this.isLoading = false;
-          this.Form.patchValue(data)
-        }
-        ));
-  }
+
   handleSubmit() {
     if (this.Form.valid) {
       if (this.data)
