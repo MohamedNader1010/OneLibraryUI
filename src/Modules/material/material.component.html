@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<app-table
+	dialogHeader="حذف الخامة"
+	[loading]="loading"
+	dialogDisplayName="name"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"></app-table>
