@@ -1,31 +1,34 @@
-import { SendDataFromTableToMatDialoge } from './../../services/sendDataFromTableToMatDialoge.service';
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { FormHelpers } from '../../classes/form-helpers';
-import { DialogComponent } from '../dialog/dialog.component';
-
+import {SendDataFromTableToMatDialoge} from './../../services/sendDataFromTableToMatDialoge.service';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription, fromEvent} from 'rxjs';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {FormHelpers} from '../../classes/form-helpers';
+import {TableDataSource} from '../../classes/tableDataSource';
 @Component({
-	selector: 'app-table[dialogDisplayName][tableColumns][tableData][dialogHeader]',
+	selector: 'app-table[tableColumns]',
 	templateUrl: './table.component.html',
 	styleUrls: ['./table.component.css'],
 })
 export class TableComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	public dataSource = new MatTableDataSource<any>([]);
 	public displayedColumns!: string[];
-	private paginator!: MatPaginator;
-	private sort!: MatSort;
+
 	@Output() OnDelete = new EventEmitter<any>();
 	@Output() OnView = new EventEmitter<any>();
 	@Output() onClose = new EventEmitter();
-	@Input() dialogDisplayName!: string;
-	@Input() dialogHeader!: string;
+	@Output() onNew = new EventEmitter<any>();
+	@Output() onEdit = new EventEmitter<any>();
+
+	@Input() database: any;
+	dataSource!: TableDataSource;
+	@ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+	@ViewChild(MatSort, {static: true}) sort!: MatSort;
+	@ViewChild('filter', {static: true}) filter!: ElementRef;
+
 	@Input() loading: any;
 	@Input() tableColumns: any;
 	@Input() canView: boolean = false;
@@ -34,56 +37,75 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() isDisplayDeleteButton: boolean = true;
 	@Input() isHideAllButtons: boolean = false;
 	@Input() formName!: FormDialogNames;
-	@ViewChild(MatSort) set matSort(ms: MatSort) {
-		this.sort = ms;
-		this.setDataSourceAttributes();
-	}
-	@ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) {
-		this.paginator = mp;
-		this.setDataSourceAttributes();
-	}
-	@Input() set tableData(data: any[]) {
-		this.dataSource = new MatTableDataSource<any>(data);
-		this.setDataSourceAttributes();
-	}
-	setDataSourceAttributes() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
-	}
+
+	@Input() tableData: any;
+
 	columns: any[] = [];
-	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) { }
+	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) {}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
+		this.loadData();
 	}
-	applyFilter = (event: Event) => {
-		this.dataSource.filter = (event.target as HTMLInputElement).value.trim().toLowerCase();
-		if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
-	};
+
+	public loadData() {
+		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
+		this.subscriptions.push(
+			fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+				if (!this.dataSource) return;
+				this.dataSource.filter = this.filter.nativeElement.value;
+			})
+		);
+	}
+
+	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 
 	async HandleNew() {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		this.dialog.open<any>(dialogComponent)
+		const dialogRef = this.dialog.open<any>(dialogComponent, {minWidth: '30%'});
+		this.subscriptions.push(
+			dialogRef.afterClosed().subscribe({
+				next: (result) => {
+					if (result?.data) this.onNew.emit(result.data);
+				},
+				complete: () => this.refreshTable(),
+			})
+		);
 	}
 	async handleEdit(row: any) {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		this.dialog.open<any>(dialogComponent, { data: row })
-
+		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row});
+		this.subscriptions.push(
+			dialogRef.afterClosed().subscribe({
+				next: (result) => {
+					if (result?.data) this.onEdit.emit(result.data);
+				},
+				complete: () => this.refreshTable(),
+			})
+		);
 	}
+
+	async handleDelete(row: any) {
+		const dialogComponent = await FormHelpers.getAppropriateDeleteDialogComponent();
+		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row, minWidth: '30%'});
+		this.subscriptions.push(
+			dialogRef.afterClosed().subscribe((result) => {
+				if (result?.data) {
+					result.data.body = row;
+					this.OnDelete.emit(result.data);
+					this.refreshTable();
+				}
+			})
+		);
+	}
+
 	handleView = (id: number) => {
 		this.OnView.emit();
 		this.sendRowId.setOrderId(id);
 	};
-	handleTransaction = (row: any) => this._router.navigate([`../transaction`], { queryParams: { id: row.id }, relativeTo: this.route });
-	handleDelete = (row: any) => {
-		this.subscriptions.push(
-			this.dialog
-				.open(DialogComponent, { data: { location: this.dialogHeader, msg: `هل انت متاكد من حذف "${row[this.dialogDisplayName]}"؟` } })
-				.afterClosed()
-				.subscribe(() => this.OnDelete.emit(row.id))
-		);
-	};
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
 
+	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
+
+	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
+
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }
