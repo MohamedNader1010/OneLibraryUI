@@ -1,97 +1,118 @@
-import { FormsDialogCommonFunctionality } from './../../../shared/classes/FormsDialog';
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { MaterialService } from '../../services/material.service';
-import { TranslateService } from '@ngx-translate/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
-import { Material } from '../../interfaces/Imaterial';
+import {FormsDialogCommonFunctionality} from './../../../shared/classes/FormsDialog';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs';
+import {MaterialService} from '../../services/material.service';
+import {TranslateService} from '@ngx-translate/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {Material} from '../../interfaces/Imaterial';
+import {Response} from './../../../shared/interfaces/Iresponse';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
-  selector: 'app-material-form-dialog',
-  templateUrl: './material-form-dialog.component.html',
-  styleUrls: ['./material-form-dialog.component.css'],
+	selector: 'app-material-form-dialog',
+	templateUrl: './material-form-dialog.component.html',
+	styleUrls: ['./material-form-dialog.component.css'],
 })
 export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
-  subscriptions: Subscription[] = [];
-  Form!: FormGroup;
-  controllerName: string = 'materials';
-  isSubmitted: boolean = false;
-  isLoading = false;
-  constructor(
-    private translate: TranslateService,
-    private _material: MaterialService,
-    private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA) private data: Material,
-    private matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
-    private dialogService: DialogServiceService,
-    private matDialogg: MatDialog
-  ) {
-    super(matDialogRef, dialogService, translate, matDialogg);
-    this.initiateFormControls()
+	subscriptions: Subscription[] = [];
+	Form!: FormGroup;
+	controllerName: string = 'materials';
+	isSubmitted: boolean = false;
+	isSubmitting: boolean = false;
+	isLoading = false;
+	constructor(
+		@Inject(MAT_DIALOG_DATA) private data: Material,
+		translate: TranslateService,
+		dialogService: DialogServiceService,
+		matDialogg: MatDialog,
+		private _material: MaterialService,
+		private fb: FormBuilder,
+		private matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
+		private toastr: ToastrService
+	) {
+		super(matDialogRef, dialogService, translate, matDialogg);
+		this.initiateFormControls();
+	}
 
-  }
+	get id(): FormControl {
+		return this.Form.get('id') as FormControl;
+	}
+	get name(): FormControl {
+		return this.Form.get('name') as FormControl;
+	}
+	get price(): FormControl {
+		return this.Form.get('price') as FormControl;
+	}
 
-  get id(): FormControl {
-    return this.Form.get('id') as FormControl;
-  }
-  get name(): FormControl {
-    return this.Form.get('name') as FormControl;
-  }
-  get price(): FormControl {
-    return this.Form.get('price') as FormControl;
-  }
+	private initiateFormControls() {
+		this.Form = this.fb.group({
+			id: [null],
+			name: ['', [Validators.required, Validators.maxLength(100)]],
+			price: [null, [Validators.required]],
+		});
+	}
 
-  private initiateFormControls() {
-    this.Form = this.fb.group({
-      id: [null],
-      name: ['', [Validators.required, Validators.maxLength(100)]],
-      price: [null, [Validators.required]],
+	ngOnInit(): void {
+		if (this.data) this.Form.patchValue(this.data);
+	}
 
-    });
-  }
+	getSingle = (id: number) => {
+		this.isLoading = true;
+		this.subscriptions.push(
+			this._material.GetById(id).subscribe((data) => {
+				this.isLoading = false;
+				this.Form.patchValue(data);
+			})
+		);
+	};
 
-  ngOnInit(): void {
-    if (this.data)
-      this.getSingle(this.data.id);
+	handleSubmit() {
+		if (this.Form.valid) {
+			this.isSubmitting = true;
+			if (this.id.value) this.update();
+			else this.add();
+		}
+	}
 
-  }
+	update() {
+		this.subscriptions.push(
+			this._material.update(this.id.value, this.Form.value).subscribe({
+				next: (res) => {
+					this._material.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
+	}
 
-  getSingle = (id: number) => {
-    this.isLoading = true;
-    this.subscriptions.push(
-      this._material.getOne(id).subscribe((data) => {
-        this.isLoading = false; 
-        this.Form.patchValue(data);
+	add() {
+		this.subscriptions.push(
+			this._material.add(this.Form.value).subscribe({
+				next: (res) => {
+					this._material.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
+	}
 
-      })
-    );
-  }
-
-
-  handleSubmit() {
-    if (this.Form.valid) {
-      if (this.data)
-        this.subscriptions.push(
-          this._material.update(this.data.id, this.Form.value).subscribe(() => {
-            this.isSubmitted = true;
-            this.back()
-          })
-        );
-      else {
-        this.id.setValue(0)
-        this.subscriptions.push(
-          this._material.add(this.Form.value).subscribe(() => {
-            this.isSubmitted = true;
-            this.back();
-          })
-        );
-      }
-
-    }
-  }
-  ngOnDestroy() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }
