@@ -1,23 +1,44 @@
-.wraper {
-	margin: 0;
-}
 .example-container {
-	height: 70vh;
+	min-height: 70vh;
+	max-height: 70vh;
 	overflow: auto;
-}
-.mat-mdc-form-field {
-	font-size: 14px;
 }
 table {
 	height: 100%;
 	width: 100%;
+	min-width: 100%;
+}
+table a {
+	text-decoration: none;
+	color: #3f51b5;
 }
 .mat-column-id {
 	width: 100px;
-	text-align: right;
+	text-align: left;
+}
+.mat-mdc-header-cell {
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+	min-width: 100px;
+}
+.mat-mdc-row {
 	white-space: nowrap;
 }
 .mat-column-actions {
-	width: 250px;
+	width: 150px;
 	text-align: right;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+	border-color: orangered;
+	background-color: rgb(255, 219, 219);
+}
+.paginator-bottom {
+	width: auto;
+	position: fixed;
+	bottom: 2rem;
+	left: 0;
+	right: 0;
 }
