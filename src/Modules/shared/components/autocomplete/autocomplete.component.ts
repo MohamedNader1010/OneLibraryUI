@@ -1,43 +1,44 @@
 import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
 import {Observable, Subscription, map, startWith} from 'rxjs';
 
 @Component({
-	selector: 'app-autocomplete',
+	selector: 'autocomplete',
 	templateUrl: './autocomplete.component.html',
 	styleUrls: ['./autocomplete.component.css'],
 })
-export class AutocompleteComponent<T> implements OnInit, OnDestroy {
+export class AutocompleteComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	@Input() label: string = '';
-	@Input() formcontrolname: string = '';
-	@Output() onSelection: EventEmitter<any> = new EventEmitter<any>();
-	dataSource: any[] = [];
-	filteredOptions!: Observable<any[]>;
-	id = new FormControl('');
+	@Input() placeholder: string = '';
+	@Input() formControlName: string = '';
+	@Input() dataSource: any[] = [];
 
-	ngOnInit(): void {
-		this.filteredOptions = this.id.valueChanges.pipe(
-			startWith(this.id.value),
+	@Output() selectedId = new EventEmitter<number>();
+
+	filteredOptions!: Observable<any[]>;
+
+	nameControl = new FormControl();
+	filteredData$!: Observable<any[]>;
+	ngOnInit() {
+		this.nameControl.addValidators([Validators.required]);
+		this.filteredData$ = this.nameControl.valueChanges.pipe(
+			startWith(this.nameControl.value),
 			map((value) => {
-				let filtered = [];
-				let name;
-				if (typeof value === 'string') name = value;
-				if (name) {
-					filtered = this.filterClients(name as string);
-					if (filtered.length) return filtered;
-					else {
-						this.id.setErrors({notFound: true});
-						return this.dataSource.slice();
-					}
-				} else return [];
+				let filtered = this._filter(value);
+				if (filtered.length) {
+					return filtered;
+				}
+				if (typeof value != 'object') this.nameControl.setErrors({notFound: true});
+				return this.dataSource.slice();
 			})
 		);
 	}
+	private _filter = (value: any): any[] => this.dataSource.filter((item) => item.name.toLowerCase().includes(value.toString().toLowerCase()));
 
-	filterClients = (name: string): T[] => this.dataSource.filter((option) => option.name.includes(name));
+	displayFn = (item: any): string => (item ? item.name : '');
 
-	displayFn = (value: number): string => this.dataSource.find((option) => option.id === value)?.name ?? '';
+	getItemId = (item: any) => this.selectedId.emit(item ? item.id : null);
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

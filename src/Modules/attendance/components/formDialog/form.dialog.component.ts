@@ -83,6 +83,10 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.dialogRef.close();
 	}
 
+	setEmpId(data: any) {
+		console.log(data);
+		this.employeeId.setValue(data);
+	}
 	handleSubmit() {
 		if (this.form.valid) {
 			if (this.id.value) this.update();
