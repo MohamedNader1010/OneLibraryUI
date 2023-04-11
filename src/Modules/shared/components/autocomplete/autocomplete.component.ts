@@ -27,6 +27,7 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
 			map((value) => {
 				let filtered = this._filter(value);
 				if (filtered.length) {
+					this.nameControl.setErrors({required: true});
 					return filtered;
 				}
 				if (typeof value != 'object') this.nameControl.setErrors({notFound: true});
