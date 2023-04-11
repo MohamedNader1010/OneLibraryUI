@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, Output, EventEmitter, SimpleChanges, OnChanges} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {Observable, Subscription, map, startWith} from 'rxjs';
 
@@ -7,12 +7,13 @@ import {Observable, Subscription, map, startWith} from 'rxjs';
 	templateUrl: './autocomplete.component.html',
 	styleUrls: ['./autocomplete.component.css'],
 })
-export class AutocompleteComponent implements OnInit, OnDestroy {
+export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 	subscriptions: Subscription[] = [];
 	@Input() label: string = '';
 	@Input() placeholder: string = '';
 	@Input() formControlName: string = '';
 	@Input() dataSource: any[] = [];
+	@Input() selectedValue!: any;
 
 	@Output() selectedId = new EventEmitter<number>();
 
@@ -34,6 +35,9 @@ export class AutocompleteComponent implements OnInit, OnDestroy {
 				return this.dataSource.slice();
 			})
 		);
+	}
+	ngOnChanges() {
+		if (this.dataSource.length && this.selectedValue) this.nameControl.setValue(this.dataSource.find((option) => option.id === this.selectedValue));
 	}
 	private _filter = (value: any): any[] => this.dataSource.filter((item) => item.name.toLowerCase().includes(value.toString().toLowerCase()));
 

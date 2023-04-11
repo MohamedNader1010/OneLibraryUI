@@ -14,7 +14,7 @@
 					</mat-select>
 					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
 				</mat-form-field> -->
-				<autocomplete label="الموظف" [dataSource]="EmployeesDataSource" (selectedId)="setEmpId($event)"></autocomplete>
+				<autocomplete label="الموظف" [dataSource]="EmployeesDataSource" (selectedId)="setEmpId($event)" [selectedValue]="this?.data?.employeeId"></autocomplete>
 				<ng-template #disabled>
 					<mat-form-field appearance="fill" class="w-100">
 						<mat-label>الموظف</mat-label>
