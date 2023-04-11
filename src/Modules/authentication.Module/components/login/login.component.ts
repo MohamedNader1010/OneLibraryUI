@@ -51,11 +51,12 @@ export class LoginComponent implements OnDestroy {
 						this._login.username.next(null);
 						this._login.clearLocalStorage();
 						let res: Response = e.error ?? e;
-						this.toastr.error(res.message, 'unauthorized');
+						this.toastr.error(res.message);
+						throw new Error(res.message);
 					},
 					complete: () => {
 						this.logging = false;
-						this.toastr.success('loged in sucessfully', 'logged in');
+						this.toastr.success('تم تسجيل الدخول بنجاح');
 						this.router.navigate(['']);
 					},
 				})

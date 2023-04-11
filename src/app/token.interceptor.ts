@@ -20,7 +20,11 @@ export class TokenInterceptor implements HttpInterceptor {
 		return next.handle(request).pipe(
 			catchError((error) => {
 				if (error instanceof HttpErrorResponse && error.status === 401) return this.handle401Error(request, next);
-				else return throwError(() => error);
+				else {
+					// console.log('intcp', error);
+					// this.toastr.error('لايمكن تحميل البيانات', 'خطأ بالاتصال');
+					return throwError(() => error);
+				}
 			})
 		);
 	}
@@ -30,11 +34,11 @@ export class TokenInterceptor implements HttpInterceptor {
 			this.refreshTokenSubject.next(null);
 			return this._auth.refreshToken().pipe(
 				catchError((error) => {
-					this.toastr.error(error.message);
 					this._auth.clearLocalStorage();
 					this._auth.username.next(null);
 					this.refreshTokenSubject.next(null);
 					this.router.navigate(['/auth/login']);
+					this.toastr.error('لايمكن تحميل البيانات', 'خطأ بالاتصال');
 					return throwError(() => error);
 				}),
 				switchMap((res: Response) => {

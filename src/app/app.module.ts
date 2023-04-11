@@ -1,5 +1,5 @@
 import {LoginGuard} from './../Modules/authentication.Module/guards/login.guard';
-import {NgModule} from '@angular/core';
+import {NgModule, ErrorHandler} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -14,6 +14,7 @@ import {environment} from 'src/environments/environment';
 
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {GlobalErrorHandler} from 'src/Modules/shared/classes/GlobalErrorHandler';
 
 export function tokenGetter() {
 	return localStorage.getItem('token');
@@ -36,16 +37,16 @@ export function tokenGetter() {
 		BrowserAnimationsModule,
 		TranslateModule.forRoot({
 			defaultLanguage: 'en',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        })
-
+			loader: {
+				provide: TranslateLoader,
+				useFactory: HttpLoaderFactory,
+				deps: [HttpClient],
+			},
+		}),
 	],
 	bootstrap: [AppComponent],
 	providers: [
+		{provide: ErrorHandler, useClass: GlobalErrorHandler},
 		LoginGuard,
 		{
 			provide: HTTP_INTERCEPTORS,
@@ -57,7 +58,5 @@ export function tokenGetter() {
 export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+	return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-
