@@ -1,0 +1,13 @@
+<div class="container">
+	<h3 mat-dialog-title>سيتم حذف البيانات التالية , هل انت متأكد؟</h3>
+	<div mat-dialog-content>
+		<h4 dir="ltr">{{data.id}}<strong> : Id</strong></h4>
+		<h4><strong>الحالة : </strong>{{data.status}}</h4>
+		<h4><strong>الكمية :</strong>{{data.amount}}</h4>
+		<h4><strong>ملحوظات :</strong>{{data.comment}}</h4>
+	</div>
+	<div mat-dialog-actions>
+		<button mat-raised-button color="warn" (click)="confirmDelete()">{{isSubmitting?'انتظر من فضلك':'حذف'}}</button>
+		<button mat-raised-button (click)="onNoClick()" tabindex="-1">إلغاء</button>
+	</div>
+</div>

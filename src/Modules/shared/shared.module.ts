@@ -17,10 +17,13 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { NgChartsModule, NgChartsConfiguration } from 'ng2-charts';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
+
 
 @NgModule({
-	declarations: [SharedComponent, ProfileComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent, DashboardComponent],
-	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule],
+	declarations: [SharedComponent, ProfileComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent, DashboardComponent, AutocompleteComponent],
+	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
 	exports: [TableComponent],
 	providers: [LoginGuard, AuthService, ToastrService,
 		{ provide: NgChartsConfiguration, useValue: { generateColors: false } }

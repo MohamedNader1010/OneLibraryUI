@@ -53,7 +53,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._mat.getAll().subscribe({
 				next: (data) => {
-					this.MaterialDataSource = data;
+					this.MaterialDataSource = data.body;
 				},
 				error: (e) => {
 					let res: Response = e.error ?? e;
@@ -76,7 +76,6 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			this.isSubmitting = true;
 			// if (this.id.value) this.update();
 			// else
-			this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
 			this.add();
 		}
 	}
@@ -101,6 +100,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	// }
 
 	add() {
+		this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
 		this.subscriptions.push(
 			this._matTracking.add(this.form.value).subscribe({
 				next: (res) => {

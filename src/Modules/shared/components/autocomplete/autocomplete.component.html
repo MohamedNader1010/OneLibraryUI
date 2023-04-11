@@ -1,0 +1,11 @@
+<mat-form-field appearance="fill" class="col-3">
+	<mat-label>{{ label }}</mat-label>
+	<input type="text" matInput [formControl]="id" [matAutocomplete]="auto" />
+	<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+		<mat-option *ngFor="let option of filteredOptions | async" [value]="option.id">
+			{{ option.name }}
+		</mat-option>
+	</mat-autocomplete>
+	<mat-error *ngIf="id.hasError('notFound')">البيانات غير صحيحة</mat-error>
+	<mat-error *ngIf="id.hasError('required') && (id.touched || id.dirty)"> يجب ادخال البيانات </mat-error>
+</mat-form-field>

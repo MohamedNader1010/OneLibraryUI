@@ -35,7 +35,6 @@ export function tokenGetter() {
 		ToastrModule.forRoot({preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing'}),
 		BrowserAnimationsModule,
 		TranslateModule.forRoot({
-
 			defaultLanguage: 'en',
             loader: {
                 provide: TranslateLoader,

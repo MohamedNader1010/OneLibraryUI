@@ -56,7 +56,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._material.getAll().subscribe({
 				next: (data) => {
-					this.MaterialDataSource = data;
+					this.MaterialDataSource = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');

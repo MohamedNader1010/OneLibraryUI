@@ -5,6 +5,8 @@ import {NoteService} from '../../services/note.service';
 import {Note} from './../../interfaces/Inote';
 import {ToastrService} from 'ngx-toastr';
 import {Router, ActivatedRoute} from '@angular/router';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -15,7 +17,8 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Note[];
 	loading!: boolean;
-	constructor(private _note: NoteService, public dialog: MatDialog, private toastr: ToastrService, private router: Router, private route: ActivatedRoute) {}
+	formName = FormDialogNames.NoteFormDialogComponent;
+	constructor(private dialogService: DialogServiceService, private _note: NoteService, public dialog: MatDialog, private toastr: ToastrService, private router: Router, private route: ActivatedRoute) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
@@ -74,7 +77,14 @@ export class AllComponent implements OnInit, OnDestroy {
 				cell: (element: Note) => `${element.quantity}`,
 			},
 		];
+		this.onDialogClosed();
 		this.getAll();
+	}
+
+	private onDialogClosed() {
+		this.dialogService.onClose().subscribe(_ => {
+			this.getAll()
+		})
 	}
 	getAll() {
 		this.loading = true;

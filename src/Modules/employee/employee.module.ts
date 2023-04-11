@@ -9,10 +9,20 @@ import {AllComponent} from './components/all/all.component';
 import {EmployeeComponent} from './employee.component';
 import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {EmployeeRoutingModule} from './routing/employee-routing.module';
+import { EmployeeFormDialogComponent } from './components/employee-form-dialog/employee-form-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-	declarations: [EmployeeComponent, AllComponent, AddEditComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, EmployeeRoutingModule, MatComponentsModule, SharedModule],
+	declarations: [EmployeeComponent, AllComponent, AddEditComponent, EmployeeFormDialogComponent],
+	imports: [
+		FormsModule, 
+		ReactiveFormsModule, 
+		CommonModule, 
+		EmployeeRoutingModule, 
+		MatComponentsModule, 
+		SharedModule, 
+		TranslateModule
+	],
 	providers: [ServicesTypeService, CanDeactivateGuard],
 })
 export class EmployeeModule {}
