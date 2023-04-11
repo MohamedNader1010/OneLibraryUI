@@ -7,14 +7,12 @@
 		<h4 *ngIf="data"><strong>التاريخ :</strong> {{data.checkIn| date : 'dd/MM/yyyy'}}</h4>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
-				<!-- <mat-form-field appearance="fill" class="w-100" *ngIf="!employeeId.value; else disabled">
-					<mat-label>الموظف</mat-label>
-					<mat-select formControlName="employeeId">
-						<mat-option *ngFor="let emp of EmployeesDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
-					</mat-select>
-					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
-				</mat-form-field> -->
-				<autocomplete label="الموظف" [dataSource]="EmployeesDataSource" (selectedId)="setEmpId($event)" [selectedValue]="this?.data?.employeeId"></autocomplete>
+				<autocomplete
+					*ngIf="!employeeId.value; else disabled"
+					label="الموظف"
+					[dataSource]="EmployeesDataSource"
+					(selectedId)="setEmpId($event)"
+					[selectedValue]="this?.data?.employeeId"></autocomplete>
 				<ng-template #disabled>
 					<mat-form-field appearance="fill" class="w-100">
 						<mat-label>الموظف</mat-label>
