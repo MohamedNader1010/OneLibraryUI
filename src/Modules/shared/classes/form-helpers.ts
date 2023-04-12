@@ -1,6 +1,7 @@
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-
+import { ComponentsName } from 'src/Persistents/enums/components.name';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 export class FormHelpers {
+
 	public static async getAppropriateDialogComponent(formName: FormDialogNames) {
 		const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
 		return appropriateComponent;
@@ -38,14 +39,15 @@ export class FormHelpers {
 		}
 	}
 
-	public static async getAppropriateDeleteDialogComponent() {
-		const appropriateComponent = await FormHelpers.getAppropriateDeleteComponent();
-		return appropriateComponent;
+	public static async getDeleteDialogComponent(componentName: ComponentsName) {
+		const deleteDialogComponent = await FormHelpers.importDialogComponent();
+		return deleteDialogComponent;
 	}
 
-	private static async getAppropriateDeleteComponent() {
-		let module;
-		module = await import('../../material/components/delete/delete.dialog.component');
-		return module.DeleteDialogComponent;
+	private static async importDialogComponent() {
+
+		const module = await import('../components/delete-dialog/delete-dialog.component');
+		return module.DeleteDialogComponent as typeof module.DeleteDialogComponent;
+
 	}
 }
