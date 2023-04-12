@@ -6,6 +6,8 @@
 	"error.cantLoadData": "لا يمكن تحميل البيانات",
 	"error.cantLoadPrices": "لا يمكن تحميل الاسعار",
 	"error.name": "Error",
+	"error.mustEnterMaterialName": "يجب ادخال اسم الخامه",
+	"error.youMustChoosePrice": "يجب تحديد السعر",
 	"quantity": "الكميه",
 	"title.main": "الرئيسيه",
 	"service.name": "الخدمات",
@@ -36,10 +38,16 @@
 
 	"material.edit": "تعديل الخامات",
 	"material.new": "خامات جديده",
-
 	"form.id": "id",
-	"form.material.name": "name",
+	"form.id.label": "#",
+	"form.name": "name",
+	"form.name.label": "الإسم",
 	"form.material.wholesalePrice": "wholesalePrice",
-	"form.material.label.name": "الاسم",
-	"form.material.label.wholesalePrice": "سعر الجمله"
+	"form.material.wholesalePrice.label": "سعر الجمله",
+	"form.material.currentQty": "Current Quantity",
+	"form.material.currentQty.label": "الكميه الحاليه",
+	"keys.material.id": "البيان",
+	"keys.material.name": "إسم الخامه",
+	"keys.material.price": "السعر",
+	"keys.material.quantity": "الكميه الحاليه"
 }

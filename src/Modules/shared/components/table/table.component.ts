@@ -8,6 +8,8 @@ import {Subscription, fromEvent} from 'rxjs';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {FormHelpers} from '../../classes/form-helpers';
 import {TableDataSource} from '../../classes/tableDataSource';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 import {GenericDeleteDialogComponent} from '../generic-delete-dialog/generic-delete.dialog.component';
 @Component({
 	selector: 'app-table[tableColumns]',
@@ -38,7 +40,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() isDisplayDeleteButton: boolean = true;
 	@Input() isHideAllButtons: boolean = false;
 	@Input() formName!: FormDialogNames;
-
+	@Input() componentName!: ComponentsName;
 	@Input() tableData: any;
 
 	columns: any[] = [];
@@ -86,7 +88,9 @@ export class TableComponent implements OnInit, OnDestroy {
 	}
 
 	async handleDelete(row: any) {
-		const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
+		// const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
+		const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent(this.componentName);
+		const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, {data: {row: row, componentName: this.componentName}, minWidth: '30%'});
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe((result) => {
 				if (result) this.OnDelete.emit(row.id);
