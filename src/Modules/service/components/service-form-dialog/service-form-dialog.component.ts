@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {Material} from 'src/Modules/material/interfaces/Imaterial';
@@ -26,6 +26,8 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	MaterialDataSource: Material[] = [];
 	ServiceTypeDataSource: ServiceType[] = [];
 
+	deletedMaterials: number[] = [];
+
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: Service,
 		translate: TranslateService,
@@ -39,7 +41,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		private matDialogRef: MatDialogRef<ServiceFormDialogComponent>
 	) {
 		super(matDialogRef, dialogService, translate, matDialogg);
-		this.initiateFormControls();
+		this.Form = this.createFormItem('init');
 	}
 
 	get id(): FormControl {
@@ -57,15 +59,47 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	get serviceTypeId(): FormControl {
 		return this.Form.get('serviceTypeId') as FormControl;
 	}
-
-	private initiateFormControls() {
-		this.Form = this.fb.group({
-			id: [null],
-			name: ['', [Validators.required, Validators.maxLength(100)]],
-			materialId: ['', [Validators.required]],
-			serviceTypeId: ['', [Validators.required]],
-		});
+	get serviceMaterial(): FormArray {
+		return this.Form.get('serviceMaterial') as FormArray;
 	}
+
+	getServiceMaterialId = (index: number): FormControl => this.serviceMaterial.at(index).get('id') as FormControl;
+
+	createFormItem(type: string): FormGroup {
+		let formItem: FormGroup = this.fb.group({});
+		switch (type) {
+			case 'init':
+				formItem = this.fb.group({
+					id: [null],
+					name: ['', [Validators.required, Validators.maxLength(100)]],
+					materialId: ['', [Validators.required]],
+					serviceTypeId: ['', [Validators.required]],
+					serviceMaterial: this.fb.array([]),
+				});
+				break;
+			case 'servicePrice':
+				break;
+			case 'serviceMaterial':
+				formItem = this.fb.group({
+					id: [null],
+					materialId: [''],
+					material: ['', [Validators.required]],
+					serviceId: [''],
+					service: ['', [Validators.required]],
+				});
+				break;
+		}
+		return formItem;
+	}
+	handleNewServicePrice = () => {};
+	handleDeleteServicePrice = (index: number) => {};
+	handleNewServiceMaterial = () => {
+		this.serviceMaterial.push(this.createFormItem('serviceMaterial'));
+	};
+	handleDeleteServiceMaterial = (index: number) => {
+		if (this.id) this.deletedMaterials.push(this.getServiceMaterialId(index).value);
+		this.serviceMaterial.removeAt(index);
+	};
 
 	ngOnInit(): void {
 		this.loadData();
