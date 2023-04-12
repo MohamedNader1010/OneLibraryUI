@@ -1,11 +1,7 @@
 <div class="d-flex flex-column">
-	<h3 mat-dialog-title>سيتم حذف البيانات التالية , هل انت متأكد؟</h3>
+	<h3 mat-dialog-title>{{'warn.deletion.message' | translate}}</h3>
 	<div mat-dialog-content *ngFor="let key of data.row | keyvalue">
 		<h4 dir="ltr">{{key.value}}<strong> : {{getTranslatedString(key.key)}}</strong></h4>
-		<!-- <h4><strong>أسم الخامة : </strong>{{key.}}</h4>
-		<h4><strong>السعر : </strong>{{data.price}}</h4>
-		<h4><strong>الكمية الحالية : </strong>{{data.quantity}}</h4> -->
-
 	</div>
 	<div mat-dialog-actions>
 		<button mat-raised-button color="warn" (click)="confirmDelete()">{{ (isSubmitting ? 'button.wait' :

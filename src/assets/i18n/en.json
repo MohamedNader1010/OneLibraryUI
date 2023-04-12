@@ -8,6 +8,7 @@
 	"error.name": "Error",
 	"error.mustEnterMaterialName": "يجب ادخال اسم الخامه",
 	"error.youMustChoosePrice": "يجب تحديد السعر",
+	"warn.deletion.message": "سيتم حذف البيانات التالية , هل انت متأكد؟",
 	"quantity": "الكميه",
 	"title.main": "الرئيسيه",
 	"service.name": "الخدمات",

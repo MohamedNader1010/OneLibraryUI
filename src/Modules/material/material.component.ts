@@ -1,13 +1,14 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {TableDataSource} from '../shared/classes/tableDataSource';
-import {Material} from './interfaces/Imaterial';
-import {MaterialService} from './services/material.service';
-import {Response} from '../shared/interfaces/Iresponse';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { TableDataSource } from '../shared/classes/tableDataSource';
+import { Material } from './interfaces/Imaterial';
+import { MaterialService } from './services/material.service';
+import { Response } from '../shared/interfaces/Iresponse';
+import { ComponentsName } from 'src/Persistents/enums/components.name';
 
 @Component({
 	selector: 'app-material',
@@ -20,10 +21,11 @@ export class MaterialComponent implements OnInit, OnDestroy {
 	tableData!: Material[];
 	loading!: boolean;
 	formName = FormDialogNames.MaterialFormDialogComponent;
+	componentName = ComponentsName.material;
 	database!: MaterialService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
+	constructor(public httpClient: HttpClient, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) { }
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
@@ -70,26 +72,12 @@ export class MaterialComponent implements OnInit, OnDestroy {
 		this.toastr.success(data.message);
 	};
 
-	handleDelete = (data: any) => {
-		this._material.delete(data).subscribe({
-			next: (res) => {
-				// this.isSubmitting = true;
-				// this.dialogRef.close({data: res});
-				this.toastr.success(res.message);
-			},
-			error: (e) => {
-				// this.isSubmitting = false;
-				let res: Response = e.error ?? e;
-				this.toastr.error(res.message);
-			},
-			complete: () => {
-				// this.isSubmitting = false;
-			},
-		});
+	handleDelete = (data: Response) => {
 		this.database.dataChange.value.splice(
 			this.database.dataChange.value.findIndex((x) => x.id === data),
 			1
 		);
+		this.toastr.success(data.message)
 	};
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

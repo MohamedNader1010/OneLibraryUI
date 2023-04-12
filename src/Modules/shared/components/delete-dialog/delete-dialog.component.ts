@@ -1,11 +1,11 @@
-import {Component, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
-import {Response} from './../../../shared/interfaces/Iresponse';
-import {GenericService} from '../../services/genericCRUD.service';
-import {TranslateService} from '@ngx-translate/core';
-import {DeleteDialogData} from '../../interfaces/deleteDialogData';
-import {ServiceFactory} from '../../classes/ServiceFactory';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { Response } from './../../../shared/interfaces/Iresponse';
+import { GenericService } from '../../services/genericCRUD.service';
+import { TranslateService } from '@ngx-translate/core';
+import { DeleteDialogData } from '../../interfaces/deleteDialogData';
+import { ServiceFactory } from '../../classes/ServiceFactory';
 
 @Component({
 	selector: 'app-delete-dialog',
@@ -20,16 +20,16 @@ export class DeleteDialogComponent {
 		private serviceFactory: ServiceFactory,
 		private toastr: ToastrService,
 		private translate: TranslateService
-	) {}
+	) { }
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
 	confirmDelete(): void {
-		const service: any = this.serviceFactory.getService(this.data.componentName);
+		const service: GenericService<any> = this.serviceFactory.getService(this.data.componentName);
 		service.delete(this.data.row.id).subscribe({
 			next: (res: any) => {
 				this.isSubmitting = true;
-				this.dialogRef.close({data: res});
+				this.dialogRef.close({ data: res });
 			},
 			error: (e: any) => {
 				this.isSubmitting = false;

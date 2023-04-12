@@ -1,16 +1,16 @@
-import {SendDataFromTableToMatDialoge} from './../../services/sendDataFromTableToMatDialoge.service';
-import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, OnChanges, SimpleChanges} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription, fromEvent} from 'rxjs';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {FormHelpers} from '../../classes/form-helpers';
-import {TableDataSource} from '../../classes/tableDataSource';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
-import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
-import {GenericDeleteDialogComponent} from '../generic-delete-dialog/generic-delete.dialog.component';
+import { SendDataFromTableToMatDialoge } from './../../services/sendDataFromTableToMatDialoge.service';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription, fromEvent } from 'rxjs';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { FormHelpers } from '../../classes/form-helpers';
+import { TableDataSource } from '../../classes/tableDataSource';
+import { ComponentsName } from 'src/Persistents/enums/components.name';
+import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
+
 @Component({
 	selector: 'app-table[tableColumns]',
 	templateUrl: './table.component.html',
@@ -28,9 +28,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
 	@Input() database: any;
 	dataSource!: TableDataSource;
-	@ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
-	@ViewChild(MatSort, {static: true}) sort!: MatSort;
-	@ViewChild('filter', {static: true}) filter!: ElementRef;
+	@ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+	@ViewChild(MatSort, { static: true }) sort!: MatSort;
+	@ViewChild('filter', { static: true }) filter!: ElementRef;
 
 	@Input() loading: any;
 	@Input() tableColumns: any;
@@ -44,7 +44,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() tableData: any;
 
 	columns: any[] = [];
-	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) {}
+	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) { }
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
 		this.loadData();
@@ -64,7 +64,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
 	async HandleNew() {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		const dialogRef = this.dialog.open<any>(dialogComponent, {minWidth: '30%'});
+		const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%' });
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe({
 				next: (result) => {
@@ -76,7 +76,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	}
 	async handleEdit(row: any) {
 		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row});
+		const dialogRef = this.dialog.open<any>(dialogComponent, { data: row });
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe({
 				next: (result) => {
@@ -88,13 +88,17 @@ export class TableComponent implements OnInit, OnDestroy {
 	}
 
 	async handleDelete(row: any) {
-		const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
-		// const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent(this.componentName);
-		// const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, {data: {row: row, componentName: this.componentName}, minWidth: '30%'});
+		const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent(this.componentName);
+		const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, { data: { row: row, componentName: this.componentName }, minWidth: '30%' });
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe((result) => {
-				if (result) this.OnDelete.emit(row.id);
+				if (result?.data) {
+					result.data.body = row;
+					this.OnDelete.emit(result.data);
+					this.refreshTable();
+				}
 			})
+
 		);
 	}
 
@@ -103,7 +107,7 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.sendRowId.setOrderId(id);
 	};
 
-	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
+	handleTransaction = (row: any) => this._router.navigate([`../transaction`], { queryParams: { id: row.id }, relativeTo: this.route });
 
 	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 

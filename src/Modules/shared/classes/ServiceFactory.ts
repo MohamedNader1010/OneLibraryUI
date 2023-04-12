@@ -35,28 +35,29 @@ export class ServiceFactory {
     getService(componentName: ComponentsName) {
 
         switch (componentName) {
-            case ComponentsName.attendance:
-                return this.attendnaceService;
-            case ComponentsName.client:
-                return this.clientService;
-            case ComponentsName.clientType:
-                return this.clientTypeService
-            case ComponentsName.feedback:
-                return this.feedbackService;
-            case ComponentsName.incomeOutcome:
-                return this.incomeOutcomeService;
             case ComponentsName.material:
                 return this.materialService;
-            case ComponentsName.materialTracking:
-                return this.materialTrackingService;
-            case ComponentsName.note:
-                return this.noteService;
-            case ComponentsName.order:
-                return this.orderService;
-            case ComponentsName.service:
-                return this.serviceService;
-            case ComponentsName.serviceType:
-                return this.serviceTypeService
+            // case ComponentsName.attendance:
+            //     return this.attendnaceService;
+            // case ComponentsName.client:
+            //     return this.clientService;
+            // case ComponentsName.clientType:
+            //     return this.clientTypeService
+            // case ComponentsName.feedback:
+            //     return this.feedbackService;
+            // case ComponentsName.incomeOutcome:
+            //     return this.incomeOutcomeService;
+
+            // case ComponentsName.materialTracking:
+            //     return this.materialTrackingService;
+            // case ComponentsName.note:
+            //     return this.noteService;
+            // case ComponentsName.order:
+            //     return this.orderService;
+            // case ComponentsName.service:
+            //     return this.serviceService;
+            // case ComponentsName.serviceType:
+            //     return this.serviceTypeService
         }
 
     }
