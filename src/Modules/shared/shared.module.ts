@@ -19,11 +19,23 @@ import {NgChartsModule, NgChartsConfiguration} from 'ng2-charts';
 import {DashboardComponent} from './components/dashboard/dashboard.component';
 import {TranslateModule} from '@ngx-translate/core';
 import {AutocompleteComponent} from './components/autocomplete/autocomplete.component';
+import {GenericDeleteDialogComponent} from './components/generic-delete-dialog/generic-delete.dialog.component';
 
 @NgModule({
-	declarations: [SharedComponent, ProfileComponent, DialogComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent, DashboardComponent, AutocompleteComponent],
+	declarations: [
+		SharedComponent,
+		ProfileComponent,
+		DialogComponent,
+		FooterComponent,
+		NavbarComponent,
+		NotfoundComponent,
+		TableComponent,
+		DashboardComponent,
+		AutocompleteComponent,
+		GenericDeleteDialogComponent,
+	],
 	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
-	exports: [TableComponent, AutocompleteComponent],
+	exports: [TableComponent, AutocompleteComponent, GenericDeleteDialogComponent],
 	providers: [LoginGuard, AuthService, ToastrService, {provide: NgChartsConfiguration, useValue: {generateColors: false}}],
 })
 export class SharedModule {}

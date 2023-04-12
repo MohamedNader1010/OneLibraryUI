@@ -1,5 +1,5 @@
 import {SendDataFromTableToMatDialoge} from './../../services/sendDataFromTableToMatDialoge.service';
-import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, OnChanges, SimpleChanges} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -8,6 +8,7 @@ import {Subscription, fromEvent} from 'rxjs';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {FormHelpers} from '../../classes/form-helpers';
 import {TableDataSource} from '../../classes/tableDataSource';
+import {GenericDeleteDialogComponent} from '../generic-delete-dialog/generic-delete.dialog.component';
 @Component({
 	selector: 'app-table[tableColumns]',
 	templateUrl: './table.component.html',
@@ -65,7 +66,7 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe({
 				next: (result) => {
-					if (result?.data) this.onNew.emit(result.data);
+					if (result?.data) this.onNew.emit(result.data.message);
 				},
 				complete: () => this.refreshTable(),
 			})
@@ -85,15 +86,10 @@ export class TableComponent implements OnInit, OnDestroy {
 	}
 
 	async handleDelete(row: any) {
-		const dialogComponent = await FormHelpers.getAppropriateDeleteDialogComponent();
-		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row, minWidth: '30%'});
+		const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe((result) => {
-				if (result?.data) {
-					result.data.body = row;
-					this.OnDelete.emit(result.data);
-					this.refreshTable();
-				}
+				if (result) this.OnDelete.emit(row.id);
 			})
 		);
 	}

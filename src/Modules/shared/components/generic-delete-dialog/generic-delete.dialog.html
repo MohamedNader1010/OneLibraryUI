@@ -1,0 +1,13 @@
+<div class="d-flex flex-column">
+	<h3 mat-dialog-title>سيتم حذف البيانات التالية , هل انت متأكد؟</h3>
+	<div mat-dialog-content>
+		<h4 *ngfor></h4>
+		<ng-container *ngFor="let d of data|keyvalue;">
+			<h4 dir="ltr">{{d.value}}<strong> : {{d.key}}</strong></h4>
+		</ng-container>
+	</div>
+	<div mat-dialog-actions>
+		<button mat-raised-button color="warn" (click)="confirmDelete()">{{ (isSubmitting ? 'button.wait' : 'button.delete') | translate }}</button>
+		<button mat-raised-button (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+	</div>
+</div>
