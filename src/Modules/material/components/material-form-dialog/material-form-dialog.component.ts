@@ -1,15 +1,14 @@
-import {FormsDialogCommonFunctionality} from './../../../shared/classes/FormsDialog';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Subscription} from 'rxjs';
 import {MaterialService} from '../../services/material.service';
-import {TranslateService} from '@ngx-translate/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 import {Material} from '../../interfaces/Imaterial';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {ToastrService} from 'ngx-toastr';
-
+import {TranslateService} from '@ngx-translate/core';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-material-form-dialog',
 	templateUrl: './material-form-dialog.component.html',
@@ -18,10 +17,8 @@ import {ToastrService} from 'ngx-toastr';
 export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
 	subscriptions: Subscription[] = [];
 	Form!: FormGroup;
-	controllerName: string = 'materials';
-	isSubmitted: boolean = false;
 	isSubmitting: boolean = false;
-	isLoading = false;
+
 	constructor(
 		@Inject(MAT_DIALOG_DATA) private data: Material,
 		translate: TranslateService,
@@ -57,16 +54,6 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
 	ngOnInit(): void {
 		if (this.data) this.Form.patchValue(this.data);
 	}
-
-	getSingle = (id: number) => {
-		this.isLoading = true;
-		this.subscriptions.push(
-			this._material.GetById(id).subscribe((data) => {
-				this.isLoading = false;
-				this.Form.patchValue(data);
-			})
-		);
-	};
 
 	handleSubmit() {
 		if (this.Form.valid) {

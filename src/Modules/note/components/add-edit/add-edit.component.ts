@@ -224,7 +224,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	getAllServices() {
 		this.subscriptions.push(
 			this._service.getAll().subscribe({
-				next: (data) => (this.ServicesDataSource = data),
+				next: (data) => (this.ServicesDataSource = data.body),
 				error: (e) => this.toastr.error(e.message, 'لايمكن تحميل ابيانات '),
 			})
 		);

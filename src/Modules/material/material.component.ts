@@ -5,7 +5,6 @@ import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {TableDataSource} from '../shared/classes/tableDataSource';
-import {DialogServiceService} from '../shared/services/dialog-service.service';
 import {Material} from './interfaces/Imaterial';
 import {MaterialService} from './services/material.service';
 import {Response} from '../shared/interfaces/Iresponse';
@@ -24,12 +23,11 @@ export class MaterialComponent implements OnInit, OnDestroy {
 	database!: MaterialService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private dialogService: DialogServiceService, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
+	constructor(public httpClient: HttpClient, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
-		// this.onDialogClosed();
 	}
 
 	private initiateTableHeaders() {
@@ -57,19 +55,14 @@ export class MaterialComponent implements OnInit, OnDestroy {
 		];
 	}
 
-	// private onDialogClosed() {
-	// 	this.dialogService.onClose().subscribe((_) => {
-	// 	});
-	// }
-
 	public loadData() {
 		this.database = new MaterialService(this.httpClient, this.toastr);
 		this.database.getAllMaterials();
 	}
 
-	handleNewRow = (data: any) => {
+	handleNewRow = (message: string) => {
 		this.database.dataChange.value.push(this._material.dialogData);
-		this.toastr.success(data.message);
+		this.toastr.success(message);
 	};
 
 	handleEditRow = (data: Response) => {
@@ -77,12 +70,26 @@ export class MaterialComponent implements OnInit, OnDestroy {
 		this.toastr.success(data.message);
 	};
 
-	handleDelete = (data: Response) => {
+	handleDelete = (data: any) => {
+		this._material.delete(data).subscribe({
+			next: (res) => {
+				// this.isSubmitting = true;
+				// this.dialogRef.close({data: res});
+				this.toastr.success(res.message);
+			},
+			error: (e) => {
+				// this.isSubmitting = false;
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => {
+				// this.isSubmitting = false;
+			},
+		});
 		this.database.dataChange.value.splice(
-			this.database.dataChange.value.findIndex((x) => x.id === data.body.id),
+			this.database.dataChange.value.findIndex((x) => x.id === data),
 			1
 		);
-		this.toastr.success(data.message);
 	};
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

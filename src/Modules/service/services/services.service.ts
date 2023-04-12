@@ -1,18 +1,51 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
 import {Service} from '../interfaces/Iservice';
+import {ToastrService} from 'ngx-toastr';
+import {BehaviorSubject} from 'rxjs';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ServicesService {
-	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}`;
-	getAll = () => this.http.get<Service[]>(`${this.uri}Service`);
-	add = (service: Service) => this.http.post<Service>(`${this.uri}Service`, service);
-	getOne = (id: number) => this.http.get<Service[]>(`${this.uri}Service/GetById?Id=${id}`);
-	update = (id: number, service: Service) => this.http.put<Service>(`${this.uri}Service?Id=${id}`, {...service, id});
-	delete = (id: number) => this.http.delete<Service>(`${this.uri}Service?Id=${id}`);
+export class ServicesService extends GenericService<Service, Response> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'Service');
+	}
+
+	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+	get loading(): boolean {
+		return this.loadingData.value;
+	}
+
+	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
+	get data(): any[] {
+		return this.dataChange.value ?? [];
+	}
+
+	dialogData: any;
+
+	get DialogData() {
+		return this.dialogData;
+	}
+
+	getAllServices() {
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+
 	getPrice = (serviceId: number, clientTypeId: number) => this.http.get(`${this.uri}ServicePricePerClientType/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 }

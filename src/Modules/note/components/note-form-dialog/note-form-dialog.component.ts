@@ -1,29 +1,29 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { map, Observable, startWith, Subscription, pairwise } from 'rxjs';
-import { NoteService } from '../../services/note.service';
-import { ToastrService } from 'ngx-toastr';
-import { ClientService } from 'src/Modules/client/services/client.service';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { Client } from 'src/Modules/client/interFaces/Iclient';
-import { Stage } from '../../interfaces/IStage';
-import { Term } from '../../interfaces/ITerm';
-import { NoteComponent } from '../../interfaces/noteComponent';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { ServicePricePerClientTypeService } from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import { ServicePricePerClientType } from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
-import { Note } from '../../interfaces/Inote';
-import { Response } from './../../../shared/interfaces/Iresponse';
-import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
+import {map, Observable, startWith, Subscription, pairwise} from 'rxjs';
+import {NoteService} from '../../services/note.service';
+import {ToastrService} from 'ngx-toastr';
+import {ClientService} from 'src/Modules/client/services/client.service';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {Client} from 'src/Modules/client/interFaces/Iclient';
+import {Stage} from '../../interfaces/IStage';
+import {Term} from '../../interfaces/ITerm';
+import {NoteComponent} from '../../interfaces/noteComponent';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
+import {Note} from '../../interfaces/Inote';
+import {Response} from './../../../shared/interfaces/Iresponse';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {TranslateService} from '@ngx-translate/core';
 @Component({
 	selector: 'app-note-form-dialog',
 	templateUrl: './note-form-dialog.component.html',
-	styleUrls: ['./note-form-dialog.component.css']
+	styleUrls: ['./note-form-dialog.component.css'],
 })
 export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
@@ -108,15 +108,14 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 					filtered = this.filterClients(name as string);
 					if (filtered.length) return filtered;
 					else {
-						this.clientId.setErrors({ notFound: true });
+						this.clientId.setErrors({notFound: true});
 						return this.ClientsDataSource.slice();
 					}
 				} else return [];
 			})
 		);
 		this.subscriptions.push(this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value)));
-		if (this.data)
-			this.getSingle(this.data.id)
+		if (this.data) this.getSingle(this.data.id);
 	}
 	filterClients = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
 	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
@@ -230,7 +229,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	getAllServices() {
 		this.subscriptions.push(
 			this._service.getAll().subscribe({
-				next: (data) => (this.ServicesDataSource = data),
+				next: (data) => (this.ServicesDataSource = data.body),
 				error: (e) => this.toastr.error(e.message, 'لايمكن تحميل ابيانات '),
 			})
 		);
@@ -240,7 +239,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			this._clientType.getAll().subscribe({
 				next: (data) => {
 					this.ClientTypesDataSource = data.map((t) => {
-						return { clientTypeId: t.id, name: t.name };
+						return {clientTypeId: t.id, name: t.name};
 					});
 				},
 				error: (e) => {
@@ -280,7 +279,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.finalPrice.setValue(+this.actualPrice.value + +this.teacherPrice.value);
 	}
 	getSingle = (id: number) => {
-		this.isLoading = true; 
+		this.isLoading = true;
 		this.subscriptions.push(
 			this._note.getOne(id).subscribe({
 				next: (res) => {
@@ -322,9 +321,9 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 				this.servicePriceFormControl(index).setValue(0);
 				this.serviceOriginalPriceFormControl(index).setValue(0);
 			} else {
-				let res: { price: number; originalPrice: number } = await new Promise<{ price: number; originalPrice: number }>((resolve) => {
+				let res: {price: number; originalPrice: number} = await new Promise<{price: number; originalPrice: number}>((resolve) => {
 					this._servicePrice.getPrice(this.clientTypeId.value, this.getNoteComponentServiceId(index).value).subscribe({
-						next: (res) => resolve({ price: res.price, originalPrice: res.originalPrice }),
+						next: (res) => resolve({price: res.price, originalPrice: res.originalPrice}),
 						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
 					});
 				});

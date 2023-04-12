@@ -1,4 +1,4 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Material} from '../interfaces/Imaterial';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
