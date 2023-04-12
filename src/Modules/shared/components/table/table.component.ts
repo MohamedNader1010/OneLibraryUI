@@ -88,9 +88,9 @@ export class TableComponent implements OnInit, OnDestroy {
 	}
 
 	async handleDelete(row: any) {
-		// const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
-		const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent(this.componentName);
-		const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, {data: {row: row, componentName: this.componentName}, minWidth: '30%'});
+		const dialogRef = this.dialog.open<any>(GenericDeleteDialogComponent, {data: row, minWidth: '30%'});
+		// const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent(this.componentName);
+		// const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, {data: {row: row, componentName: this.componentName}, minWidth: '30%'});
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe((result) => {
 				if (result) this.OnDelete.emit(row.id);
