@@ -9,7 +9,7 @@ import {TranslateService} from '@ngx-translate/core';
 export class AppComponent {
 	title = 'OneLibraryUI';
 	constructor(private translate: TranslateService) {
-		translate.setDefaultLang('ar');
-		translate.use('ar');
+		translate.setDefaultLang('en');
+		translate.use('en');
 	}
 }
