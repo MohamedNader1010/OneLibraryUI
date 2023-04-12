@@ -37,15 +37,4 @@ export class FormHelpers {
 				return module.ServiceTypePerClientFormDialogComponent;
 		}
 	}
-
-	public static async getAppropriateDeleteDialogComponent() {
-		const appropriateComponent = await FormHelpers.getAppropriateDeleteComponent();
-		return appropriateComponent;
-	}
-
-	private static async getAppropriateDeleteComponent() {
-		let module;
-		module = await import('../../material/components/delete/delete.dialog.component');
-		return module.DeleteDialogComponent;
-	}
 }

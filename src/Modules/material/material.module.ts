@@ -10,10 +10,9 @@ import {MaterialsRoutingModule} from './routing/material-routing.module';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {MaterialFormDialogComponent} from './components/material-form-dialog/material-form-dialog.component';
 import {TranslateModule} from '@ngx-translate/core';
-import {DeleteDialogComponent} from './components/delete/delete.dialog.component';
 
 @NgModule({
-	declarations: [MaterialComponent, MaterialFormDialogComponent, DeleteDialogComponent],
+	declarations: [MaterialComponent, MaterialFormDialogComponent],
 	imports: [FormsModule, ReactiveFormsModule, CommonModule, MaterialsRoutingModule, MatComponentsModule, SharedModule, TranslateModule],
 	providers: [LoginGuard, MaterialService],
 })

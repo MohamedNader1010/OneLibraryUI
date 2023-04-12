@@ -79,19 +79,12 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			})
 		);
 
-	onNoClick() {
-		this.dialogRef.close();
-	}
+	onNoClick = () => this.dialogRef.close();
 
-	setEmpId(data: any) {
-		console.log(data);
-		this.employeeId.setValue(data);
-	}
+	setEmpId = (data: any) => this.employeeId.setValue(data);
+
 	handleSubmit() {
-		if (this.form.valid) {
-			if (this.id.value) this.update();
-			else this.add();
-		}
+		if (this.form.valid) this.id.value ? this.update() : this.add();
 	}
 
 	update() {
@@ -134,7 +127,5 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }
