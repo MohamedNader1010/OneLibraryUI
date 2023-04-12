@@ -8,7 +8,7 @@ import {BehaviorSubject} from 'rxjs';
 @Injectable({
 	providedIn: 'root',
 })
-export class FeadbackService extends GenericService<Feadback, Response> {
+export class FeadbackService extends GenericService<Feadback> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'ClientFeedback');
 	}

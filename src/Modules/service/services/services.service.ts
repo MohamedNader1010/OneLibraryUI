@@ -9,7 +9,7 @@ import {Response} from './../../shared/interfaces/Iresponse';
 @Injectable({
 	providedIn: 'root',
 })
-export class ServicesService extends GenericService<Service, Response> {
+export class ServicesService extends GenericService<Service> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'Service');
 	}

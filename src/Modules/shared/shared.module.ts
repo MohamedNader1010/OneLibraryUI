@@ -38,7 +38,7 @@ import {GenericDeleteDialogComponent} from './components/generic-delete-dialog/g
 		GenericDeleteDialogComponent,
 	],
 	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
-	exports: [TableComponent, GenericDeleteDialogComponent],
+	exports: [TableComponent, GenericDeleteDialogComponent, AutocompleteComponent],
 	providers: [LoginGuard, AuthService, ToastrService, {provide: NgChartsConfiguration, useValue: {generateColors: false}}, ServiceFactory],
 })
 export class SharedModule {}

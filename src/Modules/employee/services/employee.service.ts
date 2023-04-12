@@ -7,7 +7,7 @@ import {Employee} from '../interFaces/Iemployee';
 @Injectable({
 	providedIn: 'root',
 })
-export class EmployeeService extends GenericService<Employee, Response> {
+export class EmployeeService extends GenericService<Employee> {
 	constructor(http: HttpClient) {
 		super(http, 'Employee');
 	}
