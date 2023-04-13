@@ -1,66 +1,90 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {ServiceType} from '../../interFaces/IserviceType';
 import {ServicesTypeService} from '../../services/serviceType.service';
-import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
-import {TranslateService} from '@ngx-translate/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {ServiceFormDialogComponent} from 'src/Modules/service/components/service-form-dialog/service-form-dialog.component';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {Response} from './../../../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-service-type-form-dialog',
 	templateUrl: './service-type-form-dialog.component.html',
 	styleUrls: ['./service-type-form-dialog.component.css'],
 })
-export class ServiceTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ServiceTypeFormDialogComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	Form: FormGroup;
-	isLoading = false;
-	controllerName: string = 'serviceTypes';
-	isSubmitted: boolean = false;
+	isSubmitting: boolean = false;
 	constructor(
-		private _serviceType: ServicesTypeService,
-		private fb: FormBuilder,
-		private translate: TranslateService,
-		@Inject(MAT_DIALOG_DATA) public data: ServiceType,
 		private matDialogRef: MatDialogRef<ServiceTypeFormDialogComponent>,
-		private dialogService: DialogServiceService,
-		private matDialogg: MatDialog
+		@Inject(MAT_DIALOG_DATA) public data: ServiceType,
+		private fb: FormBuilder,
+		private toastr: ToastrService,
+		private _serviceType: ServicesTypeService
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
 		this.Form = this.fb.group({
+			id: [null],
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 		});
 	}
+	get id(): FormControl {
+		return this.Form.get('id') as FormControl;
+	}
+
 	get name(): FormControl {
 		return this.Form.get('name') as FormControl;
 	}
+
 	ngOnInit(): void {
 		if (this.data) this.Form.patchValue(this.data);
 	}
 
+	onNoClick = () => this.matDialogRef.close();
+
 	handleSubmit() {
-		if (this.Form.valid) {
-			if (this.data)
-				this.subscriptions.push(
-					this._serviceType.update(this.data.id, this.Form.value).subscribe(() => {
-						this.isSubmitted = true;
-						this.back();
-					})
-				);
-			else
-				this.subscriptions.push(
-					this._serviceType.add(this.Form.value).subscribe(() => {
-						this.isSubmitted = true;
-						this.back();
-					})
-				);
-		}
+		if (this.Form.valid) this.id.value ? this.update() : this.add();
 	}
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
+
+	update() {
+		this.subscriptions.push(
+			this._serviceType.update(this.id.value, this.Form.value).subscribe({
+				next: (res) => {
+					this.isSubmitting = true;
+					this._serviceType.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
 	}
+
+	add() {
+		this.subscriptions.push(
+			this._serviceType.add(this.Form.value).subscribe({
+				next: (res) => {
+					this.isSubmitting = true;
+					this._serviceType.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
+	}
+
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

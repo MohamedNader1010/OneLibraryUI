@@ -1,25 +1,23 @@
 <div class="container">
-    <h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل نوع الخدمة</h2>
-<ng-template #update>
-	<h2 class="w-100 text-center mt-3">اضافة نوع خدمة جديد</h2>
-</ng-template>
-<mat-dialog-content>
-    <mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
-	<form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
-		<div class="row">
-			<div class="col">
-				<mat-form-field class="w-100">
-					<mat-label>الأسم</mat-label>
-					<input matInput formControlName="name" />
-					<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
-				</mat-form-field>
+	<h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل نوع الخدمة</h2>
+	<ng-template #update>
+		<h2 class="w-100 text-center mt-3">اضافة نوع خدمة جديد</h2>
+	</ng-template>
+	<mat-dialog-content>
+		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
+			<div class="row">
+				<div class="col">
+					<mat-form-field class="w-100">
+						<mat-label>الأسم</mat-label>
+						<input matInput formControlName="name" />
+						<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
+					</mat-form-field>
+				</div>
 			</div>
-		</div>
-		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
-			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
-		</div>
-	</form>
-</mat-dialog-content>
-
+			<div mat-dialog-actions>
+				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+			</div>
+		</form>
+	</mat-dialog-content>
 </div>
