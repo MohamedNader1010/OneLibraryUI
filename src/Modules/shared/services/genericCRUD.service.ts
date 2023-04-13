@@ -1,7 +1,27 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Response } from '../interfaces/Iresponse'
+import { BehaviorSubject } from 'rxjs';
 export abstract class GenericService<Tin> {
+
+	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+	get loading(): boolean {
+		return this.loadingData.value;
+	}
+
+	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
+	get data(): any[] {
+		return this.dataChange.value ?? [];
+	}
+
+	dialogData: any;
+
+	get DialogData() {
+		return this.dialogData;
+	}
+
 	constructor(public http: HttpClient, private controller: string) { }
 
 	uri: string = `${environment.apiUrl}${this.controller}`;

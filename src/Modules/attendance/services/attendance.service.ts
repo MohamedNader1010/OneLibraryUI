@@ -14,21 +14,7 @@ export class AttendanceService extends GenericService<Attendance> {
 		super(http, 'Attendance');
 	}
 
-	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
-	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
 	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	get loading(): boolean {
-		return this.loadingData.value;
-	}
-
-	get data(): any[] {
-		return this.dataChange.value ?? [];
-	}
-
-	dialogData: any;
 
 	getDialogData() {
 		return this.dialogData;

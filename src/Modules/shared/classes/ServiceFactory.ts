@@ -37,8 +37,8 @@ export class ServiceFactory {
         switch (componentName) {
             case ComponentsName.material:
                 return this.materialService;
-            // case ComponentsName.attendance:
-            //     return this.attendnaceService;
+            case ComponentsName.attendance:
+                return this.attendnaceService;
             // case ComponentsName.client:
             //     return this.clientService;
             // case ComponentsName.clientType:

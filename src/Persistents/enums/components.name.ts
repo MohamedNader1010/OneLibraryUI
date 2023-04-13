@@ -8,6 +8,6 @@ export enum ComponentsName {
     // clientType = 'clientType',
     // feedback = 'feedback',
     // incomeOutcome = 'incomeOutcome',
-    // attendance = 'attendance',
+    attendance = 'attendance',
     // serviceType = 'serviceType'
 }

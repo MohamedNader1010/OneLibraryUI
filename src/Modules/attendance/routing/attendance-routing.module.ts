@@ -1,8 +1,7 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
-import {AllComponent} from '../components/all/all.component';
-import {AttendanceComponent} from './../attendance.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginGuard } from 'src/Modules/authentication.Module/guards/login.guard';
+import { AttendanceComponent } from './../attendance.component';
 
 const routes: Routes = [
 	{
@@ -10,10 +9,6 @@ const routes: Routes = [
 		component: AttendanceComponent,
 		title: 'الحضور والانصراف',
 		canActivateChild: [LoginGuard],
-		children: [
-			{path: 'all', component: AllComponent, title: 'الحضور والانصراف'},
-			{path: '', redirectTo: 'all', pathMatch: 'full'},
-		],
 	},
 ];
 
@@ -21,4 +16,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class AttendanceRoutingModule {}
+export class AttendanceRoutingModule { }

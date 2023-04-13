@@ -13,25 +13,6 @@ export class IncomesOutcomesService extends GenericService<IncomesOutcomes> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'IncomeOutcome');
 	}
-
-	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-	get loading(): boolean {
-		return this.loadingData.value;
-	}
-
-	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
-	get data(): any[] {
-		return this.dataChange.value ?? [];
-	}
-
-	dialogData: any;
-
-	get DialogData() {
-		return this.dialogData;
-	}
-
 	getAllIncomesOutcomes() {
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {

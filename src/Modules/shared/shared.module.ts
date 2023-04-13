@@ -24,6 +24,7 @@ import { ServiceFactory } from './classes/ServiceFactory';
 import { GenericDeleteDialogComponent } from './components/generic-delete-dialog/generic-delete.dialog.component';
 import { GenericService } from './services/genericCRUD.service';
 import { MaterialService } from '../material/services/material.service';
+import { AttendanceService } from '../attendance/services/attendance.service';
 
 @NgModule({
 	declarations: [
