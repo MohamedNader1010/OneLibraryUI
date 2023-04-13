@@ -28,11 +28,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this.route.queryParams.subscribe((params) => {
 				this.id = params['id'];
-				if (this.id) this.getSingle(this.id);
+				// if (this.data) this.Form.patchValue(this.data)
 			})
 		);
 	}
-	getSingle = (id: number) => this.subscriptions.push(this._serviceType.getOne(id).subscribe((data: ServiceType[]) => this.Form.patchValue(data)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

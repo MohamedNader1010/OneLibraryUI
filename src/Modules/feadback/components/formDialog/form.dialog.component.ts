@@ -54,7 +54,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._client.getAll().subscribe({
 				next: (data) => {
-					this.ClientsDataSource = data;
+					this.ClientsDataSource = data.body;
 				},
 				error: (e) => {
 					let res: Response = e.error ?? e;

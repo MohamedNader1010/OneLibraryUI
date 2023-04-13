@@ -1,18 +1,32 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
 import {Client} from '../interFaces/Iclient';
+import {ToastrService} from 'ngx-toastr';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ClientService {
-	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}Client`;
-	getAll = () => this.http.get<Client[]>(`${this.uri}`);
+export class ClientService extends GenericService<Client> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'Client');
+	}
+
+	getAllServices() {
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+
 	getAllByType = (id: number) => this.http.get<Client[]>(`${this.uri}/getByClientTypeId?id=${id}`);
-	add = (client: Client) => this.http.post<Client>(`${this.uri}`, client);
-	getOne = (id: number) => this.http.get<Client>(`${this.uri}/GetById?Id=${id}`);
-	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}?Id=${id}`, {...Client, id});
-	delete = (id: number) => this.http.delete<Client>(`${this.uri}?Id=${id}`);
 }

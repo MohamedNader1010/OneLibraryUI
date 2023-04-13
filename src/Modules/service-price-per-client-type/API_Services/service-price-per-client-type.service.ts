@@ -1,19 +1,32 @@
-import {environment} from 'src/environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {ServicePricePerClientType} from '../Interfaces/ServicePricePerClientType';
+import {ToastrService} from 'ngx-toastr';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {Response} from 'src/Modules/shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ServicePricePerClientTypeService {
-	uri: string = `${environment.apiUrl}ServicePricePerClientType`;
+export class ServicePricePerClientTypeService extends GenericService<ServicePricePerClientType> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'ServicePricePerClientType');
+	}
 
-	constructor(private _http: HttpClient) {}
-	add = (model: ServicePricePerClientType) => this._http.post(`${this.uri}`, model);
-	getOne = (id: number) => this._http.get<ServicePricePerClientType>(`${this.uri}/GetById?id=${id}`);
-	getAll = () => this._http.get<ServicePricePerClientTypeService[]>(`${this.uri}`);
-	delete = (id: number) => this._http.delete<ServicePricePerClientTypeService>(`${this.uri}?Id=${id}`);
-	update = (id: number, order: ServicePricePerClientType) =>this._http.put<ServicePricePerClientType>(`${this.uri}?Id=${id}`, {...order,id});
-	getPrice = (clientTypeId: number, serviceId: number) => this._http.get<ServicePricePerClientType>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
+	getAllServicePrices() {
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+
+	getPrice = (clientTypeId: number, serviceId: number) => this.http.get<ServicePricePerClientType>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 }

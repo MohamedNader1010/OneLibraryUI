@@ -2,16 +2,30 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {environment} from 'src/environments/environment';
 import {ClientType} from '../interFaces/IclientType';
+import {ToastrService} from 'ngx-toastr';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ClientTypeService {
-	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}ClientType`;
-	getAll = () => this.http.get<ClientType[]>(`${this.uri}`);
-	getOne = (id: number) => this.http.get<ClientType>(`${this.uri}/GetById?id=${id}`);
-	add = (clientType: ClientType) => this.http.post<ClientType>(`${this.uri}`, clientType);
-	update = (id: number, clientType: ClientType) => this.http.put<ClientType>(`${this.uri}?id=${id}`, {...clientType, id});
-	delete = (id: number) => this.http.delete<ClientType>(`${this.uri}?id=${id}`);
+export class ClientTypeService extends GenericService<ClientType> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'ClientType');
+	}
+
+	getAllServices() {
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
 }

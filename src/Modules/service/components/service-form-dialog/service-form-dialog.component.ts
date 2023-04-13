@@ -126,7 +126,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		this.subscriptions.push(
 			this._type.getAll().subscribe({
 				next: (data) => {
-					this.ServiceTypeDataSource = data;
+					this.ServiceTypeDataSource = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');

@@ -1,5 +1,5 @@
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 export class FormHelpers {
 	public static async getAppropriateDialogComponent(formName: FormDialogNames) {
 		const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
@@ -32,11 +32,20 @@ export class FormHelpers {
 			case FormDialogNames.ServiceTypeFormDialogComponent:
 				module = await import('../../serviceType/components/service-type-form-dialog/service-type-form-dialog.component');
 				return module.ServiceTypeFormDialogComponent;
-			case FormDialogNames.ServiceTypPerClientFormDialogComponent:
+			case FormDialogNames.ServicePricePerClientFormDialogComponent:
 				module = await import('../../service-price-per-client-type/Components/service-type-per-client-form-dialog/service-type-per-client-form-dialog.component');
 				return module.ServiceTypePerClientFormDialogComponent;
 			case FormDialogNames.AttendanceFormDialogComponent:
 				module = await import('../../attendance/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.feedbackFormDialogComponent:
+				module = await import('../../feadback/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.incomeOutcomeFormDialogComponent:
+				module = await import('../../incomes-outcomes/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.materialTrackingFormDialogComponent:
+				module = await import('../../material-tracking/components/formDialog/form.dialog.component');
 				return module.FormDialogComponent;
 		}
 	}

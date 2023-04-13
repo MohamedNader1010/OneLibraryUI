@@ -1,13 +1,13 @@
+import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {DialogServiceService} from '../shared/services/dialog-service.service';
+import {TableDataSource} from '../shared/classes/tableDataSource';
 import {Service} from './interfaces/Iservice';
 import {ServicesService} from './services/services.service';
-import {TableDataSource} from '../shared/classes/tableDataSource';
-import {HttpClient} from '@angular/common/http';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {Response} from '../shared/interfaces/Iresponse';
 
 @Component({
@@ -21,20 +21,16 @@ export class ServiceComponent implements OnInit, OnDestroy {
 	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.ServiceFormDialogComponent;
+	componentName = ComponentsName.service;
 	database!: ServicesService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private dialogService: DialogServiceService, private _service: ServicesService, public dialog: MatDialog) {}
+	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _service: ServicesService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
-		// this.onDialogClosed();
 	}
-	// private onDialogClosed() {
-	// 	this.dialogService.onClose().subscribe((_) => {
-	// 		this.getAll();
-	// 	});
-	// }
+
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
@@ -65,6 +61,14 @@ export class ServiceComponent implements OnInit, OnDestroy {
 		this.database.getAllServices();
 	}
 
+	public handleDelete(data: Response) {
+		this.database.dataChange.value.splice(
+			this.database.dataChange.value.findIndex((x) => x.id === data),
+			1
+		);
+		this.toastr.success(data.message);
+	}
+
 	handleNewRow = (message: string) => {
 		console.log(this._service.dialogData);
 
@@ -75,24 +79,6 @@ export class ServiceComponent implements OnInit, OnDestroy {
 	handleEditRow = (data: Response) => {
 		this.database.dataChange.value[this.database.dataChange.value.findIndex((x) => x.id === data.body.id)] = this._service.dialogData;
 		this.toastr.success(data.message);
-	};
-
-	handleDelete = (data: any) => {
-		this._service.delete(data).subscribe({
-			next: (res) => {
-				this.toastr.success(res.message);
-			},
-			error: (e) => {
-				let res: Response = e.error ?? e;
-				this.toastr.error(res.message);
-			},
-			complete: () => {
-				this.database.dataChange.value.splice(
-					this.database.dataChange.value.findIndex((x) => x.id === data),
-					1
-				);
-			},
-		});
 	};
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

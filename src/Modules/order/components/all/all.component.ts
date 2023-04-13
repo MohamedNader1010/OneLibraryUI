@@ -7,8 +7,8 @@ import {Order} from '../../interfaces/Iorder';
 import {OrderService} from '../../services/orders.service';
 import {DetailsComponent} from '../details/details.component';
 import {TranslateService} from '@ngx-translate/core';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 
 @Component({
 	selector: 'app-all',
@@ -23,7 +23,7 @@ export class AllComponent implements OnInit, OnDestroy {
 	formName = FormDialogNames.OrderFormDialogComponent;
 	constructor(private translate: TranslateService, private _order: OrderService, public dialog: MatDialog, private alertService: AlertServiceService, private dialogService: DialogServiceService) {}
 	ngOnInit(): void {
-		this.initiateTableHeader()
+		this.initiateTableHeader();
 		this.onDialogClosed();
 		this.getAll();
 	}
@@ -67,16 +67,16 @@ export class AllComponent implements OnInit, OnDestroy {
 		];
 	}
 	private onDialogClosed() {
-		this.dialogService.onClose().subscribe(_ => {
-			this.getAll()
-		})
+		this.dialogService.onClose().subscribe((_) => {
+			this.getAll();
+		});
 	}
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
 			this._order.getAll().subscribe({
 				next: (data) => {
-					this.tableData = data;
+					this.tableData = data.body;
 				},
 				error: (e) => {
 					this.alertService.onError(e.message, '');

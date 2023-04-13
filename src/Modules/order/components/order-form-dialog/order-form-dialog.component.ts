@@ -1,30 +1,30 @@
-import { TranslateService } from '@ngx-translate/core';
-import { AlertServiceService } from './../../../shared/services/alert-service.service';
-import { ServicePricePerClientTypeService } from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { forkJoin, map, Subscription, catchError, of } from 'rxjs';
-import { NoteService } from 'src/Modules/note/services/note.service';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { OrderService } from '../../services/orders.service';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { Note } from 'src/Modules/note/interfaces/Inote';
-import { Client } from 'src/Modules/client/interFaces/Iclient';
-import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { ClientService } from 'src/Modules/client/services/client.service';
-import { Status } from '../../Enums/status';
-import { MatSelect } from '@angular/material/select';
-import { Order } from '../../interfaces/Iorder';
-import { Response } from './../../../shared/interfaces/Iresponse';
-import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import {TranslateService} from '@ngx-translate/core';
+import {AlertServiceService} from './../../../shared/services/alert-service.service';
+import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router, ActivatedRoute} from '@angular/router';
+import {forkJoin, map, Subscription, catchError, of} from 'rxjs';
+import {NoteService} from 'src/Modules/note/services/note.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {OrderService} from '../../services/orders.service';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {Note} from 'src/Modules/note/interfaces/Inote';
+import {Client} from 'src/Modules/client/interFaces/Iclient';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {ClientService} from 'src/Modules/client/services/client.service';
+import {Status} from '../../Enums/status';
+import {MatSelect} from '@angular/material/select';
+import {Order} from '../../interfaces/Iorder';
+import {Response} from './../../../shared/interfaces/Iresponse';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-order-form-dialog',
 	templateUrl: './order-form-dialog.component.html',
-	styleUrls: ['./order-form-dialog.component.css']
+	styleUrls: ['./order-form-dialog.component.css'],
 })
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy, AfterViewInit {
 	private _clientTypeId: number = -1;
@@ -43,7 +43,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	ClientTypesDataSource: ClientType[] = [];
 	disableMode: boolean = false;
 	key = 0;
-	prices: { key: number; value: number }[] = [];
+	prices: {key: number; value: number}[] = [];
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
@@ -64,11 +64,10 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		super(matDialogRef, dialogService, translate, matDialogg);
 		this.Form = this.createFormItem('init');
 	}
-	ngAfterViewInit(): void { }
+	ngAfterViewInit(): void {}
 	ngOnInit(): void {
 		this.forkJoins();
-		if (this.data)
-			this.getSingle(this.data.id);
+		if (this.data) this.getSingle(this.data.id);
 	}
 
 	private forkJoins() {
@@ -183,7 +182,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 					finalPrice: [null],
 					discount: [null],
 					discountPercent: [null],
-					rest: [{ value: null }, [Validators.required]],
+					rest: [{value: null}, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					orderDetails: this.fb.array([]),
@@ -260,22 +259,21 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		return this.Form.get('orderDetails') as FormArray;
 	}
 	getSingle = (id: number) => {
-		this.isLoading = true; 
+		this.isLoading = true;
 		this.subscriptions.push(
-			this._order.getOne(id).subscribe((data) => {
-				this.orderToBeUpdated = data;
-				this.fillFormWithData(data);
+			this._order.GetById(id).subscribe((data) => {
+				this.orderToBeUpdated = data.body;
+				this.fillFormWithData(data.body);
 				this.isLoading = false;
 			})
 		);
-	}
-
+	};
 
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
 		if (this.data) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({ key: this.key, value: -1 });
+		this.prices.push({key: this.key, value: -1});
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -350,7 +348,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
 			this.alertService.onError('discount amount not equals to discount percent', '');
-			this.Form.setErrors({ invalid: true });
+			this.Form.setErrors({invalid: true});
 		}
 	}
 	private setUpdatedOrder(): void {
@@ -360,7 +358,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 				if (orderDetail.id === id) orderDetail.orderStatus = control.get('orderStatus')?.value;
 			});
 		});
-		console.log(this.orderToBeUpdated)
+		console.log(this.orderToBeUpdated);
 	}
 	handleSubmit() {
 		if (this.Form.valid) {
@@ -378,7 +376,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 						},
 					})
 				);
-
 			} else {
 				this.validateDiscountAmountAndPercent();
 				this.subscriptions.push(
@@ -393,7 +390,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 						},
 					})
 				);
-
 			}
 		}
 	}

@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 
-import { Subscription } from 'rxjs';
-import { ServicePricePerClientTypeService } from '../../API_Services/service-price-per-client-type.service';
+import {Subscription} from 'rxjs';
+import {ServicePricePerClientTypeService} from '../../API_Services/service-price-per-client-type.service';
 
-import { ServicePricePerClientType } from './../../Interfaces/ServicePricePerClientType';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import {ServicePricePerClientType} from './../../Interfaces/ServicePricePerClientType';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 
 @Component({
 	selector: 'app-all',
@@ -15,7 +15,7 @@ import { DialogServiceService } from 'src/Modules/shared/services/dialog-service
 	styleUrls: ['./all.component.css'],
 })
 export class AllComponent implements OnInit {
-	constructor(private dialogService: DialogServiceService, private _sp: ServicePricePerClientTypeService, public dialog: MatDialog, private toastr: ToastrService) { }
+	constructor(private dialogService: DialogServiceService, private _sp: ServicePricePerClientTypeService, public dialog: MatDialog, private toastr: ToastrService) {}
 
 	ngOnInit(): void {
 		this.initiateTableHeader();
@@ -27,7 +27,7 @@ export class AllComponent implements OnInit {
 	tableColumns!: any[];
 	tableData!: any[];
 	loading!: boolean;
-	formName = FormDialogNames.ServiceTypPerClientFormDialogComponent
+	formName = FormDialogNames.ServicePricePerClientFormDialogComponent;
 
 	private initiateTableHeader() {
 		this.tableColumns = [
@@ -54,16 +54,16 @@ export class AllComponent implements OnInit {
 		];
 	}
 	private onDialogClosed() {
-		this.dialogService.onClose().subscribe(_ => {
-			this.getAll()
-		})
+		this.dialogService.onClose().subscribe((_) => {
+			this.getAll();
+		});
 	}
 	getAll() {
 		this.loading = true;
 		this.subscriptions.push(
 			this._sp.getAll().subscribe({
 				next: (data) => {
-					this.tableData = data;
+					this.tableData = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');

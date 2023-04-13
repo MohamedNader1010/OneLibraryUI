@@ -1,15 +1,15 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
-import { TableDataSource } from 'src/Modules/shared/classes/tableDataSource';
-import { Attendance } from './interfaces/attendance';
-import { AttendanceService } from './services/attendance.service';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { TranslateService } from '@ngx-translate/core';
-import { Response } from '../shared/interfaces/Iresponse';
+import {HttpClient} from '@angular/common/http';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
+import {Subscription} from 'rxjs';
+import {TableDataSource} from 'src/Modules/shared/classes/tableDataSource';
+import {Attendance} from './interfaces/attendance';
+import {AttendanceService} from './services/attendance.service';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {TranslateService} from '@ngx-translate/core';
+import {Response} from '../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'attendance',
@@ -17,7 +17,6 @@ import { Response } from '../shared/interfaces/Iresponse';
 	styleUrls: ['./attendance.component.css'],
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
-
 	subscriptions: Subscription[] = [];
 	tableColumns!: any[];
 	tableData!: Attendance[];
@@ -26,19 +25,11 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 	componentName = ComponentsName.attendance;
 	database!: AttendanceService;
 	dataSource!: TableDataSource;
-	displayedColumns!: string[];
 
-	constructor(
-		private tranlate: TranslateService,
-		private httpClient: HttpClient,
-		private dialog: MatDialog,
-		private _attendance: AttendanceService,
-		private toastr: ToastrService
-	) { }
+	constructor(private tranlate: TranslateService, private httpClient: HttpClient, private dialog: MatDialog, private _attendance: AttendanceService, private toastr: ToastrService) {}
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
-		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
 		this.loadData();
 	}
 	private initiateTableHeaders() {
@@ -74,7 +65,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 			this.database.dataChange.value.findIndex((x) => x.id === data),
 			1
 		);
-		this.toastr.success(data.message)
+		this.toastr.success(data.message);
 	}
 	public handleNewRow(message: string) {
 		this.database.dataChange.value.push(this._attendance.dialogData);

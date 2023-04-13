@@ -31,7 +31,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 	}
 	getSingle = (id: number) =>
 		this.subscriptions.push(
-			this._note.getOne(id).subscribe((data: any) => {
+			this._note.GetById(id).subscribe((data: any) => {
 				this.noteDetails = {
 					id: data.id,
 					name: data.name,

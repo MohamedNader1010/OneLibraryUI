@@ -56,17 +56,7 @@ export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFu
       })
     );
     if (this.data)
-      this.getSingle(this.data.id)
-  }
-
-  getSingle = (id: number) => {
-    this.isLoading = true;
-    this.subscriptions.push(
-      this.service.getOne(id).subscribe((data) => {
-        this.isLoading = false;
-        this.form.patchValue(data);
-      })
-    );
+    this.form.patchValue(this.data);
   }
 
 

@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
-import { Client } from '../../interFaces/Iclient';
-import { ClientService } from './../../services/client.service';
-import { ToastrService } from 'ngx-toastr';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Subscription} from 'rxjs';
+import {Client} from '../../interFaces/Iclient';
+import {ClientService} from './../../services/client.service';
+import {ToastrService} from 'ngx-toastr';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-all',
 	templateUrl: './all.component.html',
@@ -17,16 +17,16 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableData!: Client[];
 	loading!: boolean;
 	formName = FormDialogNames.ClientFormDialogComponent;
-	constructor(private dialogService: DialogServiceService, private _client: ClientService, public dialog: MatDialog, private toastr: ToastrService) { }
+	constructor(private dialogService: DialogServiceService, private _client: ClientService, public dialog: MatDialog, private toastr: ToastrService) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.getAll();
 		this.onDialogClosed();
 	}
 	private onDialogClosed() {
-		this.dialogService.onClose().subscribe(_ => {
-			this.getAll()
-		})
+		this.dialogService.onClose().subscribe((_) => {
+			this.getAll();
+		});
 	}
 	private initiateTableHeaders() {
 		this.tableColumns = [
@@ -72,7 +72,7 @@ export class AllComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._client.getAll().subscribe({
 				next: (data) => {
-					this.tableData = data;
+					this.tableData = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');

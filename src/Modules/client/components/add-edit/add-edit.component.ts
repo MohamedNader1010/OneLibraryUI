@@ -44,14 +44,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._clientType.getAll().subscribe({
 				next: (data) => {
-					this.ClientTypeDataSource = data;
+					this.ClientTypeDataSource = data.body;
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
 				},
 			})
 		);
-	getSingle = (id: number) => this.subscriptions.push(this._client.getOne(id).subscribe((data) => this.Form.patchValue(data)));
+	getSingle = (id: number) => this.subscriptions.push(this._client.GetById(id).subscribe((data) => this.Form.patchValue(data.body)));
 	back = () => this.router.navigate([this.controllerName]);
 	handleSubmit() {
 		if (this.Form.valid) {

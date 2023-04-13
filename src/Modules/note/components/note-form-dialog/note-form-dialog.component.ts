@@ -20,6 +20,7 @@ import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDi
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 import {TranslateService} from '@ngx-translate/core';
+import {ClientType} from './../../../clientType/interFaces/IclientType';
 @Component({
 	selector: 'app-note-form-dialog',
 	templateUrl: './note-form-dialog.component.html',
@@ -238,7 +239,8 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.subscriptions.push(
 			this._clientType.getAll().subscribe({
 				next: (data) => {
-					this.ClientTypesDataSource = data.map((t) => {
+					let arr: ClientType[] = data.body;
+					this.ClientTypesDataSource = arr.map((t) => {
 						return {clientTypeId: t.id, name: t.name};
 					});
 				},
@@ -281,7 +283,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	getSingle = (id: number) => {
 		this.isLoading = true;
 		this.subscriptions.push(
-			this._note.getOne(id).subscribe({
+			this._note.GetById(id).subscribe({
 				next: (res) => {
 					let data: Note = res.body;
 					data.noteComponents.forEach((c: NoteComponent) => {

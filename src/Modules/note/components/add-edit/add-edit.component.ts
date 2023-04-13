@@ -16,6 +16,7 @@ import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-cl
 import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
+import {ClientType} from './../../../clientType/interFaces/IclientType';
 @Component({
 	selector: 'app-add-edit',
 	templateUrl: './add-edit.component.html',
@@ -233,7 +234,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._clientType.getAll().subscribe({
 				next: (data) => {
-					this.ClientTypesDataSource = data.map((t) => {
+					let arr: ClientType[] = data.body;
+					this.ClientTypesDataSource = arr.map((t) => {
 						return {clientTypeId: t.id, name: t.name};
 					});
 				},
@@ -275,7 +277,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 	}
 	getSingle = (id: number) => {
 		this.subscriptions.push(
-			this._note.getOne(id).subscribe({
+			this._note.GetById(id).subscribe({
 				next: (res) => {
 					let data: Note = res.body;
 					data.noteComponents.forEach((c: NoteComponent) => {

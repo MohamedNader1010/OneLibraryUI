@@ -51,9 +51,16 @@
 	"keys.material.name": "إسم الخامه",
 	"keys.material.price": "السعر",
 	"keys.material.quantity": "الكميه الحاليه",
-	"keys.attendance.checkIn":"الحضور",
-	"keys.attendance.checkOut":"الانصراف", 
-	"keys.attendance.employee":"اسم الموظف",
-	"keys.attendance.employeeId":"بيان الموظف",
-	"keys.attendance.id":"البيان"
+	"keys.attendance.checkIn": "الحضور",
+	"keys.attendance.checkOut": "الانصراف",
+	"keys.attendance.employee": "اسم الموظف",
+	"keys.attendance.employeeId": "بيان الموظف",
+	"keys.attendance.id": "البيان",
+
+	"keys.service.id": "#",
+	"keys.service.name": "أسم الخدمة",
+	"keys.service.serviceType": "نوع الخدمة",
+	"keys.service.serviceMaterial.id": "#",
+	"keys.service.serviceMaterial.material": "أسم الخامة",
+	"keys.service.serviceMaterial.service": "أسم الخدمة"
 }
