@@ -1,6 +1,6 @@
 import {TranslateService} from '@ngx-translate/core';
 import {AlertServiceService} from './../../../shared/services/alert-service.service';
-import {ServicePricePerClientTypeService} from './../../../service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router, ActivatedRoute} from '@angular/router';

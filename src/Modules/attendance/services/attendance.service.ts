@@ -16,10 +16,6 @@ export class AttendanceService extends GenericService<Attendance> {
 
 	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	getDialogData() {
-		return this.dialogData;
-	}
-
 	getAllAttendance() {
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {

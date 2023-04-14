@@ -11,7 +11,7 @@ import {NoteService} from 'src/Modules/note/services/note.service';
 import {OrderService} from 'src/Modules/order/services/orders.service';
 import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.service';
-import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
 
 @Injectable({
 	providedIn: 'root',

@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<app-table
+	[loading]="loading"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	[componentName]="componentName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"></app-table>

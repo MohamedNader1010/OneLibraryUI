@@ -29,4 +29,6 @@ export class ServicePricePerClientTypeService extends GenericService<ServicePric
 	}
 
 	getPrice = (clientTypeId: number, serviceId: number) => this.http.get<ServicePricePerClientType>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
+
+	deleteServicePrices = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServicePrices`, {body: ids});
 }

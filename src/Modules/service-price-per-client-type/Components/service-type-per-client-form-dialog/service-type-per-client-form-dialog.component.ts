@@ -1,92 +1,141 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { ServicePricePerClientTypeService } from '../../API_Services/service-price-per-client-type.service';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { KeyValuePairs } from 'src/Persistents/KeyValuePairs';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { Subscription } from 'rxjs';
-import { ServicePricePerClientType } from '../../Interfaces/ServicePricePerClientType';
-import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {ServicePricePerClientTypeService} from '../../services/service-price-per-client-type.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {Subscription} from 'rxjs';
+import {ServicePricePerClientType} from '../../Interfaces/ServicePricePerClientType';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {ToastrService} from 'ngx-toastr';
+import {Response} from 'src/Modules/shared/interfaces/Iresponse';
 
 @Component({
-  selector: 'app-service-type-per-client-form-dialog',
-  templateUrl: './service-type-per-client-form-dialog.component.html',
-  styleUrls: ['./service-type-per-client-form-dialog.component.css']
+	selector: 'app-service-type-per-client-form-dialog',
+	templateUrl: './service-type-per-client-form-dialog.component.html',
+	styleUrls: ['./service-type-per-client-form-dialog.component.css'],
 })
-export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
-  public form: FormGroup;
-  public servicesNames: KeyValuePairs[] = [];
-  public clientsType: KeyValuePairs[] = [];
-  isLoading = false;
-  isSubmitted: boolean = false;
-  constructor(
-    private service: ServicePricePerClientTypeService,
-    private fb: FormBuilder,
-    private services: ServicesService,
-    private clientTypeService: ClientTypeService,
-    private translate: TranslateService,
-    @Inject(MAT_DIALOG_DATA) public data: ServicePricePerClientType,
-    private matDialogRef: MatDialogRef<ServiceTypePerClientFormDialogComponent>,
-    private dialogService: DialogServiceService,
-    private matDialogg: MatDialog
-  ) {
-    super(matDialogRef, dialogService, translate, matDialogg);
-    this.form = fb.group({
-      price: ['', [Validators.required]],
-      serviceId: ['', [Validators.required]],
-      clientTypeId: ['', [Validators.required]],
-    });
-  }
+export class ServiceTypePerClientFormDialogComponent implements OnInit, OnDestroy {
+	subscriptions: Subscription[] = [];
+	public form: FormGroup;
+	isSubmitting: boolean = false;
+	public servicesDataSource: Service[] = [];
+	public clientsTypeDataSource: ClientType[] = [];
+	constructor(
+		private matDialogRef: MatDialogRef<ServiceTypePerClientFormDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: ServicePricePerClientType,
+		private _servicePricePerClientType: ServicePricePerClientTypeService,
+		private _service: ServicesService,
+		private fb: FormBuilder,
+		private _clientType: ClientTypeService,
+		private toastr: ToastrService
+	) {
+		this.form = fb.group({
+			id: [null],
+			price: [0, [Validators.required]],
+			serviceId: [null, [Validators.required]],
+			clientTypeId: [null, [Validators.required]],
+		});
+	}
 
-  ngOnInit(): void {
-    this.subscriptions.push(
-      this.services.getAll().subscribe((data) => {
-        this.mappingData(data, this.servicesNames);
-      })
-    );
-    this.subscriptions.push(
-      this.clientTypeService.getAll().subscribe((data) => {
-        this.mappingData(data, this.clientsType);
-      })
-    );
-    if (this.data)
-    this.form.patchValue(this.data);
-  }
+	ngOnInit(): void {
+		this.getAllClientTypes();
+	}
+	get id(): FormControl {
+		return this.form.get('id') as FormControl;
+	}
+	get price(): FormControl {
+		return this.form.get('price') as FormControl;
+	}
+	get serviceId(): FormControl {
+		return this.form.get('serviceId') as FormControl;
+	}
+	get clientTypeId(): FormControl {
+		return this.form.get('clientTypeId') as FormControl;
+	}
 
+	getAllClientTypes() {
+		this.subscriptions.push(
+			this._clientType.getAll().subscribe({
+				next: (data) => {
+					this.clientsTypeDataSource = data.body;
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.getAllServices();
+				},
+			})
+		);
+	}
 
-  get f() {
-    return this.form.controls;
-  }
-  mappingData(data: any, mappedObject: any) {
-    data.forEach((obj: any) => {
-      mappedObject.push({ id: obj.id, name: obj.name });
-    });
-  }
-  submit() {
-    if (this.form.valid) {
-      if (this.data)
-        this.subscriptions.push(
-          this.service.update(this.data.id, this.form.value).subscribe(() => {
-            this.isSubmitted = true;
-            this.back();
-          })
-        );
-      else
-        this.subscriptions.push(
-          this.service.add(this.form.value).subscribe(() => {
-            this.isSubmitted = true;
-            this.back();
-          })
-        );
-    }
-  }
-  ngOnDestroy(): void {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
+	getAllServices() {
+		this.subscriptions.push(
+			this._service.getAll().subscribe({
+				next: (data) => {
+					this.servicesDataSource = data.body;
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					if (this.data) this.form.patchValue(this.data);
+				},
+			})
+		);
+	}
+
+	onNoClick = () => this.matDialogRef.close();
+
+	handleSubmit() {
+		if (this.form.valid) this.id.value ? this.update() : this.add();
+	}
+
+	update() {
+		this.subscriptions.push(
+			this._servicePricePerClientType.update(this.id.value, this.form.value).subscribe({
+				next: (res) => {
+					this.isSubmitting = true;
+					this._servicePricePerClientType.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
+	}
+
+	add() {
+		this.subscriptions.push(
+			this._servicePricePerClientType.add(this.form.value).subscribe({
+				next: (res) => {
+					this.isSubmitting = true;
+					this._servicePricePerClientType.dialogData = res.body;
+					this.matDialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
+	}
+
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

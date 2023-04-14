@@ -13,6 +13,9 @@ import {Response} from './../../../shared/interfaces/Iresponse';
 import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 import {TranslateService} from '@ngx-translate/core';
 import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from './../../../clientType/services/clientType.service';
+import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 @Component({
 	selector: 'app-service-form-dialog',
 	templateUrl: './service-form-dialog.component.html',
@@ -22,11 +25,11 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	subscriptions: Subscription[] = [];
 	Form!: FormGroup;
 	isSubmitting: boolean = false;
-
 	MaterialDataSource: Material[] = [];
 	ServiceTypeDataSource: ServiceType[] = [];
-
-	deletedMaterials: number[] = [];
+	clientsTypesDataSource: ClientType[] = [];
+	deletedServiceMaterials: number[] = [];
+	deletedServicePrices: number[] = [];
 
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: Service,
@@ -34,7 +37,9 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		dialogService: DialogServiceService,
 		matDialogg: MatDialog,
 		private _service: ServicesService,
+		private _clientType: ClientTypeService,
 		private _material: MaterialService,
+		private _servicePrice: ServicePricePerClientTypeService,
 		private fb: FormBuilder,
 		private _type: ServicesTypeService,
 		private toastr: ToastrService,
@@ -52,18 +57,28 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		return this.Form.get('name') as FormControl;
 	}
 
-	get materialId(): FormControl {
-		return this.Form.get('materialId') as FormControl;
-	}
-
 	get serviceTypeId(): FormControl {
 		return this.Form.get('serviceTypeId') as FormControl;
 	}
-	get serviceMaterial(): FormArray {
-		return this.Form.get('serviceMaterial') as FormArray;
+
+	get serviceMaterials(): FormArray {
+		return this.Form.get('serviceMaterials') as FormArray;
 	}
 
-	getServiceMaterialId = (index: number): FormControl => this.serviceMaterial.at(index).get('id') as FormControl;
+	get servicePricePerClientTypes(): FormArray {
+		return this.Form.get('servicePricePerClientTypes') as FormArray;
+	}
+
+	ngOnInit(): void {
+		this.loadData();
+	}
+
+	getServiceMaterialId = (index: number): FormControl => this.serviceMaterials.at(index).get('id') as FormControl;
+	getServiceMaterial = (index: number): FormControl => this.serviceMaterials.at(index).get('materialId') as FormControl;
+
+	getServicePriceId = (index: number): FormControl => this.servicePricePerClientTypes.at(index).get('id') as FormControl;
+	getServicePrice = (index: number): FormControl => this.servicePricePerClientTypes.at(index).get('price') as FormControl;
+	getServicePriceClientTypeId = (index: number): FormControl => this.servicePricePerClientTypes.at(index).get('clientTypeId') as FormControl;
 
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
@@ -72,38 +87,41 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 				formItem = this.fb.group({
 					id: [null],
 					name: ['', [Validators.required, Validators.maxLength(100)]],
-					materialId: ['', [Validators.required]],
 					serviceTypeId: ['', [Validators.required]],
-					serviceMaterial: this.fb.array([]),
+					serviceMaterials: this.fb.array([]),
+					servicePricePerClientTypes: this.fb.array([]),
 				});
 				break;
-			case 'servicePrice':
-				break;
-			case 'serviceMaterial':
+			case 'servicePricePerClientTypes':
 				formItem = this.fb.group({
 					id: [null],
-					materialId: [''],
-					material: ['', [Validators.required]],
-					serviceId: [''],
-					service: ['', [Validators.required]],
+					price: ['', [Validators.required]],
+					clientTypeId: ['', [Validators.required]],
+				});
+				break;
+			case 'serviceMaterials':
+				formItem = this.fb.group({
+					id: [null],
+					materialId: ['', [Validators.required]],
 				});
 				break;
 		}
 		return formItem;
 	}
-	handleNewServicePrice = () => {};
-	handleDeleteServicePrice = (index: number) => {};
-	handleNewServiceMaterial = () => {
-		this.serviceMaterial.push(this.createFormItem('serviceMaterial'));
-	};
-	handleDeleteServiceMaterial = (index: number) => {
-		if (this.id) this.deletedMaterials.push(this.getServiceMaterialId(index).value);
-		this.serviceMaterial.removeAt(index);
+
+	handleNewServicePrice = () => this.servicePricePerClientTypes.push(this.createFormItem('servicePricePerClientTypes'));
+
+	handleDeleteServicePrice = (index: number) => {
+		if (this.id) this.deletedServicePrices.push(this.getServicePriceId(index).value);
+		this.servicePricePerClientTypes.removeAt(index);
 	};
 
-	ngOnInit(): void {
-		this.loadData();
-	}
+	handleNewServiceMaterial = () => this.serviceMaterials.push(this.createFormItem('serviceMaterials'));
+
+	handleDeleteServiceMaterial = (index: number) => {
+		if (this.id) this.deletedServiceMaterials.push(this.getServiceMaterialId(index).value);
+		this.serviceMaterials.removeAt(index);
+	};
 
 	loadData() {
 		this.getAllMaterials();
@@ -132,7 +150,24 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
 				},
 				complete: () => {
+					this.getAllClientTypes();
+				},
+			})
+		);
+
+	getAllClientTypes = () =>
+		this.subscriptions.push(
+			this._clientType.getAll().subscribe({
+				next: (data) => {
+					this.clientsTypesDataSource = data.body;
+					console.log(data);
+				},
+				error: (e) => {
+					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+				},
+				complete: () => {
 					if (this.data) this.Form.patchValue(this.data);
+					console.log(this.clientsTypesDataSource);
 				},
 			})
 		);
@@ -146,6 +181,26 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	}
 
 	update() {
+		if (this.deletedServiceMaterials.length)
+			this.subscriptions.push(
+				this._service.deleteServiceMaterials(this.deletedServiceMaterials).subscribe({
+					error: (e) => {
+						this.isSubmitting = false;
+						let res: Response = e.error ?? e;
+						this.toastr.error(res.message);
+					},
+				})
+			);
+		if (this.deletedServicePrices.length)
+			this.subscriptions.push(
+				this._servicePrice.deleteServicePrices(this.deletedServicePrices).subscribe({
+					error: (e) => {
+						this.isSubmitting = false;
+						let res: Response = e.error ?? e;
+						this.toastr.error(res.message);
+					},
+				})
+			);
 		this.subscriptions.push(
 			this._service.update(this.id.value, this.Form.value).subscribe({
 				next: (res) => {

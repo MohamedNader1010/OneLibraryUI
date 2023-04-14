@@ -12,7 +12,7 @@ import {Term} from '../../interfaces/ITerm';
 import {NoteComponent} from '../../interfaces/noteComponent';
 import {Service} from 'src/Modules/service/interfaces/Iservice';
 import {ServicesService} from 'src/Modules/service/services/services.service';
-import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/API_Services/service-price-per-client-type.service';
+import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
 import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
