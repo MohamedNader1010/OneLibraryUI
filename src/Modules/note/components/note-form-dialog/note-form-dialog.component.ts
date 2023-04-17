@@ -56,9 +56,8 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		private matDialogRef: MatDialogRef<NoteFormDialogComponent>,
 		private dialogService: DialogServiceService,
 		private translate: TranslateService,
-		private matDialogg: MatDialog
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, dialogService, translate);
 		this.Form = this.createFormItem('init');
 	}
 	get noteId(): FormControl {

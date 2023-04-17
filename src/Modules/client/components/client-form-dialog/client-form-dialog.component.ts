@@ -33,9 +33,8 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
 		@Inject(MAT_DIALOG_DATA) public data: Client,
 		private matDialogRef: MatDialogRef<ClientFormDialogComponent>,
 		private dialogService: DialogServiceService,
-		private matDialogg: MatDialog
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, dialogService, translate);
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],

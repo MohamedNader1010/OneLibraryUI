@@ -1,21 +1,14 @@
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {AddEditComponent} from '../components/add-edit/add-edit.component';
-import {AllComponent} from '../components/all/all.component';
-import {EmployeeComponent} from '../employee.component';
-import {CanDeactivateGuard} from '../guards/canDeactivateForm.guard';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { EmployeeComponent } from '../employee.component';
+import { LoginGuard } from 'src/Modules/authentication.Module/guards/login.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		component: EmployeeComponent,
-		title: 'الموظفون',
-		children: [
-			{path: 'all', component: AllComponent, title: 'جميع الموظفون'},
-			{path: 'new', component: AddEditComponent, title: 'اضافة موظف جديد', canDeactivate: [CanDeactivateGuard]},
-			{path: 'edit', component: AddEditComponent, title: 'تعديل الموظف', canDeactivate: [CanDeactivateGuard]},
-			{path: '', redirectTo: 'all', pathMatch: 'full'},
-		],
+		title: 'الموظفون',	
+		canActivate: [LoginGuard]
 	},
 ];
 
@@ -23,4 +16,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class EmployeeRoutingModule {}
+export class EmployeeRoutingModule { }

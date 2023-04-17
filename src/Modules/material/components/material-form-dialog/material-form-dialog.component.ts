@@ -23,13 +23,12 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
 		@Inject(MAT_DIALOG_DATA) private data: Material,
 		translate: TranslateService,
 		dialogService: DialogServiceService,
-		matDialogg: MatDialog,
 		private _material: MaterialService,
 		private fb: FormBuilder,
 		private matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
 		private toastr: ToastrService
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, dialogService, translate);
 		this.initiateFormControls();
 	}
 

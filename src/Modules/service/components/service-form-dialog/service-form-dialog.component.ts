@@ -35,7 +35,6 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		@Inject(MAT_DIALOG_DATA) public data: Service,
 		translate: TranslateService,
 		dialogService: DialogServiceService,
-		matDialogg: MatDialog,
 		private _service: ServicesService,
 		private _clientType: ClientTypeService,
 		private _material: MaterialService,
@@ -45,7 +44,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 		private toastr: ToastrService,
 		private matDialogRef: MatDialogRef<ServiceFormDialogComponent>
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, dialogService, translate);
 		this.Form = this.createFormItem('init');
 	}
 

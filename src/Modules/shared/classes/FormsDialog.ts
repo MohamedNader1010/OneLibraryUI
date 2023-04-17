@@ -1,9 +1,7 @@
 import { EventEmitter, HostListener, Injectable, Output } from "@angular/core";
-import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import {  MatDialogRef } from "@angular/material/dialog";
 import { DialogServiceService } from "../services/dialog-service.service";
 import { TranslateService } from "@ngx-translate/core";
-import { DialogComponent } from "../components/dialog/dialog.component";
-
 @Injectable()
 export class FormsDialogCommonFunctionality {
 
@@ -16,7 +14,6 @@ export class FormsDialogCommonFunctionality {
         public dRef: MatDialogRef<any>,
         public dService: DialogServiceService,
         public tranlsate: TranslateService,
-        private matDialog?: MatDialog
     ) {
 
     }

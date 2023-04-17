@@ -45,8 +45,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	key = 0;
 	prices: {key: number; value: number}[] = [];
 	constructor(
-		private router: Router,
-		private route: ActivatedRoute,
 		private _service: ServicesService,
 		private _note: NoteService,
 		private _order: OrderService,
@@ -59,9 +57,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		@Inject(MAT_DIALOG_DATA) public data: Order,
 		private matDialogRef: MatDialogRef<OrderFormDialogComponent>,
 		private dialogService: DialogServiceService,
-		private matDialogg: MatDialog
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, dialogService, translate);
 		this.Form = this.createFormItem('init');
 	}
 	ngAfterViewInit(): void {}
