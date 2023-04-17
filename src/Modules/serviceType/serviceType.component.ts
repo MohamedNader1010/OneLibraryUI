@@ -22,7 +22,7 @@ export class ServiceTypeComponent implements OnInit, OnDestroy {
 	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.ServiceTypeFormDialogComponent;
-	componentName = ComponentsName.service;
+	componentName = ComponentsName.serviceType;
 	database!: ServicesTypeService;
 	dataSource!: TableDataSource;
 
