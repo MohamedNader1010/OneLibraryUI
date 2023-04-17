@@ -95,6 +95,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 			case 'servicePricePerClientTypes':
 				formItem = this.fb.group({
 					id: [null],
+					// serviceId: [this.id.value],
 					price: ['', [Validators.required]],
 					clientTypeId: ['', [Validators.required]],
 				});
@@ -102,6 +103,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 			case 'serviceMaterials':
 				formItem = this.fb.group({
 					id: [null],
+					// serviceId: [this.id.value],
 					materialId: ['', [Validators.required]],
 				});
 				break;
@@ -160,14 +162,16 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 			this._clientType.getAll().subscribe({
 				next: (data) => {
 					this.clientsTypesDataSource = data.body;
-					console.log(data);
 				},
 				error: (e) => {
 					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
 				},
 				complete: () => {
-					if (this.data) this.Form.patchValue(this.data);
-					console.log(this.clientsTypesDataSource);
+					if (this.data) {
+						this.data.serviceMaterials.forEach(() => this.serviceMaterials.push(this.createFormItem('serviceMaterials')));
+						this.data.servicePricePerClientTypes.forEach(() => this.servicePricePerClientTypes.push(this.createFormItem('servicePricePerClientTypes')));
+						this.Form.patchValue(this.data);
+					}
 				},
 			})
 		);
@@ -181,26 +185,26 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	}
 
 	update() {
-		if (this.deletedServiceMaterials.length)
-			this.subscriptions.push(
-				this._service.deleteServiceMaterials(this.deletedServiceMaterials).subscribe({
-					error: (e) => {
-						this.isSubmitting = false;
-						let res: Response = e.error ?? e;
-						this.toastr.error(res.message);
-					},
-				})
-			);
-		if (this.deletedServicePrices.length)
-			this.subscriptions.push(
-				this._servicePrice.deleteServicePrices(this.deletedServicePrices).subscribe({
-					error: (e) => {
-						this.isSubmitting = false;
-						let res: Response = e.error ?? e;
-						this.toastr.error(res.message);
-					},
-				})
-			);
+		// if (this.deletedServiceMaterials.length)
+		// 	this.subscriptions.push(
+		// 		this._service.deleteServiceMaterials(this.deletedServiceMaterials).subscribe({
+		// 			error: (e) => {
+		// 				this.isSubmitting = false;
+		// 				let res: Response = e.error ?? e;
+		// 				this.toastr.error(res.message);
+		// 			},
+		// 		})
+		// 	);
+		// if (this.deletedServicePrices.length)
+		// 	this.subscriptions.push(
+		// 		this._servicePrice.deleteServicePrices(this.deletedServicePrices).subscribe({
+		// 			error: (e) => {
+		// 				this.isSubmitting = false;
+		// 				let res: Response = e.error ?? e;
+		// 				this.toastr.error(res.message);
+		// 			},
+		// 		})
+		// 	);
 		this.subscriptions.push(
 			this._service.update(this.id.value, this.Form.value).subscribe({
 				next: (res) => {
