@@ -18,13 +18,11 @@ import { Response } from 'src/Modules/shared/interfaces/Iresponse';
 	styleUrls: ['./client-form-dialog.component.css'],
 })
 export class ClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
 	Form: FormGroup;
-	isSubmitted: boolean = false;
 	ClientTypeDataSource: ClientType[] = [];
 	isLoading = false;
 	constructor(
-		private toastr: ToastrService,
+		public override toastr: ToastrService,
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private fb: FormBuilder,
@@ -33,7 +31,7 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
 		private matDialogRef: MatDialogRef<ClientFormDialogComponent>,
 		private dialogService: DialogServiceService,
 	) {
-		super(matDialogRef, dialogService, translate);
+		super(matDialogRef, dialogService, translate, _client, toastr);
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
@@ -60,58 +58,18 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
 					this.ClientTypeDataSource = data.body;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.toastr.error(e.message,this.tranlsate.instant('error.cantLoadData'));
 				},
 			})
 		);
 	handleSubmit() {
 		if (this.Form.valid) {
 			if (this.data)
-				this.update()
+				this.update(this.data.id, this.Form.value)
 			else
-				this.add()
+				this.add(this.Form.value)
 		}
 	}
 
-	add() {
-		this.subscriptions.push(
-			this._client.add(this.Form.value).subscribe({
-				next: (res) => {
-					this._client.dialogData = res.body;
-					this.matDialogRef.close({ data: res });
-				},
-				error: (e) => {
-					this.isSubmitted = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitted = false
-				}
-			})
-		);
-	}
-	update() {
-		this.subscriptions.push(
-			this._client.update(this.data.id, this.Form.value).subscribe({
-				next: (res) => {
-					this.isSubmitted = true;
-					this._client.dialogData = res.body;
-					this.matDialogRef.close({ data: res });
-
-				},
-				error: (e) => {
-					this.isSubmitted = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitted = false;
-				},
-			})
-		);
-	}
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+	
 }

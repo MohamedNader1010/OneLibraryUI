@@ -17,11 +17,10 @@ import { Response } from 'src/Modules/shared/interfaces/Iresponse';
   styleUrls: ['./client-type-form-dialog.component.css']
 })
 export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
+
   Form: FormGroup;
   id!: number;
   controllerName: string = 'clientTypes';
-  isSubmitted: boolean = false;
 
   constructor(
     private _clientType: ClientTypeService,
@@ -30,9 +29,9 @@ export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionalit
     @Inject(MAT_DIALOG_DATA) public data: ClientType,
     private matDialogRef: MatDialogRef<ClientTypeFormDialogComponent>,
     private dialogService: DialogServiceService,
-    private toastr: ToastrService
+    public override toastr: ToastrService
   ) {
-    super(matDialogRef, dialogService, translate);
+    super(matDialogRef, dialogService, translate, _clientType, toastr);
     this.Form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
     });
@@ -47,51 +46,12 @@ export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionalit
   handleSubmit() {
     if (this.Form.valid) {
       if (this.data)
-        this.update()
+        this.update(this.data.id, this.Form.value)
       else
-        this.add()
+        this.add(this.Form.value)
     }
   }
 
-  private add() {
-    this.subscriptions.push(
-      this._clientType.add(this.Form.value).subscribe({
-        next: (res) => {
-          this._clientType.dialogData = res.body;
-          this.matDialogRef.close({ data: res });
-        },
-        error: (e) => {
-          this.isSubmitted = false;
-          let res: Response = e.error ?? e;
-          this.toastr.error(res.message);
-        },
-        complete: () => {
-          this.isSubmitted = false
-        }
-      })
-    );
-  }
-  private update() {
-    this.subscriptions.push(
-      this._clientType.update(this.data.id, this.Form.value).subscribe({
-        next: (res) => {
-          this.isSubmitted = true;
-          this._clientType.dialogData = res.body;
-          this.matDialogRef.close({ data: res });
 
-        },
-        error: (e) => {
-          this.isSubmitted = false;
-          let res: Response = e.error ?? e;
-          this.toastr.error(res.message);
-        },
-        complete: () => {
-          this.isSubmitted = false;
-        },
-      })
-    );
-  }
-  ngOnDestroy() {
-    this.subscriptions.forEach((s) => s.unsubscribe());
-  }
+
 }
