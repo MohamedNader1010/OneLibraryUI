@@ -8,20 +8,16 @@ import {ServiceType} from 'src/Modules/serviceType/interFaces/IserviceType';
 import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.service';
 import {Service} from '../../interfaces/Iservice';
 import {ServicesService} from '../../services/services.service';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
-import {TranslateService} from '@ngx-translate/core';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
 import {ClientTypeService} from './../../../clientType/services/clientType.service';
-import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 @Component({
 	selector: 'app-service-form-dialog',
 	templateUrl: './service-form-dialog.component.html',
 	styleUrls: ['./service-form-dialog.component.css'],
 })
-export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 	Form!: FormGroup;
 	isSubmitting: boolean = false;
@@ -31,18 +27,14 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public data: Service,
-		translate: TranslateService,
-		dialogService: DialogServiceService,
 		private _service: ServicesService,
 		private _clientType: ClientTypeService,
 		private _material: MaterialService,
-		private _servicePrice: ServicePricePerClientTypeService,
 		private fb: FormBuilder,
 		private _type: ServicesTypeService,
 		private toastr: ToastrService,
 		private matDialogRef: MatDialogRef<ServiceFormDialogComponent>
 	) {
-		super(matDialogRef, dialogService, translate);
 		this.Form = this.createFormItem('init');
 	}
 
@@ -170,6 +162,8 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
 	setServiceTypeId = (data: any) => this.serviceTypeId.setValue(data);
 	setServiceMaterialId = (index: number, data: any) => this.getServiceMaterial(index).setValue(data);
 	setServicePriceClientTypeId = (index: number, data: any) => this.getServicePriceClientTypeId(index).setValue(data);
+
+	onNoClick = () => this.matDialogRef.close();
 
 	handleSubmit() {
 		if (this.Form.valid) {

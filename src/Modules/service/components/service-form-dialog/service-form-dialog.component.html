@@ -82,10 +82,8 @@
 			</div>
 			<!-- end service prices -->
 			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
-					{{ (isSubmitting ? 'button.wait' : 'button.save') | translate }}
-				</button>
-				<button type="button" mat-stroked-button color="warn" (click)="back()" tabindex="-1">{{ 'button.back' | translate }}</button>
+				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>
 	</mat-dialog-content>
