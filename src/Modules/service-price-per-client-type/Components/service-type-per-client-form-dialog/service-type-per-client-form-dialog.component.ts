@@ -93,6 +93,9 @@ export class ServiceTypePerClientFormDialogComponent implements OnInit, OnDestro
 
 	onNoClick = () => this.matDialogRef.close();
 
+	setServiceId = (data: any) => this.serviceId.setValue(data);
+	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
+
 	handleSubmit() {
 		if (this.form.valid) this.id.value ? this.update() : this.add();
 	}

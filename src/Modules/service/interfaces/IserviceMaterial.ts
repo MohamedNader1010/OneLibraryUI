@@ -4,4 +4,5 @@ export interface ServiceMaterial {
 	material: string;
 	serviceId: number;
 	service: string;
+	quantity: number;
 }

@@ -7,26 +7,10 @@
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
 			<!-- SERVICES LIST -->
 			<div class="row">
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="col-12">
-						<mat-label>الخدمات</mat-label>
-						<mat-select formControlName="serviceId">
-							<mat-option *ngFor="let serviceName of servicesDataSource" [value]="serviceName.id">{{ serviceName.name }}</mat-option>
-						</mat-select>
-						<mat-error *ngIf="serviceId.hasError('required') && (serviceId.touched || serviceId.dirty)"> يجب اختيار الخدمة </mat-error>
-					</mat-form-field>
-				</div>
+				<autocomplete class="col-6" label="الخدمات" [dataSource]="servicesDataSource" (selectedId)="setServiceId($event)" [selectedValue]="serviceId.value"></autocomplete>
 				<!-- END OF SERVICES LISTS -->
 				<!-- CLIENT TYPE LIST -->
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="col-12">
-						<mat-label>نوع العميل</mat-label>
-						<mat-select formControlName="clientTypeId">
-							<mat-option *ngFor="let clientType of clientsTypeDataSource" [value]="clientType.id">{{ clientType.name }}</mat-option>
-						</mat-select>
-						<mat-error *ngIf="clientTypeId.hasError('required') && (clientTypeId.touched || clientTypeId.dirty)"> يجب اختيار نوع العميل </mat-error>
-					</mat-form-field>
-				</div>
+				<autocomplete class="col-6" label="نوع العميل" [dataSource]="clientsTypeDataSource" (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value"></autocomplete>
 			</div>
 			<!-- END OF CLIENT TYPE LIST -->
 			<!-- PRICE TEXT FIELD -->

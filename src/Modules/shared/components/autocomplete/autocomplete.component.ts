@@ -26,12 +26,18 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 		this.filteredData$ = this.nameControl.valueChanges.pipe(
 			startWith(this.nameControl.value),
 			map((value) => {
-				let filtered = this._filter(value);
-				if (filtered.length) {
-					this.nameControl.setErrors({required: true});
-					return filtered;
+				if (value) {
+					let filtered = this._filter(value);
+					if (filtered.length) {
+						this.nameControl.setErrors({required: true});
+						this.selectedId.emit(undefined);
+						return filtered;
+					}
+					if (typeof value != 'object') {
+						this.nameControl.setErrors({notFound: true});
+						this.selectedId.emit(undefined);
+					}
 				}
-				if (typeof value != 'object') this.nameControl.setErrors({notFound: true});
 				return this.dataSource.slice();
 			})
 		);
