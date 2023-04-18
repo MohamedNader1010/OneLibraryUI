@@ -77,7 +77,6 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
 		this.subscriptions.push(
 			this._client.add(this.Form.value).subscribe({
 				next: (res) => {
-					console.log(res.body)
 					this._client.dialogData = res.body;
 					this.matDialogRef.close({ data: res });
 				},
