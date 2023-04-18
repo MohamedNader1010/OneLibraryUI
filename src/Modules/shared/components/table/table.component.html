@@ -38,7 +38,7 @@
 				<button [hidden]="isHideAllButtons" *ngIf="canEdit" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
 					<mat-icon>edit</mat-icon>
 				</button>
-				<button [hidden]="!isDisplayDeleteButton || isHideAllButtons" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
+				<button [hidden]="!isDisplayDeleteButton || isHideAllButtons" *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</td>
