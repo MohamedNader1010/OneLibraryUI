@@ -1,1 +1,11 @@
-<router-outlet></router-outlet>
+<app-table
+	dialogHeader="حذف العميل"
+	[loading]="loading"
+	dialogDisplayName="name"
+    [tableColumns]="tableColumns" 
+    [formName]="formName" 
+    [componentName]="componentName"
+    [database]="database"
+    (OnDelete)="handleDelete($event)"
+    (onNew)="handleNewRow($event)"
+    (onEdit)="handleEditRow($event)"></app-table>

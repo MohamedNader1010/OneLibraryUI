@@ -1,9 +1,9 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Client} from '../interFaces/Iclient';
-import {ToastrService} from 'ngx-toastr';
-import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import {Response} from './../../shared/interfaces/Iresponse';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Client } from '../interFaces/Iclient';
+import { ToastrService } from 'ngx-toastr';
+import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
+import { Response } from './../../shared/interfaces/Iresponse';
 
 @Injectable({
 	providedIn: 'root',

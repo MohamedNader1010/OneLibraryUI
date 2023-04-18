@@ -80,19 +80,6 @@ export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality 
     this.data.firstName = this.data.name.substring(0, this.data.name.indexOf(" "))
     this.data.lastName = this.data.name.substring(this.data.name.indexOf(" ") + 1)
   }
-  getSingle = (id: string) => {
-    this.isLoading = true;
-    this.subscriptions.push(
-      this._employee.GetById(id).subscribe({
-        next: (data) => {
-          this.isLoading = false;
-          this.Form.patchValue(data.body);
-        },
-        error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
-      })
-    );
-  }
-
   handleSubmit() {
     if (this.Form.valid) {
       if (this.data)
@@ -105,7 +92,6 @@ export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality 
   private update() {
     this.subscriptions.push(this._employee.update(this.data.id, this.Form.value).subscribe({
       next: (res) => {
-        console.log(res.body)
         this.isSubmitted = true;
         this._employee.dialogData = res.body;
         this.matDialogRef.close({ data: res });
