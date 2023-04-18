@@ -3,8 +3,7 @@ import {AlertServiceService} from './../../../shared/services/alert-service.serv
 import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
-import {forkJoin, map, Subscription, catchError, of} from 'rxjs';
+import {forkJoin, map, catchError, of} from 'rxjs';
 import {NoteService} from 'src/Modules/note/services/note.service';
 import {ServicesService} from 'src/Modules/service/services/services.service';
 import {OrderService} from '../../services/orders.service';
@@ -21,6 +20,7 @@ import {Response} from './../../../shared/interfaces/Iresponse';
 import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
 	selector: 'app-order-form-dialog',
 	templateUrl: './order-form-dialog.component.html',
@@ -32,11 +32,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	@ViewChild('matServiceId') matServiceId!: MatSelect;
 	@ViewChild('clientType') clientTypeElement!: ElementRef;
 	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع];
-	subscriptions: Subscription[] = [];
 	Form: FormGroup;
 	isLoading = false;
 	orderToBeUpdated!: Order;
-	isSubmitted: boolean = false;
 	ServicesDataSource: Service[] = [];
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];
@@ -57,8 +55,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		@Inject(MAT_DIALOG_DATA) public data: Order,
 		private matDialogRef: MatDialogRef<OrderFormDialogComponent>,
 		private dialogService: DialogServiceService,
+		public override toastr: ToastrService
 	) {
-		super(matDialogRef, dialogService, translate);
+		super(matDialogRef, dialogService, translate, _order, toastr);
 		this.Form = this.createFormItem('init');
 	}
 	ngAfterViewInit(): void {}
@@ -375,22 +374,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 				);
 			} else {
 				this.validateDiscountAmountAndPercent();
-				this.subscriptions.push(
-					this._order.add(this.Form.value).subscribe({
-						next: () => {
-							this.isSubmitted = true;
-							this.back();
-						},
-						error: (e) => {
-							let res: Response = e.error ?? e;
-							this.alertService.onError(res.message, '');
-						},
-					})
-				);
+				this.add(this.Form.value)
 			}
 		}
 	}
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+
 }
