@@ -4,8 +4,8 @@ import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {FeadbackService} from '../../services/feadback.service';
-import {Feadback} from '../../interfaces/feadback';
+import {FeedbackService} from '../../services/feedback.service';
+import {Feedback} from '../../interfaces/feedback';
 import {ClientService} from './../../../client/services/client.service';
 import {Client} from './../../../client/interFaces/Iclient';
 @Component({
@@ -20,8 +20,8 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	ClientsDataSource: Client[] = [];
 	constructor(
 		public dialogRef: MatDialogRef<FormDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: Feadback,
-		private _feedback: FeadbackService,
+		@Inject(MAT_DIALOG_DATA) public data: Feedback,
+		private _feedback: FeedbackService,
 		private _client: ClientService,
 		private fb: FormBuilder,
 		private toastr: ToastrService
@@ -71,6 +71,8 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	onNoClick() {
 		this.dialogRef.close();
 	}
+
+	setCleintId = (data: any) => this.cleintId.setValue(data);
 
 	handleSubmit() {
 		if (this.form.valid) {

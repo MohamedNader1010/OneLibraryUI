@@ -6,15 +6,7 @@
 	<mat-dialog-content>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>العميل</mat-label>
-						<mat-select formControlName="cleintId">
-							<mat-option *ngFor="let emp of ClientsDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
-						</mat-select>
-						<mat-error *ngIf="cleintId.hasError('required') && (cleintId.touched || cleintId.dirty)"> يجب اختيار العميل</mat-error>
-					</mat-form-field>
-				</div>
+				<autocomplete class="col-6" label="العميل" [dataSource]="ClientsDataSource" (selectedId)="setCleintId($event)" [selectedValue]="cleintId.value"></autocomplete>
 				<div class="col-6">
 					<mat-form-field appearance="fill" class="w-100">
 						<mat-label>التاريخ</mat-label>

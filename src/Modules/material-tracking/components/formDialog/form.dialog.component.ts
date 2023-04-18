@@ -28,12 +28,15 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		private toastr: ToastrService
 	) {
 		this.form = this.fb.group({
-			// id: [null],
+			id: [null],
 			materialId: [null, [Validators.required]],
 			status: [null],
 			quantity: [0],
 			comment: [''],
 		});
+	}
+	get id(): FormControl {
+		return this.form.get('id') as FormControl;
 	}
 	get quantity(): FormControl {
 		return this.form.get('quantity') as FormControl;
@@ -70,6 +73,8 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	onNoClick() {
 		this.dialogRef.close();
 	}
+
+	setMaterialId = (data: any) => this.materialId.setValue(data);
 
 	handleSubmit() {
 		if (this.form.valid) {

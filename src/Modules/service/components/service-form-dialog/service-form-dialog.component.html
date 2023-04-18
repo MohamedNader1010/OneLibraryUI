@@ -13,13 +13,7 @@
 						<mat-error *ngIf="name.errors?.['required']">يجب ادخال اسم الخدمة </mat-error>
 					</mat-form-field>
 				</div>
-				<mat-form-field appearance="fill" class="col-6">
-					<mat-label>النوع</mat-label>
-					<mat-select formControlName="serviceTypeId">
-						<mat-option *ngFor="let type of ServiceTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
-					</mat-select>
-					<mat-error *ngIf="serviceTypeId.errors?.['required']">يجب اختيار نوع الخدمة </mat-error>
-				</mat-form-field>
+				<autocomplete class="col-6" label="النوع" [dataSource]="ServiceTypeDataSource" (selectedId)="setServiceTypeId($event)" [selectedValue]="serviceTypeId.value"></autocomplete>
 			</div>
 			<!-- service materials -->
 			<div class="row my-2 align-items-center">
@@ -31,22 +25,26 @@
 					<mat-icon>add</mat-icon>
 				</button>
 			</div>
-			<div formArrayName="serviceMaterials" *ngIf="serviceMaterials.controls.length" class="row">
-				<div class="col-6" *ngFor="let component of serviceMaterials.controls; let i = index">
-					<div [formGroupName]="i" class="row">
-						<mat-form-field appearance="fill" class="col-10">
-							<mat-label>الخامة</mat-label>
-							<mat-select formControlName="materialId">
-								<mat-option *ngFor="let mat of MaterialDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-							</mat-select>
-							<mat-error *ngIf="getServiceMaterial(i)?.errors?.['required']">يجب اختيار الخامة المستخدمة </mat-error>
+			<div formArrayName="serviceMaterials" *ngIf="serviceMaterials.controls.length">
+				<div class="row" *ngFor="let component of serviceMaterials.controls; let i = index">
+					<ng-container [formGroupName]="i">
+						<autocomplete
+							class="col-5"
+							label="الخامة"
+							[dataSource]="MaterialDataSource"
+							(selectedId)="setServiceMaterialId(i, $event)"
+							[selectedValue]="getServiceMaterial(i).value"></autocomplete>
+						<mat-form-field class="w-100" class="col-5">
+							<mat-label>الكمية</mat-label>
+							<input type="number" matInput formControlName="quantity" min="0" />
+							<mat-error *ngIf="getServiceMaterialQuantity(i)?.errors?.['required']">يجب ادخال الكمية </mat-error>
 						</mat-form-field>
 						<div class="col-1">
 							<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteServiceMaterial(i)">
 								<mat-icon>delete</mat-icon>
 							</button>
 						</div>
-					</div>
+					</ng-container>
 				</div>
 			</div>
 			<!-- end service materials -->
@@ -63,16 +61,15 @@
 			<div formArrayName="servicePricePerClientTypes" *ngIf="servicePricePerClientTypes.controls.length">
 				<div class="row" *ngFor="let component of servicePricePerClientTypes.controls; let i = index">
 					<ng-container [formGroupName]="i">
-						<mat-form-field appearance="fill" class="col-5">
-							<mat-label>نوع العميل</mat-label>
-							<mat-select formControlName="clientTypeId">
-								<mat-option *ngFor="let clientType of clientsTypesDataSource" [value]="clientType.id">{{ clientType.name }}</mat-option>
-							</mat-select>
-							<mat-error *ngIf="getServicePriceClientTypeId(i)?.errors?.['required']">يجب اختيار نوع العميل </mat-error>
-						</mat-form-field>
+						<autocomplete
+							class="col-5"
+							label="نوع العميل"
+							[dataSource]="clientsTypesDataSource"
+							(selectedId)="setServicePriceClientTypeId(i, $event)"
+							[selectedValue]="getServicePriceClientTypeId(i).value"></autocomplete>
 						<mat-form-field class="w-100" class="col-5">
 							<mat-label>السعر</mat-label>
-							<input type="number" matInput formControlName="price" />
+							<input type="number" matInput formControlName="price" min="0" />
 							<mat-error *ngIf="getServicePrice(i)?.errors?.['required']">يجب اختيار ادخال السعر </mat-error>
 						</mat-form-field>
 						<div class="col-1">
@@ -85,10 +82,8 @@
 			</div>
 			<!-- end service prices -->
 			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
-					{{ (isSubmitting ? 'button.wait' : 'button.save') | translate }}
-				</button>
-				<button type="button" mat-stroked-button color="warn" (click)="back()" tabindex="-1">{{ 'button.back' | translate }}</button>
+				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>
 	</mat-dialog-content>

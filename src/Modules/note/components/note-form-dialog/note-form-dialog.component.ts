@@ -1,6 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import {Router, ActivatedRoute} from '@angular/router';
 import {map, Observable, startWith, Subscription, pairwise} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {ToastrService} from 'ngx-toastr';
@@ -16,24 +15,19 @@ import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-cl
 import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
-import {TranslateService} from '@ngx-translate/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ClientType} from './../../../clientType/interFaces/IclientType';
 @Component({
 	selector: 'app-note-form-dialog',
 	templateUrl: './note-form-dialog.component.html',
 	styleUrls: ['./note-form-dialog.component.css'],
 })
-export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	loading: boolean = false;
 	Form: FormGroup;
-	isLoading = false;
+	isSubmitting: boolean = false;
 	clientTembId: number | null = null;
 	controllerName: string = 'notes';
-	isSubmitted: boolean = false;
 	NoteComponentsDataSource: NoteComponent[] = [];
 	TermsDataSource: Term[] = [];
 	StagesDataSource: Stage[] = [];
@@ -43,8 +37,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	clientsFilteredOptions!: Observable<Client[]>;
 	deletedComponents: number[] = [];
 	constructor(
-		private router: Router,
-		private route: ActivatedRoute,
 		private _note: NoteService,
 		private fb: FormBuilder,
 		private toastr: ToastrService,
@@ -52,14 +44,16 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		private _clientType: ClientTypeService,
 		private _service: ServicesService,
 		private _servicePrice: ServicePricePerClientTypeService,
-		@Inject(MAT_DIALOG_DATA) public data: Note,
 		private matDialogRef: MatDialogRef<NoteFormDialogComponent>,
-		private dialogService: DialogServiceService,
-		private translate: TranslateService,
+		@Inject(MAT_DIALOG_DATA) public data: Note
 	) {
-		super(matDialogRef, dialogService, translate);
 		this.Form = this.createFormItem('init');
 	}
+
+	get id(): FormControl {
+		return this.Form.get('id') as FormControl;
+	}
+
 	get noteId(): FormControl {
 		return this.Form.get('id') as FormControl;
 	}
@@ -98,27 +92,10 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.getSTages();
 		this.getAllServices();
 		this.subscriptions.push(this.clientTypeId.valueChanges.pipe(startWith(this.clientTypeId.value)).subscribe((value) => this.handleClientTypeChange(value)));
-		this.clientsFilteredOptions = this.clientId.valueChanges.pipe(
-			startWith(this.clientId.value),
-			map((value) => {
-				let filtered = [];
-				let name;
-				if (typeof value === 'string') name = value;
-				if (name) {
-					filtered = this.filterClients(name as string);
-					if (filtered.length) return filtered;
-					else {
-						this.clientId.setErrors({notFound: true});
-						return this.ClientsDataSource.slice();
-					}
-				} else return [];
-			})
-		);
 		this.subscriptions.push(this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value)));
 		if (this.data) this.getSingle(this.data.id);
 	}
-	filterClients = (name: string): Client[] => this.ClientsDataSource.filter((option) => option.name.includes(name));
-	clientDisplayFn = (value: number): string => this.ClientsDataSource.find((option) => option.id === value)?.name ?? '';
+
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
 		switch (type) {
@@ -152,12 +129,14 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		}
 		return formItem;
 	}
+
 	handleNewNoteComponent = () => {
 		let index = this.noteComponents.length;
 		this.noteComponents.push(this.createFormItem('noteComponent'));
 		this.subscribeQuantityChanges(index);
 		this.subscribeServiceChanges(index);
 	};
+
 	handleDeleteNoteComponent = (index: number) => {
 		if (this.data) this.deletedComponents.push(this.getNoteComponentId(index).value);
 		//remove service price
@@ -172,6 +151,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			this.finalPrice.setValue(0);
 		}
 	};
+
 	subscribeQuantityChanges(index: number) {
 		this.subscriptions.push(
 			this.serviceQuantityFormControl(index)
@@ -182,6 +162,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 				})
 		);
 	}
+
 	subscribeServiceChanges(index: number) {
 		this.subscriptions.push(
 			this.getNoteComponentServiceId(index).valueChanges.subscribe((id) => {
@@ -203,6 +184,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			})
 		);
 	}
+
 	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? '';
 	getTerms = () =>
 		this.subscriptions.push(
@@ -215,6 +197,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 				this.TermsDataSource.unshift(emptyTerm);
 			})
 		);
+
 	getSTages = () =>
 		this.subscriptions.push(
 			this._note.getStages().subscribe((data) => {
@@ -226,6 +209,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 				this.StagesDataSource.unshift(emptyStage);
 			})
 		);
+
 	getAllServices() {
 		this.subscriptions.push(
 			this._service.getAll().subscribe({
@@ -234,6 +218,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			})
 		);
 	}
+
 	getAllClientTypes() {
 		this.subscriptions.push(
 			this._clientType.getAll().subscribe({
@@ -249,6 +234,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			})
 		);
 	}
+
 	handleClientTypeChange(id: number) {
 		if (id === null) return;
 		this.subscriptions.push(
@@ -271,16 +257,18 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			})
 		);
 	}
+
 	setOriginalAndActualPrices(sign: number, index: number, quantity: number) {
 		this.originalPrice.setValue(+this.originalPrice.value + sign * (+this.serviceOriginalPriceFormControl(index).value * quantity));
 		this.actualPrice.setValue(+this.actualPrice.value + sign * (+this.servicePriceFormControl(index).value * quantity));
 	}
+
 	calculateFinalPriceAndEarning() {
 		this.earning.setValue(+this.actualPrice.value - +this.originalPrice.value);
 		this.finalPrice.setValue(+this.actualPrice.value + +this.teacherPrice.value);
 	}
+
 	getSingle = (id: number) => {
-		this.isLoading = true;
 		this.subscriptions.push(
 			this._note.GetById(id).subscribe({
 				next: (res) => {
@@ -299,7 +287,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 							},
 						});
 					});
-					this.isLoading = false;
 					this.Form.patchValue(data);
 					this.clientTembId = data.clientId;
 				},
@@ -307,6 +294,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			})
 		);
 	};
+
 	async calculateNotePrice() {
 		let noteActualPrice = 0,
 			noteoriginalPrice = 0;
@@ -338,19 +326,26 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.actualPrice.setValue(noteActualPrice);
 		this.calculateFinalPriceAndEarning();
 	}
+
+	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
+	setClientId = (data: any) => this.clientId.setValue(data);
+
+	onNoClick = () => this.matDialogRef.close();
+
 	handleSubmit() {
 		if (this.Form.valid) {
-			this.loading = true;
-			if (this.data) this.update();
+			this.isSubmitting = true;
+			if (this.id.value) this.update();
 			else this.add();
 		}
 	}
+
 	update() {
 		if (this.deletedComponents.length)
 			this.subscriptions.push(
 				this._note.deleteNoteComponents(this.deletedComponents).subscribe({
 					error: (e) => {
-						this.loading = false;
+						this.isSubmitting = false;
 						let res: Response = e.error ?? e;
 						this.toastr.error(res.message);
 					},
@@ -359,16 +354,17 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.subscriptions.push(
 			this._note.update(this.data.id, this.Form.value).subscribe({
 				next: (res) => {
-					this.isSubmitted = true;
-					this.loading = true;
-					this.back();
+					this._service.dialogData = res.body;
+					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
-					this.loading = false;
+					this.isSubmitting = false;
 					let res: Response = e.error ?? e;
 					this.toastr.error(res.message);
 				},
-				complete: () => (this.loading = false),
+				complete: () => {
+					this.isSubmitting = false;
+				},
 			})
 		);
 	}
@@ -376,16 +372,17 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.subscriptions.push(
 			this._note.add(this.Form.value).subscribe({
 				next: (res) => {
-					this.isSubmitted = true;
-					this.loading = true;
-					this.back();
+					this._service.dialogData = res.body;
+					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
-					this.loading = false;
+					this.isSubmitting = false;
 					let res: Response = e.error ?? e;
 					this.toastr.error(res.message);
 				},
-				complete: () => (this.loading = false),
+				complete: () => {
+					this.isSubmitting = false;
+				},
 			})
 		);
 	}

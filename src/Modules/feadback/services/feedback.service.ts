@@ -1,18 +1,16 @@
 import {Injectable} from '@angular/core';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import {Feadback} from './../interfaces/feadback';
-import {Response} from './../../shared/interfaces/Iresponse';
+import {Feedback} from '../interfaces/feedback';
+import {Response} from '../../shared/interfaces/Iresponse';
 import {HttpClient} from '@angular/common/http';
 import {ToastrService} from 'ngx-toastr';
-import {BehaviorSubject} from 'rxjs';
 @Injectable({
 	providedIn: 'root',
 })
-export class FeadbackService extends GenericService<Feadback> {
+export class FeedbackService extends GenericService<Feedback> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'ClientFeedback');
 	}
-
 
 	getAllClientFeedbacks() {
 		this.http.get<Response>(this.uri).subscribe({

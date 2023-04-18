@@ -48,9 +48,8 @@ export class ServiceComponent implements OnInit, OnDestroy {
 				header: 'الخامات',
 				cell: (element: Service) => {
 					let materials = '';
-					element.serviceMaterials?.forEach((m) => (materials += `${m.material}, `));
-					materials.slice(0, materials.length - 2);
-					return materials;
+					element.serviceMaterials?.forEach((m) => (materials += `عدد (${m.quantity}) من ${m.material}, `));
+					return materials.slice(0, -2);
 				},
 			},
 			{
