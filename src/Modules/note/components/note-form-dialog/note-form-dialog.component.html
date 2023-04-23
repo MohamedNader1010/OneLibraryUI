@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container w-100">
 	<h2 class="w-100 text-center mt-3" *ngIf="id.value; else update">تعديل المذكرة</h2>
 	<ng-template #update>
 		<h2 class="w-100 text-center mt-3">مذكرة جديدة</h2>
@@ -8,13 +8,13 @@
 			<div class="row">
 				<autocomplete class="col-3" label="نوع العميل" [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value"></autocomplete>
 				<autocomplete class="col-3" label="أسم العميل" [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)" [selectedValue]="clientId.value"></autocomplete>
-				<mat-form-field appearance="fill" class="col-3">
+				<mat-form-field color="warn" appearance="fill" class="col-3">
 					<mat-label>المرحلة</mat-label>
 					<mat-select formControlName="stageId">
 						<mat-option *ngFor="let mat of StagesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
 					</mat-select>
 				</mat-form-field>
-				<mat-form-field appearance="fill" class="col-3">
+				<mat-form-field color="warn" appearance="fill" class="col-3">
 					<mat-label>الترم</mat-label>
 					<mat-select formControlName="termId">
 						<mat-option *ngFor="let mat of TermsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
@@ -23,19 +23,19 @@
 			</div>
 			<div class="row">
 				<div class="col-6">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>أسم المذكرة</mat-label>
 						<input type="text" matInput formControlName="name" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>هامش ربح المدرس</mat-label>
 						<input type="number" min="0" matInput formControlName="teacherPrice" />
 					</mat-form-field>
 				</div>
 				<div class="col-2">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>الكمية</mat-label>
 						<input type="number" min="0" matInput formControlName="quantity" />
 					</mat-form-field>
@@ -59,27 +59,27 @@
 				<div class="row" *ngFor="let component of noteComponents.controls; let i = index">
 					<ng-container [formGroupName]="i">
 						<div class="col-6">
-							<mat-form-field appearance="fill" class="w-100" *ngIf="!component.value['id']; else disabled">
+							<mat-form-field color="warn" appearance="fill" class="w-100" *ngIf="!component.value['id']; else disabled">
 								<mat-label>الخدمات</mat-label>
 								<mat-select formControlName="serviceId">
 									<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{ service.name }}</mat-option>
 								</mat-select>
 							</mat-form-field>
 							<ng-template #disabled>
-								<mat-form-field appearance="fill" class="w-100">
+								<mat-form-field color="warn" appearance="fill" class="w-100">
 									<mat-label>الخدمات</mat-label>
 									<input type="text" matInput readonly="true" [value]="getServiceName(i)" />
 								</mat-form-field>
 							</ng-template>
 						</div>
 						<div class="col-3">
-							<mat-form-field appearance="fill" class="w-100">
+							<mat-form-field color="warn" appearance="fill" class="w-100">
 								<mat-label>السعر</mat-label>
 								<input type="number" matInput formControlName="price" readonly="true" />
 							</mat-form-field>
 						</div>
 						<div class="col-2">
-							<mat-form-field appearance="fill" class="w-100">
+							<mat-form-field color="warn" appearance="fill" class="w-100">
 								<mat-label>الكمية</mat-label>
 								<input type="number" min="0" matInput formControlName="quantity" />
 							</mat-form-field>
@@ -95,32 +95,32 @@
 			<!-- end note components -->
 			<div class="row">
 				<div class="col-3">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>السعر الفعلي</mat-label>
 						<input type="number" matInput [readonly]="true" formControlName="actualPrice" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>السعر التكلفة</mat-label>
 						<input type="number" matInput [readonly]="true" formControlName="originalPrice" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>هامش الربح</mat-label>
 						<input type="number" matInput [readonly]="true" formControlName="earning" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
-					<mat-form-field class="w-100">
+					<mat-form-field color="warn" class="w-100">
 						<mat-label>السعر النهائي</mat-label>
 						<input type="number" matInput [readonly]="true" formControlName="finalPrice" />
 					</mat-form-field>
 				</div>
 			</div>
 			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>

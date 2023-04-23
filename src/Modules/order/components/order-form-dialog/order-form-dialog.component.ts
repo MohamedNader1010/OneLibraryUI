@@ -20,7 +20,7 @@ import {Response} from './../../../shared/interfaces/Iresponse';
 import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
-import { ToastrService } from 'ngx-toastr';
+import {ToastrService} from 'ngx-toastr';
 @Component({
 	selector: 'app-order-form-dialog',
 	templateUrl: './order-form-dialog.component.html',
@@ -156,7 +156,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		this.subscriptions.push(
 			this._client.getAllByType(data.value).subscribe({
 				next: (data) => {
-					this.ClientsDataSource = data;
+					this.ClientsDataSource = data.body;
 				},
 				// error: (e) => {
 				// 	this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
@@ -374,9 +374,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 				);
 			} else {
 				this.validateDiscountAmountAndPercent();
-				this.add(this.Form.value)
+				this.add(this.Form.value);
 			}
 		}
 	}
-
 }

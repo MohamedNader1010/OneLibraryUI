@@ -49,6 +49,15 @@
 			</div>
 			<!-- end service materials -->
 			<!-- service prices -->
+			<div class="row my-2 align-items-center" *ngIf="data">
+				<div class="col-3">سعر التكلفة</div>
+				<div class="col-7">
+					<mat-divider></mat-divider>
+				</div>
+				<div class="col-1">
+					{{ data.originalPrice | json }}
+				</div>
+			</div>
 			<div class="row my-2 align-items-center">
 				<div class="col-3">تسعير الخدمة</div>
 				<div class="col-7">
@@ -82,7 +91,7 @@
 			</div>
 			<!-- end service prices -->
 			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>

@@ -50,14 +50,14 @@ export class NoteComponent implements OnInit, OnDestroy {
 				cell: (element: Note) => `${element.client}`,
 			},
 			{
-				columnDef: 'term',
-				header: 'الترم',
-				cell: (element: Note) => `${element.term}`,
-			},
-			{
 				columnDef: 'stage',
 				header: 'المرحلة',
-				cell: (element: Note) => `${element.stage}`,
+				cell: (element: Note) => `${element.stage ?? '-'}`,
+			},
+			{
+				columnDef: 'term',
+				header: 'الترم',
+				cell: (element: Note) => `${element.term ?? '-'}`,
 			},
 			{
 				columnDef: 'actualPrice',
@@ -106,7 +106,7 @@ export class NoteComponent implements OnInit, OnDestroy {
 	}
 
 	handleNewRow = (message: string) => {
-		console.log(this._note.dialogData);
+		console.log('new', this._note.dialogData);
 
 		this.database.dataChange.value.push(this._note.dialogData);
 		this.toastr.success(message);

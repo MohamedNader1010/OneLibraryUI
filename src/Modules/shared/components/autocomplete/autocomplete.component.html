@@ -4,7 +4,7 @@
 	</mat-option>
 </mat-autocomplete>
 
-<mat-form-field appearance="fill" class="w-100">
+<mat-form-field color="warn" appearance="fill" class="w-100">
 	<mat-label>{{ label }}</mat-label>
 	<input matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
 	<mat-error *ngIf="nameControl.hasError('notFound')">البيانات غير صحيحة</mat-error>

@@ -1,6 +1,6 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators, FormControl} from '@angular/forms';
-import {map, Observable, startWith, Subscription, pairwise} from 'rxjs';
+import {map, Observable, startWith, Subscription, pairwise, forkJoin} from 'rxjs';
 import {NoteService} from '../../services/note.service';
 import {ToastrService} from 'ngx-toastr';
 import {ClientService} from 'src/Modules/client/services/client.service';
@@ -16,7 +16,6 @@ import {ServicePricePerClientType} from './../../../service-price-per-client-typ
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ClientType} from './../../../clientType/interFaces/IclientType';
 @Component({
 	selector: 'app-note-form-dialog',
 	templateUrl: './note-form-dialog.component.html',
@@ -87,14 +86,74 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
 	ngOnInit(): void {
-		this.getAllClientTypes();
-		this.getTerms();
-		this.getSTages();
-		this.getAllServices();
+		this.forkJoins();
 		this.subscriptions.push(this.clientTypeId.valueChanges.pipe(startWith(this.clientTypeId.value)).subscribe((value) => this.handleClientTypeChange(value)));
 		this.subscriptions.push(this.teacherPrice.valueChanges.subscribe((value) => this.finalPrice.setValue(+this.actualPrice.value + +value)));
-		if (this.data) this.getSingle(this.data.id);
+		if (this.data) this.patchData();
 	}
+
+	private forkJoins() {
+		let services = [this._note.getStages(), this._note.getTerms(), this._clientType.getAll(), this._service.GetAllPriced()];
+		return forkJoin(services)
+			.pipe(
+				map(([stagesResponse, termsResponse, clientTypeResponse, serviceResponse]) => {
+					return {
+						stages: stagesResponse,
+						terms: termsResponse,
+						clientsType: clientTypeResponse,
+						services: serviceResponse,
+					};
+				})
+			)
+			.subscribe({
+				next: (response) => {
+					this.TermsDataSource = response.terms.body;
+					let emptyTerm: Term = {
+						id: null,
+						name: 'بدون',
+					};
+					this.TermsDataSource.unshift(emptyTerm);
+
+					this.StagesDataSource = response.stages.body;
+					let emptyStage: Stage = {
+						id: null,
+						name: 'بدون',
+					};
+					this.StagesDataSource.unshift(emptyStage);
+
+					this.ServicesDataSource = response.services.body;
+					this.ClientTypesDataSource = response.clientsType.body;
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+			});
+	}
+
+	patchData = () => {
+		this.data.noteComponents.forEach((component: NoteComponent) => {
+			this.noteComponents.push(this.createFormItem('noteComponent'));
+			this._servicePrice.getPrice(this.data.clientTypeId, component.serviceId).subscribe({
+				next: (res) => {
+					this.servicePriceFormControl(this.data.noteComponents.indexOf(component)).setValue(res.body.price);
+					this.serviceOriginalPriceFormControl(this.data.noteComponents.indexOf(component)).setValue(res.body.originalPrice);
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.subscribeQuantityChanges(this.data.noteComponents.indexOf(component));
+					this.subscribeServiceChanges(this.data.noteComponents.indexOf(component));
+				},
+			});
+		});
+		this.Form.patchValue(this.data);
+		this.clientTembId = this.data.clientId;
+	};
 
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
@@ -112,7 +171,7 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 					clientId: [null, [Validators.required]],
 					termId: [null],
 					stageId: [null],
-					noteComponents: this.fb.array([]),
+					noteComponents: this.fb.array([], Validators.minLength(1)),
 					quantity: [0],
 				});
 				break;
@@ -158,6 +217,8 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 				.valueChanges.pipe(startWith(this.serviceQuantityFormControl(index).value), pairwise())
 				.subscribe(([old, value]) => {
 					this.setOriginalAndActualPrices(1, index, value - old);
+					console.log(this.originalPrice.value);
+
 					this.calculateFinalPriceAndEarning();
 				})
 		);
@@ -169,16 +230,25 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 				let quantity = this.serviceQuantityFormControl(index).value;
 				this.subscriptions.push(
 					this._servicePrice.getPrice(this.clientTypeId.value, id).subscribe({
-						next: (res: ServicePricePerClientType) => {
+						next: (res) => {
+							if (!res.body) {
+								this.toastr.error('هذه الخدمة غير مسعرة');
+								return;
+							}
 							//remove service price
 							this.setOriginalAndActualPrices(-1, index, quantity);
 							//add new service price
-							this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-							this.servicePriceFormControl(index).setValue(res.price);
+							this.serviceOriginalPriceFormControl(index).setValue(res.body.originalPrice);
+							this.servicePriceFormControl(index).setValue(res.body.price);
 							this.setOriginalAndActualPrices(1, index, quantity);
 							this.calculateFinalPriceAndEarning();
+							console.log(this.originalPrice.value);
 						},
-						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
+						error: (e) => {
+							this.isSubmitting = false;
+							let res: Response = e.error ?? e;
+							this.toastr.error(res.message);
+						},
 					})
 				);
 			})
@@ -186,66 +256,20 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? '';
-	getTerms = () =>
-		this.subscriptions.push(
-			this._note.getTerms().subscribe((data) => {
-				this.TermsDataSource = data;
-				let emptyTerm: Term = {
-					id: null,
-					name: 'بدون',
-				};
-				this.TermsDataSource.unshift(emptyTerm);
-			})
-		);
-
-	getSTages = () =>
-		this.subscriptions.push(
-			this._note.getStages().subscribe((data) => {
-				this.StagesDataSource = data;
-				let emptyStage: Stage = {
-					id: null,
-					name: 'بدون',
-				};
-				this.StagesDataSource.unshift(emptyStage);
-			})
-		);
-
-	getAllServices() {
-		this.subscriptions.push(
-			this._service.getAll().subscribe({
-				next: (data) => (this.ServicesDataSource = data.body),
-				error: (e) => this.toastr.error(e.message, 'لايمكن تحميل ابيانات '),
-			})
-		);
-	}
-
-	getAllClientTypes() {
-		this.subscriptions.push(
-			this._clientType.getAll().subscribe({
-				next: (data) => {
-					let arr: ClientType[] = data.body;
-					this.ClientTypesDataSource = arr.map((t) => {
-						return {clientTypeId: t.id, name: t.name};
-					});
-				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
-				},
-			})
-		);
-	}
 
 	handleClientTypeChange(id: number) {
-		if (id === null) return;
+		if (id === null || id === undefined) return;
 		this.subscriptions.push(
 			this._client.getAllByType(id).subscribe({
 				next: (data) => {
-					this.ClientsDataSource = data;
+					this.ClientsDataSource = data.body;
 				},
 				error: (e) => {
 					this.ClientsDataSource = [];
 					this.clientId.reset();
-					this.toastr.error(e.message, 'لايمكن تحميل البيانات ');
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
 				},
 				complete: () => {
 					if (this.clientTembId) {
@@ -268,33 +292,6 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 		this.finalPrice.setValue(+this.actualPrice.value + +this.teacherPrice.value);
 	}
 
-	getSingle = (id: number) => {
-		this.subscriptions.push(
-			this._note.GetById(id).subscribe({
-				next: (res) => {
-					let data: Note = res.body;
-					data.noteComponents.forEach((c: NoteComponent) => {
-						this.noteComponents.push(this.createFormItem('noteComponent'));
-						this._servicePrice.getPrice(data.clientTypeId, c.serviceId).subscribe({
-							next: (res) => {
-								this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
-								this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
-							},
-							error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
-							complete: () => {
-								this.subscribeQuantityChanges(data.noteComponents.indexOf(c));
-								this.subscribeServiceChanges(data.noteComponents.indexOf(c));
-							},
-						});
-					});
-					this.Form.patchValue(data);
-					this.clientTembId = data.clientId;
-				},
-				error: (res) => this.toastr.error(res.error.body.Message, res.error.message),
-			})
-		);
-	};
-
 	async calculateNotePrice() {
 		let noteActualPrice = 0,
 			noteoriginalPrice = 0;
@@ -310,16 +307,20 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 				this.servicePriceFormControl(index).setValue(0);
 				this.serviceOriginalPriceFormControl(index).setValue(0);
 			} else {
-				let res: {price: number; originalPrice: number} = await new Promise<{price: number; originalPrice: number}>((resolve) => {
+				let res: Response = await new Promise<Response>((resolve) => {
 					this._servicePrice.getPrice(this.clientTypeId.value, this.getNoteComponentServiceId(index).value).subscribe({
-						next: (res) => resolve({price: res.price, originalPrice: res.originalPrice}),
-						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
+						next: (res) => resolve(res),
+						error: (e) => {
+							this.isSubmitting = false;
+							let res: Response = e.error ?? e;
+							this.toastr.error(res.message);
+						},
 					});
 				});
-				noteActualPrice += res.price * this.serviceQuantityFormControl(index).value;
-				noteoriginalPrice += res.originalPrice * this.serviceQuantityFormControl(index).value;
-				this.servicePriceFormControl(index).setValue(res.price);
-				this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
+				noteActualPrice += res.body.price * this.serviceQuantityFormControl(index).value;
+				noteoriginalPrice += res.body.originalPrice * this.serviceQuantityFormControl(index).value;
+				this.servicePriceFormControl(index).setValue(res.body.price);
+				this.serviceOriginalPriceFormControl(index).setValue(res.body.originalPrice);
 			}
 		}
 		this.originalPrice.setValue(noteoriginalPrice);
@@ -354,7 +355,7 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._note.update(this.data.id, this.Form.value).subscribe({
 				next: (res) => {
-					this._service.dialogData = res.body;
+					this._note.dialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -368,11 +369,12 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
+
 	add() {
 		this.subscriptions.push(
 			this._note.add(this.Form.value).subscribe({
 				next: (res) => {
-					this._service.dialogData = res.body;
+					this._note.dialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -386,5 +388,6 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 			})
 		);
 	}
+
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
+import {Subscription, map, forkJoin} from 'rxjs';
 import {Material} from 'src/Modules/material/interfaces/Imaterial';
 import {MaterialService} from 'src/Modules/material/services/material.service';
 import {ServiceType} from 'src/Modules/serviceType/interFaces/IserviceType';
@@ -10,8 +10,8 @@ import {Service} from '../../interfaces/Iservice';
 import {ServicesService} from '../../services/services.service';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Response} from './../../../shared/interfaces/Iresponse';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
 import {ClientTypeService} from './../../../clientType/services/clientType.service';
+import {ClientType} from './../../../clientType/interFaces/IclientType';
 @Component({
 	selector: 'app-service-form-dialog',
 	templateUrl: './service-form-dialog.component.html',
@@ -31,7 +31,7 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 		private _clientType: ClientTypeService,
 		private _material: MaterialService,
 		private fb: FormBuilder,
-		private _type: ServicesTypeService,
+		private _serviceType: ServicesTypeService,
 		private toastr: ToastrService,
 		private matDialogRef: MatDialogRef<ServiceFormDialogComponent>
 	) {
@@ -59,7 +59,7 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		this.loadData();
+		this.forkJoins();
 	}
 
 	getServiceMaterialId = (index: number): FormControl => this.serviceMaterials.at(index).get('id') as FormControl;
@@ -108,46 +108,28 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 
 	handleDeleteServiceMaterial = (index: number) => this.serviceMaterials.removeAt(index);
 
-	loadData() {
-		this.getAllMaterials();
-	}
-
-	getAllMaterials = () =>
-		this.subscriptions.push(
-			this._material.getAll().subscribe({
-				next: (data) => {
-					this.MaterialDataSource = data.body;
+	private forkJoins() {
+		let services = [this._material.getAll(), this._serviceType.getAll(), this._clientType.getAll()];
+		return forkJoin(services)
+			.pipe(
+				map(([materialResponse, serviceTypeResponse, clientTypeResponse]) => {
+					return {
+						materials: materialResponse,
+						clientsTypes: clientTypeResponse,
+						servicesTypes: serviceTypeResponse,
+					};
+				})
+			)
+			.subscribe({
+				next: (response) => {
+					this.MaterialDataSource = response.materials.body;
+					this.ServiceTypeDataSource = response.servicesTypes.body;
+					this.clientsTypesDataSource = response.clientsTypes.body;
 				},
 				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
-				},
-				complete: () => this.getAllServicesTypes(),
-			})
-		);
-
-	getAllServicesTypes = () =>
-		this.subscriptions.push(
-			this._type.getAll().subscribe({
-				next: (data) => {
-					this.ServiceTypeDataSource = data.body;
-				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
-				},
-				complete: () => {
-					this.getAllClientTypes();
-				},
-			})
-		);
-
-	getAllClientTypes = () =>
-		this.subscriptions.push(
-			this._clientType.getAll().subscribe({
-				next: (data) => {
-					this.clientsTypesDataSource = data.body;
-				},
-				error: (e) => {
-					this.toastr.error(e.message, 'لايمكن تحميل ابيانات ');
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
 				},
 				complete: () => {
 					if (this.data) {
@@ -156,8 +138,8 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 						this.Form.patchValue(this.data);
 					}
 				},
-			})
-		);
+			});
+	}
 
 	setServiceTypeId = (data: any) => this.serviceTypeId.setValue(data);
 	setServiceMaterialId = (index: number, data: any) => this.getServiceMaterial(index).setValue(data);

@@ -1,5 +1,5 @@
 <div class="mx-5 mt-4 mat-elevation-z2">
-	<mat-form-field floatPlaceholder="never" color="primary" class="w-100" style="background-color: white">
+	<mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
 		<input matInput #filter placeholder="Filter" />
 		<button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
 			<mat-icon>close</mat-icon>
@@ -17,7 +17,7 @@
 		</ng-container>
 		<ng-container matColumnDef="actions" stickyEnd="true">
 			<th mat-header-cell *matHeaderCellDef>
-				<button mat-icon-button color="primary" (click)="HandleNew()">
+				<button mat-icon-button color="basic" (click)="HandleNew()">
 					<mat-icon aria-label="new item">add</mat-icon>
 				</button>
 			</th>
@@ -38,7 +38,14 @@
 				<button [hidden]="isHideAllButtons" *ngIf="canEdit" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
 					<mat-icon>edit</mat-icon>
 				</button>
-				<button [hidden]="!isDisplayDeleteButton || isHideAllButtons" *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
+				<button
+					[hidden]="!isDisplayDeleteButton || isHideAllButtons"
+					*ngIf="canDelete"
+					mat-icon-button
+					matTooltip="delete"
+					color="warn"
+					aria-label="delete selected row"
+					(click)="handleDelete(row)">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</td>

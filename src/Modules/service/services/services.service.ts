@@ -29,7 +29,7 @@ export class ServicesService extends GenericService<Service> {
 		});
 	}
 
-	getPrice = (serviceId: number, clientTypeId: number) => this.http.get(`${this.uri}ServicePricePerClientType/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
+	GetAllPriced = () => this.http.get<Response>(`${this.uri}/GetAllPriced`);
 
 	deleteServiceMaterials = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServiceMaterials`, {body: ids});
 }

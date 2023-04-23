@@ -157,7 +157,7 @@ export class AddEditComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.subscriptions.push(
 			this._client.getAllByType(data.value).subscribe({
 				next: (data) => {
-					this.ClientsDataSource = data;
+					this.ClientsDataSource = data.body;
 				},
 				// error: (e) => {
 				// 	this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));

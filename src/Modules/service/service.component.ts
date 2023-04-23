@@ -53,6 +53,11 @@ export class ServiceComponent implements OnInit, OnDestroy {
 				},
 			},
 			{
+				columnDef: 'Originalprice',
+				header: 'سعر التكلفة',
+				cell: (element: Service) => element.originalPrice,
+			},
+			{
 				columnDef: 'Type',
 				header: 'النوع',
 				cell: (element: Service) => element.serviceType,

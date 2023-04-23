@@ -8,4 +8,5 @@ export interface Service {
 	servicePricePerClientTypes: ServicePricePerClientType[];
 	serviceTypeId: number;
 	serviceType: string;
+	originalPrice: number;
 }

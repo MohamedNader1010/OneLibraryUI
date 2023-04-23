@@ -25,7 +25,7 @@
 			</div>
 			<!-- END OF PRICE TEXT FIELD -->
 			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>
