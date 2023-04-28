@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<app-table
+	[loading]="loading"
+	dialogHeader="حذف الطلب"
+	[canView]="true"
+	dialogLocationAR="الطلب"
+	[hasTransaction]="true"
+	[isDisplayDeleteButton]="false"
+	dialogDisplayName="id"
+	[tableColumns]="tableColumns"
+	[tableData]="tableData"
+	(OnView)="handleOrderDetails($event)"
+	[formName]="formName"
+    [componentName]="componentName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"
+	>
+</app-table>
+

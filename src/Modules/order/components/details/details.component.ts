@@ -21,7 +21,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 		this.id = this.getRowId.getOrderId();
 		this._order.GetById(this.id).subscribe((data) => {
 			this.order = data.body;
-			console.log(this.order);
 		});
 	}
 

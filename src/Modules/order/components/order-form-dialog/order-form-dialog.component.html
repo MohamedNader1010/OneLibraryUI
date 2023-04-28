@@ -123,8 +123,7 @@
                 <div class="col-4">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'shared.discountValue' | translate }}</mat-label>
-
-                        <input type="number" matInput formControlName="discount" (change)="computeDiscountPercent()" />
+                        <input type="number" matInput formControlName="discount" />
                     </mat-form-field>
                 </div>
                 <div class="col-3">
@@ -148,7 +147,7 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'shared.paid' | translate }}</mat-label>
 
-                        <input type="number" matInput formControlName="paid" (change)="computeRest()" />
+                        <input type="number" matInput formControlName="paid" />
                     </mat-form-field>
                 </div>
                 <div class="col-3">
