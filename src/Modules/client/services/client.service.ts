@@ -28,5 +28,5 @@ export class ClientService extends GenericService<Client> {
 		});
 	}
 
-	getAllByType = (id: number) => this.http.get<Client[]>(`${this.uri}/getByClientTypeId?id=${id}`);
+	getAllByType = (id: number) => this.http.get<Response>(`${this.uri}/GetByClientTypeId?id=${id}`);
 }

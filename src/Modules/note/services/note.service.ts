@@ -31,8 +31,8 @@ export class NoteService extends GenericService<Note> {
 		});
 	}
 
-	getTerms = () => this.http.get<Term[]>(`${environment.apiUrl}StageAndTerm/Term`);
-	getStages = () => this.http.get<Stage[]>(`${environment.apiUrl}StageAndTerm/Stage`);
+	getTerms = () => this.http.get<Response>(`${environment.apiUrl}StageAndTerm/Term`);
+	getStages = () => this.http.get<Response>(`${environment.apiUrl}StageAndTerm/Stage`);
 
 	getOneByTeacher = (id: number) => this.http.get<Response>(`${this.uri}GetNotesByTeacherId?Id=${id}`);
 	getNoteCompnents = (id: number) => this.http.get<Response>(`${this.uri}GetNoteComponent?id=${id}`);

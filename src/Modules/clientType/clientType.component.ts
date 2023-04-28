@@ -18,7 +18,7 @@ export class ClientTypeComponent extends TableCommonFunctionality implements OnI
 	tableData!: ClientType[];
 	loading!: boolean;
 	formName = FormDialogNames.ClientTypeFormDialogComponent;
-	componentName = ComponentsName.client;
+	componentName = ComponentsName.clientType;
 	constructor(
 		public override database: ClientTypeService,
 		public override httpClient: HttpClient,

@@ -169,12 +169,12 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 				let quantity = this.serviceQuantityFormControl(index).value;
 				this.subscriptions.push(
 					this._servicePrice.getPrice(this.clientTypeId.value, id).subscribe({
-						next: (res: ServicePricePerClientType) => {
+						next: (res: Response) => {
 							//remove service price
 							this.setOriginalAndActualPrices(-1, index, quantity);
 							//add new service price
-							this.serviceOriginalPriceFormControl(index).setValue(res.originalPrice);
-							this.servicePriceFormControl(index).setValue(res.price);
+							this.serviceOriginalPriceFormControl(index).setValue(res.body.originalPrice);
+							this.servicePriceFormControl(index).setValue(res.body.price);
 							this.setOriginalAndActualPrices(1, index, quantity);
 							this.calculateFinalPriceAndEarning();
 						},
@@ -189,7 +189,7 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	getTerms = () =>
 		this.subscriptions.push(
 			this._note.getTerms().subscribe((data) => {
-				this.TermsDataSource = data;
+				this.TermsDataSource = data.body;
 				let emptyTerm: Term = {
 					id: null,
 					name: 'بدون',
@@ -201,7 +201,7 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	getSTages = () =>
 		this.subscriptions.push(
 			this._note.getStages().subscribe((data) => {
-				this.StagesDataSource = data;
+				this.StagesDataSource = data.body;
 				let emptyStage: Stage = {
 					id: null,
 					name: 'بدون',
@@ -236,11 +236,12 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	handleClientTypeChange(id: number) {
-		if (id === null) return;
+		console.log(id)
+		if (id === null || id === undefined) return;
 		this.subscriptions.push(
 			this._client.getAllByType(id).subscribe({
 				next: (data) => {
-					this.ClientsDataSource = data;
+					this.ClientsDataSource = data.body;
 				},
 				error: (e) => {
 					this.ClientsDataSource = [];
@@ -277,8 +278,8 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 						this.noteComponents.push(this.createFormItem('noteComponent'));
 						this._servicePrice.getPrice(data.clientTypeId, c.serviceId).subscribe({
 							next: (res) => {
-								this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.price);
-								this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.originalPrice);
+								this.servicePriceFormControl(data.noteComponents.indexOf(c)).setValue(res.body.price);
+								this.serviceOriginalPriceFormControl(data.noteComponents.indexOf(c)).setValue(res.body.originalPrice);
 							},
 							error: (e) => this.toastr.error(e.error.Message, 'لايمكن تحميل الأسعار '),
 							complete: () => {
@@ -312,7 +313,7 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 			} else {
 				let res: {price: number; originalPrice: number} = await new Promise<{price: number; originalPrice: number}>((resolve) => {
 					this._servicePrice.getPrice(this.clientTypeId.value, this.getNoteComponentServiceId(index).value).subscribe({
-						next: (res) => resolve({price: res.price, originalPrice: res.originalPrice}),
+						next: (res) => resolve({price: res.body.price, originalPrice: res.body.originalPrice}),
 						error: (e) => this.toastr.error(e.message, 'لايمكن تحميل الأسعار '),
 					});
 				});
