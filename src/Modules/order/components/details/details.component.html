@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>تفاصيل الطلب</h2>
-<mat-dialog-content class="mat-typography" id="print-section">
-	<div class="info">
+<mat-dialog-content *ngIf="order" class="mat-typography" id="print-section">
+	<div class="info" >
 		<div class="row direction">
 			<div class="col-4 w">
 				<span id="heading"><strong>التاريخ</strong></span>
@@ -31,6 +31,7 @@
 				<h4><strong>السعر</strong></h4>
 			</div>
 		</div>
+
 		<div class="row" *ngFor="let o of order.orderDetails">
 			<div class="col-6">
 				<h5>{{ o.note ?? o.service }}</h5>
@@ -42,6 +43,7 @@
 				<h5>&pound;{{ o.price }}</h5>
 			</div>
 		</div>
+
 	</div>
 	<div class="total">
 		<div class="row">
@@ -83,8 +85,10 @@
 	</div>
 	<div class="hide">
 		<h3><strong>تتبع الطلب</strong></h3>
-		<div class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
-			<mat-progress-bar class="row" mode="determinate" [value]="orderTrackingProgress(order.orderStatus)" color="warn"></mat-progress-bar>
+		<div
+			class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
+			<mat-progress-bar class="row" mode="determinate" [value]="orderTrackingProgress(order.orderStatus)"
+				color="warn"></mat-progress-bar>
 			<ul class="tracklist row w-100 justify-content-between">
 				<li class="col-nader text-nowrap me-0">غير مكتمل</li>
 				<li class="col-nader text-nowrap me-0">اعداد</li>
