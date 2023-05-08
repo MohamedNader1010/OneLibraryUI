@@ -12,5 +12,32 @@
   <canvas baseChart [data]="barChartData" [options]="barChartOptions" [plugins]="barChartPlugins"
     [legend]="barChartLegend" [type]="'bar'">
   </canvas>
+</div>
 
+<div>
+  <canvas baseChart [labels]="doughnutChartLabels" [datasets]="doughnutChartDatasets" [options]="doughnutChartOptions"
+    [legend]="true" [type]="'doughnut'">
+  </canvas>
+</div>
+
+<div>
+  <canvas baseChart [datasets]="radarChartDatasets" [options]="radarChartOptions" [labels]="radarChartLabels"
+    [type]="'radar'">
+  </canvas>
+</div>
+
+<div>
+  <canvas baseChart [datasets]="polarAreaChartDatasets" [labels]="polarAreaChartLabels" [legend]="polarAreaLegend"
+    [options]="polarAreaOptions" [type]="'polarArea'">
+  </canvas>
+</div>
+
+<div>
+  <canvas baseChart [datasets]="bubbleChartDatasets" [options]="bubbleChartOptions" [legend]="bubbleChartLegend"
+    [type]="'bubble'">
+  </canvas>
+</div>
+<div>
+  <canvas baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions" [type]="'scatter'">
+  </canvas>
 </div>
