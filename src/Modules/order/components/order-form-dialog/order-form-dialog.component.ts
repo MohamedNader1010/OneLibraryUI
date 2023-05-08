@@ -1,26 +1,26 @@
-import {TranslateService} from '@ngx-translate/core';
-import {AlertServiceService} from './../../../shared/services/alert-service.service';
-import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {forkJoin, map, catchError, of} from 'rxjs';
-import {NoteService} from 'src/Modules/note/services/note.service';
-import {ServicesService} from 'src/Modules/service/services/services.service';
-import {OrderService} from '../../services/orders.service';
-import {Service} from 'src/Modules/service/interfaces/Iservice';
-import {Note} from 'src/Modules/note/interfaces/Inote';
-import {Client} from 'src/Modules/client/interFaces/Iclient';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {ClientService} from 'src/Modules/client/services/client.service';
-import {Status} from '../../Enums/status';
-import {MatSelect} from '@angular/material/select';
-import {Order} from '../../interfaces/Iorder';
-import {Response} from './../../../shared/interfaces/Iresponse';
-import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
-import {ToastrService} from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
+import { AlertServiceService } from './../../../shared/services/alert-service.service';
+import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin, map, catchError, of } from 'rxjs';
+import { NoteService } from 'src/Modules/note/services/note.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { OrderService } from '../../services/orders.service';
+import { Service } from 'src/Modules/service/interfaces/Iservice';
+import { Note } from 'src/Modules/note/interfaces/Inote';
+import { Client } from 'src/Modules/client/interFaces/Iclient';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { ClientService } from 'src/Modules/client/services/client.service';
+import { Status } from '../../Enums/status';
+import { MatSelect } from '@angular/material/select';
+import { Order } from '../../interfaces/Iorder';
+import { Response } from './../../../shared/interfaces/Iresponse';
+import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import { ToastrService } from 'ngx-toastr';
 @Component({
 	selector: 'app-order-form-dialog',
 	templateUrl: './order-form-dialog.component.html',
@@ -246,7 +246,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		totalPriceControl?.valueChanges.subscribe(value => {
 			const discountControlValue = this.Form.get('discount')?.value
 			const percent = +((+discountControlValue / +value) * 100).toFixed(2);
-			this.Form.get('discountPercent')?.setValue(percent);
+			if (!isNaN(percent))
+				this.Form.get('discountPercent')?.setValue(percent);
 		})
 		this.OrderDetails.controls.forEach((element) => {
 			if (+element.get('price')?.value) {
