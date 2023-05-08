@@ -7,5 +7,9 @@
 	[isHideAllButtons]="true"
 	dialogDisplayName="id"
 	[tableColumns]="tableColumns"
-	[tableData]="orderDetails"
+	[componentName]="componentName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"
 ></app-table>

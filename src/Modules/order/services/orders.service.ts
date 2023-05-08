@@ -34,6 +34,6 @@ export class OrderService extends GenericService<Order> {
 	// add order transaction, get order by client id , get order within date interval
 	addOrderTransaction = (order: OrderTransaction) => this.http.post<OrderTransaction>(`${this.uri}/AddOrderTransaction`, order);
 	getOrderDetails = (id: number) => this.http.get<OrderDetail[]>(`${this.uri}/GetOrderDetails?Id=${id}`);
-	getOrdersByStatus = (status: Status) => this.http.get<OrderDetail[]>(`${this.uri}/GetByStatus?status=${status}`);
+	getOrdersByStatus = (status: Status) => this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`);
 	updateStatus = (order: Order) => this.http.put<Response>(`${this.uri}/UpdateStatus`, order);
 }

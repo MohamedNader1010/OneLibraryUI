@@ -85,7 +85,6 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 		this.subscriptions.push(
 			this.database.getAll().subscribe({
 				next: (res) => {
-					console.log(res.body)
 					this.database.loadingData.next(true)
 					this.database.dataChange.next(res.body)
 				},
