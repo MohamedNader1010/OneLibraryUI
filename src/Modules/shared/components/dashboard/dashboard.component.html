@@ -1,9 +1,16 @@
 <div style="display: block;">
-    <canvas baseChart width="400" height="400"
-      [type]="'line'"
-      [data]="lineChartData"
-      [options]="lineChartOptions"
-      [legend]="lineChartLegend">
-    </canvas>
-  </div>
-  
+  <canvas baseChart width="400" height="400" [type]="'line'" [data]="lineChartData" [options]="lineChartOptions"
+    [legend]="lineChartLegend">
+  </canvas>
+</div>
+<div>
+  <canvas baseChart [type]="'pie'" [datasets]="pieChartDatasets" [labels]="pieChartLabels" [options]="pieChartOptions"
+    [plugins]="pieChartPlugins" [legend]="pieChartLegend">
+  </canvas>
+</div>
+<div>
+  <canvas baseChart [data]="barChartData" [options]="barChartOptions" [plugins]="barChartPlugins"
+    [legend]="barChartLegend" [type]="'bar'">
+  </canvas>
+
+</div>
