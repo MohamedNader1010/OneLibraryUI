@@ -29,7 +29,7 @@ const routes: Routes = [
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
 			{path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
 			{path: 'dashboard', component: DashboardComponent},
-			// {path: '', redirectTo: '', pathMatch: 'full'},
+			{path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 		],
 	},
 	{path: '**', component: NotfoundComponent, title: '404 - not found'},
