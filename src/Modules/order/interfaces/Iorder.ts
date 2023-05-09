@@ -14,8 +14,9 @@ export interface Order {
 	orderStatus: number;
 	clientId: number;
 	clientName: string;
-	clientTypeName: string; 
+	clientTypeName: string;
 	clientTypeId: number;
 	orderDetails: OrderDetail[];
 	ordertransaction: OrderTransaction[];
+	clientPhoneNumber: string;
 }

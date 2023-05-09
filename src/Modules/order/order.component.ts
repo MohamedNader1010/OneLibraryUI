@@ -1,17 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { AlertServiceService } from '../shared/services/alert-service.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Status } from './Enums/status';
-import { Order } from './interfaces/Iorder';
-import { OrderService } from './services/orders.service';
-import { DetailsComponent } from './components/details/details.component';
-import { TranslateService } from '@ngx-translate/core';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { ToastrService } from 'ngx-toastr';
+import {HttpClient} from '@angular/common/http';
+import {AlertServiceService} from '../shared/services/alert-service.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {Status} from './Enums/status';
+import {Order} from './interfaces/Iorder';
+import {OrderService} from './services/orders.service';
+import {DetailsComponent} from './components/details/details.component';
+import {TranslateService} from '@ngx-translate/core';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
 	selector: 'app-order',
@@ -33,7 +33,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 		public override toastr: ToastrService,
 		public override httpClient: HttpClient
 	) {
-		super(httpClient, toastr, database)
+		super(httpClient, toastr, database);
 	}
 
 	ngOnInit(): void {
@@ -43,8 +43,8 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	private initiateTableHeader() {
 		this.tableColumns = [
 			{
-				columnDef: this.translate.instant('form.id'),
-				header: this.translate.instant('form.id.label'),
+				columnDef: this.translate.instant('form.id.label'),
+				header: this.translate.instant('form.id'),
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
@@ -63,14 +63,19 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 				cell: (element: Order) => `${element.paid}`,
 			},
 			{
-				columnDef: this.translate.instant('order.status'),
-				header: this.translate.instant('order.status.label'),
+				columnDef: this.translate.instant('order.status.label'),
+				header: this.translate.instant('order.status'),
 				cell: (element: Order) => `${this.getStatusText(element.orderStatus)}`,
 			},
 			{
 				columnDef: this.translate.instant('shared.client.label'),
 				header: this.translate.instant('shared.client'),
 				cell: (element: Order) => `${element.clientName}`,
+			},
+			{
+				columnDef: this.translate.instant('shared.clientPhoneNumber.label'),
+				header: this.translate.instant('shared.clientPhoneNumber'),
+				cell: (element: Order) => `${element.clientPhoneNumber}`,
 			},
 			{
 				columnDef: this.translate.instant('shared.remarks.label'),
@@ -85,16 +90,16 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 		this.subscriptions.push(
 			this.database.getAll().subscribe({
 				next: (res) => {
-					this.database.loadingData.next(true)
-					this.database.dataChange.next(res.body)
+					this.database.loadingData.next(true);
+					this.database.dataChange.next(res.body);
 				},
 				error: (res) => {
-					this.database.loadingData.next(false)
+					this.database.loadingData.next(false);
 					this.toastr.error(res.error.message, res.error.message);
 					this.loading = false;
 				},
 				complete: () => {
-					this.database.loadingData.next(false)
+					this.database.loadingData.next(false);
 				},
 			})
 		);
@@ -104,7 +109,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 			this.dialog
 				.open(DetailsComponent)
 				.afterClosed()
-				.subscribe(() => { })
+				.subscribe(() => {})
 		);
 	}
 
