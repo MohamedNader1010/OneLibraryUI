@@ -1,43 +1,82 @@
-<div style="display: block;">
-  <canvas baseChart width="400" height="400" [type]="'line'" [data]="lineChartData" [options]="lineChartOptions"
-    [legend]="lineChartLegend">
-  </canvas>
-</div>
-<div>
-  <canvas baseChart [type]="'pie'" [datasets]="pieChartDatasets" [labels]="pieChartLabels" [options]="pieChartOptions"
-    [plugins]="pieChartPlugins" [legend]="pieChartLegend">
-  </canvas>
-</div>
-<div>
-  <canvas baseChart [data]="barChartData" [options]="barChartOptions" [plugins]="barChartPlugins"
-    [legend]="barChartLegend" [type]="'bar'">
-  </canvas>
-</div>
-
-<div>
-  <canvas baseChart [labels]="doughnutChartLabels" [datasets]="doughnutChartDatasets" [options]="doughnutChartOptions"
-    [legend]="true" [type]="'doughnut'">
-  </canvas>
-</div>
-
-<div>
-  <canvas baseChart [datasets]="radarChartDatasets" [options]="radarChartOptions" [labels]="radarChartLabels"
-    [type]="'radar'">
-  </canvas>
-</div>
-
-<div>
-  <canvas baseChart [datasets]="polarAreaChartDatasets" [labels]="polarAreaChartLabels" [legend]="polarAreaLegend"
-    [options]="polarAreaOptions" [type]="'polarArea'">
-  </canvas>
-</div>
-
-<div>
-  <canvas baseChart [datasets]="bubbleChartDatasets" [options]="bubbleChartOptions" [legend]="bubbleChartLegend"
-    [type]="'bubble'">
-  </canvas>
-</div>
-<div>
-  <canvas baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions" [type]="'scatter'">
-  </canvas>
+<div class="container flex-column">
+	<div class="row my-2">
+		<div class="col-4">
+			<mat-card class="h-100 d-flex justify-content-center">
+				<mat-card-content class="row">
+					<canvas class="w-100 h-100" baseChart [type]="'line'" [data]="lineChartData" [options]="lineChartOptions" [legend]="lineChartLegend"> </canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-4">
+			<mat-card>
+				<mat-card-content>
+					<canvas
+						class="w-100 h-100"
+						baseChart
+						[type]="'pie'"
+						[datasets]="pieChartDatasets"
+						[labels]="pieChartLabels"
+						[options]="pieChartOptions"
+						[plugins]="pieChartPlugins"
+						[legend]="pieChartLegend">
+					</canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-4">
+			<mat-card class="h-100 d-flex justify-content-center">
+				<mat-card-content class="row">
+					<canvas class="w-100 h-100" baseChart [data]="barChartData" [options]="barChartOptions" [plugins]="barChartPlugins" [legend]="barChartLegend" [type]="'bar'"> </canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+	<div class="row my-2">
+		<div class="col-4">
+			<mat-card>
+				<mat-card-content>
+					<canvas class="w-100 h-100" baseChart [labels]="doughnutChartLabels" [datasets]="doughnutChartDatasets" [options]="doughnutChartOptions" [legend]="true" [type]="'doughnut'">
+					</canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-4">
+			<mat-card>
+				<mat-card-content>
+					<canvas class="w-100 h-100" baseChart [datasets]="radarChartDatasets" [options]="radarChartOptions" [labels]="radarChartLabels" [type]="'radar'"> </canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-4">
+			<mat-card>
+				<mat-card-content>
+					<canvas
+						class="w-100 h-100"
+						baseChart
+						[datasets]="polarAreaChartDatasets"
+						[labels]="polarAreaChartLabels"
+						[legend]="polarAreaLegend"
+						[options]="polarAreaOptions"
+						[type]="'polarArea'">
+					</canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+	<div class="row my-2">
+		<div class="col-6">
+			<mat-card>
+				<mat-card-content>
+					<canvas class="w-100 h-100" baseChart [datasets]="bubbleChartDatasets" [options]="bubbleChartOptions" [legend]="bubbleChartLegend" [type]="'bubble'"> </canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-6">
+			<mat-card>
+				<mat-card-content>
+					<canvas class="w-100 h-100" baseChart [datasets]="scatterChartDatasets" [options]="scatterChartOptions" [type]="'scatter'"> </canvas>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
 </div>
