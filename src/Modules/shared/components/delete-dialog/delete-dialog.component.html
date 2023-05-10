@@ -6,11 +6,11 @@
 				{{ key.value }}<strong> : {{ getTranslatedString(key.key) }}</strong>
 			</h4>
 		</div>
-		<div mat-dialog-actions>
-			<button mat-raised-button color="warn" (click)="confirmDelete()">{{ (isSubmitting ? 'button.wait' :
-				'button.delete') | translate }}</button>
-			<button mat-raised-button (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+		<div class="my-2 d-flex flex-row-reverse">
+			<button mat-raised-button type="submit" color="warn" class="mx-2 px-4">
+				{{ (isSubmitting ? 'button.wait' : 'button.delete') | translate }}
+			</button>
+			<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
 		</div>
 	</div>
-
 </mat-dialog-content>

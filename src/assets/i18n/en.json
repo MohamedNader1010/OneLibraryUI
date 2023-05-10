@@ -25,6 +25,7 @@
 	"order.delete": "حذف الطلب",
 	"order.new": "طلب جديد",
 	"order.edit": "تعديل الطلب",
+	"order.transaction": "عملية دفع",
 	"note.name": "المذكرات",
 	"shared.price": "السعر",
 	"shared.price.label": "price",

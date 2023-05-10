@@ -119,7 +119,7 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<div mat-dialog-actions>
+			<div class="my-2 d-flex flex-row-reverse">
 				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>

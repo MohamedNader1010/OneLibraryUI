@@ -21,9 +21,9 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitted" class="mx-2 px-4">
-					{{ (isSubmitted ? 'button.wait' : 'button.save') | translate }}
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+					{{ (isSubmitting ? 'button.wait' : 'button.save') | translate }}
 				</button>
 				<button type="button" mat-stroked-button color="warn" (click)="back()" tabindex="-1">{{ 'button.back' | translate }}</button>
 			</div>

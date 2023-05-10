@@ -10,11 +10,10 @@
 	[tableData]="tableData"
 	(OnView)="handleOrderDetails($event)"
 	[formName]="formName"
-    [componentName]="componentName"
+	[componentName]="componentName"
 	(OnDelete)="handleDelete($event)"
 	(onNew)="handleNewRow($event)"
 	(onEdit)="handleEditRow($event)"
-	[database]="database"
-	>
+	(onTransaction)="handleOrderTransaction($event)"
+	[database]="database">
 </app-table>
-

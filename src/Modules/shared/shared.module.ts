@@ -1,6 +1,5 @@
 import {NotfoundComponent} from './components/notfound/notfound.component';
 import {FooterComponent} from './components/footer/footer.component';
-import {DialogComponent} from './components/dialog/dialog.component';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
@@ -21,23 +20,9 @@ import {TranslateModule} from '@ngx-translate/core';
 import {AutocompleteComponent} from './components/autocomplete/autocomplete.component';
 import {DeleteDialogComponent} from './components/delete-dialog/delete-dialog.component';
 import {ServiceFactory} from './classes/ServiceFactory';
-import {GenericService} from './services/genericCRUD.service';
-import {MaterialService} from '../material/services/material.service';
-import {AttendanceService} from '../attendance/services/attendance.service';
 
 @NgModule({
-	declarations: [
-		SharedComponent,
-		ProfileComponent,
-		DialogComponent,
-		FooterComponent,
-		NavbarComponent,
-		NotfoundComponent,
-		TableComponent,
-		DashboardComponent,
-		AutocompleteComponent,
-		DeleteDialogComponent,
-	],
+	declarations: [SharedComponent, ProfileComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent, DashboardComponent, AutocompleteComponent, DeleteDialogComponent],
 	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
 	exports: [TableComponent, AutocompleteComponent],
 	providers: [LoginGuard, AuthService, ToastrService, {provide: NgChartsConfiguration, useValue: {generateColors: false}}, ServiceFactory],
