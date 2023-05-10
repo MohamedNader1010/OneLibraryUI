@@ -1,6 +1,5 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
 import {TableDataSource} from 'src/Modules/shared/classes/tableDataSource';
@@ -26,7 +25,12 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 	database!: AttendanceService;
 	dataSource!: TableDataSource;
 
-	constructor(private tranlate: TranslateService, private httpClient: HttpClient, private dialog: MatDialog, private _attendance: AttendanceService, private toastr: ToastrService) {}
+	constructor(
+		private httpClient: HttpClient,
+		private _attendance: AttendanceService,
+		private translate: TranslateService,
+		private toastr: ToastrService
+	) {}
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
@@ -35,8 +39,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Attendance) => element.id,
 			},
 			{

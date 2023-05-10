@@ -1,14 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { TableDataSource } from '../shared/classes/tableDataSource';
-import { Material } from './interfaces/Imaterial';
-import { MaterialService } from './services/material.service';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
-import { TranslateService } from '@ngx-translate/core';
+import {HttpClient} from '@angular/common/http';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
+import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import {TableDataSource} from '../shared/classes/tableDataSource';
+import {Material} from './interfaces/Imaterial';
+import {MaterialService} from './services/material.service';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-material',
@@ -16,20 +16,14 @@ import { TranslateService } from '@ngx-translate/core';
 	styleUrls: ['./material.component.css'],
 })
 export class MaterialComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-
 	tableColumns!: any[];
 	tableData!: Material[];
 	loading!: boolean;
 	formName = FormDialogNames.MaterialFormDialogComponent;
 	dataSource!: TableDataSource;
 	componentName = ComponentsName.material;
-	constructor(
-		public override database: MaterialService, 
-		public override httpClient: HttpClient, 
-		public override toastr: ToastrService, 
-		private translate: TranslateService
-		) {
-		super(httpClient, toastr, database)
+	constructor(public override database: MaterialService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
+		super(httpClient, toastr, database);
 	}
 
 	ngOnInit(): void {
@@ -40,8 +34,8 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: this.translate.instant('form.id'),
-				header: this.translate.instant('form.id.label'),
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Material) => element.id,
 			},
 			{
@@ -65,5 +59,4 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 	public loadData() {
 		this.database.getAllMaterials();
 	}
-
 }

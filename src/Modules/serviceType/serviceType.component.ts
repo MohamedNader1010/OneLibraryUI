@@ -26,7 +26,7 @@ export class ServiceTypeComponent implements OnInit, OnDestroy {
 	database!: ServicesTypeService;
 	dataSource!: TableDataSource;
 
-	constructor(private tranlate: TranslateService, private httpClient: HttpClient, private dialog: MatDialog, private _serviceType: ServicesTypeService, private toastr: ToastrService) {}
+	constructor(private translate: TranslateService, private httpClient: HttpClient, private dialog: MatDialog, private _serviceType: ServicesTypeService, private toastr: ToastrService) {}
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
@@ -36,8 +36,8 @@ export class ServiceTypeComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: any) => element.id,
 			},
 			{

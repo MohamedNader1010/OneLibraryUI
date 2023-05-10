@@ -12,6 +12,7 @@ import {IncomeOutcome} from './Enums/IncomeOutcomeEnum';
 import {MaterialTracking} from './interfaces/materialTracking';
 import {MaterialTrackingService} from './services/materialTracking.service';
 import {Response} from '../shared/interfaces/Iresponse';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-materialTracking',
@@ -28,7 +29,7 @@ export class materialTrackingComponent implements OnInit, OnDestroy {
 	database!: MaterialTrackingService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _materialTracking: MaterialTrackingService, public dialog: MatDialog) {}
+	constructor(public httpClient: HttpClient, private translate: TranslateService, private toastr: ToastrService, private _materialTracking: MaterialTrackingService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -37,8 +38,8 @@ export class materialTrackingComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: MaterialTracking) => element.id,
 			},
 			{

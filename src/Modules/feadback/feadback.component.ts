@@ -10,6 +10,7 @@ import {TableDataSource} from '../shared/classes/tableDataSource';
 import {FeedbackService} from './services/feedback.service';
 import {Response} from '../shared/interfaces/Iresponse';
 import {Feedback} from './interfaces/feedback';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-feadback',
@@ -26,7 +27,7 @@ export class FeadbackComponent implements OnInit, OnDestroy {
 	database!: FeedbackService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _feedback: FeedbackService, public dialog: MatDialog) {}
+	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _feedback: FeedbackService, private translate: TranslateService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -35,8 +36,8 @@ export class FeadbackComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Feedback) => element.id,
 			},
 			{

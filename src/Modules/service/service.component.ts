@@ -9,6 +9,7 @@ import {ServicesService} from './services/services.service';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {Response} from '../shared/interfaces/Iresponse';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-service',
@@ -25,7 +26,7 @@ export class ServiceComponent implements OnInit, OnDestroy {
 	database!: ServicesService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _service: ServicesService, public dialog: MatDialog) {}
+	constructor(public httpClient: HttpClient, private translate: TranslateService, private toastr: ToastrService, private _service: ServicesService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -34,8 +35,8 @@ export class ServiceComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Service) => element.id,
 			},
 			{

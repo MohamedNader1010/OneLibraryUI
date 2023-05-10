@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Subscription} from 'rxjs';
 import {TermService} from '../../services/term.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-all',
@@ -13,12 +14,12 @@ export class AllComponent implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: [];
 	loading!: boolean;
-	constructor(private _term: TermService, public dialog: MatDialog) {}
+	constructor(private _term: TermService, private translate: TranslateService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: any) => element.id,
 			},
 			{

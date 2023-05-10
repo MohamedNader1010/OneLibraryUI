@@ -31,11 +31,6 @@ export class EmployeeComponent extends TableCommonFunctionality implements OnIni
 
 	private initiateTableHeaders() {
 		this.tableColumns = [
-			// {
-			// 	columnDef: this.translate.instant('form.id'),
-			// 	header: this.translate.instant('form.id.label'),
-			// 	cell: (element: Employee) => element.id,
-			// },
 			{
 				columnDef: this.translate.instant('form.name'),
 				header: this.translate.instant('form.name.label'),

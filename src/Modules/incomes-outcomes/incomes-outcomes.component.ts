@@ -11,6 +11,7 @@ import {IncomeOutcome} from './Enums/IncomeOutcomeEnum';
 import {IncomesOutcomes} from './interfaces/Incomes-outcomes';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {Response} from '../shared/interfaces/Iresponse';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-Incomes-outcomes',
@@ -27,7 +28,8 @@ export class IncomesOutcomesComponent implements OnInit, OnDestroy {
 	database!: IncomesOutcomesService;
 	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _incomesOutcomes: IncomesOutcomesService, public dialog: MatDialog) {}
+	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _incomesOutcomes: IncomesOutcomesService,
+		private translate: TranslateService, public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -36,8 +38,8 @@ export class IncomesOutcomesComponent implements OnInit, OnDestroy {
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: IncomesOutcomes) => element.id,
 			},
 			{

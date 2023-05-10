@@ -38,8 +38,8 @@ export class ClientComponent extends TableCommonFunctionality implements OnInit,
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: this.translate.instant('form.id'),
-				header: this.translate.instant('form.id.label'),
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Client) => element.id,
 			},
 			{
