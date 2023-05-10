@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MaterialService } from '../../services/material.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Material } from '../../interfaces/Imaterial';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
-import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {MaterialService} from '../../services/material.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Material} from '../../interfaces/Imaterial';
+import {ToastrService} from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
+import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-material-form-dialog',
 	templateUrl: './material-form-dialog.component.html',
@@ -52,10 +52,9 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
 
 	handleSubmit() {
 		if (this.Form.valid) {
-			this.isSubmitted = true;
+			this.isSubmitting = true;
 			if (this.id.value) this.update(this.data.id, this.Form.value);
 			else this.add(this.Form.value);
 		}
 	}
-
 }

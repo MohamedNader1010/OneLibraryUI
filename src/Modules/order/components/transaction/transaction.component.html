@@ -1,33 +1,25 @@
-<mat-card class="container mat-elevation-z15 py-2">
-	<form [formGroup]="Form" (ngSubmit)="handleSubmit()">
-		<mat-card-header>
-			<mat-card-title>عمليه</mat-card-title>
-		</mat-card-header>
-
-		<mat-card-content>
-			<mat-form-field appearance="fill" class="w-100">
-				<mat-label>رقم الطلب</mat-label>
-				<input type="text" matInput formControlName="orderId" readonly />
-			</mat-form-field>
-
-			<mat-form-field appearance="fill" class="w-100">
-				<mat-label>المدفوع</mat-label>
-				<input id="paid" matInput type="number" formControlName="paid" />
-				<mat-error *ngIf="f['paid'].errors?.['required']">المبلغ المدفوع مطلوب</mat-error>
-				<mat-error *ngIf="f['paid'].hasError('exceed')"> المبلغ المدفوع &lt; او = {{f['paid'].errors?.['value']}} </mat-error>
-			</mat-form-field>
-
-			<!-- <mat-form-field appearance="fill" class="w-100">
-				<mat-label>اختر تاريخ</mat-label>
-				<input matInput [matDatepicker]="picker" formControlName="date" />
-				<mat-error *ngIf="f['date'].errors?.['required']">التاريخ مطلوب</mat-error>
-				<mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-				<mat-datepicker #picker disabled="false"></mat-datepicker>
-			</mat-form-field> -->
-		</mat-card-content>
-		<div mat-dialog-actions>
-			<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
-			<button type="button" mat-stroked-button color="warn" (click)="back()" tabindex="-1">رجوع</button>
-		</div>
-	</form>
-</mat-card>
+<div class="container">
+	<h2 class="w-100 text-center mt-3">{{ 'order.transaction' | translate }}</h2>
+	<mat-dialog-content>
+		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+			<div class="row">
+				<mat-form-field appearance="fill" class="w-100">
+					<mat-label>رقم الطلب</mat-label>
+					<input type="text" matInput formControlName="orderId" readonly />
+				</mat-form-field>
+			</div>
+			<div class="row">
+				<mat-form-field appearance="fill" class="w-100">
+					<mat-label>المدفوع</mat-label>
+					<input id="paid" matInput type="number" formControlName="paid" />
+					<mat-error *ngIf="paid.errors?.['required']">المبلغ المدفوع مطلوب</mat-error>
+					<mat-error *ngIf="paid.hasError('exceed')"> المبلغ المدفوع &lt; او = {{paid.errors?.['value']}} </mat-error>
+				</mat-form-field>
+			</div>
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{ isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
+			</div>
+		</form>
+	</mat-dialog-content>
+</div>

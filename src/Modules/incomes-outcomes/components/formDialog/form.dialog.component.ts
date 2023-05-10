@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {FormGroup, FormBuilder, FormControl} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
@@ -8,6 +8,7 @@ import {IncomesOutcomesService} from '../../services/Incomes-outcomes.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {Material} from './../../../material/interfaces/Imaterial';
 import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
 	selector: 'app-form.dialog',
 	templateUrl: './form.dialog.html',
@@ -23,7 +24,8 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		@Inject(MAT_DIALOG_DATA) public data: IncomesOutcomes,
 		private _inOut: IncomesOutcomesService,
 		private fb: FormBuilder,
-		private toastr: ToastrService
+		private toastr: ToastrService,
+		public translate:TranslateService
 	) {
 		this.form = this.fb.group({
 			// id: [null],
@@ -55,30 +57,9 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	handleSubmit() {
 		if (this.form.valid) {
 			this.isSubmitting = true;
-			// if (this.id.value) this.update();
-			// else
 			this.add();
 		}
 	}
-
-	// update() {
-	// 	this.subscriptions.push(
-	// 		this._inOut.update(this.id.value, this.form.value).subscribe({
-	// 			next: (res) => {
-	// 				this._inOut.dialogData = res.body;
-	// 				this.dialogRef.close({data: res});
-	// 			},
-	// 			error: (e) => {
-	// 				this.isSubmitting = false;
-	// 				let res: Response = e.error ?? e;
-	// 				this.toastr.error(res.message);
-	// 			},
-	// 			complete: () => {
-	// 				this.isSubmitting = false;
-	// 			},
-	// 		})
-	// 	);
-	// }
 
 	add() {
 		this.status.setValue(this.amount.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);

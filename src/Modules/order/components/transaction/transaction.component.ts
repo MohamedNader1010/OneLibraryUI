@@ -1,68 +1,78 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material/dialog';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, Inject, OnDestroy} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
-import {Order} from '../../interfaces/Iorder';
 import {OrderService} from '../../services/orders.service';
 import {ValidatePaid} from '../validators/customValidator';
+import {Response} from 'src/Modules/shared/interfaces/Iresponse';
+import {ToastrService} from 'ngx-toastr';
+import {Order} from '../../interfaces/Iorder';
 @Component({
 	selector: 'app-transaction',
 	templateUrl: './transaction.component.html',
 	styleUrls: ['./transaction.component.css'],
 })
-export class TransactionComponent implements OnInit, OnDestroy {
+export class TransactionComponent implements OnDestroy {
 	subscriptions: Subscription[] = [];
 	Form!: FormGroup;
-	id!: number;
-	controllerName: string = 'orders';
-	orderDetails!: Order;
 	isSubmitting: boolean = false;
-
-	get f() {
-		return this.Form.controls;
+	constructor(
+		public dialogRef: MatDialogRef<TransactionComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: Order,
+		private _order: OrderService,
+		private toastr: ToastrService,
+		private route: ActivatedRoute,
+		public dialog: MatDialog,
+		private fb: FormBuilder
+	) {
+		this.Form = this.fb.group({
+			id: [0],
+			orderId: [0, [Validators.required]],
+			paid: ['', [Validators.required], [ValidatePaid(this._order, this.data.id)]],
+		});
+		if (this.data) this.orderId.setValue(this.data.id);
 	}
 
-	constructor(private _order: OrderService, private router: Router, private route: ActivatedRoute, public dialog: MatDialog, private fb: FormBuilder) {
-		this.subscriptions.push(
-			this.route.queryParams.subscribe((params) => {
-				this.id = params['id'];
-			})
-		);
-		this.Form = this.createFormItems();
+	get id(): FormControl {
+		return this.Form.get('id') as FormControl;
+	}
+	get orderId(): FormControl {
+		return this.Form.get('orderId') as FormControl;
+	}
+	get paid(): FormControl {
+		return this.Form.get('paid') as FormControl;
 	}
 
-	ngOnInit(): void {}
-
-	back = () => this.router.navigate([this.controllerName]);
+	onNoClick() {
+		this.dialogRef.close();
+	}
 
 	handleSubmit() {
 		if (this.Form.valid) {
-			if (this.id)
-				this.subscriptions.push(
-					this._order.addOrderTransaction(this.Form.value).subscribe({
-						next: () => {
-							this.isSubmitting = true;
-						},
-						error: () => {
-							this.isSubmitting = false;
-						},
-						complete: () => {
-							this.back();
-							this.isSubmitting = false;
-						},
-					})
-				);
+			this.isSubmitting = true;
+			this.add();
 		}
 	}
 
-	private createFormItems(): FormGroup {
-		return this.fb.group({
-			orderId: [this.id, [Validators.required]],
-			paid: ['', [Validators.required], [ValidatePaid(this._order, this.id)]],
-		});
+	add() {
+		this.subscriptions.push(
+			this._order.addOrderTransaction(this.Form.value).subscribe({
+				next: (res) => {
+					this._order.dialogData = res.body;
+					this.dialogRef.close({data: res});
+				},
+				error: (e) => {
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+				complete: () => {
+					this.isSubmitting = false;
+				},
+			})
+		);
 	}
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+
+	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

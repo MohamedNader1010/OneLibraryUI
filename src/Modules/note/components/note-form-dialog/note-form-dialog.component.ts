@@ -342,29 +342,31 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	update() {
-		if (this.deletedComponents.length)
-			this.subscriptions.push(
-				this._note.deleteNoteComponents(this.deletedComponents).subscribe({
-					error: (e) => {
-						this.isSubmitting = false;
-						let res: Response = e.error ?? e;
-						this.toastr.error(res.message);
-					},
-				})
-			);
+		// if (this.deletedComponents.length)
 		this.subscriptions.push(
-			this._note.update(this.data.id, this.Form.value).subscribe({
-				next: (res) => {
-					this._note.dialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
+			this._note.deleteNoteComponents(this.deletedComponents).subscribe({
 				error: (e) => {
 					this.isSubmitting = false;
 					let res: Response = e.error ?? e;
 					this.toastr.error(res.message);
 				},
 				complete: () => {
-					this.isSubmitting = false;
+					this.subscriptions.push(
+						this._note.update(this.data.id, this.Form.value).subscribe({
+							next: (res) => {
+								this._note.dialogData = res.body;
+								this.matDialogRef.close({data: res});
+							},
+							error: (e) => {
+								this.isSubmitting = false;
+								let res: Response = e.error ?? e;
+								this.toastr.error(res.message);
+							},
+							complete: () => {
+								this.isSubmitting = false;
+							},
+						})
+					);
 				},
 			})
 		);

@@ -25,6 +25,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Output() onClose = new EventEmitter();
 	@Output() onNew = new EventEmitter<any>();
 	@Output() onEdit = new EventEmitter<any>();
+	@Output() onTransaction = new EventEmitter<any>();
 
 	@Input() database: any;
 	dataSource!: TableDataSource;
@@ -102,12 +103,23 @@ export class TableComponent implements OnInit, OnDestroy {
 		);
 	}
 
+	async handleTransaction(row: any) {
+		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
+		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row, minWidth: '30%'});
+		this.subscriptions.push(
+			dialogRef.afterClosed().subscribe({
+				next: (result) => {
+					if (result?.data) this.onTransaction.emit(result.data.message);
+				},
+				complete: () => this.refreshTable(),
+			})
+		);
+	}
+
 	handleView = (id: number) => {
 		this.OnView.emit();
 		this.sendRowId.setOrderId(id);
 	};
-
-	handleTransaction = (row: any) => this._router.navigate([`../transaction`], {queryParams: {id: row.id}, relativeTo: this.route});
 
 	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 

@@ -1,4 +1,3 @@
-import {OrderDetail} from './../interfaces/IorderDetail';
 import {OrderTransaction} from './../interfaces/IorderTransaction';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
@@ -32,8 +31,8 @@ export class OrderService extends GenericService<Order> {
 	}
 	// remaining apis =>
 	// add order transaction, get order by client id , get order within date interval
-	addOrderTransaction = (order: OrderTransaction) => this.http.post<OrderTransaction>(`${this.uri}/AddOrderTransaction`, order);
-	getOrderDetails = (id: number) => this.http.get<OrderDetail[]>(`${this.uri}/GetOrderDetails?Id=${id}`);
+	addOrderTransaction = (order: OrderTransaction) => this.http.post<Response>(`${this.uri}/AddOrderTransaction`, order);
+	getOrderDetails = (id: number) => this.http.get<Response>(`${this.uri}/GetOrderDetails?Id=${id}`);
 	getOrdersByStatus = (status: Status) => this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`);
 	updateStatus = (order: Order) => this.http.put<Response>(`${this.uri}/UpdateStatus`, order);
 }

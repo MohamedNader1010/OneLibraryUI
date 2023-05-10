@@ -1,5 +1,5 @@
-import {map, Observable, of} from 'rxjs';
-import {AbstractControl, ValidatorFn, ValidationErrors, AsyncValidatorFn} from '@angular/forms';
+import {map, Observable} from 'rxjs';
+import {AbstractControl, ValidationErrors, AsyncValidatorFn} from '@angular/forms';
 import {OrderService} from '../../services/orders.service';
 
 export function ValidatePaid(orderService: OrderService, id: number): AsyncValidatorFn | null {

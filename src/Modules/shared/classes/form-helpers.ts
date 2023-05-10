@@ -47,6 +47,9 @@ export class FormHelpers {
 			case FormDialogNames.materialTrackingFormDialogComponent:
 				module = await import('../../material-tracking/components/formDialog/form.dialog.component');
 				return module.FormDialogComponent;
+			case FormDialogNames.orderTransactionFormDialogComponent:
+				module = await import('../../order/components/transaction/transaction.component');
+				return module.TransactionComponent;
 		}
 	}
 

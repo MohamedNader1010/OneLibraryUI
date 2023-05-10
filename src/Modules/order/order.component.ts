@@ -24,15 +24,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	loading!: boolean;
 	formName = FormDialogNames.OrderFormDialogComponent;
 	componentName = ComponentsName.order;
-	constructor(
-		private translate: TranslateService,
-		public dialog: MatDialog,
-		private alertService: AlertServiceService,
-		private dialogService: DialogServiceService,
-		public override database: OrderService,
-		public override toastr: ToastrService,
-		public override httpClient: HttpClient
-	) {
+	constructor(private translate: TranslateService, public dialog: MatDialog, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {
 		super(httpClient, toastr, database);
 	}
 
@@ -111,6 +103,10 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 				.afterClosed()
 				.subscribe(() => {})
 		);
+	}
+
+	public handleOrderTransaction(message: string) {
+		this.toastr.success(message);
 	}
 
 	private getStatusText(status: Status) {
