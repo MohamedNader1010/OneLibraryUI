@@ -1,6 +1,5 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {TableDataSource} from '../shared/classes/tableDataSource';
@@ -57,6 +56,7 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 	}
 
 	public loadData() {
+		this.database = new MaterialService(this.httpClient, this.toastr);
 		this.database.getAllMaterials();
 	}
 }

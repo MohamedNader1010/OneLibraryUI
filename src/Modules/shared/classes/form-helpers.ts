@@ -1,4 +1,3 @@
-import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 export class FormHelpers {
 	public static async getAppropriateDialogComponent(formName: FormDialogNames) {
@@ -50,6 +49,9 @@ export class FormHelpers {
 			case FormDialogNames.orderTransactionFormDialogComponent:
 				module = await import('../../order/components/transaction/transaction.component');
 				return module.TransactionComponent;
+			case FormDialogNames.orderDetailsDialogComponent:
+				module = await import('../../order/components/details/details.component');
+				return module.DetailsComponent;
 		}
 	}
 

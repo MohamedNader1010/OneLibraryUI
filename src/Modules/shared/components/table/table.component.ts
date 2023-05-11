@@ -116,10 +116,10 @@ export class TableComponent implements OnInit, OnDestroy {
 		);
 	}
 
-	handleView = (id: number) => {
-		this.OnView.emit();
-		this.sendRowId.setOrderId(id);
-	};
+	async handleView(row: any) {
+		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
+		const dialogRef = this.dialog.open<any>(dialogComponent, {data: row, minWidth: '30%'});
+	}
 
 	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 

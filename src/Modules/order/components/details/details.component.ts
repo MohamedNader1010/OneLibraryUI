@@ -16,12 +16,10 @@ export class DetailsComponent implements OnInit, OnDestroy {
 	id!: number;
 	order!: Order;
 
-	constructor(@Inject(MAT_DIALOG_DATA) public data: any, private _order: OrderService, public dialog: MatDialog, private getRowId: SendDataFromTableToMatDialoge) {}
+	constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _order: OrderService, public dialog: MatDialog, private getRowId: SendDataFromTableToMatDialoge) {}
 	ngOnInit(): void {
-		this.id = this.getRowId.getOrderId();
-		this._order.GetById(this.id).subscribe((data) => {
-			this.order = data.body;
-		});
+		this.order = this.data;
+		console.log(this.data);
 	}
 
 	ngOnDestroy() {

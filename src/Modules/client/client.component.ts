@@ -5,12 +5,10 @@ import {Client} from './interFaces/Iclient';
 import {ClientService} from './services/client.service';
 import {ToastrService} from 'ngx-toastr';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
-import { TranslateService } from '@ngx-translate/core';
-import { EmployeeService } from '../employee/services/employee.service';
-import { HttpClient } from '@angular/common/http';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import {TranslateService} from '@ngx-translate/core';
+import {HttpClient} from '@angular/common/http';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
 @Component({
 	selector: 'app-all',
 	templateUrl: './client.component.html',
@@ -22,18 +20,13 @@ export class ClientComponent extends TableCommonFunctionality implements OnInit,
 	loading!: boolean;
 	formName = FormDialogNames.ClientFormDialogComponent;
 	componentName = ComponentsName.client;
-	constructor(
-		public override database: ClientService,
-		public override httpClient: HttpClient,
-		public override toastr: ToastrService,
-		private translate: TranslateService) {
-			super(httpClient, toastr, database);
-		}
-	
-	
+	constructor(public override database: ClientService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
+		super(httpClient, toastr, database);
+	}
+
 	ngOnInit(): void {
 		this.initiateTableHeaders();
-		this.getAll();
+		this.loadData();
 	}
 	private initiateTableHeaders() {
 		this.tableColumns = [
@@ -74,24 +67,9 @@ export class ClientComponent extends TableCommonFunctionality implements OnInit,
 			},
 		];
 	}
-	getAll() {
+	loadData() {
 		this.loading = true;
-		this.subscriptions.push(
-			this.database.getAll().subscribe({
-				next: (res) => {
-					this.database.loadingData.next(true)
-					this.database.dataChange.next(res.body)
-				},
-				error: (res) => {
-					this.database.loadingData.next(false)
-					this.toastr.error(res.error.body.Message, res.error.message);
-					this.loading = false;
-				},
-				complete: () => {
-					this.database.loadingData.next(false)
-				},
-			})
-		);
+		this.database = new ClientService(this.httpClient, this.toastr);
+		this.database.getAllClients();
 	}
-	
 }

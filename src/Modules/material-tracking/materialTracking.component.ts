@@ -2,34 +2,30 @@ import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {Service} from '../service/interfaces/Iservice';
-import {ServicesService} from '../service/services/services.service';
-import {TableDataSource} from '../shared/classes/tableDataSource';
 import {IncomeOutcome} from './Enums/IncomeOutcomeEnum';
 import {MaterialTracking} from './interfaces/materialTracking';
 import {MaterialTrackingService} from './services/materialTracking.service';
-import {Response} from '../shared/interfaces/Iresponse';
 import {TranslateService} from '@ngx-translate/core';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 
 @Component({
 	selector: 'app-materialTracking',
 	templateUrl: './materialTracking.component.html',
 	styleUrls: ['./materialTracking.component.css'],
 })
-export class materialTrackingComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
+export class materialTrackingComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.materialTrackingFormDialogComponent;
 	componentName = ComponentsName.materialTracking;
-	database!: MaterialTrackingService;
-	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private translate: TranslateService, private toastr: ToastrService, private _materialTracking: MaterialTrackingService, public dialog: MatDialog) {}
+	constructor(httpClient: HttpClient, public override database: MaterialTrackingService, private translate: TranslateService, toastr: ToastrService, public dialog: MatDialog) {
+		super(httpClient, toastr, database);
+	}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -79,24 +75,4 @@ export class materialTrackingComponent implements OnInit, OnDestroy {
 		this.database = new MaterialTrackingService(this.httpClient, this.toastr);
 		this.database.getAllMaterialTracking();
 	}
-
-	public handleDelete(data: Response) {
-		this.database.dataChange.value.splice(
-			this.database.dataChange.value.findIndex((x) => x.id === data),
-			1
-		);
-		this.toastr.success(data.message);
-	}
-
-	handleNewRow = (message: string) => {
-		this.database.dataChange.value.push(this._materialTracking.dialogData);
-		this.toastr.success(message);
-	};
-
-	handleEditRow = (data: Response) => {
-		this.database.dataChange.value[this.database.dataChange.value.findIndex((x) => x.id === data.body.id)] = this._materialTracking.dialogData;
-		this.toastr.success(data.message);
-	};
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

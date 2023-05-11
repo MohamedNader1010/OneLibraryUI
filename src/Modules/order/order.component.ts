@@ -1,14 +1,11 @@
 import {HttpClient} from '@angular/common/http';
-import {AlertServiceService} from '../shared/services/alert-service.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {Status} from './Enums/status';
 import {Order} from './interfaces/Iorder';
 import {OrderService} from './services/orders.service';
-import {DetailsComponent} from './components/details/details.component';
 import {TranslateService} from '@ngx-translate/core';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {ToastrService} from 'ngx-toastr';
@@ -21,7 +18,6 @@ import {ToastrService} from 'ngx-toastr';
 export class OrderComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Order[];
-	loading!: boolean;
 	formName = FormDialogNames.OrderFormDialogComponent;
 	componentName = ComponentsName.order;
 	constructor(private translate: TranslateService, public dialog: MatDialog, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {
@@ -30,13 +26,13 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 
 	ngOnInit(): void {
 		this.initiateTableHeader();
-		this.getAll();
+		this.loadData();
 	}
 	private initiateTableHeader() {
 		this.tableColumns = [
 			{
-				columnDef: this.translate.instant('form.id.label'),
-				header: this.translate.instant('form.id'),
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
@@ -77,32 +73,9 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 		];
 	}
 
-	getAll() {
-		this.loading = true;
-		this.subscriptions.push(
-			this.database.getAll().subscribe({
-				next: (res) => {
-					this.database.loadingData.next(true);
-					this.database.dataChange.next(res.body);
-				},
-				error: (res) => {
-					this.database.loadingData.next(false);
-					this.toastr.error(res.error.message, res.error.message);
-					this.loading = false;
-				},
-				complete: () => {
-					this.database.loadingData.next(false);
-				},
-			})
-		);
-	}
-	handleOrderDetails(data: any) {
-		this.subscriptions.push(
-			this.dialog
-				.open(DetailsComponent)
-				.afterClosed()
-				.subscribe(() => {})
-		);
+	loadData() {
+		this.database = new OrderService(this.httpClient, this.toastr);
+		this.database.getAllOrders();
 	}
 
 	public handleOrderTransaction(message: string) {

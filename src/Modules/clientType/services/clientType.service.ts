@@ -14,7 +14,7 @@ export class ClientTypeService extends GenericService<ClientType> {
 		super(http, 'ClientType');
 	}
 
-	getAllServices() {
+	getAllClientTypes() {
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
 				this.loadingData.next(true);

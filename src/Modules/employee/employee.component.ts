@@ -1,11 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
 import {EmployeeService} from './services/employee.service';
 import {Employee} from './interFaces/Iemployee';
 import {ToastrService} from 'ngx-toastr';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {TranslateService} from '@ngx-translate/core';
@@ -26,7 +23,7 @@ export class EmployeeComponent extends TableCommonFunctionality implements OnIni
 	}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
-		this.getAll();
+		this.loadData();
 	}
 
 	private initiateTableHeaders() {
@@ -58,23 +55,9 @@ export class EmployeeComponent extends TableCommonFunctionality implements OnIni
 			},
 		];
 	}
-	getAll() {
+	loadData() {
 		this.loading = true;
-		this.subscriptions.push(
-			this.database.getAll().subscribe({
-				next: (res) => {
-					this.database.loadingData.next(true);
-					this.database.dataChange.next(res.body);
-				},
-				error: (res) => {
-					this.database.loadingData.next(false);
-					this.toastr.error(res.error.body.Message, res.error.message);
-					this.loading = false;
-				},
-				complete: () => {
-					this.database.loadingData.next(false);
-				},
-			})
-		);
+		this.database = new EmployeeService(this.httpClient, this.toastr);
+		this.database.getAllEmployees();
 	}
 }

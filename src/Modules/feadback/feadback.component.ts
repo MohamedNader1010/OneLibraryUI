@@ -2,32 +2,29 @@ import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {Service} from '../service/interfaces/Iservice';
-import {TableDataSource} from '../shared/classes/tableDataSource';
 import {FeedbackService} from './services/feedback.service';
-import {Response} from '../shared/interfaces/Iresponse';
 import {Feedback} from './interfaces/feedback';
 import {TranslateService} from '@ngx-translate/core';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 
 @Component({
 	selector: 'app-feadback',
 	templateUrl: './feadback.component.html',
 	styleUrls: ['./feadback.component.css'],
 })
-export class FeadbackComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
+export class FeadbackComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
 	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.feedbackFormDialogComponent;
 	componentName = ComponentsName.feedback;
-	database!: FeedbackService;
-	dataSource!: TableDataSource;
 
-	constructor(public httpClient: HttpClient, private toastr: ToastrService, private _feedback: FeedbackService, private translate: TranslateService, public dialog: MatDialog) {}
+	constructor(httpClient: HttpClient, toastr: ToastrService, public override database: FeedbackService, private translate: TranslateService, public dialog: MatDialog) {
+		super(httpClient, toastr, database);
+	}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
@@ -62,26 +59,4 @@ export class FeadbackComponent implements OnInit, OnDestroy {
 		this.database = new FeedbackService(this.httpClient, this.toastr);
 		this.database.getAllClientFeedbacks();
 	}
-
-	public handleDelete(data: Response) {
-		this.database.dataChange.value.splice(
-			this.database.dataChange.value.findIndex((x) => x.id === data),
-			1
-		);
-		this.toastr.success(data.message);
-	}
-
-	handleNewRow = (message: string) => {
-		console.log(this._feedback.dialogData);
-
-		this.database.dataChange.value.push(this._feedback.dialogData);
-		this.toastr.success(message);
-	};
-
-	handleEditRow = (data: Response) => {
-		this.database.dataChange.value[this.database.dataChange.value.findIndex((x) => x.id === data.body.id)] = this._feedback.dialogData;
-		this.toastr.success(data.message);
-	};
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

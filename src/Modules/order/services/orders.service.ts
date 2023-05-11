@@ -15,8 +15,22 @@ export class OrderService extends GenericService<Order> {
 		super(http, 'Order');
 	}
 
-	getAllServices() {
+	getAllOrders() {
 		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.loadingData.next(true);
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+	getOrdersByStatus(status: Status) {
+		this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
 			next: (data: Response) => {
 				this.loadingData.next(true);
 				this.dataChange.next(data.body);
@@ -33,6 +47,5 @@ export class OrderService extends GenericService<Order> {
 	// add order transaction, get order by client id , get order within date interval
 	addOrderTransaction = (order: OrderTransaction) => this.http.post<Response>(`${this.uri}/AddOrderTransaction`, order);
 	getOrderDetails = (id: number) => this.http.get<Response>(`${this.uri}/GetOrderDetails?Id=${id}`);
-	getOrdersByStatus = (status: Status) => this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`);
 	updateStatus = (order: Order) => this.http.put<Response>(`${this.uri}/UpdateStatus`, order);
 }

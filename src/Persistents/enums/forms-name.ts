@@ -13,4 +13,5 @@ export enum FormDialogNames {
 	incomeOutcomeFormDialogComponent,
 	materialTrackingFormDialogComponent,
 	orderTransactionFormDialogComponent,
+	orderDetailsDialogComponent,
 }
