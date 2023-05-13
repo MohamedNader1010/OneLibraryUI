@@ -54,7 +54,6 @@ export class ServicePricePerClientTypeComponent extends TableCommonFunctionality
 		];
 	}
 	private loadData() {
-		this.database = new ServicePricePerClientTypeService(this.httpClient, this.toastr);
 		this.database.getAllServicePrices();
 	}
 }

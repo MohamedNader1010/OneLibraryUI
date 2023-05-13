@@ -6,7 +6,7 @@
 
 <mat-form-field color="warn" appearance="fill" class="w-100">
 	<mat-label>{{ label }}</mat-label>
-	<input [disabled]="!dataSource" matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
+	<input matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
 	<mat-error *ngIf="nameControl.hasError('notFound')">البيانات غير صحيحة</mat-error>
 	<mat-error *ngIf="nameControl.hasError('required') && (nameControl.touched || nameControl.dirty)"> يجب ادخال البيانات </mat-error>
 </mat-form-field>

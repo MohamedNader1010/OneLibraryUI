@@ -6,7 +6,6 @@ export function ValidatePaid(orderService: OrderService, id: number): AsyncValid
 	return (control: AbstractControl): Observable<ValidationErrors | null> => {
 		return orderService.GetById(id).pipe(
 			map((result) => {
-				console.log(result.body.rest < control.value);
 				return result.body.rest < control.value ? {exceed: true, value: result.body.rest} : null;
 			})
 		);

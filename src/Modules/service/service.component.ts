@@ -64,7 +64,6 @@ export class ServiceComponent extends TableCommonFunctionality implements OnInit
 	}
 
 	public loadData() {
-		this.database = new ServicesService(this.httpClient, this.toastr);
 		this.database.getAllServices();
 	}
 }

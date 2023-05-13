@@ -217,8 +217,6 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 				.valueChanges.pipe(startWith(this.serviceQuantityFormControl(index).value), pairwise())
 				.subscribe(([old, value]) => {
 					this.setOriginalAndActualPrices(1, index, value - old);
-					console.log(this.originalPrice.value);
-
 					this.calculateFinalPriceAndEarning();
 				})
 		);

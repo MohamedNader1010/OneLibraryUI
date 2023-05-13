@@ -46,7 +46,6 @@ export class ServiceTypeComponent extends TableCommonFunctionality implements On
 	}
 
 	private loadData() {
-		this.database = new ServicesTypeService(this.httpClient, this.toastr);
 		this.database.getAllServices();
 	}
 }
