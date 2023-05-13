@@ -16,9 +16,9 @@ export class OrderService extends GenericService<Order> {
 	}
 
 	getAllOrders() {
+		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {
@@ -30,9 +30,9 @@ export class OrderService extends GenericService<Order> {
 		});
 	}
 	getOrdersByStatus(status: Status) {
+		this.loadingData.next(true);
 		this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {

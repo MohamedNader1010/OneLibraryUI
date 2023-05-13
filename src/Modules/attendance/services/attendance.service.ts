@@ -17,9 +17,9 @@ export class AttendanceService extends GenericService<Attendance> {
 	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
 	getAllAttendance() {
+		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {

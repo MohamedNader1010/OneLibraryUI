@@ -13,9 +13,9 @@ export class MaterialService extends GenericService<Material> {
 		super(http, 'Material');
 	}
 	getAllMaterials() {
+		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {
