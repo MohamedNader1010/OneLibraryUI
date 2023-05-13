@@ -8,28 +8,18 @@
 		<mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
 		<form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 			<div class="row">
-				<mat-form-field appearance="fill" class="col-4">
-					<mat-label>{{ 'shared.clientType' | translate }}</mat-label>
 
-					<mat-select [disabled]="disableMode" (selectionChange)="getAllClientsByType($event)" #clientType>
-						<mat-option (onSelectionChange)="getAllClientsByType(mat)" *ngFor="let mat of ClientTypesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-					</mat-select>
-				</mat-form-field>
-				<mat-form-field appearance="fill" class="col-7">
-					<mat-label>{{ 'shared.client' | translate }}</mat-label>
+				<autocomplete class="col-5" [label]="'shared.clientType' | translate"
+					[dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)"
+					[selectedValue]="Form.get('clientTypeId')?.value"
+					></autocomplete>
 
-					<mat-select formControlName="clientId">
-						<mat-option *ngFor="let mat of ClientsDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-					</mat-select>
-				</mat-form-field>
+					<autocomplete class="col-6" [label]="'shared.client' | translate" [dataSource]="ClientsDataSource"
+					(selectedId)="setClientId($event)" [selectedValue]="Form.get('clientId')?.value"
+					></autocomplete>
 				<div class="col-1">
-					<button
-						[disabled]="disableMode || !clientId.value || clientId.invalid"
-						type="button"
-						mat-icon-button
-						matTooltip="add"
-						color="basic"
-						aria-label="add order detail row"
+					<button [disabled]="disableMode || !clientId.value || clientId.invalid" type="button"
+						mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row"
 						(click)="handleNewDetail()">
 						<mat-icon>add</mat-icon>
 					</button>
@@ -48,12 +38,15 @@
 							<mat-form-field appearance="fill" class="w-100">
 								<mat-label>{{ 'service.name' | translate }}</mat-label>
 
-								<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)" [id]="'mat-service-' + i.toString()" #matservice>
-									<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+								<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)"
+									[id]="'mat-service-' + i.toString()" #matservice>
+									<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name
+										}}</mat-option>
 									<hr />
 									<div class="row no-gutters p-1">
 										<div class="col-sm-12 text-right m-1">
-											<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matservice)">disable</button>
+											<button type="button" class="btn btn-danger"
+												(click)="enableAndDisableDDL(i, matservice)">disable</button>
 										</div>
 									</div>
 								</mat-select>
@@ -64,11 +57,13 @@
 								<mat-label>{{ 'note.name' | translate }}</mat-label>
 
 								<mat-select formControlName="noteId" (selectionChange)="onNoteValueChanged(i)" #matNote>
-									<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+									<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name
+										}}</mat-option>
 									<hr />
 									<div class="row no-gutters p-1">
 										<div class="col-sm-12 text-right m-1">
-											<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matNote)">disable</button>
+											<button type="button" class="btn btn-danger"
+												(click)="enableAndDisableDDL(i, matNote)">disable</button>
 										</div>
 									</div>
 								</mat-select>
@@ -78,7 +73,8 @@
 							<mat-form-field appearance="fill" class="w-100">
 								<mat-label>{{ 'quantity' | translate }}</mat-label>
 
-								<input type="number" matInput formControlName="quantity" (change)="getQuantityAndUpdatePriceInputForService(i)" />
+								<input type="number" matInput formControlName="quantity"
+									(change)="getQuantityAndUpdatePriceInputForService(i)" />
 							</mat-form-field>
 						</div>
 						<div class="col-2">
@@ -100,7 +96,8 @@
 							</mat-form-field>
 						</div>
 						<div class="col-1">
-							<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+							<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete"
+								color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
 								<mat-icon>delete</mat-icon>
 							</button>
 						</div>
@@ -126,7 +123,8 @@
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.discountPercent' | translate }}</mat-label>
 
-						<input type="number" matInput formControlName="discountPercent" (change)="computeDiscountValue()" />
+						<input type="number" matInput formControlName="discountPercent"
+							(change)="computeDiscountValue()" />
 					</mat-form-field>
 				</div>
 			</div>
@@ -163,8 +161,10 @@
 				</div>
 			</div>
 			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{ isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{
+					isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate
+					}}</button>
 			</div>
 		</form>
 	</mat-dialog-content>
