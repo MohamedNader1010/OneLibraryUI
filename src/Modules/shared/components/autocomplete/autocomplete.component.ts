@@ -24,7 +24,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 	ngOnInit() {
 		this.nameControl.addValidators([Validators.required]);
 		this.filteredData$ = this.nameControl.valueChanges.pipe(
-			startWith(this.nameControl.value),
+			startWith(null),
 			map((value) => {
 				if (value) {
 					let filtered = this._filter(value);
