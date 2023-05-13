@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
@@ -13,7 +13,7 @@ import {AttendanceService} from './../../../attendance/services/attendance.servi
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnDestroy {
+export class LoginComponent implements OnInit,  OnDestroy {
 	subscriptions: Subscription[] = [];
 	loginForm: FormGroup;
 	hide = true;
@@ -24,6 +24,8 @@ export class LoginComponent implements OnDestroy {
 			userName: ['', [Validators.required, Validators.maxLength(100)]],
 			password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
 		});
+	}
+	ngOnInit(): void {
 		this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
 	}
 	get userName(): FormControl {
