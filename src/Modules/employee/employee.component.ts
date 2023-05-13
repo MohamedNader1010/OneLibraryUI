@@ -57,7 +57,6 @@ export class EmployeeComponent extends TableCommonFunctionality implements OnIni
 	}
 	loadData() {
 		this.loading = true;
-		this.database = new EmployeeService(this.httpClient, this.toastr);
 		this.database.getAllEmployees();
 	}
 }

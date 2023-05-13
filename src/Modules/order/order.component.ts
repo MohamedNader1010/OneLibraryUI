@@ -74,7 +74,6 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	}
 
 	loadData() {
-		this.database = new OrderService(this.httpClient, this.toastr);
 		this.database.getAllOrders();
 	}
 

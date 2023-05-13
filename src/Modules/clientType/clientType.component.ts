@@ -43,7 +43,6 @@ export class ClientTypeComponent extends TableCommonFunctionality implements OnI
 	}
 	loadData() {
 		this.loading = true;
-		this.database = new ClientTypeService(this.httpClient, this.toastr);
 		this.database.getAllClientTypes();
 	}
 }

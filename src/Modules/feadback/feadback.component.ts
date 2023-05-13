@@ -56,7 +56,6 @@ export class FeadbackComponent extends TableCommonFunctionality implements OnIni
 	}
 
 	public loadData() {
-		this.database = new FeedbackService(this.httpClient, this.toastr);
 		this.database.getAllClientFeedbacks();
 	}
 }

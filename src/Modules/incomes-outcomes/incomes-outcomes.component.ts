@@ -67,7 +67,6 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 	}
 
 	public loadData() {
-		this.database = new IncomesOutcomesService(this.httpClient, this.toastr);
 		this.database.getAllIncomesOutcomes();
 	}
 }

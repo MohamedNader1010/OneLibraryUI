@@ -52,7 +52,6 @@ export class AttendanceComponent extends TableCommonFunctionality implements OnI
 		];
 	}
 	private loadData() {
-		this.database = new AttendanceService(this.httpClient, this.toastr);
 		this.database.getAllAttendance();
 	}
 }

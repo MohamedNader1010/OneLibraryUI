@@ -91,7 +91,6 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
 	}
 
 	public loadData() {
-		this.database = new NoteService(this.httpClient, this.toastr);
 		this.database.getAllNotes();
 	}
 }

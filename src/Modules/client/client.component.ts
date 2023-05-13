@@ -69,7 +69,6 @@ export class ClientComponent extends TableCommonFunctionality implements OnInit,
 	}
 	loadData() {
 		this.loading = true;
-		this.database = new ClientService(this.httpClient, this.toastr);
 		this.database.getAllClients();
 	}
 }

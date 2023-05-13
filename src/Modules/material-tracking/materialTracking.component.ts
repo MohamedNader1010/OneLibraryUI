@@ -72,7 +72,6 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
 	}
 
 	public loadData() {
-		this.database = new MaterialTrackingService(this.httpClient, this.toastr);
 		this.database.getAllMaterialTracking();
 	}
 }

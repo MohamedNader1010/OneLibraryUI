@@ -56,7 +56,6 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 	}
 
 	public loadData() {
-		this.database = new MaterialService(this.httpClient, this.toastr);
 		this.database.getAllMaterials();
 	}
 }

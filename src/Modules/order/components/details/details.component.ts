@@ -19,7 +19,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 	constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _order: OrderService, public dialog: MatDialog, private getRowId: SendDataFromTableToMatDialoge) {}
 	ngOnInit(): void {
 		this.order = this.data;
-		console.log(this.data);
 	}
 
 	ngOnDestroy() {
