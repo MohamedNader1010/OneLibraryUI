@@ -15,7 +15,6 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class ClientTypeComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: ClientType[];
 	loading!: boolean;
 	formName = FormDialogNames.ClientTypeFormDialogComponent;
 	componentName = ComponentsName.clientType;

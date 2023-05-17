@@ -8,18 +8,34 @@
 		<mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
 		<form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 			<div class="row">
-
-				<autocomplete class="col-5" [label]="'shared.clientType' | translate"
-					[dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)"
-					[selectedValue]="Form.get('clientTypeId')?.value"
-					></autocomplete>
-
-					<autocomplete class="col-6" [label]="'shared.client' | translate" [dataSource]="ClientsDataSource"
-					(selectedId)="setClientId($event)" [selectedValue]="Form.get('clientId')?.value"
-					></autocomplete>
+				<autocomplete
+					*ngIf="!data; else clientType"
+					class="col-5"
+					[label]="'shared.clientType' | translate"
+					[dataSource]="ClientTypesDataSource"
+					(selectedId)="setClientTypeId($event)"></autocomplete>
+				<ng-template #clientType>
+					<mat-form-field class="col-5">
+						<mat-label>{{ 'shared.clientType' | translate }}</mat-label>
+						<input matInput [value]="data.clientTypeName" [readonly]="true" />
+					</mat-form-field>
+				</ng-template>
+				<autocomplete *ngIf="!data; else client" class="col-6" [label]="'shared.client' | translate" [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)"></autocomplete>
+				<ng-template #client>
+					<mat-form-field class="col-6">
+						<mat-label>{{ 'shared.client' | translate }}</mat-label>
+						<input matInput [value]="data.clientName" [readonly]="true" />
+					</mat-form-field>
+				</ng-template>
 				<div class="col-1">
-					<button [disabled]="disableMode || !clientId.value || clientId.invalid" type="button"
-						mat-icon-button matTooltip="add" color="basic" aria-label="add order detail row"
+					<button
+						*ngIf="!data"
+						[disabled]="!clientId.value || clientId.invalid"
+						type="button"
+						mat-icon-button
+						matTooltip="add"
+						color="basic"
+						aria-label="add order detail row"
 						(click)="handleNewDetail()">
 						<mat-icon>add</mat-icon>
 					</button>
@@ -28,80 +44,76 @@
 			<!-- order details -->
 			<div formArrayName="orderDetails" *ngIf="OrderDetails.controls.length">
 				<div class="row" *ngFor="let detail of OrderDetails.controls; let i = index">
-					<ng-container [formGroupName]="i">
-						<div class="col-3">
-							<div hidden *ngIf="orderToBeUpdated">
-								<div hidden *ngFor="let detail of orderToBeUpdated.orderDetails">
-									<input hidden formControlName="id" />
-								</div>
+					<div [formGroupName]="i">
+						<div class="row" *ngIf="!data">
+							<label id="service-note-raido-group-label">أختر خدمة او مذكرة</label>
+							<mat-radio-group formControlName="noteOrService" arialabelledby="service-note-raido-group-label" color="warn">
+								<mat-radio-button value="service">خدمات</mat-radio-button>
+								<mat-radio-button value="note">مذكرات</mat-radio-button>
+							</mat-radio-group>
+						</div>
+						<div class="row">
+							<div class="col-4">
+								<mat-form-field *ngIf="getNoteOrService(i).value == 'service'" appearance="fill" class="w-100">
+									<mat-label>{{ 'service.name' | translate }}</mat-label>
+									<mat-select *ngIf="!data; else service" formControlName="serviceId" (selectionChange)="getPrice($event.value, i)" [id]="'mat-service-' + i.toString()" #matservice>
+										<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+										<hr />
+										<div class="row no-gutters p-1">
+											<div class="col-sm-12 text-right m-1">
+												<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matservice)">disable</button>
+											</div>
+										</div>
+									</mat-select>
+									<ng-template #service>
+										<input matInput [value]="getOrderDetailService(i).value" [readonly]="true" />
+									</ng-template>
+								</mat-form-field>
+								<mat-form-field *ngIf="getNoteOrService(i).value == 'note'" appearance="fill" class="w-100">
+									<mat-label>{{ 'note.name' | translate }}</mat-label>
+									<mat-select *ngIf="!data; else note" formControlName="noteId" (selectionChange)="onNoteValueChanged(i)" #matNote>
+										<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+										<hr />
+										<div class="row no-gutters p-1">
+											<div class="col-sm-12 text-right m-1">
+												<button type="button" class="btn btn-danger" (click)="enableAndDisableDDL(i, matNote)">disable</button>
+											</div>
+										</div>
+									</mat-select>
+									<ng-template #note>
+										<input matInput [value]="getOrderDetailNote(i).value" [readonly]="true" />
+									</ng-template>
+								</mat-form-field>
 							</div>
-							<mat-form-field appearance="fill" class="w-100">
-								<mat-label>{{ 'service.name' | translate }}</mat-label>
-
-								<mat-select formControlName="serviceId" (selectionChange)="getPrice($event.value, i)"
-									[id]="'mat-service-' + i.toString()" #matservice>
-									<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name
-										}}</mat-option>
-									<hr />
-									<div class="row no-gutters p-1">
-										<div class="col-sm-12 text-right m-1">
-											<button type="button" class="btn btn-danger"
-												(click)="enableAndDisableDDL(i, matservice)">disable</button>
-										</div>
-									</div>
-								</mat-select>
-							</mat-form-field>
+							<div class="col-2">
+								<mat-form-field appearance="fill" class="w-100">
+									<mat-label>{{ 'quantity.label' | translate }}</mat-label>
+									<input type="number" matInput formControlName="quantity" (change)="getQuantityAndUpdatePriceInputForService(i)" [readonly]="!!data" />
+								</mat-form-field>
+							</div>
+							<div class="col-2">
+								<mat-form-field class="w-100">
+									<mat-label>{{ 'shared.price' | translate }}</mat-label>
+									<input type="number" matInput formControlName="price" [readonly]="true" #priceRef />
+								</mat-form-field>
+							</div>
+							<div class="col-2">
+								<mat-form-field appearance="fill" class="w-100">
+									<mat-label>{{ 'order.status' | translate }}</mat-label>
+									<mat-select formControlName="orderStatus">
+										<mat-option *ngFor="let status of availableStatus" [value]="status">
+											{{ getStatusLabel(status) }}
+										</mat-option>
+									</mat-select>
+								</mat-form-field>
+							</div>
+							<div class="col-1">
+								<button *ngIf="!data" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</div>
 						</div>
-						<div class="col-2">
-							<mat-form-field appearance="fill" class="w-100">
-								<mat-label>{{ 'note.name' | translate }}</mat-label>
-
-								<mat-select formControlName="noteId" (selectionChange)="onNoteValueChanged(i)" #matNote>
-									<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name
-										}}</mat-option>
-									<hr />
-									<div class="row no-gutters p-1">
-										<div class="col-sm-12 text-right m-1">
-											<button type="button" class="btn btn-danger"
-												(click)="enableAndDisableDDL(i, matNote)">disable</button>
-										</div>
-									</div>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div class="col-2">
-							<mat-form-field appearance="fill" class="w-100">
-								<mat-label>{{ 'quantity' | translate }}</mat-label>
-
-								<input type="number" matInput formControlName="quantity"
-									(change)="getQuantityAndUpdatePriceInputForService(i)" />
-							</mat-form-field>
-						</div>
-						<div class="col-2">
-							<mat-form-field class="w-100">
-								<mat-label>{{ 'shared.price' | translate }}</mat-label>
-
-								<input type="number" matInput formControlName="price" [readonly]="true" #priceRef />
-							</mat-form-field>
-						</div>
-						<div class="col-2">
-							<mat-form-field appearance="fill" class="w-100">
-								<mat-label>{{ 'order.status' | translate }}</mat-label>
-
-								<mat-select formControlName="orderStatus">
-									<mat-option *ngFor="let status of availableStatus" [value]="status">
-										{{ getStatusLabel(status) }}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-						</div>
-						<div class="col-1">
-							<button [disabled]="disableMode" type="button" mat-icon-button matTooltip="delete"
-								color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</div>
-					</ng-container>
+					</div>
 				</div>
 			</div>
 			<!-- end order details -->
@@ -109,22 +121,19 @@
 				<div class="col-4">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.totalPrice' | translate }}</mat-label>
-
 						<input type="number" matInput formControlName="totalPrice" [readonly]="true" />
 					</mat-form-field>
 				</div>
 				<div class="col-4">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.discountValue' | translate }}</mat-label>
-						<input type="number" matInput formControlName="discount" />
+						<input type="number" matInput formControlName="discount" [readonly]="!!data" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.discountPercent' | translate }}</mat-label>
-
-						<input type="number" matInput formControlName="discountPercent"
-							(change)="computeDiscountValue()" />
+						<input type="number" matInput formControlName="discountPercent" (change)="computeDiscountValue()" [readonly]="!!data" />
 					</mat-form-field>
 				</div>
 			</div>
@@ -132,21 +141,18 @@
 				<div class="col-4">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.finalPrice' | translate }}</mat-label>
-
 						<input type="number" matInput formControlName="finalPrice" [readonly]="true" />
 					</mat-form-field>
 				</div>
 				<div class="col-4">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.paid' | translate }}</mat-label>
-
-						<input type="number" matInput formControlName="paid" />
+						<input type="number" matInput formControlName="paid" [readonly]="!!data" />
 					</mat-form-field>
 				</div>
 				<div class="col-3">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.rest' | translate }}</mat-label>
-
 						<input type="number" matInput formControlName="rest" [readonly]="true" />
 					</mat-form-field>
 				</div>
@@ -155,16 +161,13 @@
 				<div class="col-11">
 					<mat-form-field class="w-100">
 						<mat-label>{{ 'shared.clientRemarks' | translate }}</mat-label>
-
-						<textarea matInput formControlName="remarks"></textarea>
+						<textarea matInput formControlName="remarks" [readonly]="!!data"></textarea>
 					</mat-form-field>
 				</div>
 			</div>
 			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{
-					isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate
-					}}</button>
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{ isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
 			</div>
 		</form>
 	</mat-dialog-content>

@@ -6,25 +6,21 @@ import {Material} from '../../interfaces/Imaterial';
 import {ToastrService} from 'ngx-toastr';
 import {TranslateService} from '@ngx-translate/core';
 import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 @Component({
 	selector: 'app-material-form-dialog',
 	templateUrl: './material-form-dialog.component.html',
 	styleUrls: ['./material-form-dialog.component.css'],
 })
 export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
-	Form!: FormGroup;
-
 	constructor(
 		@Inject(MAT_DIALOG_DATA) private data: Material,
 		translate: TranslateService,
-		dialogService: DialogServiceService,
-		private _material: MaterialService,
+		_material: MaterialService,
 		private fb: FormBuilder,
-		private matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
-		public override toastr: ToastrService
+		matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
+		toastr: ToastrService
 	) {
-		super(matDialogRef, dialogService, translate, _material, toastr);
+		super(matDialogRef, translate, _material, toastr);
 		this.initiateFormControls();
 	}
 

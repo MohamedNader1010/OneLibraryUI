@@ -14,7 +14,6 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 })
 export class AttendanceComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Attendance[];
 	loading!: boolean;
 	formName = FormDialogNames.AttendanceFormDialogComponent;
 	componentName = ComponentsName.attendance;

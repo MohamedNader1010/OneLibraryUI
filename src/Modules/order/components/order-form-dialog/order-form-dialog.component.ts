@@ -1,47 +1,40 @@
-import { TranslateService } from '@ngx-translate/core';
-import { AlertServiceService } from './../../../shared/services/alert-service.service';
-import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, map, catchError, of, throwError } from 'rxjs';
-import { NoteService } from 'src/Modules/note/services/note.service';
-import { ServicesService } from 'src/Modules/service/services/services.service';
-import { OrderService } from '../../services/orders.service';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { Note } from 'src/Modules/note/interfaces/Inote';
-import { Client } from 'src/Modules/client/interFaces/Iclient';
-import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
-import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { ClientService } from 'src/Modules/client/services/client.service';
-import { Status } from '../../Enums/status';
-import { MatSelect } from '@angular/material/select';
-import { Order } from '../../interfaces/Iorder';
-import { Response } from './../../../shared/interfaces/Iresponse';
-import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DialogServiceService } from 'src/Modules/shared/services/dialog-service.service';
-import { ToastrService } from 'ngx-toastr';
+import {TranslateService} from '@ngx-translate/core';
+import {AlertServiceService} from './../../../shared/services/alert-service.service';
+import {ServicePricePerClientTypeService} from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
+import {Component, OnDestroy, OnInit, Inject} from '@angular/core';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {forkJoin, map, catchError, of, throwError, startWith} from 'rxjs';
+import {NoteService} from 'src/Modules/note/services/note.service';
+import {ServicesService} from 'src/Modules/service/services/services.service';
+import {OrderService} from '../../services/orders.service';
+import {Service} from 'src/Modules/service/interfaces/Iservice';
+import {Note} from 'src/Modules/note/interfaces/Inote';
+import {Client} from 'src/Modules/client/interFaces/Iclient';
+import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
+import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import {ClientService} from 'src/Modules/client/services/client.service';
+import {Status} from '../../Enums/status';
+import {MatSelect} from '@angular/material/select';
+import {Order} from '../../interfaces/Iorder';
+import {Response} from './../../../shared/interfaces/Iresponse';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {ToastrService} from 'ngx-toastr';
 @Component({
 	selector: 'app-order-form-dialog',
 	templateUrl: './order-form-dialog.component.html',
 	styleUrls: ['./order-form-dialog.component.css'],
 })
-export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy, AfterViewInit {
-	private _clientTypeId: number = -1;
-	@ViewChild('matNoteId') matNoteId!: MatSelect;
-	@ViewChild('matServiceId') matServiceId!: MatSelect;
-	@ViewChild('clientType') clientTypeElement!: ElementRef;
-	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع];
-	Form: FormGroup;
+export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع]; //handle other status display on edit
+
 	isLoading = false;
-	orderToBeUpdated!: Order;
 	ServicesDataSource: Service[] = [];
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];
 	ClientTypesDataSource: ClientType[] = [];
-	disableMode: boolean = false;
 	key = 0;
-	prices: { key: number; value: number }[] = [];
+	prices: {key: number; value: number}[] = [];
 	constructor(
 		private _service: ServicesService,
 		private _note: NoteService,
@@ -53,17 +46,15 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		private alertService: AlertServiceService,
 		translate: TranslateService,
 		@Inject(MAT_DIALOG_DATA) public data: Order,
-		private matDialogRef: MatDialogRef<OrderFormDialogComponent>,
-		private dialogService: DialogServiceService,
+		matDialogRef: MatDialogRef<OrderFormDialogComponent>,
 		public override toastr: ToastrService
 	) {
-		super(matDialogRef, dialogService, translate, _order, toastr);
+		super(matDialogRef, translate, _order, toastr);
 		this.Form = this.createFormItem('init');
 	}
-	ngAfterViewInit(): void { }
 	ngOnInit(): void {
 		this.forkJoins();
-		if (this.data) this.getSingle(this.data.id);
+		// this.subscriptions.push(this.clientTypeId.valueChanges.pipe(startWith(null)).subscribe((value) => this.handleClientTypeChange(value)));
 		this.computeDiscountPercent();
 		this.computeRest();
 	}
@@ -81,10 +72,15 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 					};
 				})
 			)
-			.subscribe((response) => {
-				this.NotesDataSource = response.notes.body;
-				this.ServicesDataSource = response.services.body;
-				this.ClientTypesDataSource = response.clientsType.body;
+			.subscribe({
+				next: (response) => {
+					this.NotesDataSource = response.notes.body;
+					this.ServicesDataSource = response.services.body;
+					this.ClientTypesDataSource = response.clientsType.body;
+				},
+				complete: () => {
+					if (this.data) this.fillFormWithData(this.data);
+				},
 			});
 	}
 	getStatusLabel(status: Status) {
@@ -111,29 +107,27 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		this.onServiceValueChanged(index);
 		const clientTypeId = this.Form.get('clientTypeId')?.value;
 		return this.subscriptions.push(
-			this.servicePriceService.getPrice(clientTypeId, serviceTypeId)
-				.subscribe({
-					next: (res: Response) => {
-						if (!res.body) {
-							this.toastr.error('هذه الخدمة غير مسعرة');
-							return;
+			this.servicePriceService.getPrice(clientTypeId, serviceTypeId).subscribe({
+				next: (res: Response) => {
+					if (!res.body) {
+						this.toastr.error('هذه الخدمة غير مسعرة');
+						return;
+					}
+					this.prices?.forEach((element) => {
+						if (element.key === index) {
+							element.value = +res.body.price;
 						}
-						this.prices?.forEach((element) => {
-							if (element.key === index) {
-								element.value = +res.body.price;
-							}
-							this.getQuantityAndUpdatePriceInputForService(index);
-							this.computeTotalPrice();
-							this.computeFinalPrice();
-						});
-					},
-					// error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
-					error: (e) => {
-						// this.loading = false;
-						let res: Response = e.error ?? e;
-
-					},
-				})
+						this.getQuantityAndUpdatePriceInputForService(index);
+						this.computeTotalPrice();
+						this.computeFinalPrice();
+					});
+				},
+				// error: (err) => this.alertService.onError(err.message, this.translate.instant('error.cantLoadPrices')),
+				error: (e) => {
+					// this.loading = false;
+					let res: Response = e.error ?? e;
+				},
+			})
 		);
 	}
 	getQuantityAndUpdatePriceInputForService(index: number) {
@@ -154,34 +148,17 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		}
 	}
 
-	getAllClientsByType(clientTypeId: number) {
-		if (!clientTypeId) return;
-		this.subscriptions.push(
-			this._client.getAllByType(clientTypeId).subscribe({
-				next: (data) => {
-					this.ClientsDataSource = data.body;
-				},
-				// error: (e) => {
-				// 	this.alertService.onError(e.message, this.translate.instant('error.cantLoadData'));
-				// },
-				error: (e) => {
-					// this.loading = false;
-					let res: Response = e.error ?? e;
-					this.alertService.onError(res.message, '');
-				},
-			})
-		);
-	}
 	createFormItem(type: string): FormGroup {
 		let formItem: FormGroup = this.fb.group({});
 		switch (type) {
 			case 'init':
 				formItem = this.fb.group({
+					id: [0],
 					totalPrice: [null, [Validators.required]],
 					finalPrice: [null],
 					discount: [0],
 					discountPercent: [0],
-					rest: [{ value: null }, [Validators.required]],
+					rest: [{value: null}, [Validators.required]],
 					paid: [null, [Validators.required]],
 					clientId: [null, [Validators.required]],
 					clientTypeId: [null],
@@ -192,29 +169,30 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 			case 'detail':
 				formItem = this.fb.group({
 					id: [0],
+					noteOrService: ['service'],
 					price: [null],
 					quantity: [0, [Validators.required]],
 					serviceId: [null],
+					service: [''],
 					noteId: [null],
+					note: [''],
 					orderStatus: [Status.استلم, [Validators.required]],
 				});
 				break;
 		}
 		return formItem;
 	}
+
 	get clientId(): FormArray {
 		return this.Form.get('clientId') as FormArray;
 	}
-	private _disableClientIdControl() {
-		// I want to disable ClientId control untill data is reached from API.
-		this.Form.get('clientId')?.disable();
-	}
+
 	computeDiscountPercent() {
 		const discountControl = this.Form.get('discount');
 		discountControl?.valueChanges.subscribe((value) => {
 			const totalPrice = +this.Form.get('totalPrice')?.value;
 			const percent = +((+value / totalPrice) * 100).toFixed(2);
-			this.Form.get('discountPercent')?.setValue(percent);
+			this.Form.get('discountPercent')?.setValue(+percent);
 			this.computeFinalPrice();
 		});
 	}
@@ -263,7 +241,10 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		totalPriceControl?.setValue(totalPrice);
 	}
 	fillFormWithData(datasource: Order) {
-		datasource.orderDetails.forEach(() => this.handleNewDetail());
+		datasource.orderDetails.forEach((d) => {
+			this.handleNewDetail();
+			this.getNoteOrService(datasource.orderDetails.indexOf(d)).setValue(d.noteId ? 'note' : 'service');
+		});
 		this.Form.patchValue(datasource);
 	}
 
@@ -276,22 +257,14 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	get clientTypeControl(): FormControl {
 		return this.Form.get('clientType') as FormControl;
 	}
-	getSingle = (id: number) => {
-		this.isLoading = true;
-		this.subscriptions.push(
-			this._order.GetById(id).subscribe((data) => {
-				this.orderToBeUpdated = data.body;
-				this.fillFormWithData(data.body);
-				this.isLoading = false;
-			})
-		);
-	};
+	getOrderDetailService = (index: number): FormControl => this.OrderDetails.at(index).get('service') as FormControl;
+	getOrderDetailNote = (index: number): FormControl => this.OrderDetails.at(index).get('note') as FormControl;
+	getNoteOrService = (index: number): FormControl => this.OrderDetails.at(index).get('noteOrService') as FormControl;
 
 	handleNewDetail = () => {
 		this.OrderDetails.push(this.createFormItem('detail'));
-		if (this.data) this.disableAllControls();
 		this.key = this.OrderDetails.controls.length - 1;
-		this.prices.push({ key: this.key, value: -1 });
+		this.prices.push({key: this.key, value: -1});
 		this.key++;
 	};
 	handleDeleteDetail = (index: number) => {
@@ -301,11 +274,25 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		this.computeFinalPrice();
 	};
 
-	setClientTypeId = (id: number) => {
-		this.Form.get('clientTypeId')?.setValue(id);
-		this.getAllClientsByType(id)
+	setClientTypeId(id: number) {
+		if (id === null || id === undefined) return;
+		this.subscriptions.push(
+			this._client.getAllByType(id).subscribe({
+				next: (data) => {
+					this.ClientsDataSource = data.body;
+				},
+				error: (e) => {
+					this.ClientsDataSource = [];
+					this.clientId.reset();
+					this.isSubmitting = false;
+					let res: Response = e.error ?? e;
+					this.toastr.error(res.message);
+				},
+			})
+		);
 	}
-	setClientId = (id: any) => this.Form.get('clientId')?.setValue(id)
+
+	setClientId = (id: any) => this.clientId.setValue(id);
 
 	private deleteSelectedElementFromMappedObject(index: number) {
 		for (let i = index + 1; i < this.prices.length; i++) {
@@ -319,12 +306,12 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		this.NotesDataSource.forEach((note) => {
 			if (note.id === noteId) {
 				let price = +(note.finalPrice == null ? 10 : note.finalPrice);
-				this.OrderDetails.controls[index].get('quantity')?.valueChanges.subscribe(value => {
+				this.OrderDetails.controls[index].get('quantity')?.valueChanges.subscribe((value) => {
 					let priceInput = this.OrderDetails.controls[index].get('price');
 					priceInput?.setValue(price * +value);
 					this.computeTotalPrice();
 					this.computeFinalPrice();
-				})
+				});
 			}
 		});
 	}
@@ -356,18 +343,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 			this.clearPriceAndQuantityInput(index);
 		}
 	}
-	private disableAllControls() {
-		this.disableMode = true;
-		this.Form.disable();
-		if (this.OrderDetails.value) {
-			this.OrderDetails.controls.forEach((control) => {
-				control.disable();
-			});
-			this.OrderDetails.controls.find((control) => {
-				if (control.get('orderStatus')?.enable()) return;
-			});
-		}
-	}
+
 	private validateDiscountAmountAndPercent() {
 		const discountValue = 0;
 		const discountPercent = 0;
@@ -376,37 +352,24 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		const isDiscountPercentEqualsDiscountValue = discountValue + finalPrice === (discountPercent / 100) * totalPrice + finalPrice ? true : false;
 		if (!isDiscountPercentEqualsDiscountValue) {
 			this.alertService.onError('discount amount not equals to discount percent', '');
-			this.Form.setErrors({ invalid: true });
+			this.Form.setErrors({invalid: true});
 		}
-	}
-	private setUpdatedOrder(): void {
-		this.orderToBeUpdated.orderDetails.forEach((orderDetail) => {
-			this.OrderDetails.controls.forEach((control) => {
-				let id = control.get('id')?.value;
-				if (orderDetail.id === id) orderDetail.orderStatus = control.get('orderStatus')?.value;
-			});
-		});
-	}
-
-	onNoClick() {
-		this.matDialogRef.close();
 	}
 
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.isSubmitting = true;
 			if (this.data) {
-				this.setUpdatedOrder();
 				this.subscriptions.push(
-					this._order.updateStatus(this.orderToBeUpdated).subscribe({
+					this._order.updateRangeOrderDetailsStatus(this.OrderDetails.value).subscribe({
 						next: (res) => {
-							this._order.dialogData = res.body;
-							this.dRef.close({ data: res });
+							this._note.dialogData = res.body;
+							this.matDialogRef.close({data: res});
 						},
 						error: (e) => {
 							this.isSubmitting = false;
-							let res: Response = e.error ?? e;
-							this.toastr.error(res.message);
+							let res: any = e.error ?? e;
+							this.toastr.error(res.Message);
 						},
 						complete: () => {
 							this.isSubmitting = false;

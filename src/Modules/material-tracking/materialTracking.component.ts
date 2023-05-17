@@ -18,7 +18,6 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 })
 export class materialTrackingComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.materialTrackingFormDialogComponent;
 	componentName = ComponentsName.materialTracking;

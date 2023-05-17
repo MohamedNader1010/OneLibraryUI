@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {FormBuilder, Validators, FormControl} from '@angular/forms';
 import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
 import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
 import {ClientService} from '../../services/client.service';
@@ -8,7 +8,6 @@ import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDi
 import {TranslateService} from '@ngx-translate/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Client} from '../../interFaces/Iclient';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 
 @Component({
 	selector: 'app-client-form-dialog',
@@ -16,7 +15,6 @@ import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.s
 	styleUrls: ['./client-form-dialog.component.css'],
 })
 export class ClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-	Form: FormGroup;
 	ClientTypeDataSource: ClientType[] = [];
 	isLoading = false;
 	constructor(
@@ -26,10 +24,9 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
 		private fb: FormBuilder,
 		translate: TranslateService,
 		@Inject(MAT_DIALOG_DATA) public data: Client,
-		matDialogRef: MatDialogRef<ClientFormDialogComponent>,
-		dialogService: DialogServiceService
+		matDialogRef: MatDialogRef<ClientFormDialogComponent>
 	) {
-		super(matDialogRef, dialogService, translate, _client, toastr);
+		super(matDialogRef, translate, _client, toastr);
 		this.Form = this.fb.group({
 			name: ['', [Validators.required, Validators.maxLength(100)]],
 			phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],

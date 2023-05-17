@@ -17,7 +17,6 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class OrderComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Order[];
 	formName = FormDialogNames.OrderFormDialogComponent;
 	componentName = ComponentsName.order;
 	constructor(private translate: TranslateService, public dialog: MatDialog, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {

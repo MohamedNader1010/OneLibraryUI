@@ -17,7 +17,6 @@ export class ReturnsComponent extends TableCommonFunctionality implements OnInit
 	tableColumns!: {columnDef: string; header: string; cell: any}[];
 	orderDetails: OrderDetail[] = [];
 	loading: boolean = false;
-	componentName = ComponentsName.order;
 	constructor(private translate: TranslateService, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {
 		super(httpClient, toastr, database);
 	}
@@ -49,8 +48,8 @@ export class ReturnsComponent extends TableCommonFunctionality implements OnInit
 				cell: (orderDetails: OrderDetail) => orderDetails.price,
 			},
 			{
-				columnDef: this.translate.instant('order.quantity.label'),
-				header: this.translate.instant('order.quantity'),
+				columnDef: this.translate.instant('quantity'),
+				header: this.translate.instant('quantity.label'),
 				cell: (orderDetails: OrderDetail) => orderDetails.quantity,
 			},
 		];

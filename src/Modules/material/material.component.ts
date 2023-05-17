@@ -16,7 +16,6 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class MaterialComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Material[];
 	loading!: boolean;
 	formName = FormDialogNames.MaterialFormDialogComponent;
 	dataSource!: TableDataSource;

@@ -17,7 +17,6 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 })
 export class FeadbackComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.feedbackFormDialogComponent;
 	componentName = ComponentsName.feedback;

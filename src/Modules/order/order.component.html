@@ -1,9 +1,8 @@
 <app-table
 	[canView]="true"
 	[hasTransaction]="true"
-	[isDisplayDeleteButton]="false"
+	[canDelete]="false"
 	[tableColumns]="tableColumns"
-	[tableData]="tableData"
 	[formName]="formName"
 	[componentName]="componentName"
 	(OnDelete)="handleDelete($event)"

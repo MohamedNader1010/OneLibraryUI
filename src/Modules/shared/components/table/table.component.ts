@@ -1,9 +1,7 @@
-import {SendDataFromTableToMatDialoge} from './../../services/sendDataFromTableToMatDialoge.service';
 import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, OnChanges, SimpleChanges} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription, fromEvent} from 'rxjs';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {FormHelpers} from '../../classes/form-helpers';
@@ -12,7 +10,7 @@ import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 
 @Component({
-	selector: 'app-table[tableColumns]',
+	selector: 'app-table',
 	templateUrl: './table.component.html',
 	styleUrls: ['./table.component.css'],
 })
@@ -35,18 +33,16 @@ export class TableComponent implements OnInit, OnDestroy {
 
 	@Input() loading: any;
 	@Input() tableColumns: any;
-	@Input() canView: boolean = false;
+	@Input() canAdd: boolean = true;
 	@Input() canEdit: boolean = true;
 	@Input() canDelete: boolean = true;
+	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
-	@Input() isDisplayDeleteButton: boolean = true;
-	@Input() isHideAllButtons: boolean = false;
 	@Input() formName!: FormDialogNames;
 	@Input() componentName!: ComponentsName;
-	@Input() tableData: any;
 
 	columns: any[] = [];
-	constructor(private _router: Router, public dialog: MatDialog, private route: ActivatedRoute, private sendRowId: SendDataFromTableToMatDialoge) {}
+	constructor(public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
 		this.loadData();

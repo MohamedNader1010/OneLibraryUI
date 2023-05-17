@@ -1,12 +1,9 @@
 <app-table
-	dialogHeader="حذف نوع العميل"
 	[loading]="loading"
-	dialogDisplayName="name"
 	[tableColumns]="tableColumns"
-	[tableData]="tableData"
-	[formName]="formName" 
-    [componentName]="componentName"
-    [database]="database"
-    (OnDelete)="handleDelete($event)"
-    (onNew)="handleNewRow($event)"
-    (onEdit)="handleEditRow($event)"></app-table>
+	[formName]="formName"
+	[componentName]="componentName"
+	[database]="database"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"></app-table>

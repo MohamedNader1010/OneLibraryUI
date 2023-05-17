@@ -6,7 +6,6 @@ import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDi
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {Employee} from '../../interFaces/Iemployee';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
 
 @Component({
 	selector: 'app-employee-form-dialog',
@@ -14,7 +13,6 @@ import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.s
 	styleUrls: ['./employee-form-dialog.component.css'],
 })
 export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-	Form!: FormGroup;
 	controllerName: string = 'employees';
 	isLoading = false;
 	constructor(
@@ -23,10 +21,9 @@ export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality 
 		public override toastr: ToastrService,
 		translate: TranslateService,
 		@Inject(MAT_DIALOG_DATA) public data: Employee,
-		private matDialogRef: MatDialogRef<EmployeeFormDialogComponent>,
-		private dialogService: DialogServiceService
+		matDialogRef: MatDialogRef<EmployeeFormDialogComponent>
 	) {
-		super(matDialogRef, dialogService, translate, _employee, toastr);
+		super(matDialogRef, translate, _employee, toastr);
 		this.initiateFormControls();
 	}
 

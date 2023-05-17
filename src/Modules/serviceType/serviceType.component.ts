@@ -16,7 +16,6 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 })
 export class ServiceTypeComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.ServiceTypeFormDialogComponent;
 	componentName = ComponentsName.serviceType;

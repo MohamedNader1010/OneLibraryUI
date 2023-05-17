@@ -16,7 +16,6 @@ import {ComponentsName} from 'src/Persistents/enums/components.name';
 })
 export class ClientComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Client[];
 	loading!: boolean;
 	formName = FormDialogNames.ClientFormDialogComponent;
 	componentName = ComponentsName.client;

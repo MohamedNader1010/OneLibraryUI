@@ -17,7 +17,6 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class NoteComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Service[];
 	loading!: boolean;
 	formName = FormDialogNames.NoteFormDialogComponent;
 	componentName = ComponentsName.note;

@@ -16,15 +16,14 @@ import {ServicePricePerClientType} from './../../../service-price-per-client-typ
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 @Component({
 	selector: 'app-note-form-dialog',
 	templateUrl: './note-form-dialog.component.html',
 	styleUrls: ['./note-form-dialog.component.css'],
 })
-export class NoteFormDialogComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
-	Form: FormGroup;
-	isSubmitting: boolean = false;
+export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
 	clientTembId: number | null = null;
 	controllerName: string = 'notes';
 	NoteComponentsDataSource: NoteComponent[] = [];
@@ -38,14 +37,16 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	constructor(
 		private _note: NoteService,
 		private fb: FormBuilder,
-		private toastr: ToastrService,
+		toastr: ToastrService,
 		private _client: ClientService,
 		private _clientType: ClientTypeService,
 		private _service: ServicesService,
 		private _servicePrice: ServicePricePerClientTypeService,
-		private matDialogRef: MatDialogRef<NoteFormDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: Note
+		matDialogRef: MatDialogRef<NoteFormDialogComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: Note,
+		translate: TranslateService
 	) {
+		super(matDialogRef, translate, _note, toastr);
 		this.Form = this.createFormItem('init');
 	}
 
@@ -329,65 +330,22 @@ export class NoteFormDialogComponent implements OnInit, OnDestroy {
 	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
 	setClientId = (data: any) => this.clientId.setValue(data);
 
-	onNoClick = () => this.matDialogRef.close();
-
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.isSubmitting = true;
-			if (this.id.value) this.update();
-			else this.add();
+			if (this.id.value) {
+				// if (this.deletedComponents.length)
+				this.subscriptions.push(
+					this._note.deleteNoteComponents(this.deletedComponents).subscribe({
+						error: (e) => {
+							this.isSubmitting = false;
+							let res: Response = e.error ?? e;
+							this.toastr.error(res.message);
+						},
+						complete: () => this.update(this.data.id, this.Form.value),
+					})
+				);
+			} else this.add(this.Form.value);
 		}
 	}
-
-	update() {
-		// if (this.deletedComponents.length)
-		this.subscriptions.push(
-			this._note.deleteNoteComponents(this.deletedComponents).subscribe({
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.subscriptions.push(
-						this._note.update(this.data.id, this.Form.value).subscribe({
-							next: (res) => {
-								this._note.dialogData = res.body;
-								this.matDialogRef.close({data: res});
-							},
-							error: (e) => {
-								this.isSubmitting = false;
-								let res: Response = e.error ?? e;
-								this.toastr.error(res.message);
-							},
-							complete: () => {
-								this.isSubmitting = false;
-							},
-						})
-					);
-				},
-			})
-		);
-	}
-
-	add() {
-		this.subscriptions.push(
-			this._note.add(this.Form.value).subscribe({
-				next: (res) => {
-					this._note.dialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

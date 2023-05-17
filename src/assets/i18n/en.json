@@ -1,6 +1,9 @@
 {
 	"table.id": "id",
 	"table.id.label": "#",
+	"quantity": "quantity",
+	"quantity.label": "الكمية",
+
 	"button.save": "حفظ",
 	"button.wait": "انتظر من فضلك",
 	"button.delete": "حذف",
@@ -14,8 +17,6 @@
 	"title.main": "الرئيسيه",
 	"service.name": "الخدمات",
 	"order.name": "الطلبات",
-	"order.quantity": "الكميه",
-	"order.quantity.label": "quantity",
 	"order.item": "الصنف",
 	"order.item.label": "item",
 	"order.number": "رقم الطلب",

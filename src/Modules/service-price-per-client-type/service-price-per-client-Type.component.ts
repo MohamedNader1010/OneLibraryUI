@@ -16,7 +16,6 @@ import {TranslateService} from '@ngx-translate/core';
 })
 export class ServicePricePerClientTypeComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Attendance[];
 	loading!: boolean;
 	formName = FormDialogNames.ServicePricePerClientFormDialogComponent;
 	componentName = ComponentsName.servicePricePerClientType;
