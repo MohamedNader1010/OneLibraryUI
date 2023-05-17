@@ -6,6 +6,7 @@ import {NotfoundComponent} from '../components/notfound/notfound.component';
 import {ProfileComponent} from '../components/profile/profile.component';
 import {DashboardComponent} from '../components/dashboard/dashboard.component';
 import {SharedComponent} from '../shared.component';
+import {ReservationsComponent} from 'src/Modules/order/components/reservations/reservations.component';
 
 const routes: Routes = [
 	{
@@ -28,6 +29,7 @@ const routes: Routes = [
 			{path: 'imcomesOutcomes', loadChildren: () => import('../../incomes-outcomes/incomes-outcomes.module').then((m) => m.IncomesOutcomesModule)},
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
 			{path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
+			{path: 'notesReservations', component: ReservationsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
 			{path: 'dashboard', component: DashboardComponent},
 			{path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 		],
