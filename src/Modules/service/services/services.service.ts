@@ -15,9 +15,9 @@ export class ServicesService extends GenericService<Service> {
 	}
 
 	getAllServices() {
+		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {

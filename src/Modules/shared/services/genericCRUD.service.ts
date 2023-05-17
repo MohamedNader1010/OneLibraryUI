@@ -6,7 +6,7 @@ export abstract class GenericService<Tin> {
 
 	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	get loading(): boolean {
+	get isLoading(): boolean {
 		return this.loadingData.value;
 	}
 

@@ -34,7 +34,7 @@ export class TokenInterceptor implements HttpInterceptor {
 					this._auth.clearLocalStorage();
 					this._auth.username.next(null);
 					this.refreshTokenSubject.next(null);
-					this.router.navigate(['/auth/login', {queryParams: {returnUrl: this.router.routerState.snapshot.url}}]);
+					this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url }, queryParamsHandling: 'merge' });
 					return throwError(() => error);
 				}),
 				switchMap((res: Response) => {

@@ -1,11 +1,13 @@
-<div class="mx-5 mt-4 mat-elevation-z2">
-	<mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
+<div class="d-flex align-items-center justify-content-between mx-5 mt-4 mat-elevation-z2">
+	<mat-form-field floatPlaceholder="never" color="warn" class="w-50" style="background-color: white">
 		<input matInput #filter placeholder="Filter" />
 		<button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
 			<mat-icon>close</mat-icon>
 		</button>
 	</mat-form-field>
+	<mat-paginator class="w-50 mx-5" #paginator [pageSizeOptions]="[15, 25, 50, 100]" showFirstLastButtons color="warn"></mat-paginator>
 </div>
+
 <!-- <mat-spinner *ngIf="loading" class="mx-auto mt-5" color="warn"></mat-spinner>
 <ng-container *ngIf="!loading"> -->
 <section class="example-container mat-elevation-z2 mx-5" tabindex="0" style="background-color: white">
@@ -38,9 +40,16 @@
 		<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
 		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 		<tr class="mat-row" *matNoDataRow>
-			<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
+			<ng-container *ngIf="database.isLoading">
+				<td class="mat-cell text-center" [colSpan]="displayedColumns.length">
+					<mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
+				</td>
+			</ng-container>
+			<ng-container *ngIf="!database.isLoading">
+				<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
+			</ng-container>
 		</tr>
 	</table>
 </section>
-<mat-paginator class="mx-5 paginator-bottom mat-elevation-z2 justify-content-start d-flex" #paginator [pageSizeOptions]="[15, 25, 50, 100]" showFirstLastButtons color="warn"> </mat-paginator>
+
 <!-- </ng-container> -->
