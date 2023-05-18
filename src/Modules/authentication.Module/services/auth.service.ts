@@ -8,6 +8,7 @@ import {ResetPassword} from '../interfaces/IResetPassword';
 import {UpdatePassword} from '../interfaces/IUpdatePassword';
 import {User} from '../interfaces/IUser';
 import {Response} from './../../shared/interfaces/Iresponse';
+import {Router} from '@angular/router';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,7 +16,7 @@ import {Response} from './../../shared/interfaces/Iresponse';
 export class AuthService {
 	public isLogged: boolean = !!localStorage.getItem('token');
 	public username: BehaviorSubject<any> = new BehaviorSubject(null);
-	constructor(private http: HttpClient) {
+	constructor(private router: Router, private http: HttpClient) {
 		this.isLogged = !!localStorage.getItem('token');
 	}
 	uri: string = `${environment.apiUrl}Authorzation/`;
@@ -53,5 +54,10 @@ export class AuthService {
 	}
 	public clearLocalStorage() {
 		localStorage.clear();
+	}
+
+	public logout() {
+		this.clearLocalStorage();
+		this.router.navigate(['/auth/login']);
 	}
 }

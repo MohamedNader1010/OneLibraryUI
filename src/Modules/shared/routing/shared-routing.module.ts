@@ -29,7 +29,7 @@ const routes: Routes = [
 			{path: 'imcomesOutcomes', loadChildren: () => import('../../incomes-outcomes/incomes-outcomes.module').then((m) => m.IncomesOutcomesModule)},
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
 			{path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
-			{path: 'notesReservations', component: ReservationsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
+			{path: 'notesReservations', component: ReservationsComponent, title: 'الحجوزات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule)},
 			{path: 'dashboard', component: DashboardComponent},
 			{path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 		],

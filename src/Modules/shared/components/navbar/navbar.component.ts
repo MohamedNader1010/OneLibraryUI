@@ -13,19 +13,15 @@ import {Response} from '../../interfaces/Iresponse';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	constructor(public data: AuthService, public _attendance: AttendanceService, private router: Router, private toastr: ToastrService) {}
+	constructor(public _auth: AuthService, public _attendance: AttendanceService, private toastr: ToastrService) {}
 	@Input() opened: boolean | undefined;
 	@Output() toggleSidenav = new EventEmitter<boolean>();
 	ngOnInit(): void {
-		this.data.username.next(localStorage.getItem('uname'));
+		this._auth.username.next(localStorage.getItem('uname'));
 		this._attendance.checkedIn.next(localStorage.getItem('iSCheckedIn')?.toString().toLowerCase() == 'true');
 	}
 	handleLogout() {
-		this.data.clearLocalStorage();
-		this.router.navigate(['/auth/login']);
-	}
-	handleLogin() {
-		this.router.navigate(['']);
+		this._auth.logout();
 	}
 	handleCheckIn() {
 		this.subscriptions.push(
