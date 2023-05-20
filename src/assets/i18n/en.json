@@ -101,5 +101,14 @@
 	"keys.client.paid": "قام بدفع",
 	"keys.client.phoneNumber": "رقم التليفون",
 	"keys.client.rest": "المتبقي",
-	"keys.client.total": "إجمالي التعاملات"
+	"keys.client.total": "إجمالي التعاملات", 
+	"totalOrderStatus" : "مجموع حالات الطلبات", 
+	"completed" : "مكتمل", 
+	"incompleted": "غير مكتمل", 
+	"gone": "هالك", 
+	"reserved": "حجوزات", 
+	"prepared": "اعداد", 
+	"received": "استلم", 
+	"returned" : "مرتجعات", 
+	"ready" : "جاهز"
 }
