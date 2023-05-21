@@ -15,20 +15,10 @@ export class SessionTimeoutService {
 	};
 
 	startTimeout = () => {
-		const expirationDate = localStorage.getItem('refreshTokenExp');
-		if (expirationDate) {
-			const expirationTime = new Date(expirationDate).getTime() - new Date().getTime();
-			// console.log(expirationTime);
-
-			this.timeoutId = setTimeout(() => {
-				// this.authService.logout();
-			}, expirationTime);
-			this.addListeners();
-		} else {
-			// console.log(expirationDate);
-
-			//this.authService.logout();
-		}
+		this.timeoutId = setTimeout(() => {
+			this.authService.logout();
+		}, 900000); // 15 minutes in milliseconds
+		this.addListeners();
 	};
 
 	stopTimeout = () => {
