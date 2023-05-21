@@ -9,6 +9,7 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {ToastrService} from 'ngx-toastr';
+import { Response } from '../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-order',
@@ -76,8 +77,8 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 		this.database.getAllOrders();
 	}
 
-	public handleOrderTransaction(message: string) {
-		this.toastr.success(message);
+	public handleOrderTransaction(row: Response) {
+		this.handleEditRow(row)
 	}
 
 	private getStatusText(status: Status) {

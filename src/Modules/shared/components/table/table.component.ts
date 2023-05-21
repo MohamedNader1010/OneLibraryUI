@@ -35,7 +35,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() tableColumns: any;
 	@Input() canAdd: boolean = true;
 	@Input() canEdit: boolean = true;
-	@Input() canDelete: boolean = true;
+	@Input() canDelete: boolean = false;
 	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
 	@Input() formName!: FormDialogNames;
@@ -104,7 +104,7 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			dialogRef.afterClosed().subscribe({
 				next: (result) => {
-					if (result?.data) this.onTransaction.emit(result.data.message);
+					if (result?.data) this.onTransaction.emit(result.data);
 				},
 				complete: () => this.refreshTable(),
 			})
