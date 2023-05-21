@@ -4,7 +4,7 @@
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
 				<div class="col">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>الكمية</mat-label>
 						<input type="number" matInput formControlName="amount" />
 					</mat-form-field>
@@ -12,7 +12,7 @@
 			</div>
 			<div class="row">
 				<div class="col">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>ملاحظات</mat-label>
 						<input type="text" matInput formControlName="comment" />
 					</mat-form-field>

@@ -3,13 +3,13 @@
 	<mat-dialog-content>
 		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
 			<div class="row">
-				<mat-form-field appearance="fill" class="w-100">
+				<mat-form-field appearance="fill" class="w-100" color="warn">
 					<mat-label>رقم الطلب</mat-label>
 					<input type="text" matInput formControlName="orderId" readonly />
 				</mat-form-field>
 			</div>
 			<div class="row">
-				<mat-form-field appearance="fill" class="w-100">
+				<mat-form-field appearance="fill" class="w-100" color="warn">
 					<mat-label>المدفوع</mat-label>
 					<input id="paid" matInput type="number" formControlName="paid" />
 					<mat-error *ngIf="paid.errors?.['required']">المبلغ المدفوع مطلوب</mat-error>

@@ -8,7 +8,7 @@
 			<div class="row">
 				<autocomplete class="col-9" label="الخامة" [dataSource]="MaterialDataSource" (selectedId)="setMaterialId($event)" [selectedValue]="materialId.value"></autocomplete>
 				<div class="col-3">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>الكمية</mat-label>
 						<input type="number" matInput formControlName="quantity" />
 					</mat-form-field>
@@ -16,7 +16,7 @@
 			</div>
 			<div class="row">
 				<div class="col">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>ملاحظات</mat-label>
 						<input type="text" matInput formControlName="comment" />
 					</mat-form-field>

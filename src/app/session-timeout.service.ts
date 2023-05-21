@@ -18,12 +18,16 @@ export class SessionTimeoutService {
 		const expirationDate = localStorage.getItem('refreshTokenExp');
 		if (expirationDate) {
 			const expirationTime = new Date(expirationDate).getTime() - new Date().getTime();
+			// console.log(expirationTime);
+
 			this.timeoutId = setTimeout(() => {
-				this.authService.logout();
+				// this.authService.logout();
 			}, expirationTime);
 			this.addListeners();
 		} else {
-			this.authService.logout();
+			// console.log(expirationDate);
+
+			//this.authService.logout();
 		}
 	};
 

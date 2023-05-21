@@ -7,7 +7,7 @@
 		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
 				<div class="col-6">
-					<mat-form-field class="w-100">
+					<mat-form-field class="w-100" color="warn">
 						<mat-label>الأسم</mat-label>
 						<input matInput formControlName="name" />
 						<mat-error *ngIf="name.errors?.['required']">يجب ادخال اسم الخدمة </mat-error>
@@ -34,7 +34,7 @@
 							[dataSource]="MaterialDataSource"
 							(selectedId)="setServiceMaterialId(i, $event)"
 							[selectedValue]="getServiceMaterial(i).value"></autocomplete>
-						<mat-form-field class="w-100" class="col-5">
+						<mat-form-field class="w-100" class="col-5" color="warn">
 							<mat-label>الكمية</mat-label>
 							<input type="number" matInput formControlName="quantity" min="0" />
 							<mat-error *ngIf="getServiceMaterialQuantity(i)?.errors?.['required']">يجب ادخال الكمية </mat-error>
@@ -76,7 +76,7 @@
 							[dataSource]="clientsTypesDataSource"
 							(selectedId)="setServicePriceClientTypeId(i, $event)"
 							[selectedValue]="getServicePriceClientTypeId(i).value"></autocomplete>
-						<mat-form-field class="w-100" class="col-5">
+						<mat-form-field class="w-100" class="col-5" color="warn">
 							<mat-label>السعر</mat-label>
 							<input type="number" matInput formControlName="price" min="0" />
 							<mat-error *ngIf="getServicePrice(i)?.errors?.['required']">يجب اختيار ادخال السعر </mat-error>

@@ -16,7 +16,7 @@
 			<!-- PRICE TEXT FIELD -->
 			<div class="row">
 				<div class="col">
-					<mat-form-field class="w-100">
+					<mat-form-field class="w-100" color="warn">
 						<mat-label>السعر</mat-label>
 						<input type="number" matInput formControlName="price" min="0" />
 						<mat-error *ngIf="price.hasError('required') && (price.touched || price.dirty)"> يجب ادخال السعر </mat-error>
