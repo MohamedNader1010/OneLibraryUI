@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
@@ -16,7 +16,8 @@ import {DeleteDialogComponent} from '../delete-dialog/delete-dialog.component';
 })
 export class TableComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
-	public displayedColumns!: string[];
+	displayedColumns!: string[];
+	dataSource!: TableDataSource;
 
 	@Output() OnDelete = new EventEmitter<any>();
 	@Output() OnView = new EventEmitter<any>();
@@ -25,12 +26,11 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Output() onEdit = new EventEmitter<any>();
 	@Output() onTransaction = new EventEmitter<any>();
 
-	@Input() database: any;
-	dataSource!: TableDataSource;
 	@ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
 	@ViewChild(MatSort, {static: true}) sort!: MatSort;
 	@ViewChild('filter', {static: true}) filter!: ElementRef;
 
+	@Input() database: any;
 	@Input() loading: any;
 	@Input() tableColumns: any;
 	@Input() canAdd: boolean = true;
@@ -41,7 +41,6 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() formName!: FormDialogNames;
 	@Input() componentName!: ComponentsName;
 
-	columns: any[] = [];
 	constructor(public dialog: MatDialog) {}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];

@@ -122,7 +122,7 @@
 								<mat-error *ngIf="passwordForm.hasError('mismatch') &&!confirmPassword.errors?.['required']"> كلمة السر غير متطابقة </mat-error>
 								<section align="end" class="justify-content-between">
 									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancelPasswordEdit()">إلغاء</button>
-									<button mat-raised-button color="warn" [disabled]="!form.valid || submittingPassword">{{ submittingPassword ? 'انتظر من فضلك' : 'حفظ' }}</button>
+									<button mat-raised-button color="warn" [disabled]="!passwordForm.valid || submittingPassword">{{ submittingPassword ? 'انتظر من فضلك' : 'حفظ' }}</button>
 								</section>
 							</form>
 						</div>

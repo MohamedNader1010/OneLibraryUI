@@ -12,7 +12,6 @@ import {NoteComponent} from '../../interfaces/noteComponent';
 import {Service} from 'src/Modules/service/interfaces/Iservice';
 import {ServicesService} from 'src/Modules/service/services/services.service';
 import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
-import {ServicePricePerClientType} from './../../../service-price-per-client-type/Interfaces/ServicePricePerClientType';
 import {Note} from '../../interfaces/Inote';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
@@ -25,14 +24,11 @@ import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDi
 })
 export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
 	clientTembId: number | null = null;
-	controllerName: string = 'notes';
-	NoteComponentsDataSource: NoteComponent[] = [];
 	TermsDataSource: Term[] = [];
 	StagesDataSource: Stage[] = [];
 	ClientsDataSource: Client[] = [];
 	ClientTypesDataSource: any[] = [];
 	ServicesDataSource: Service[] = [];
-	clientsFilteredOptions!: Observable<Client[]>;
 	deletedComponents: number[] = [];
 	constructor(
 		private _note: NoteService,
@@ -53,7 +49,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	get id(): FormControl {
 		return this.Form.get('id') as FormControl;
 	}
-
 	get noteId(): FormControl {
 		return this.Form.get('id') as FormControl;
 	}
@@ -86,6 +81,10 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
+
+	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
+	setClientId = (data: any) => this.clientId.setValue(data);
+
 	ngOnInit(): void {
 		this.forkJoins();
 		this.subscriptions.push(this.clientTypeId.valueChanges.pipe(startWith(this.clientTypeId.value)).subscribe((value) => this.handleClientTypeChange(value)));
@@ -135,20 +134,17 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 
 	patchData = () => {
 		this.data.noteComponents.forEach((component: NoteComponent) => {
-			this.noteComponents.push(this.createFormItem('noteComponent'));
+			this.handleNewNoteComponent();
 			this._servicePrice.getPrice(this.data.clientTypeId, component.serviceId).subscribe({
 				next: (res) => {
-					this.servicePriceFormControl(this.data.noteComponents.indexOf(component)).setValue(res.body.price);
-					this.serviceOriginalPriceFormControl(this.data.noteComponents.indexOf(component)).setValue(res.body.originalPrice);
+					let index = this.data.noteComponents.indexOf(component);
+					this.servicePriceFormControl(index).setValue(res.body.price);
+					this.serviceOriginalPriceFormControl(index).setValue(res.body.originalPrice);
 				},
 				error: (e) => {
 					this.isSubmitting = false;
 					let res: Response = e.error ?? e;
 					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.subscribeQuantityChanges(this.data.noteComponents.indexOf(component));
-					this.subscribeServiceChanges(this.data.noteComponents.indexOf(component));
 				},
 			});
 		});
@@ -241,7 +237,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 							this.servicePriceFormControl(index).setValue(res.body.price);
 							this.setOriginalAndActualPrices(1, index, quantity);
 							this.calculateFinalPriceAndEarning();
-							console.log(this.originalPrice.value);
 						},
 						error: (e) => {
 							this.isSubmitting = false;
@@ -326,9 +321,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 		this.actualPrice.setValue(noteActualPrice);
 		this.calculateFinalPriceAndEarning();
 	}
-
-	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
-	setClientId = (data: any) => this.clientId.setValue(data);
 
 	handleSubmit() {
 		if (this.Form.valid) {

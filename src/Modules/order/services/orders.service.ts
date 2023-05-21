@@ -48,8 +48,6 @@ export class OrderService extends GenericService<Order> {
 	GetReservedOrderDetails() {
 		this.http.get<Response>(`${this.uri}/GetReservedOrderDetails`).subscribe({
 			next: (data: Response) => {
-				console.log(data.body[0]);
-
 				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},

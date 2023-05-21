@@ -1,6 +1,6 @@
-import {Component, Input, OnInit, OnDestroy, Output, EventEmitter, SimpleChanges, OnChanges} from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, Output, EventEmitter, OnChanges} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
-import {Observable, Subscription, map, startWith} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription, map, startWith} from 'rxjs';
 
 @Component({
 	selector: 'autocomplete',
@@ -10,15 +10,12 @@ import {Observable, Subscription, map, startWith} from 'rxjs';
 export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 	subscriptions: Subscription[] = [];
 	@Input() label: string = '';
+	@Input() clear: BehaviorSubject<number> = new BehaviorSubject(0);
 	@Input() placeholder: string = '';
 	@Input() formControlName: string = '';
 	@Input() dataSource: any[] = [];
 	@Input() selectedValue!: any;
-
 	@Output() selectedId = new EventEmitter<number>();
-
-	filteredOptions!: Observable<any[]>;
-
 	nameControl = new FormControl();
 	filteredData$!: Observable<any[]>;
 	ngOnInit() {
@@ -39,6 +36,13 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 					}
 				}
 				return this.dataSource.slice();
+			})
+		);
+		this.subscriptions.push(
+			this.clear.subscribe({
+				next: () => {
+					this.nameControl.reset();
+				},
 			})
 		);
 	}
