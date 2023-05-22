@@ -46,7 +46,8 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 			})
 		);
 	}
-	ngOnChanges() {
+	ngOnChanges(changes: any) {
+		if (changes.dataSource) this.nameControl.reset();
 		if (this.dataSource.length && this.selectedValue) this.nameControl.setValue(this.dataSource.find((option) => option.id === this.selectedValue));
 	}
 	private _filter = (value: any): any[] => this.dataSource.filter((item) => item.name.toLowerCase().includes(value.toString().toLowerCase()));
