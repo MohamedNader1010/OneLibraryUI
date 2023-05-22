@@ -371,8 +371,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 						},
 						error: (e) => {
 							this.isSubmitting = false;
-							let res: any = e.error ?? e;
-							this.toastr.error(res.Message);
+							let res: Response = e.error ?? e;
+							this.toastr.error(res.message);
 						},
 						complete: () => {
 							this.isSubmitting = false;
