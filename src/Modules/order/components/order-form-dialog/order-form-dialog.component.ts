@@ -27,7 +27,7 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 	styleUrls: ['./order-form-dialog.component.css'],
 })
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع]; //handle other status display on edit
+	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع, Status.اعداد, Status.هالك]; //handle other status display on edit
 	ServicesDataSource: Service[] = [];
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];

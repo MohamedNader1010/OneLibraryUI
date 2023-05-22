@@ -20,11 +20,12 @@ import {TranslateModule} from '@ngx-translate/core';
 import {AutocompleteComponent} from './components/autocomplete/autocomplete.component';
 import {DeleteDialogComponent} from './components/delete-dialog/delete-dialog.component';
 import {ServiceFactory} from './classes/ServiceFactory';
+import { AuthGuard } from '../authentication.Module/guards/auth.guard';
 
 @NgModule({
 	declarations: [SharedComponent, ProfileComponent, FooterComponent, NavbarComponent, NotfoundComponent, TableComponent, DashboardComponent, AutocompleteComponent, DeleteDialogComponent],
 	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
 	exports: [TableComponent, AutocompleteComponent],
-	providers: [LoginGuard, AuthService, ToastrService, {provide: NgChartsConfiguration, useValue: {generateColors: false}}, ServiceFactory],
+	providers: [LoginGuard, AuthService, ToastrService, {provide: NgChartsConfiguration, useValue: {generateColors: false}}, ServiceFactory, AuthGuard],
 })
 export class SharedModule {}
