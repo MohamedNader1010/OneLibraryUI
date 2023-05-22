@@ -1,13 +1,18 @@
-import {trigger, state, style, transition, animate} from '@angular/animations';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {HttpClient} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {TableCommonFunctionality} from 'src/Modules/shared/classes/tableCommonFunctionality';
-import {OrderService} from '../../services/orders.service';
-import {ReservedNotes, ReservedOrderDetails} from '../../interfaces/IreservedOrderDetails';
-import {OrderDetail} from '../../interfaces/IorderDetail';
+import {ReservedOrderDetails} from '../../interfaces/IreservedOrderDetails';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {TableDataSource} from 'src/Modules/shared/classes/tableDataSource';
+import {OrderDetail} from './../../interfaces/IorderDetail';
+import {OrderService} from './../../services/orders.service';
+import {Status} from '../../Enums/status';
+import {Response} from 'src/Modules/shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-reservations',
@@ -22,9 +27,27 @@ import {OrderDetail} from '../../interfaces/IorderDetail';
 	],
 })
 export class ReservationsComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
 	reservedOrderDetails: ReservedOrderDetails[] = [];
-	constructor(private translate: TranslateService, public dialog: MatDialog, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {
+	tableColumns!: any[];
+	displayedColumns!: string[];
+	columnsToDisplayWithExpand!: string[];
+	dataSource!: TableDataSource;
+	expandedElement: any;
+
+	allComplete: boolean = false;
+
+	@ViewChild(MatPaginator, {static: true}) paginator!: MatPaginator;
+	@ViewChild(MatSort, {static: true}) sort!: MatSort;
+	@ViewChild('filter', {static: true}) filter!: ElementRef;
+
+	constructor(
+		private _order: OrderService,
+		private translate: TranslateService,
+		public dialog: MatDialog,
+		public override database: OrderService,
+		public override toastr: ToastrService,
+		public override httpClient: HttpClient
+	) {
 		super(httpClient, toastr, database);
 	}
 
@@ -32,69 +55,61 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 		this.initializeTableColumns();
 		this.loadData();
 	}
+	loadData() {
+		this.initializeTableColumns();
+		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef)];
+		this.columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
+		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
+		this.database.GetReservedOrderDetails();
+	}
 
 	private initializeTableColumns() {
 		this.tableColumns = [
 			{
-				columns: [
-					{
-						columnDef: this.translate.instant('table.id'),
-						header: this.translate.instant('table.id.label'),
-						cell: (row: ReservedOrderDetails) => row.id,
-					},
-					{
-						columnDef: 'createdOn',
-						header: 'تاريخ الحجز',
-						cell: (row: ReservedOrderDetails) => new Date(row.createdOn).toLocaleDateString(),
-					},
-				],
-				expands: [
-					{
-						columns: [
-							{
-								columnDef: 'noteId',
-								header: 'noteId',
-								cell: (row: ReservedNotes) => row.noteId,
-							},
-							{
-								columnDef: 'note',
-								header: 'note',
-								cell: (row: ReservedNotes) => row.note,
-							},
-							{
-								columnDef: 'totalQuantity',
-								header: 'totalQuantity',
-								cell: (row: ReservedNotes) => row.totalQuantity,
-							},
-						],
-						childs: [
-							{
-								columns: [
-									{
-										columnDef: Math.random().toString(),
-										header: 'id',
-										cell: (row: OrderDetail) => row.id,
-									},
-									{
-										columnDef: 'orderId',
-										header: 'orderId',
-										cell: (row: OrderDetail) => row.orderId,
-									},
-									{
-										columnDef: 'quantity',
-										header: 'quantity',
-										cell: (row: OrderDetail) => row.quantity,
-									},
-								],
-							},
-						],
-					},
-				],
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
+				cell: (row: ReservedOrderDetails) => row.id,
+			},
+			{
+				columnDef: 'createdOn',
+				header: 'تاريخ الحجز',
+				cell: (row: ReservedOrderDetails) => row.createdOn,
 			},
 		];
 	}
+	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 
-	loadData() {
-		this.database.GetReservedOrderDetails();
+	handlePrint(element: ReservedOrderDetails, noteId: number, data: OrderDetail[]) {
+		if (data.length) {
+			data.map((od) => (od.orderStatus = Status.جاهز));
+			console.log(data);
+
+			this.subscriptions.push(
+				this._order.updateRangeOrderDetailsStatus(data).subscribe({
+					next: (res) => {
+						this._order.dialogData = res.body;
+						this.toastr.success(res.message);
+					},
+					error: (e) => {
+						let res: Response = e.error ?? e;
+						this.toastr.error(res.message);
+					},
+					complete: () => {
+						element.reservedNotes.splice(
+							element.reservedNotes.findIndex((r) => r.noteId === noteId),
+							1
+						);
+						if (element.reservedNotes.length) this.database.dataChange.value[this.database.dataChange.value.indexOf(element)] = element;
+						else
+							this.database.dataChange.value.splice(
+								this.database.dataChange.value.findIndex((x: any) => x.id === element.id),
+								1
+							);
+						this.refreshTable();
+					},
+				})
+			);
+		}
 	}
+	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 }

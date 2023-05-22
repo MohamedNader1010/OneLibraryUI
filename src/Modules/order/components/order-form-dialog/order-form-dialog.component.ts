@@ -366,7 +366,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 				this.subscriptions.push(
 					this._order.updateRangeOrderDetailsStatus(this.OrderDetails.value).subscribe({
 						next: (res) => {
-							this._note.dialogData = res.body;
+							this._order.dialogData = res.body;
 							this.matDialogRef.close({data: res});
 						},
 						error: (e) => {

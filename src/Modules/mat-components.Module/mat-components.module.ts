@@ -33,11 +33,13 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatSortModule} from '@angular/material/sort';
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
 	declarations: [],
 
 	exports: [
+		MatExpansionModule,
 		MatCheckboxModule,
 		MatChipsModule,
 		MatDatepickerModule,
