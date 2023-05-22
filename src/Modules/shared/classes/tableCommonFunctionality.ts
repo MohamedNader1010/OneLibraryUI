@@ -16,8 +16,6 @@ export class TableCommonFunctionality {
 	};
 
 	handleEditRow = (data: Response) => {
-		console.log(data);
-
 		this.database.dataChange.value[this.database.dataChange.value.findIndex((x: any) => x.id === data.body.id)] = this.database.dialogData;
 		this.toastr.success(data.message);
 	};

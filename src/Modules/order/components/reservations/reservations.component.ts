@@ -82,8 +82,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 	handlePrint(element: ReservedOrderDetails, noteId: number, data: OrderDetail[]) {
 		if (data.length) {
 			data.map((od) => (od.orderStatus = Status.جاهز));
-			console.log(data);
-
 			this.subscriptions.push(
 				this._order.updateRangeOrderDetailsStatus(data).subscribe({
 					next: (res) => {
