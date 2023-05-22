@@ -48,5 +48,6 @@
 			</tr>
 		</table>
 	</div>
-	<mat-paginator class="d-flex" #paginator [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons color="warn"></mat-paginator>
+	<mat-paginator class="d-flex" #paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" [length]="dataSource.filteredData.length" showFirstLastButtons color="warn"></mat-paginator>
+
 </section>
