@@ -65,5 +65,5 @@ export class OrderService extends GenericService<Order> {
 	addOrderTransaction = (order: OrderTransaction) => this.http.post<Response>(`${this.uri}/AddOrderTransaction`, order);
 	getOrderDetails = (id: number) => this.http.get<Response>(`${this.uri}/GetOrderDetails?Id=${id}`);
 	updateOrderDetailStatus = (orderDetail: OrderDetail) => this.http.put<Response>(`${this.uri}/UpdateOrderDetailStatus`, orderDetail);
-	updateRangeOrderDetailsStatus = (orderDetails: OrderDetail[]) => this.http.put<Response>(`${this.uri}/UpdateRangeOrderDetailsStatus`, orderDetails);
+	updateRangeOrderDetailsStatus = (order: Order) => this.http.put<Response>(`${this.uri}/UpdateRangeOrderDetailsStatus`, order);
 }
