@@ -1,19 +1,26 @@
-<h2 mat-dialog-title>تفاصيل الطلب</h2>
-<mat-dialog-content *ngIf="order" class="mat-typography" id="print-section">
-	<div class="info" >
-		<div class="row direction">
-			<div class="col-4 w">
-				<span id="heading"><strong>التاريخ</strong></span>
+<div class="d-flex w-100">
+	<div class="row mr-0 w-100 justify-content-between print-pad">
+		<h4 mat-dialog-title class="title-print" style="width: fit-content">تفاصيل الطلب</h4>
+		<div class="print-only" style="width: fit-content">
+			<img src="/assets/Layer.png" style="width: 50px; height: 50px" alt="One Library" />
+		</div>
+	</div>
+</div>
+<mat-dialog-content *ngIf="order" class="print-dialog-content mt-0">
+	<div class="info">
+		<div class="row">
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>التاريخ</strong></span>
 				<br />
 				<span>{{ order.createdOn | date : 'dd/MM/yyyy' }}</span>
 			</div>
-			<div class="col-4 w">
-				<span id="heading"><strong>تم بواسطة</strong></span>
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>تم بواسطة</strong></span>
 				<br />
 				<span>{{ order.createdBy }}</span>
 			</div>
-			<div class="col-4 w">
-				<span id="heading"><strong>كود الطلب</strong></span>
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>كود الطلب</strong></span>
 				<br />
 				<span>{{ order.id }}</span>
 			</div>
@@ -31,7 +38,6 @@
 				<h4><strong>السعر</strong></h4>
 			</div>
 		</div>
-
 		<div class="row" *ngFor="let o of order.orderDetails">
 			<div class="col-6">
 				<h5>{{ o.note ?? o.service }}</h5>
@@ -43,7 +49,6 @@
 				<h5>&pound;{{ o.price }}</h5>
 			</div>
 		</div>
-
 	</div>
 	<div class="total">
 		<div class="row">
@@ -85,10 +90,8 @@
 	</div>
 	<div class="hide">
 		<h3><strong>تتبع الطلب</strong></h3>
-		<div
-			class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
-			<mat-progress-bar class="row" mode="determinate" [value]="orderTrackingProgress(order.orderStatus)"
-				color="warn"></mat-progress-bar>
+		<div class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
+			<mat-progress-bar class="row" mode="determinate" [value]="orderTrackingProgress(order.orderStatus)" color="warn"></mat-progress-bar>
 			<ul class="tracklist row w-100 justify-content-between">
 				<li class="col-nader text-nowrap me-0">غير مكتمل</li>
 				<li class="col-nader text-nowrap me-0">اعداد</li>

@@ -309,8 +309,10 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 						let newClient: Client = result.data.body;
 						this.ClientsDataSource.push(newClient);
 						this.clearAutocomplete.next(1);
-						this.selectedClientId = newClient.id;
-						this.clientId.setValue(this.selectedClientId);
+						if (this.clientTypeId.value === newClient.clientTypeId) {
+							this.selectedClientId = newClient.id;
+							this.clientId.setValue(this.selectedClientId);
+						}
 					}
 				},
 			})
