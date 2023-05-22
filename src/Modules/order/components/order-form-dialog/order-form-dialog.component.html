@@ -62,20 +62,38 @@
 						</div>
 						<div class="row">
 							<div class="col-4">
-								<mat-form-field *ngIf="getNoteOrService(i).value == 'service'" appearance="fill" class="w-100" color="warn">
-									<mat-label>{{ 'service.name' | translate }}</mat-label>
-									<mat-select formControlName="serviceId" [id]="'mat-service-' + i.toString()">
-										<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-									</mat-select>
-									<mat-error *ngIf="getOrderDetailServiceId(i).invalid && (getOrderDetailServiceId(i).dirty || getOrderDetailServiceId(i).touched)"> يجب اختيار الخدمة </mat-error>
-								</mat-form-field>
-								<mat-form-field *ngIf="getNoteOrService(i).value == 'note'" appearance="fill" class="w-100" color="warn">
-									<mat-label>{{ 'note.name' | translate }}</mat-label>
-									<mat-select formControlName="noteId">
-										<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
-									</mat-select>
-									<mat-error *ngIf="getOrderDetailNoteId(i).invalid && (getOrderDetailNoteId(i).dirty || getOrderDetailNoteId(i).touched)"> يجب اختيار المذكرة </mat-error>
-								</mat-form-field>
+								<ng-container *ngIf="getNoteOrService(i).value == 'service'">
+									<mat-form-field *ngIf="!data; else service" appearance="fill" class="w-100" color="warn">
+										<mat-label>{{ 'service.name' | translate }}</mat-label>
+										<mat-select formControlName="serviceId" [id]="'mat-service-' + i.toString()">
+											<mat-option *ngFor="let mat of ServicesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+										</mat-select>
+										<mat-error *ngIf="getOrderDetailServiceId(i).invalid && (getOrderDetailServiceId(i).dirty || getOrderDetailServiceId(i).touched)">
+											يجب اختيار الخدمة
+										</mat-error>
+									</mat-form-field>
+									<ng-template #service>
+										<mat-form-field class="w-100" color="warn">
+											<mat-label>{{ 'service.name' | translate }}</mat-label>
+											<input matInput [value]="data.clientName" [readonly]="true" />
+										</mat-form-field>
+									</ng-template>
+								</ng-container>
+								<ng-container *ngIf="getNoteOrService(i).value == 'note'">
+									<mat-form-field *ngIf="!data; else note" appearance="fill" class="w-100" color="warn">
+										<mat-label>{{ 'note.name' | translate }}</mat-label>
+										<mat-select formControlName="noteId">
+											<mat-option *ngFor="let mat of NotesDataSource" [value]="mat.id">{{ mat.name }}</mat-option>
+										</mat-select>
+										<mat-error *ngIf="getOrderDetailNoteId(i).invalid && (getOrderDetailNoteId(i).dirty || getOrderDetailNoteId(i).touched)"> يجب اختيار المذكرة </mat-error>
+									</mat-form-field>
+									<ng-template #note>
+										<mat-form-field class="w-100" color="warn">
+											<mat-label>{{ 'note.name' | translate }}</mat-label>
+											<input matInput [value]="data.clientName" [readonly]="true" />
+										</mat-form-field>
+									</ng-template>
+								</ng-container>
 							</div>
 							<div class="col-2">
 								<mat-form-field appearance="fill" class="w-100" color="warn">
@@ -163,7 +181,9 @@
 				</div>
 			</div>
 			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}</button>
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">
+					{{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+				</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
 			</div>
 		</form>

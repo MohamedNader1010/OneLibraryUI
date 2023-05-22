@@ -95,6 +95,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	}
 
 	ngOnInit(): void {
+		console.log(this.data);
+
 		if (!this.data) this.forkJoins();
 		else this.patchData();
 	}
@@ -364,9 +366,11 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 			this.isSubmitting = true;
 			if (this.data) {
 				this.subscriptions.push(
-					this._order.updateRangeOrderDetailsStatus(this.OrderDetails.value).subscribe({
+					this._order.updateOrderDetailsStatus(this.OrderDetails.value).subscribe({
 						next: (res) => {
 							this._order.dialogData = res.body;
+							console.log(res);
+
 							this.matDialogRef.close({data: res});
 						},
 						error: (e) => {
