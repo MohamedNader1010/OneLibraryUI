@@ -9,6 +9,7 @@ import {UpdatePassword} from '../interfaces/IUpdatePassword';
 import {User} from '../interfaces/IUser';
 import {Response} from './../../shared/interfaces/Iresponse';
 import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({
 	providedIn: 'root',

@@ -1,7 +1,10 @@
 <div class="container">
 	<ng-container *ngIf="data; else update">
 		<h2 class="w-100 text-center mt-3">{{ 'order.edit' | translate }}</h2>
-		<h4 class="w-100 text-center mt-1 text-secondary">يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.</h4>
+		<h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.</h4>
+		<ng-template #complete>
+			<h4 class="w-100 text-center mt-1 text-secondary">هذا الطلب مكتمل غير مسموح بتعديل البيانات</h4>
+		</ng-template>
 	</ng-container>
 	<ng-template #update>
 		<h2 class="w-100 text-center mt-3">{{ 'order.new' | translate }}</h2>
@@ -108,14 +111,21 @@
 								</mat-form-field>
 							</div>
 							<div class="col-2">
+								<!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
 								<mat-form-field appearance="fill" class="w-100" color="warn">
 									<mat-label>{{ 'order.status' | translate }}</mat-label>
 									<mat-select formControlName="orderStatus">
-										<mat-option *ngFor="let status of availableStatus" [value]="status">
-											{{ getStatusLabel(status) }}
+										<mat-option *ngFor="let status of getAvailableStatus(i)" [value]="status">
+											{{ StatusInstance[status] }}
 										</mat-option>
 									</mat-select>
 								</mat-form-field>
+								<!-- <ng-template #status>
+									<mat-form-field appearance="fill" class="w-100" color="warn">
+										<mat-label>{{ 'order.status' | translate }}</mat-label>
+										<input matInput [value]="StatusInstance[getOrderDetailStatus(i).value]" [readonly]="true" />
+									</mat-form-field>
+								</ng-template> -->
 							</div>
 							<div class="col-1">
 								<button *ngIf="!data" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
@@ -180,6 +190,7 @@
 					</mat-form-field>
 				</div>
 			</div>
+			<!-- <div class="my-2 d-flex flex-row-reverse" *ngIf="!data || data.orderStatus != 6"> -->
 			<div class="my-2 d-flex flex-row-reverse">
 				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">
 					{{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}

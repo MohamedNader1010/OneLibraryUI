@@ -9,7 +9,7 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {ToastrService} from 'ngx-toastr';
-import { Response } from '../shared/interfaces/Iresponse';
+import {Response} from '../shared/interfaces/Iresponse';
 
 @Component({
 	selector: 'app-order',
@@ -53,7 +53,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 			{
 				columnDef: this.translate.instant('order.status.label'),
 				header: this.translate.instant('order.status'),
-				cell: (element: Order) => `${this.getStatusText(element.orderStatus)}`,
+				cell: (element: Order) => Status[element.orderStatus],
 			},
 			{
 				columnDef: this.translate.instant('shared.client.label'),
@@ -78,27 +78,6 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	}
 
 	public handleOrderTransaction(row: Response) {
-		this.handleEditRow(row)
-	}
-
-	private getStatusText(status: Status) {
-		switch (status) {
-			case Status.استلم:
-				return 'استلم';
-			case Status.اعداد:
-				return 'اعداد';
-			case Status.اكتمل:
-				return 'اكتمل';
-			case Status.جاهز:
-				return 'جاهز';
-			case Status.حجز:
-				return 'حجز';
-			case Status.غير_مكتمل:
-				return 'غير مكتمل';
-			case Status.مرتجع:
-				return 'مرتجع';
-			default:
-				return '';
-		}
+		this.handleEditRow(row);
 	}
 }

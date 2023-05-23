@@ -27,7 +27,8 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 	styleUrls: ['./order-form-dialog.component.css'],
 })
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.مرتجع, Status.اعداد, Status.هالك]; //handle other status display on edit
+	availableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز, Status.مرتجع, Status.هالك];
+	StatusInstance: any = Status;
 	ServicesDataSource: Service[] = [];
 	NotesDataSource: Note[] = [];
 	ClientsDataSource: Client[] = [];
@@ -46,7 +47,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		matDialogRef: MatDialogRef<OrderFormDialogComponent>,
 		private _servicePrice: ServicePricePerClientTypeService,
 		public dialog: MatDialog,
-		public override toastr: ToastrService
+		public override toastr: ToastrService // Status: Status
 	) {
 		super(matDialogRef, translate, _order, toastr);
 		this.Form = this.createFormItem('init');
@@ -101,6 +102,11 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 		else this.patchData();
 	}
 
+	getAvailableStatus(i: number): Status[] {
+		if (this.data) return this.availableStatus.filter((s) => s >= this.getOrderDetailStatus(i).value);
+		else return this.availableStatus;
+	}
+
 	forkJoins() {
 		let services = [this._note.getAll(), this._clientType.getAll(), this._service.getAll()];
 		return forkJoin(services)
@@ -125,26 +131,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 					this.subscribeFormMoneyChanges();
 				},
 			});
-	}
-	getStatusLabel(status: Status) {
-		switch (status) {
-			case Status.حجز:
-				return 'حجز';
-			case Status.اعداد:
-				return 'اعداد';
-			case Status.جاهز:
-				return 'جاهز';
-			case Status.استلم:
-				return 'استلم';
-			case Status.مرتجع:
-				return 'مرتجع';
-			case Status.هالك:
-				return 'هالك';
-			case Status.اكتمل:
-				return 'اكتمل';
-			case Status.غير_مكتمل:
-				return 'غير مرتجع';
-		}
 	}
 
 	subscribeFormMoneyChanges() {
@@ -176,6 +162,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 			this.OrderDetails.push(this.createFormItem('detail'));
 			this.getNoteOrService(index).setValue(orderDetail.noteId ? 'note' : 'service');
 		});
+		console.log(this.data.orderDetails);
+
 		this.Form.patchValue(this.data);
 	};
 
