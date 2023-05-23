@@ -24,7 +24,8 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 			startWith(this.nameControl.value),
 			map((value) => {
 				if (value) {
-					let filtered = this._filter(value);
+					let filtered = this.filter(value);
+					debugger;
 					if (filtered.length) {
 						this.nameControl.setErrors({required: true});
 						this.selectedId.emit(undefined);
@@ -50,8 +51,16 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 		if (changes.dataSource) this.nameControl.reset();
 		if (this.dataSource.length && this.selectedValue) this.nameControl.setValue(this.dataSource.find((option) => option.id === this.selectedValue));
 	}
-	private _filter = (value: any): any[] => this.dataSource.filter((item) => item.name.toLowerCase().includes(value.toString().toLowerCase()));
-
+	private _filter = (value: any): any[] => this.dataSource.filter((item) => item.name.toLowerCase().includes(value.toString().toLowerCase() | item.phoneNumber.includes(value.toString())));
+	filter = (value: any): any[] => {
+		let filteredData = this.dataSource.filter((item: any) => {
+			let searchStr = '';
+			for (var key in item) searchStr += item[key];
+			searchStr = searchStr.toLowerCase();
+			return searchStr.indexOf(value.trim().trimEnd().toLowerCase()) !== -1;
+		});
+		return filteredData;
+	};
 	displayFn = (item: any): string => (item ? item.name : '');
 
 	getItemId = (item: any) => this.selectedId.emit(item ? item.id : null);
