@@ -82,7 +82,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 	getOrderDetailId = (index: number): FormControl => this.OrderDetails.at(index).get('id') as FormControl;
 	getNoteOrService = (index: number): FormControl => this.OrderDetails.at(index)?.get('noteOrService') as FormControl;
 	getOrderDetailServiceId = (index: number): FormControl => this.OrderDetails.at(index).get('serviceId') as FormControl;
+	getOrderDetailService = (index: number): FormControl => this.OrderDetails.at(index).get('service') as FormControl;
 	getOrderDetailNoteId = (index: number): FormControl => this.OrderDetails.at(index).get('noteId') as FormControl;
+	getOrderDetailNote = (index: number): FormControl => this.OrderDetails.at(index).get('note') as FormControl;
 	getOrderDetailQuantity = (index: number): FormControl => this.OrderDetails.at(index).get('quantity') as FormControl;
 	getOrderDetailPrice = (index: number): FormControl => this.OrderDetails.at(index).get('price') as FormControl;
 	getOrderDetailStatus = (index: number): FormControl => this.OrderDetails.at(index).get('orderStatus') as FormControl;

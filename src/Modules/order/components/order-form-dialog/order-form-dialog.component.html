@@ -75,7 +75,7 @@
 									<ng-template #service>
 										<mat-form-field class="w-100" color="warn">
 											<mat-label>{{ 'service.name' | translate }}</mat-label>
-											<input matInput [value]="data.clientName" [readonly]="true" />
+											<input matInput [value]="getOrderDetailService(i).value" [readonly]="true" />
 										</mat-form-field>
 									</ng-template>
 								</ng-container>
@@ -90,7 +90,7 @@
 									<ng-template #note>
 										<mat-form-field class="w-100" color="warn">
 											<mat-label>{{ 'note.name' | translate }}</mat-label>
-											<input matInput [value]="data.clientName" [readonly]="true" />
+											<input matInput [value]="getOrderDetailNote(i).value" [readonly]="true" />
 										</mat-form-field>
 									</ng-template>
 								</ng-container>
