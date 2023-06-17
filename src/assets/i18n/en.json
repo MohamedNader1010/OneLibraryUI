@@ -3,7 +3,7 @@
 	"table.id.label": "#",
 	"quantity": "quantity",
 	"quantity.label": "الكمية",
-
+	"copies.label": "النسخ",
 	"button.save": "حفظ",
 	"button.wait": "انتظر من فضلك",
 	"button.delete": "حذف",
@@ -49,6 +49,8 @@
 	"shared.clientType": "نوع العميل",
 	"shared.notice": "الملحوظات",
 	"shared.clientName": "اسم العميل",
+	"shared.service" : "الخدمات",
+	"shared.note": "المذكرات", 
 	"shared.unsavedMessage.title": "لم يتم حفظ التعديلات",
 	"shared.unsavedMessage.body": "لقد قمت بتعديل بعض البيانات ولم تقم بحفظها هل انت متاكد من مغادرة الصفحة",
 	"service.edit": "تعديل الخدمة",

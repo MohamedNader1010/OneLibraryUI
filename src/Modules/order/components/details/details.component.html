@@ -46,7 +46,7 @@
 				<h5>{{ o.quantity }}</h5>
 			</div>
 			<div class="col-3">
-				<h5>&pound;{{ o.price }}</h5>
+				<h5>&pound;{{ o.price | number: '1.2-2'}}</h5>
 			</div>
 		</div>
 	</div>
@@ -54,37 +54,37 @@
 		<div class="row">
 			<div class="col-9">الأجمالي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.totalPrice }}</strong>
+				<strong>&pound;{{ order.totalPrice | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">الخصم بالمبلغ</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.discount }}</strong>
+				<strong>&pound;{{ order.discount | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">نسبة الخصم</div>
 			<div class="col-3">
-				<strong>% {{ order.discountPercent }}</strong>
+				<strong>% {{ order.discountPercent | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">السعر النهائي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.finalPrice }}</strong>
+				<strong>&pound;{{ order.finalPrice | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">المدفوع</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.paid }}</strong>
+				<strong>&pound;{{ order.paid | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">المتبقي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.rest }}</strong>
+				<strong>&pound;{{ order.rest | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 	</div>

@@ -39,7 +39,7 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 			},
 			{
 				columnDef: 'amount',
-				header: 'الكمية',
+				header: 'المبلغ',
 				cell: (element: IncomesOutcomes) => element.amount,
 			},
 			{

@@ -23,3 +23,10 @@ export function conditionalRequiredValidator(requiredValue: string, clearErrorsO
 		return null;
 	};
 }
+export function nonNegativeValidator(control: AbstractControl): { [key: string]: any } | null {
+	const value = control.value;
+	if (value < 0) {
+	  return { negativeValue: true };
+	}
+	return null;
+  }
