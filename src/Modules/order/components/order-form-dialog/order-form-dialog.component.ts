@@ -1,6 +1,6 @@
 import { TranslateService } from "@ngx-translate/core";
 import { ServicePricePerClientTypeService } from "../../../service-price-per-client-type/services/service-price-per-client-type.service";
-import { Component, OnDestroy, OnInit, Inject, NgZone, ChangeDetectorRef } from "@angular/core";
+import { Component, OnDestroy, OnInit, Inject } from "@angular/core";
 import {
   FormArray,
   FormBuilder,
@@ -38,7 +38,6 @@ import { ToastrService } from "ngx-toastr";
 import { OrderDetail } from "../../interfaces/IorderDetail";
 import { FormHelpers } from "src/Modules/shared/classes/form-helpers";
 import { FormDialogNames } from "src/Persistents/enums/forms-name";
-import { nonNegativeValidator } from "../validators/customValidator";
 
 @Component({
   selector: "app-order-form-dialog",
@@ -131,6 +130,10 @@ export class OrderFormDialogComponent
     this.OrderDetails.at(index).get("serviceId") as FormControl;
   getNoteId = (index: number): FormControl =>
     this.OrderDetails.at(index).get("noteId") as FormControl;
+  getCountControl = (index: number): FormControl =>
+    this.OrderDetails.at(index).get("counts") as FormControl;
+  getCopiesControl = (index: number): FormControl =>
+    this.OrderDetails.at(index).get("copies") as FormControl;
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setServiceId = (index: number, data: any) =>
@@ -181,8 +184,8 @@ export class OrderFormDialogComponent
           this.ClientTypesDataSource = response.clientsType.body;
         },
         complete: () => {
-              this.subscribeClientTypeChange();
-              this.subscribeFormMoneyChanges();
+          this.subscribeClientTypeChange();
+          this.subscribeFormMoneyChanges();
         },
       });
   }
@@ -235,11 +238,12 @@ export class OrderFormDialogComponent
     this.data.orderDetails.forEach((orderDetail: OrderDetail) => {
       let index = this.data.orderDetails.indexOf(orderDetail);
       this.OrderDetails.push(this.createFormItem("detail"));
+      console.log(this.data)
+      console.log(this.data.orderDetails.at(index)?.service)
       this.getNoteOrService(index).setValue(
         orderDetail.noteId ? "note" : "service"
       );
     });
-
     this.Form.patchValue(this.data);
   };
 
@@ -271,8 +275,9 @@ export class OrderFormDialogComponent
           service: [""],
           noteId: [null],
           note: [""],
-          orderStatus: [Status.حجز, [Validators.required]],
-          copies: [0,nonNegativeValidator],
+          orderStatus: [null, [Validators.required]],
+          counts: [1],
+          copies: [1],
         });
         break;
     }
@@ -285,21 +290,38 @@ export class OrderFormDialogComponent
     this.subscribeQuantityChanges(index);
     this.subscribeServiceChanges(index);
     this.subscribeNoteChanges(index);
+    this.subscribeCopiesChanges(index);
+    this.subscribeCountChanges(index);
   };
 
   handleDeleteDetail = (index: number) => {
     this.OrderDetails.removeAt(index);
     if (this.OrderDetails.length) {
       this.calculateTotalPrice();
-      this.updateCopiesInput(this.OrderDetails.length - 1);
     } else this.ResetcalculateTotal_Final_Rest();
   };
 
   subscribeQuantityChanges(index: number) {
+    console.log('Are you here in the quantity change event? ')
     this.subscriptions.push(
       this.getOrderDetailQuantity(index).valueChanges.subscribe(() => {
         this.calculateTotalPrice();
-        this.updateCopiesInput(index);
+      })
+    );
+  }
+  subscribeCountChanges(index: number) {
+    this.subscriptions.push(
+      this.getCountControl(index).valueChanges.subscribe((countValue) => {
+        const quantityValue = +this.getCopiesControl(index).value * countValue;
+        this.getOrderDetailQuantity(index).setValue(quantityValue);
+      })
+    );
+  }
+  subscribeCopiesChanges(index: number) {
+    this.subscriptions.push(
+      this.getCopiesControl(index).valueChanges.subscribe((copiesValue) => {
+        const quantityValue = +this.getCountControl(index).value * copiesValue;
+        this.getOrderDetailQuantity(index).setValue(quantityValue);
       })
     );
   }
@@ -416,7 +438,6 @@ export class OrderFormDialogComponent
             this.NotesDataSource.find((note) => note.id == id)?.finalPrice ?? 0;
           this.getOrderDetailPrice(index).setValue(notePrice);
           this.calculateTotalPrice();
-          this.updateCopiesInput(index);
         },
         error: (e) => {
           this.isSubmitting = false;
@@ -427,33 +448,9 @@ export class OrderFormDialogComponent
       })
     );
   }
-  updateCopiesInput(index: number): void {
-    const noteId = this.getNoteId(index).value;
-    if (noteId) {
-      const noteDetails = this.OrderDetails.controls.filter(
-        (od) => od.get("noteId")?.value === noteId
-      );
-      if (noteDetails.length > 0) {
-        const availableNote = this.NotesDataSource.find(
-          (note) => note.id === noteId
-        );
-        if (availableNote) {
-          let availableCopies = availableNote.quantity;
-          noteDetails.forEach((od) => {
-            const odQuantity = +od.get("quantity")?.value;
-            if (!isNaN(odQuantity)) {
-              availableCopies -= odQuantity;
-            }
-          });
-          noteDetails.forEach((od) => {
-            od.get("copies")?.setValue(availableCopies);
-          });
-        }
-      }
-    }
-  }
-  isNoteSelected(index: number): boolean {
-    return this.getNoteOrService(index).value == "note";
+
+  isServiceSelected(index: number): boolean {
+    return this.getNoteOrService(index).value == "service";
   }
   calculateTotalPrice() {
     let total = 0;
@@ -493,7 +490,7 @@ export class OrderFormDialogComponent
           })
         );
       } else {
-        this.add(this.Form.value);
+         this.add(this.Form.value);
       }
     }
   }
