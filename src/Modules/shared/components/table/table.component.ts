@@ -27,7 +27,7 @@ export class TableComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   displayedColumns!: string[];
   dataSource!: TableDataSource;
-
+  activeSortColumn: string = 'id';
 
   @Output() OnDelete = new EventEmitter<any>();
   @Output() OnView = new EventEmitter<any>();
@@ -73,7 +73,9 @@ export class TableComponent implements OnInit, OnDestroy {
       })
     );
   }
-
+  setActiveSortColumn(column: string): void {
+    this.activeSortColumn = column;
+  }
   clearFilter = () =>
     (this.dataSource.filter = this.filter.nativeElement.value = "");
 
