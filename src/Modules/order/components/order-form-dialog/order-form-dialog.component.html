@@ -92,7 +92,7 @@
                   <autocomplete
                     *ngIf="!data; else service"
                     class="col-6"
-                    [label]="'shared.service' | translate"
+                    label="الخدمات"
                     [dataSource]="ServicesDataSource"
                     (selectedId)="setServiceId(i, $event)"
                     [clear]="clearAutocomplete"

@@ -8,6 +8,7 @@ import {DashboardComponent} from '../components/dashboard/dashboard.component';
 import {SharedComponent} from '../shared.component';
 import {ReservationsComponent} from 'src/Modules/order/components/reservations/reservations.component';
 import { AuthGuard } from 'src/Modules/authentication.Module/guards/auth.guard';
+import { TeacherAccountComponent } from 'src/Modules/client/components/teacherAccount/teacherAccount.component'
 
 const routes: Routes = [
 	{
@@ -31,6 +32,7 @@ const routes: Routes = [
 			{path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard]},
 			{path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule), canActivate: [AuthGuard]},
 			{path: 'notesReservations', component: ReservationsComponent, title: 'الحجوزات', loadChildren: () => import('../../order/order.module').then((orderModule) => orderModule.OrderModule), canActivate: [AuthGuard]},
+			{path: 'teacherAccount', component: TeacherAccountComponent, title: 'حسابات المدرسين', loadChildren: () => import('../../client/client.module').then((orderModule) => orderModule.ClientModule), canActivate: [AuthGuard]},
 			{path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
 			{path: '', redirectTo: 'dashboard', pathMatch: 'full'},
 		],

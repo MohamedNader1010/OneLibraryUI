@@ -34,11 +34,12 @@ import {MatSortModule} from '@angular/material/sort';
 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
-
+import {MatListModule} from '@angular/material/list';
 @NgModule({
 	declarations: [],
 
 	exports: [
+		MatListModule,
 		MatExpansionModule,
 		MatCheckboxModule,
 		MatChipsModule,

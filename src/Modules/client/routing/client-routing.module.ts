@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {LoginGuard} from 'src/Modules/authentication.Module/guards/login.guard';
 import {ClientComponent} from '../client.component';
-import {SingleComponent} from '../components/single/single.component';
+import { TeacherAccountComponent } from '../components/teacherAccount/teacherAccount.component'
 
 const routes: Routes = [
 	{
@@ -11,7 +11,7 @@ const routes: Routes = [
 		title: 'العملاء',
 		canActivateChild: [LoginGuard],
 		children: [
-			{path: 'single', component: SingleComponent, title: 'بيانات العميل'},
+			{path: '', component: TeacherAccountComponent, title: 'حسابات المدرسين'},
 			{path: '', redirectTo: 'all', pathMatch: 'full'},
 		],
 	},

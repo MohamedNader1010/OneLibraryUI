@@ -331,7 +331,7 @@ export class OrderFormDialogComponent
           error: (e) => {
             this.isSubmitting = false;
             let res: Response = e.error ?? e;
-            this.toastr.error(res.message);
+            // this.toastr.error(res.message);
             this.getOrderDetailPrice(index).setValue(0);
           },
           complete: () => {
