@@ -1,8 +1,10 @@
 import {TeacherProfitNote} from './IteacherProfitNotes';
 export interface TeacherProfitResponse {
-  id:number
+  clientId:number
   name:string
-  teacherearning:number
+  totalEarning:number
+  paidToTeacher:number
+  ordersRest: number;
   rest:number
   notes: TeacherProfitNote[]
 }

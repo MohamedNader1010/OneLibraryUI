@@ -62,7 +62,7 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
 			{
 				columnDef: this.translate.instant('table.id'),
 				header: this.translate.instant('table.id.label'),
-				cell: (row: TeacherProfitResponse) => row.id,
+				cell: (row: TeacherProfitResponse) => this.database.data.indexOf(row) + 1,
 			},
 			{
 				columnDef: 'name',
@@ -70,27 +70,40 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
 				cell: (row: TeacherProfitResponse) => row.name,
 			},
 			{
-				columnDef: 'earning',
-				header: 'أجمالي الحساب',
-				cell: (row: TeacherProfitResponse) => row.teacherearning,
+				columnDef: 'totalEarning',
+				header: 'أجمالي الارباح',
+				cell: (row: TeacherProfitResponse) => row.totalEarning,
+			},
+			{
+				columnDef: 'paidToTeacher',
+				header: 'مدفوع للعميل',
+				cell: (row: TeacherProfitResponse) => row.paidToTeacher,
+			},
+			{
+				columnDef: 'ordersRest',
+				header: 'باقي علي العميل',
+				cell: (row: TeacherProfitResponse) => row.ordersRest,
 			},
 			{
 				columnDef: 'rest',
-				header: ' المتبقي',
+				header: 'المتبقي للعميل',
 				cell: (row: TeacherProfitResponse) => row.rest,
 			},
 		];
 	}
 
-  async HandleNew() {
+  async HandleTecherPay(row : TeacherProfitResponse, $event:any) {
+		$event.stopPropagation();
     const dialogRef = this.dialog.open<any>(PayTeacherProfitComponent, {
       minWidth: "30%",
+			data: row,
     });
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {
-          // if (result?.data) this.HandleNew();
 					console.log(result);
+					this.database.dataChange.value[this.database.dataChange.value.findIndex((x: any) => x.id === result.row.id)] = result.row;
+					this.toastr.success(result.res.message);
 					
         },
       })

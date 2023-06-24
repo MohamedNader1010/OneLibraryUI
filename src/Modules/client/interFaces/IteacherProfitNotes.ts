@@ -1,6 +1,6 @@
 export interface TeacherProfitNote{
-  noteName:string
+  name:string
   numberOfSellItem:number
-  teacherPricePerNote:number
-  totalPrice:number
+  totalEarning:number
+  teacherPrice: number;
 }

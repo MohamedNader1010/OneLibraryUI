@@ -148,6 +148,7 @@ export class OrderFormDialogComponent
   }
 
   ngOnInit(): void {
+    this.matDialogRef.disableClose = true;
     if (!this.data) this.forkJoins();
     else this.patchData();
   }
@@ -238,8 +239,6 @@ export class OrderFormDialogComponent
     this.data.orderDetails.forEach((orderDetail: OrderDetail) => {
       let index = this.data.orderDetails.indexOf(orderDetail);
       this.OrderDetails.push(this.createFormItem("detail"));
-      console.log(this.data)
-      console.log(this.data.orderDetails.at(index)?.service)
       this.getNoteOrService(index).setValue(
         orderDetail.noteId ? "note" : "service"
       );
@@ -302,7 +301,6 @@ export class OrderFormDialogComponent
   };
 
   subscribeQuantityChanges(index: number) {
-    console.log('Are you here in the quantity change event? ')
     this.subscriptions.push(
       this.getOrderDetailQuantity(index).valueChanges.subscribe(() => {
         this.calculateTotalPrice();

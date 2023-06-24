@@ -11,7 +11,7 @@
 					<mat-form-field class="w-100" color="warn">
 						<mat-label>الأسم</mat-label>
 						<input matInput formControlName="name" />
-						<mat-error *ngIf="name.errors?.['required']"> Name is <strong>required</strong> </mat-error>
+						<mat-error *ngIf="name.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -21,8 +21,8 @@
 						<mat-label>رقم التلفون</mat-label>
 						<input type="tel" matInput formControlName="phoneNumber" />
 						<mat-icon matSuffix>phone</mat-icon>
-						<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> Please enter a valid phone number </mat-error>
-						<mat-error *ngIf="phone.errors?.['required']"> phone number is <strong>required</strong> </mat-error>
+						<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> يجب ادخال رقم تليفون صحيح </mat-error>
+						<mat-error *ngIf="phone.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 				<div class="col">
@@ -31,7 +31,7 @@
 						<mat-select formControlName="clientTypeId">
 							<mat-option *ngFor="let type of ClientTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 						</mat-select>
-						<mat-error *ngIf="clientTypeId.errors?.['required']"> client type is <strong>required</strong> </mat-error>
+						<mat-error *ngIf="clientTypeId.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 			</div>

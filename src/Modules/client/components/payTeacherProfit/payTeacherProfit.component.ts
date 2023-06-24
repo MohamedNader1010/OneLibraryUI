@@ -5,9 +5,9 @@ import { TranslateService } from '@ngx-translate/core'
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
 import { Material } from 'src/Modules/material/interfaces/Imaterial'
-import { TeacherProfit } from '../../interFaces/IteacherProfit'
 import { Response } from 'src/Modules/shared/interfaces/Iresponse'
 import { ClientService } from '../../services/client.service'
+import { TeacherProfitResponse } from "../../interFaces/IteacherProfitResponse"
 
 @Component({
   selector: 'app-payTeacherProfit',
@@ -21,7 +21,7 @@ export class PayTeacherProfitComponent  implements OnInit, OnDestroy {
 	MaterialDataSource: Material[] = [];
 	constructor(
 		public dialogRef: MatDialogRef<PayTeacherProfitComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: TeacherProfit,
+		@Inject(MAT_DIALOG_DATA) public data: TeacherProfitResponse,
 		private _client: ClientService,
 		private fb: FormBuilder,
 		private toastr: ToastrService,
@@ -29,7 +29,7 @@ export class PayTeacherProfitComponent  implements OnInit, OnDestroy {
 	) {
 		this.form = this.fb.group({
 			date: [new Date()],
-			amount: [0,[Validators.min(0)]],
+			amount: [null,[Validators.min(0.1)]],
 			clientId: [null],
 		});
 	}
@@ -41,9 +41,8 @@ export class PayTeacherProfitComponent  implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		if (this.data) {
-			this.form.patchValue(this.data);
-		}
+			this.clientId.setValue(this.data.clientId);
+			this.amount.addValidators(Validators.max(this.data.rest));
 	}
 
 	onNoClick() {
@@ -58,10 +57,14 @@ export class PayTeacherProfitComponent  implements OnInit, OnDestroy {
 	}
 
 	add() {
+		console.log(this.form.value);
+		
 		this.subscriptions.push(
 			this._client.addTeacherEarning(this.form.value).subscribe({
 				next: (res) => {
-					this.dialogRef.close({data: res});
+					this.data.paidToTeacher += this.amount.value;
+					this.data.rest -= this.amount.value;
+					this.dialogRef.close({res: res, row: this.data});
 				},
 				error: (e) => {
 					this.isSubmitting = false;
