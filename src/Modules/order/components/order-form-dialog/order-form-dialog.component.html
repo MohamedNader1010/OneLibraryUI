@@ -149,7 +149,7 @@
                       type="number"
                       matInput
                       formControlName="quantity"
-                      [readonly]="isServiceSelected(i) || !data ? 'true': 'false'"
+                      [readonly]="isServiceSelected(i) || !!data"
                       min="1"
                     />
                   </mat-form-field>
