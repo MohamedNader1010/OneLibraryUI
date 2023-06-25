@@ -1,3 +1,47 @@
+<div class="container-fluid my-3">
+	<div class="row">
+		<div class="col-3">
+			<mat-card class="mat-elevation-z8">
+				<mat-card-header>الرصيد الأفتتاحي</mat-card-header>
+				<mat-card-content>
+					<p>
+						{{currentShift?.startingBalance?? "-"}} جنية
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-3">
+			<mat-card>
+				<mat-card-header>إجمالي الوارد</mat-card-header>
+				<mat-card-content>
+					<p>
+						{{currentShift?.totalIncome }} جنية
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-3">
+			<mat-card>
+				<mat-card-header>إجمالي الصادر</mat-card-header>
+				<mat-card-content>
+					<p>
+						{{currentShift?.totalOutcome}} جنية
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="col-3">
+			<mat-card>
+				<mat-card-header>الرصيد النهائي</mat-card-header>
+				<mat-card-content>
+					<p>
+						{{currentShift?.closingBalance}} جنية
+					</p>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</div>
+</div>
 <app-table
 	[loading]="loading"
 	[tableColumns]="tableColumns"

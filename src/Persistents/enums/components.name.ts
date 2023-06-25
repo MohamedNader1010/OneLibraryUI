@@ -11,5 +11,7 @@ export enum ComponentsName {
 	service = 'service',
 	servicePricePerClientType = 'servicePricePerClientType',
 	serviceType = 'serviceType',
-	employee = 'employee'
+	employee = 'employee',
+	shift = 'shift',
+
 }

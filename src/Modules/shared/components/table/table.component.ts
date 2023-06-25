@@ -44,6 +44,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() loading: any;
   @Input() tableColumns: any;
   @Input() canAdd: boolean = true;
+  @Input() toggleShift: boolean = false;
   @Input() canEdit: boolean = true;
   @Input() canDelete: boolean = false;
   @Input() canView: boolean = false;
