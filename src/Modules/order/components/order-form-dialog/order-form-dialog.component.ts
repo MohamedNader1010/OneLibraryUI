@@ -38,6 +38,7 @@ import { ToastrService } from "ngx-toastr";
 import { OrderDetail } from "../../interfaces/IorderDetail";
 import { FormHelpers } from "src/Modules/shared/classes/form-helpers";
 import { FormDialogNames } from "src/Persistents/enums/forms-name";
+import { validateQuantityAsync } from "../validators/customValidator";
 
 @Component({
   selector: "app-order-form-dialog",
@@ -134,6 +135,8 @@ export class OrderFormDialogComponent
     this.OrderDetails.at(index).get("counts") as FormControl;
   getCopiesControl = (index: number): FormControl =>
     this.OrderDetails.at(index).get("copies") as FormControl;
+  getQuantityControl = (index: number): FormControl =>
+    this.OrderDetails.at(index).get("quantity") as FormControl;
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setServiceId = (index: number, data: any) =>
@@ -141,6 +144,7 @@ export class OrderFormDialogComponent
 
   setNoteId = (index: number, data: any) =>
     this.OrderDetails.at(index).get("noteId")?.setValue(data);
+
   async setClientId(data: any) {
     if (data === -1) {
       await this.HandleNewClient();
@@ -150,7 +154,10 @@ export class OrderFormDialogComponent
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
     if (!this.data) this.forkJoins();
-    else this.patchData();
+    else {
+      this.patchData();
+      this.subscribeOrderStatusChanges();
+    }
   }
 
   getAvailableStatus(i: number): Status[] {
@@ -269,11 +276,12 @@ export class OrderFormDialogComponent
           id: [0],
           noteOrService: ["service"],
           price: [0],
-          quantity: [1, [Validators.required]],
+          quantity: [0, [Validators.required], [validateQuantityAsync]],
           serviceId: [null],
           service: [""],
           noteId: [null],
           note: [""],
+          availableNoteQuantity: [""], // this is hidden control. ==> you can read auto complete to see why this is needed here.
           orderStatus: [null, [Validators.required]],
           counts: [1],
           copies: [1],
@@ -300,6 +308,17 @@ export class OrderFormDialogComponent
     } else this.ResetcalculateTotal_Final_Rest();
   };
 
+  subscribeOrderStatusChanges() {
+    this.OrderDetails.controls.forEach((od, index) => {
+      od.get("orderStatus")?.valueChanges.subscribe((_) => {
+        const noteId = od.get("noteId")?.value;
+        this._note.GetById(noteId).subscribe((n) => {
+          this.setAvailableQuantity(index, n.body.quantity ?? 0);
+        });
+      });
+    });
+  }
+
   subscribeQuantityChanges(index: number) {
     this.subscriptions.push(
       this.getOrderDetailQuantity(index).valueChanges.subscribe(() => {
@@ -323,7 +342,6 @@ export class OrderFormDialogComponent
       })
     );
   }
-
   subscribeServiceChanges(index: number) {
     this.subscriptions.push(
       this.getOrderDetailServiceId(index).valueChanges.subscribe({
@@ -331,7 +349,6 @@ export class OrderFormDialogComponent
       })
     );
   }
-
   setServicePriceForClientType(index: number) {
     this.subscriptions.push(
       this._servicePrice
@@ -436,6 +453,10 @@ export class OrderFormDialogComponent
             this.NotesDataSource.find((note) => note.id == id)?.finalPrice ?? 0;
           this.getOrderDetailPrice(index).setValue(notePrice);
           this.calculateTotalPrice();
+          const qty = this.NotesDataSource.find(
+            (note) => note.id == id
+          )?.quantity;
+          this.setAvailableQuantity(index, qty ?? 0);
         },
         error: (e) => {
           this.isSubmitting = false;
@@ -488,8 +509,19 @@ export class OrderFormDialogComponent
           })
         );
       } else {
-         this.add(this.Form.value);
+        this.add(this.Form.value);
       }
+    }
+  }
+
+  private setAvailableQuantity(index: number, availableQty: number) {
+    const noteId = this.getNoteId(index).value;
+    if (noteId) {
+      const availableQtyControl = this.OrderDetails.at(index).get(
+        "availableNoteQuantity"
+      );
+      availableQtyControl?.setValue(availableQty);
+      this.getQuantityControl(index).updateValueAndValidity();
     }
   }
 }

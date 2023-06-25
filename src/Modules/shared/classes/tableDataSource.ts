@@ -31,12 +31,12 @@ export class TableDataSource extends DataSource<any> {
 
     return merge(...displayDataChanges).pipe(
       map(() => {
-        const filteredData = this.database.data.slice().filter((item: any) => {
+        this.filteredData = this.database.data.slice().filter((item: any) => {
           const searchStr = this.generateSearchString(item);
           return searchStr.includes(this.filter.toLowerCase());
         });
 
-        const sortedData = this.sortData(filteredData.slice());
+        const sortedData = this.sortData(this.filteredData.slice());
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
         this.renderedData = sortedData.splice(
           startIndex,
@@ -63,11 +63,10 @@ export class TableDataSource extends DataSource<any> {
   private generateSearchString(item: any): string {
     let searchStr = "";
     for (const key in item) {
-      if (key === "orderStatus") {
-        searchStr += this.extractOrderStatusString(item[key]);
-      } else {
         searchStr += item[key];
-      }
+        if (key === "orderStatus") {
+          searchStr += this.extractOrderStatusString(item[key]);
+        }
     }
     return searchStr.toLowerCase();
   }

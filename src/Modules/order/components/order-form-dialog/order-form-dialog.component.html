@@ -132,40 +132,73 @@
                   </ng-template>
                 </ng-container>
               </div>
- 
+
               <div class="col-5 d-flex justify-content-between">
-                  <mat-form-field *ngIf="isServiceSelected(i) && !data"  appearance="fill" class="w-23" color="warn">
-                    <mat-label>العدد</mat-label>
-                    <input type="number" formControlName="counts" matInput min="1"/>
-                  </mat-form-field>
-                  <mat-form-field *ngIf="isServiceSelected(i) && !data" appearance="fill" class="w-23" color="warn">
-                    <mat-label>النسخ</mat-label>
-                    <input type="number" formControlName="copies" matInput min="1"/>
-                  </mat-form-field>
+                <mat-form-field
+                  *ngIf="isServiceSelected(i) && !data"
+                  appearance="fill"
+                  class="w-23"
+                  color="warn"
+                >
+                  <mat-label>العدد</mat-label>
+                  <input
+                    type="number"
+                    formControlName="counts"
+                    matInput
+                    min="1"
+                  />
+                </mat-form-field>
+                <mat-form-field
+                  *ngIf="isServiceSelected(i) && !data"
+                  appearance="fill"
+                  class="w-23"
+                  color="warn"
+                >
+                  <mat-label>النسخ</mat-label>
+                  <input
+                    type="number"
+                    formControlName="copies"
+                    matInput
+                    min="1"
+                  />
+                </mat-form-field>
 
-                  <mat-form-field appearance="fill" [class]= "isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
-                    <mat-label>{{ "quantity.label" | translate }}</mat-label>
-                    <input
-                      type="number"
-                      matInput
-                      formControlName="quantity"
-                      [readonly]="isServiceSelected(i) || !!data"
-                      min="1"
-                    />
-                  </mat-form-field>
-
-                  <mat-form-field  [class]= "isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
-                    <mat-label>{{ "shared.price" | translate }}</mat-label>
-                    <input
-                      type="number"
-                      matInput
-                      formControlName="price"
-                      [readonly]="true"
-                      #priceRef
-                    />
-                  </mat-form-field>
+                <mat-form-field
+                  appearance="fill"
+                  [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'"
+                  color="warn"
+                >
+                  <mat-label>{{ "quantity.label" | translate }}</mat-label>
+                  <input
+                    type="number"
+                    matInput
+                    formControlName="quantity"
+                    [readonly]="isServiceSelected(i) || !!data"
+                    min="1"
+                  />
+                </mat-form-field>
+                <div>
+                  <mat-error
+                    *ngIf="detail.get('quantity')?.hasError('exceedQuantity')"
+                  >
+                  لا يمكن الاستلام ولا توجد كميه كافيه "{{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity }}" 
+                  </mat-error>
+                </div>
+                <mat-form-field
+                  [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'"
+                  color="warn"
+                >
+                  <mat-label>{{ "shared.price" | translate }}</mat-label>
+                  <input
+                    type="number"
+                    matInput
+                    formControlName="price"
+                    [readonly]="true"
+                    #priceRef
+                  />
+                </mat-form-field>
               </div>
- 
+
               <div class="col-3">
                 <!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
                 <mat-form-field appearance="fill" class="w-100" color="warn">
