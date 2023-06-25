@@ -1,0 +1,12 @@
+<app-table
+	[loading]="loading"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	[componentName]="componentName"
+	[database]="database"
+	[canDelete]="false"
+  [canEdit]="false"
+	[canAdd]="false"
+	[toggleShift]="true"
+	(onNew)="handleNewRow($event)"
+  ></app-table>

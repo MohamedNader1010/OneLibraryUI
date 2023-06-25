@@ -81,8 +81,16 @@
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item" *ngIf="isAdmin">
-					<a class="nav-link" aria-current="page" [routerLink]="['imcomesOutcomes']" routerLinkActive="active link-danger">الماليات</a>
+				<li class="nav-item dropdown" *ngIf="isAdmin">
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الماليات</span>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li class="dropdown-item">
+							<a class="nav-link" aria-current="page" [routerLink]="['imcomesOutcomes']" routerLinkActive="active link-danger">الصادر و الوارد</a>
+						</li>
+						<li class="dropdown-item">
+							<a class="nav-link" [routerLink]="['shifts']" routerLinkActive="active link-danger">الشيفتات</a>
+						</li>
+					</ul>
 				</li>
 			</ul>
 			<div class="navbar-nav align-items-center">

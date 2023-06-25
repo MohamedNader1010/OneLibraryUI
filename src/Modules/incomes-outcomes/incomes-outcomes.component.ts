@@ -9,6 +9,8 @@ import {IncomesOutcomes} from './interfaces/Incomes-outcomes';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { Shift } from "./interFaces/Ishift"
+import { ShiftService } from "./services/shift.service"
 
 @Component({
 	selector: 'app-Incomes-outcomes',
@@ -20,13 +22,19 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 	loading!: boolean;
 	formName = FormDialogNames.incomeOutcomeFormDialogComponent;
 	componentName = ComponentsName.incomeOutcome;
+	currentShift!: Shift | null;
 
-	constructor(httpClient: HttpClient, toastr: ToastrService, public override database: IncomesOutcomesService, private translate: TranslateService, public dialog: MatDialog) {
+	constructor(httpClient: HttpClient, toastr: ToastrService, public override database: IncomesOutcomesService, private translate: TranslateService, public dialog: MatDialog,private shiftService: ShiftService) {
 		super(httpClient, toastr, database);
 	}
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
+		this.shiftService.GetCurrentShift().subscribe({
+			next:(response) => {
+				console.log(response.body);
+				this.currentShift = response.body}
+		});
 	}
 
 	private initiateTableHeaders() {
