@@ -299,6 +299,7 @@ export class OrderFormDialogComponent
     this.subscribeNoteChanges(index);
     this.subscribeCopiesChanges(index);
     this.subscribeCountChanges(index);
+    this.subscribeOrderStatusChangesByiIndex(index);
   };
 
   handleDeleteDetail = (index: number) => {
@@ -308,7 +309,22 @@ export class OrderFormDialogComponent
     } else this.ResetcalculateTotal_Final_Rest();
   };
 
-  subscribeOrderStatusChanges() {
+  private subscribeOrderStatusChangesByiIndex(index: number) {
+    this.subscriptions.push(
+      this.getOrderDetailStatus(index).valueChanges.subscribe((status) => {
+        if (status == Status.استلم) {
+          const noteId = this.getNoteId(index).value;
+          const qty = this.NotesDataSource.find(
+            (note) => note.id == noteId
+          )?.quantity;
+          this.setAvailableQuantity(index, qty ?? 0);
+        } else {
+          this.getQuantityControl(index).updateValueAndValidity();
+        }
+      })
+    );
+  }
+  private subscribeOrderStatusChanges() {
     this.OrderDetails.controls.forEach((od, index) => {
       od.get("orderStatus")?.valueChanges.subscribe((_) => {
         const noteId = od.get("noteId")?.value;
