@@ -1,335 +1,205 @@
 <div class="container">
-  <ng-container *ngIf="data; else update">
-    <h2 class="w-100 text-center mt-3">{{ "order.edit" | translate }}</h2>
-    <h4
-      class="w-100 text-center mt-1 text-secondary"
-      *ngIf="data.orderStatus != 6; else complete"
-    >
-      يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.
-    </h4>
-    <ng-template #complete>
-      <h4 class="w-100 text-center mt-1 text-secondary">
-        هذا الطلب مكتمل غير مسموح بتعديل البيانات
-      </h4>
-    </ng-template>
-  </ng-container>
-  <ng-template #update>
-    <h2 class="w-100 text-center mt-3">{{ "order.new" | translate }}</h2>
-  </ng-template>
-  <mat-dialog-content>
-    <form
-      [formGroup]="Form"
-      (ngSubmit)="handleSubmit()"
-      class="d-flex flex-column"
-    >
-      <div class="row">
-        <autocomplete
-          *ngIf="!data; else clientType"
-          class="col-5"
-          [label]="'shared.clientType' | translate"
-          [dataSource]="ClientTypesDataSource"
-          (selectedId)="setClientTypeId($event)"
-        ></autocomplete>
-        <ng-template #clientType>
-          <mat-form-field class="col-5" color="warn">
-            <mat-label>{{ "shared.clientType" | translate }}</mat-label>
-            <input matInput [value]="data.clientTypeName" [readonly]="true" />
-          </mat-form-field>
-        </ng-template>
-        <autocomplete
-          *ngIf="!data; else client"
-          class="col-6"
-          [label]="'shared.client' | translate"
-          [dataSource]="ClientsDataSource"
-          (selectedId)="setClientId($event)"
-          [clear]="clearAutocomplete"
-          [selectedValue]="selectedClientId"
-        ></autocomplete>
-        <ng-template #client>
-          <mat-form-field class="col-6" color="warn">
-            <mat-label>{{ "shared.client" | translate }}</mat-label>
-            <input matInput [value]="data.clientName" [readonly]="true" />
-          </mat-form-field>
-        </ng-template>
-        <div class="col-1">
-          <button
-            *ngIf="!data"
-            [disabled]="!clientId.value || clientId.invalid"
-            type="button"
-            mat-icon-button
-            matTooltip="add"
-            color="basic"
-            aria-label="add order detail row"
-            (click)="handleNewDetail()"
-          >
-            <mat-icon>add</mat-icon>
-          </button>
-        </div>
-      </div>
-      <!-- order details -->
-      <div formArrayName="orderDetails" *ngIf="OrderDetails.controls.length">
-        <div
-          class="row"
-          *ngFor="let detail of OrderDetails.controls; let i = index"
-        >
-          <div [formGroupName]="i">
-            <div class="row" *ngIf="!data">
-              <label id="service-note-raido-group-label"
-                >أختر خدمة او مذكرة</label
-              >
-              <mat-radio-group
-                formControlName="noteOrService"
-                arialabelledby="service-note-raido-group-label"
-                color="warn"
-              >
-                <mat-radio-button value="service">خدمات</mat-radio-button>
-                <mat-radio-button value="note">مذكرات</mat-radio-button>
-              </mat-radio-group>
-            </div>
-            <div class="row">
-              <div class="col-3">
-                <ng-container *ngIf="getNoteOrService(i).value == 'service'">
-                  <autocomplete
-                    *ngIf="!data; else service"
-                    class="col-3"
-                    [label]="'shared.service' | translate"
-                    [dataSource]="ServicesDataSource"
-                    (selectedId)="setServiceId(i, $event)"
-                    [clear]="clearAutocomplete"
-                    [selectedValue]="getServiceId(i).value"
-                  ></autocomplete>
-                  <ng-template #service>
-                    <mat-form-field class="w-100" color="warn">
-                      <mat-label>{{ "service.name" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [value]="getOrderDetailService(i).value"
-                        [readonly]="true"
-                      />
-                    </mat-form-field>
-                  </ng-template>
-                </ng-container>
+	<ng-container *ngIf="data; else update">
+		<h2 class="w-100 text-center mt-3">{{ "order.edit" | translate }}</h2>
+		<h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.</h4>
+		<ng-template #complete>
+			<h4 class="w-100 text-center mt-1 text-secondary">هذا الطلب مكتمل غير مسموح بتعديل البيانات</h4>
+		</ng-template>
+	</ng-container>
+	<ng-template #update>
+		<h2 class="w-100 text-center mt-3">{{ "order.new" | translate }}</h2>
+	</ng-template>
+	<mat-dialog-content>
+		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+			<div class="row">
+				<autocomplete *ngIf="!data; else clientType" class="col-5" [label]="'shared.clientType' | translate" [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)"></autocomplete>
+				<ng-template #clientType>
+					<mat-form-field class="col-5" color="warn">
+						<mat-label>{{ "shared.clientType" | translate }}</mat-label>
+						<input matInput [value]="data.clientTypeName" [readonly]="true" />
+					</mat-form-field>
+				</ng-template>
+				<autocomplete
+					*ngIf="!data; else client"
+					class="col-6"
+					[label]="'shared.client' | translate"
+					[dataSource]="ClientsDataSource"
+					(selectedId)="setClientId($event)"
+					[clear]="clearAutocomplete"
+					[selectedValue]="selectedClientId"></autocomplete>
+				<ng-template #client>
+					<mat-form-field class="col-6" color="warn">
+						<mat-label>{{ "shared.client" | translate }}</mat-label>
+						<input matInput [value]="data.clientName" [readonly]="true" />
+					</mat-form-field>
+				</ng-template>
+				<div class="col-1">
+					<button
+						*ngIf="!data"
+						[disabled]="!clientId.value || clientId.invalid"
+						type="button"
+						mat-icon-button
+						matTooltip="add"
+						color="basic"
+						aria-label="add order detail row"
+						(click)="handleNewDetail()">
+						<mat-icon>add</mat-icon>
+					</button>
+				</div>
+			</div>
+			<!-- order details -->
+			<div formArrayName="orderDetails" *ngIf="OrderDetails.controls.length">
+				<div class="row" *ngFor="let detail of OrderDetails.controls; let i = index">
+					<div [formGroupName]="i">
+						<div class="row" *ngIf="!data">
+							<label id="service-note-raido-group-label">أختر خدمة او مذكرة</label>
+							<mat-radio-group formControlName="noteOrService" arialabelledby="service-note-raido-group-label" color="warn">
+								<mat-radio-button value="service">خدمات</mat-radio-button>
+								<mat-radio-button value="note">مذكرات</mat-radio-button>
+							</mat-radio-group>
+						</div>
+						<div class="row">
+							<div class="col-3">
+								<ng-container *ngIf="getNoteOrService(i).value == 'service'">
+									<autocomplete
+										*ngIf="!data; else service"
+										class="col-3"
+										[label]="'shared.service' | translate"
+										[dataSource]="ServicesDataSource"
+										(selectedId)="setServiceId(i, $event)"
+										[clear]="clearAutocomplete"
+										[selectedValue]="getServiceId(i).value"></autocomplete>
+									<ng-template #service>
+										<mat-form-field class="w-100" color="warn">
+											<mat-label>{{ "service.name" | translate }}</mat-label>
+											<input matInput [value]="getOrderDetailService(i).value" [readonly]="true" />
+										</mat-form-field>
+									</ng-template>
+								</ng-container>
 
-                <ng-container *ngIf="getNoteOrService(i).value == 'note'">
-                  <autocomplete
-                    *ngIf="!data; else note"
-                    class="col-4"
-                    [label]="'shared.note' | translate"
-                    [dataSource]="NotesDataSource"
-                    (selectedId)="setNoteId(i, $event)"
-                    [clear]="clearAutocomplete"
-                    [selectedValue]="getNoteId(i).value"
-                  ></autocomplete>
-                  <ng-template #note>
-                    <mat-form-field class="w-100" color="warn">
-                      <mat-label>{{ "note.name" | translate }}</mat-label>
-                      <input
-                        matInput
-                        [value]="getOrderDetailNote(i).value"
-                        [readonly]="true"
-                      />
-                    </mat-form-field>
-                  </ng-template>
-                </ng-container>
-              </div>
- 
-              <div class="col-5 d-flex justify-content-between">
-                  <mat-form-field *ngIf="isServiceSelected(i) && !data"  appearance="fill" class="w-23" color="warn">
-                    <mat-label>العدد</mat-label>
-                    <input type="number" formControlName="counts" matInput min="1"/>
-                  </mat-form-field>
-                  <mat-form-field *ngIf="isServiceSelected(i) && !data" appearance="fill" class="w-23" color="warn">
-                    <mat-label>النسخ</mat-label>
-                    <input type="number" formControlName="copies" matInput min="1"/>
-                  </mat-form-field>
+								<ng-container *ngIf="getNoteOrService(i).value == 'note'">
+									<autocomplete
+										*ngIf="!data; else note"
+										class="col-4"
+										[label]="'shared.note' | translate"
+										[dataSource]="NotesDataSource"
+										(selectedId)="setNoteId(i, $event)"
+										[clear]="clearAutocomplete"
+										[selectedValue]="getNoteId(i).value"></autocomplete>
+									<ng-template #note>
+										<mat-form-field class="w-100" color="warn">
+											<mat-label>{{ "note.name" | translate }}</mat-label>
+											<input matInput [value]="getOrderDetailNote(i).value" [readonly]="true" />
+										</mat-form-field>
+									</ng-template>
+								</ng-container>
+							</div>
 
-                  <mat-form-field appearance="fill" [class]= "isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
-                    <mat-label>{{ "quantity.label" | translate }}</mat-label>
-                    <input
-                      type="number"
-                      matInput
-                      formControlName="quantity"
-                      [readonly]="isServiceSelected(i) || !!data"
-                      min="1"
-                    />
-                  </mat-form-field>
+							<div class="col-5 d-flex justify-content-between">
+								<mat-form-field *ngIf="isServiceSelected(i) && !data" appearance="fill" class="w-23" color="warn">
+									<mat-label>العدد</mat-label>
+									<input type="number" formControlName="counts" matInput min="1" />
+								</mat-form-field>
+								<mat-form-field *ngIf="isServiceSelected(i) && !data" appearance="fill" class="w-23" color="warn">
+									<mat-label>النسخ</mat-label>
+									<input type="number" formControlName="copies" matInput min="1" />
+								</mat-form-field>
 
-                  <mat-form-field  [class]= "isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
-                    <mat-label>{{ "shared.price" | translate }}</mat-label>
-                    <input
-                      type="number"
-                      matInput
-                      formControlName="price"
-                      [readonly]="true"
-                      #priceRef
-                    />
-                  </mat-form-field>
-              </div>
- 
-              <div class="col-3">
-                <!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
-                <mat-form-field appearance="fill" class="w-100" color="warn">
-                  <mat-label>{{ "order.status" | translate }}</mat-label>
-                  <mat-select formControlName="orderStatus">
-                    <mat-option
-                      *ngFor="let status of getAvailableStatus(i)"
-                      [value]="status"
-                    >
-                      {{ StatusInstance[status] }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-error
-                    *ngIf="detail.get('orderStatus')?.hasError('required')"
-                  >
-                    يجب اختيار حالة الطلب
-                  </mat-error>
-                </mat-form-field>
-              </div>
-              <div class="col-1">
-                <button
-                  *ngIf="!data"
-                  type="button"
-                  mat-icon-button
-                  matTooltip="delete"
-                  color="warn"
-                  aria-label="delete selected row"
-                  (click)="handleDeleteDetail(i)"
-                >
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- end order details -->
-      <div class="row">
-        <div class="col-4">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.totalPrice" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="totalPrice"
-              [readonly]="true"
-            />
-          </mat-form-field>
-        </div>
-        <div class="col-4">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.discountValue" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="discount"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data"
-              min="0"
-            />
-            <mat-error
-              *ngIf="discount.invalid && (discount.dirty || discount.touched)"
-            >
-              يجب ان يكون المبلغ اكبر من او يساوي 0
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-3">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.discountPercent" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="discountPercent"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data"
-              min="0"
-            />
-            <span matTextPrefix>%</span>
-            <mat-error
-              *ngIf="
-                discountPercent.invalid &&
-                (discountPercent.dirty || discountPercent.touched)
-              "
-            >
-              يجب ان تكون النسبة اكبر من او يساوي 0
-            </mat-error>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-4">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.finalPrice" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="finalPrice"
-              [readonly]="true"
-            />
-          </mat-form-field>
-        </div>
-        <div class="col-4">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.paid" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="paid"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data"
-            />
-            <mat-error *ngIf="paid.invalid && (paid.dirty || paid.touched)">
-              يجب ان يكون المبلغ المدفوع اكبر من 0
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="col-3">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.rest" | translate }}</mat-label>
-            <input
-              type="number"
-              matInput
-              formControlName="rest"
-              [readonly]="true"
-            />
-            <mat-error *ngIf="rest.invalid && (rest.dirty || rest.touched)">
-              لا يمكن ان يكون المبلغ المتبقي اقل من 0
-            </mat-error>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-11">
-          <mat-form-field class="w-100" color="warn">
-            <mat-label>{{ "shared.clientRemarks" | translate }}</mat-label>
-            <textarea
-              matInput
-              formControlName="remarks"
-              [readonly]="!!data"
-            ></textarea>
-          </mat-form-field>
-        </div>
-      </div>
-      <!-- <div class="my-2 d-flex flex-row-reverse" *ngIf="!data || data.orderStatus != 6"> -->
-      <div class="my-2 d-flex flex-row-reverse">
-        <button
-          mat-raised-button
-          color="warn"
-          class="mx-2 px-4"
-          [disabled]="!Form.valid || isSubmitting"
-        >
-          {{
-            isSubmitting
-              ? ("button.wait" | translate)
-              : ("button.save" | translate)
-          }}
-        </button>
-        <button
-          type="button"
-          mat-stroked-button
-          color="warn"
-          (click)="onNoClick()"
-        >
-          {{ "button.back" | translate }}
-        </button>
-      </div>
-    </form>
-  </mat-dialog-content>
+								<mat-form-field appearance="fill" [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
+									<mat-label>{{ "quantity.label" | translate }}</mat-label>
+									<input type="number" matInput formControlName="quantity" [readonly]="isServiceSelected(i) || !!data" min="1" />
+								</mat-form-field>
+
+								<mat-form-field [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
+									<mat-label>{{ "shared.price" | translate }}</mat-label>
+									<input type="number" matInput formControlName="price" [readonly]="true" #priceRef />
+								</mat-form-field>
+							</div>
+
+							<div class="col-3">
+								<!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
+								<mat-form-field appearance="fill" class="w-100" color="warn">
+									<mat-label>{{ "order.status" | translate }}</mat-label>
+									<mat-select formControlName="orderStatus">
+										<mat-option *ngFor="let status of getAvailableStatus(i)" [value]="status">
+											{{ StatusInstance[status] }}
+										</mat-option>
+									</mat-select>
+									<mat-error *ngIf="detail.get('orderStatus')?.hasError('required')"> يجب اختيار حالة الطلب </mat-error>
+								</mat-form-field>
+							</div>
+							<div class="col-1">
+								<button *ngIf="!data" type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end order details -->
+			<div class="row">
+				<div class="col-4">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.totalPrice" | translate }}</mat-label>
+						<input type="number" matInput formControlName="totalPrice" [readonly]="true" />
+					</mat-form-field>
+				</div>
+				<div class="col-4">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.discountValue" | translate }}</mat-label>
+						<input type="number" matInput formControlName="discount" [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
+						<mat-error *ngIf="discount.invalid && (discount.dirty || discount.touched)"> يجب ان يكون المبلغ اكبر من او يساوي 0 </mat-error>
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.discountPercent" | translate }}</mat-label>
+						<input type="number" matInput formControlName="discountPercent" [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
+						<span matTextPrefix>%</span>
+						<mat-error *ngIf="discountPercent.invalid && (discountPercent.dirty || discountPercent.touched)"> يجب ان تكون النسبة اكبر من او يساوي 0 </mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-4">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.finalPrice" | translate }}</mat-label>
+						<input type="number" matInput formControlName="finalPrice" [readonly]="true" />
+					</mat-form-field>
+				</div>
+				<div class="col-4">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.paid" | translate }}</mat-label>
+						<input type="number" matInput formControlName="paid" [readonly]="OrderDetails.controls.length <= 0 || !!data" />
+						<mat-error *ngIf="paid.invalid && (paid.dirty || paid.touched)"> يجب ان يكون المبلغ المدفوع اكبر من 0 </mat-error>
+					</mat-form-field>
+				</div>
+				<div class="col-3">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.rest" | translate }}</mat-label>
+						<input type="number" matInput formControlName="rest" [readonly]="true" />
+						<mat-error *ngIf="rest.invalid && (rest.dirty || rest.touched)"> لا يمكن ان يكون المبلغ المتبقي اقل من 0 </mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-11">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>{{ "shared.clientRemarks" | translate }}</mat-label>
+						<textarea matInput formControlName="remarks" [readonly]="!!data"></textarea>
+					</mat-form-field>
+				</div>
+			</div>
+			<!-- <div class="my-2 d-flex flex-row-reverse" *ngIf="!data || data.orderStatus != 6"> -->
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">
+					{{ isSubmitting ? ("button.wait" | translate) : ("button.save" | translate) }}
+				</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">
+					{{ "button.back" | translate }}
+				</button>
+			</div>
+		</form>
+	</mat-dialog-content>
 </div>

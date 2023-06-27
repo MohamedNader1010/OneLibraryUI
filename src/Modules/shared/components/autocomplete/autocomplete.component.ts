@@ -30,6 +30,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dataSource: any[] = [];
   @Input() selectedValue!: any;
   @Output() selectedId = new EventEmitter<number>();
+
   nameControl = new FormControl();
   filteredData$!: Observable<any[]>;
   ngOnInit() {
@@ -63,10 +64,11 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: any) {
     if (changes.dataSource) this.nameControl.reset();
     if (this.dataSource.length && this.selectedValue) {
+      let selectedItem = this.dataSource.find(
+        (option) => option.id === this.selectedValue
+      );
       setTimeout(() => {
-        this.nameControl.setValue(
-          this.dataSource.find((option) => option.id === this.selectedValue)
-        );
+        this.nameControl.setValue(selectedItem);
       });
     }
   }

@@ -21,6 +21,7 @@ import { ToastrService } from "ngx-toastr";
 import { OrderDetail } from "../../interfaces/IorderDetail";
 import { FormHelpers } from "src/Modules/shared/classes/form-helpers";
 import { FormDialogNames } from "src/Persistents/enums/forms-name";
+import { validateQuantityAsync } from "../validators/customValidator";
 
 @Component({
 	selector: "app-order-form-dialog",

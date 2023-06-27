@@ -56,9 +56,7 @@ export class PayTeacherProfitComponent  implements OnInit, OnDestroy {
 		}
 	}
 
-	add() {
-		console.log(this.form.value);
-		
+	add() {	
 		this.subscriptions.push(
 			this._client.addTeacherEarning(this.form.value).subscribe({
 				next: (res) => {
