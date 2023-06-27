@@ -6,16 +6,14 @@ import { LoginGuard } from '../authentication.Module/guards/login.guard';
 import { MatComponentsModule } from '../mat-components.Module/mat-components.module';
 import { SharedModule } from '../shared/shared.module';
 import { ClientComponent } from './client.component';
-import { AddEditComponent } from './components/add-edit/add-edit.component';
-import { AllComponent } from './components/all/all.component';
-import { SingleComponent } from './components/single/single.component';
-import { CanDeactivateGuard } from './guards/canDeactivateForm.guard';
 import { ClientRoutingModule } from './routing/client-routing.module';
 import { ClientService } from './services/client.service';
 import { ClientFormDialogComponent } from './components/client-form-dialog/client-form-dialog.component';
+import { TeacherAccountComponent } from './components/teacherAccount/teacherAccount.component'
+import { PayTeacherProfitComponent } from './components/payTeacherProfit/payTeacherProfit.component'
 
 @NgModule({
-	declarations: [ClientComponent, AllComponent, AddEditComponent, SingleComponent, ClientFormDialogComponent],
+	declarations: [ClientComponent, TeacherAccountComponent, ClientFormDialogComponent,PayTeacherProfitComponent],
 	imports: [
 		FormsModule,
 		ReactiveFormsModule,
@@ -25,6 +23,6 @@ import { ClientFormDialogComponent } from './components/client-form-dialog/clien
 		SharedModule,
 		TranslateModule
 	],
-	providers: [LoginGuard, ClientService, CanDeactivateGuard],
+	providers: [LoginGuard, ClientService],
 })
 export class ClientModule { }

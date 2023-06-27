@@ -1,11 +1,9 @@
 <app-table
-	[loading]="loading"
-	dialogHeader="حذف الطلب"
-	[canView]="true"
-	dialogLocationAR="الطلب"
-	[hasTransaction]="true"
-	[isHideAllButtons]="true"
-	dialogDisplayName="id"
+	[canDelete]="false"
+	[canEdit]="false"
+	[canAdd]="false"
 	[tableColumns]="tableColumns"
-	[tableData]="orderDetails"
-></app-table>
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"></app-table>

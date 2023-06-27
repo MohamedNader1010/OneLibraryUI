@@ -4,7 +4,7 @@
 .info .col-5 {
 	padding: 0;
 }
-#heading {
+.heading {
 	color: grey;
 }
 .pricing {
@@ -30,22 +30,60 @@
 	width: 12.5%;
 	margin: 0;
 }
-
-.mat-typography {
-	width: 750px;
+.titl {
+	margin-bottom: 0;
+	border: 1px solid black;
+}
+.print-pad {
+	padding: 1rem 1rem 0 1rem;
+}
+.print-only {
+	display: none;
 }
 
 @media print {
+	@page {
+		size: 8cm auto;
+		margin: 0;
+	}
+	* {
+		color: black;
+	}
+	.print-dialog-content {
+		font-size: 10pt !important;
+		line-height: 1.2 !important;
+		margin: 0 !important;
+		padding: 10px !important;
+		width: 100% !important;
+		box-sizing: border-box !important;
+		box-shadow: none !important;
+	}
+	.title-print {
+		font-size: 10pt;
+	}
+	.heading {
+		font-weight: bold;
+	}
+	.pricing {
+		margin-top: 10px;
+	}
+	.pricing h4 {
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+	.pricing h5 {
+		margin-bottom: 5px;
+	}
+	.total {
+		margin-top: 10px;
+	}
+	.total strong {
+		font-weight: bold;
+	}
+	.print-only {
+		display: block;
+	}
 	.hide {
 		display: none;
-	}
-	.mat-typography {
-		width: 8cm;
-	}
-	.direction {
-		flex-direction: column;
-	}
-	.w {
-		width: 100% !important;
 	}
 }

@@ -16,13 +16,9 @@ export class DetailsComponent implements OnInit, OnDestroy {
 	id!: number;
 	order!: Order;
 
-	constructor(@Inject(MAT_DIALOG_DATA) public data: any, private _order: OrderService, public dialog: MatDialog, private getRowId: SendDataFromTableToMatDialoge) {}
+	constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _order: OrderService, public dialog: MatDialog) {}
 	ngOnInit(): void {
-		this.id = this.getRowId.getOrderId();
-		this._order.getOne(this.id).subscribe((data) => {
-			this.order = data;
-			console.log(this.order);
-		});
+		this.order = this.data;
 	}
 
 	ngOnDestroy() {
@@ -41,12 +37,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 				return 75;
 			case Status.اكتمل:
 				return 100;
-			// case Status.مرتجع:
-			// 	return 5;
-			// case Status.هالك:
-			// 	return 54;
-			// case Status.حجز:
-			// 	return 15;
 			default:
 				return 0;
 		}

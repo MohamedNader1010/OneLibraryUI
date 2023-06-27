@@ -9,35 +9,17 @@ import {Response} from './../../shared/interfaces/Iresponse';
 @Injectable({
 	providedIn: 'root',
 })
-export class AttendanceService extends GenericService<Attendance, Response> {
+export class AttendanceService extends GenericService<Attendance> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'Attendance');
 	}
 
-	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
-	loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
 	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	get loading(): boolean {
-		return this.loadingData.value;
-	}
-
-	get data(): any[] {
-		return this.dataChange.value ?? [];
-	}
-
-	dialogData: any;
-
-	getDialogData() {
-		return this.dialogData;
-	}
-
 	getAllAttendance() {
+		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.loadingData.next(true);
 				this.dataChange.next(data.body);
 			},
 			error: (e) => {

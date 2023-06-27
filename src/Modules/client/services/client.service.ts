@@ -1,19 +1,52 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
-import {_HttpOptions} from 'src/Persistents/consts';
 import {Client} from '../interFaces/Iclient';
+import {ToastrService} from 'ngx-toastr';
+import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import {Response} from './../../shared/interfaces/Iresponse';
+import { TeacherProfit } from '../interFaces/IteacherProfit'
 
 @Injectable({
 	providedIn: 'root',
 })
-export class ClientService {
-	constructor(private http: HttpClient) {}
-	uri: string = `${environment.apiUrl}Client`;
-	getAll = () => this.http.get<Client[]>(`${this.uri}`);
-	getAllByType = (id: number) => this.http.get<Client[]>(`${this.uri}/getByClientTypeId?id=${id}`);
-	add = (client: Client) => this.http.post<Client>(`${this.uri}`, client);
-	getOne = (id: number) => this.http.get<Client>(`${this.uri}/GetById?Id=${id}`);
-	update = (id: number, Client: Client) => this.http.put<Client>(`${this.uri}?Id=${id}`, {...Client, id});
-	delete = (id: number) => this.http.delete<Client>(`${this.uri}?Id=${id}`);
+export class ClientService extends GenericService<Client> {
+	constructor(http: HttpClient, private toastr: ToastrService) {
+		super(http, 'Client');
+	}
+
+	getAllClients() {
+		this.loadingData.next(true);
+		this.http.get<Response>(this.uri).subscribe({
+			next: (data: Response) => {
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+
+	getAllByType = (id: number) => this.http.get<Response>(`${this.uri}/getByClientTypeId?id=${id}`);
+	
+	getTeacherProfit() {
+		this.loadingData.next(true);
+		this.http.get<Response>(`${this.uri}/GetTeacherProfit`).subscribe({
+			next: (data: Response) => {
+				this.dataChange.next(data.body);
+			},
+			error: (e) => {
+				this.loadingData.next(false);
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => this.loadingData.next(false),
+		});
+	}
+	
+	addTeacherEarning = (model: TeacherProfit) => this.http.post<Response>(`${this.uri}/AddTeacheEarningAsync`,model);
+	
+	deleteTeacherEarning = (id: number) => this.http.get<Response>(`${this.uri}/DeleteTeacheEarningAsync?id=${id}`);
 }

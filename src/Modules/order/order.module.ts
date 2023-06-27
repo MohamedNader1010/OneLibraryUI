@@ -1,33 +1,22 @@
-import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
+import {TranslateModule} from '@ngx-translate/core';
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {MatComponentsModule} from '../mat-components.Module/mat-components.module';
 import {SharedModule} from '../shared/shared.module';
-import {AddEditComponent} from './components/add-edit/add-edit.component';
-import {AllComponent} from './components/all/all.component';
 import {DetailsComponent} from './components/details/details.component';
 import {TransactionComponent} from './components/transaction/transaction.component';
-import {CanDeactivateGuard} from './guards/canDeactivateForm.guard';
 import {OrderComponent} from './order.component';
 import {OrderRoutingModule} from './routing/order-routing.module';
 import {OrderService} from './services/orders.service';
 import {ReturnsComponent} from './components/returns/returns.component';
-import { OrderFormDialogComponent } from './components/order-form-dialog/order-form-dialog.component';
+import {OrderFormDialogComponent} from './components/order-form-dialog/order-form-dialog.component';
+import {ReservationsComponent} from './components/reservations/reservations.component';
 
 @NgModule({
-	declarations: [OrderComponent, AllComponent, AddEditComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent],
-	imports: [
-		FormsModule,
-		ReactiveFormsModule,
-		CommonModule,
-		OrderRoutingModule,
-		SharedModule,
-		MatComponentsModule,
-		TranslateModule
-	],
-	providers: [LoginGuard, OrderService, CanDeactivateGuard],
+	declarations: [OrderComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent, ReservationsComponent],
+	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
+	providers: [LoginGuard, OrderService],
 })
 export class OrderModule {}
-

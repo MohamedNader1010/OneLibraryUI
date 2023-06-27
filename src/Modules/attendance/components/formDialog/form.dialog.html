@@ -7,23 +7,11 @@
 		<h4 *ngIf="data"><strong>التاريخ :</strong> {{data.checkIn| date : 'dd/MM/yyyy'}}</h4>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
-				<mat-form-field appearance="fill" class="w-100" *ngIf="!employeeId.value; else disabled">
-					<mat-label>الموظف</mat-label>
-					<mat-select formControlName="employeeId">
-						<mat-option *ngFor="let emp of EmployeesDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
-					</mat-select>
-					<mat-error *ngIf="employeeId.hasError('required') && (employeeId.touched || employeeId.dirty)"> يجب اختيار الموظف </mat-error>
-				</mat-form-field>
-				<ng-template #disabled>
-					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>الموظف</mat-label>
-						<input type="text" matInput readonly="true" formControlName="employee" />
-					</mat-form-field>
-				</ng-template>
+				<autocomplete label="الموظف" [dataSource]="EmployeesDataSource" (selectedId)="setEmpId($event)" [selectedValue]="this?.data?.employeeId"></autocomplete>
 			</div>
 			<div class="row">
 				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>حضور</mat-label>
 						<mat-hint>HH:MM AM/PM</mat-hint>
 						<input matInput type="time" formControlName="checkIn" />
@@ -31,16 +19,16 @@
 					</mat-form-field>
 				</div>
 				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>انصراف</mat-label>
 						<mat-hint>HH:MM AM/PM</mat-hint>
 						<input matInput type="time" formControlName="checkOut" />
 					</mat-form-field>
 				</div>
 			</div>
-			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!form.valid||isSubmitting" class="mx-2 px-4">{{isSubmitting?'انتظر من فضلك':'حفظ'}}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!form.valid || isSubmitting">{{ isSubmitting ? 'button.wait' : ('button.save' | translate) }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
 			</div>
 		</form>
 	</mat-dialog-content>

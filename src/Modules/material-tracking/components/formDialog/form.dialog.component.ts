@@ -9,6 +9,7 @@ import {Response} from './../../../shared/interfaces/Iresponse';
 import {MaterialService} from './../../../material/services/material.service';
 import {Material} from './../../../material/interfaces/Imaterial';
 import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
+import {TranslateService} from '@ngx-translate/core';
 @Component({
 	selector: 'app-form.dialog',
 	templateUrl: './form.dialog.html',
@@ -25,15 +26,19 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		private _matTracking: MaterialTrackingService,
 		private _mat: MaterialService,
 		private fb: FormBuilder,
+		public translate: TranslateService,
 		private toastr: ToastrService
 	) {
 		this.form = this.fb.group({
-			// id: [null],
+			id: [null],
 			materialId: [null, [Validators.required]],
 			status: [null],
 			quantity: [0],
 			comment: [''],
 		});
+	}
+	get id(): FormControl {
+		return this.form.get('id') as FormControl;
 	}
 	get quantity(): FormControl {
 		return this.form.get('quantity') as FormControl;
@@ -71,33 +76,14 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.dialogRef.close();
 	}
 
+	setMaterialId = (data: any) => this.materialId.setValue(data);
+
 	handleSubmit() {
 		if (this.form.valid) {
 			this.isSubmitting = true;
-			// if (this.id.value) this.update();
-			// else
 			this.add();
 		}
 	}
-
-	// update() {
-	// 	this.subscriptions.push(
-	// 		this._matTracking.update(this.id.value, this.form.value).subscribe({
-	// 			next: (res) => {
-	// 				this._matTracking.dialogData = res.body;
-	// 				this.dialogRef.close({data: res});
-	// 			},
-	// 			error: (e) => {
-	// 				this.isSubmitting = false;
-	// 				let res: Response = e.error ?? e;
-	// 				this.toastr.error(res.message);
-	// 			},
-	// 			complete: () => {
-	// 				this.isSubmitting = false;
-	// 			},
-	// 		})
-	// 	);
-	// }
 
 	add() {
 		this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);

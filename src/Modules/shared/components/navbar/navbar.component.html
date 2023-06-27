@@ -7,11 +7,11 @@
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-			<ul class="navbar-nav" *ngIf="data.isLogged">
-				<li class="nav-item">
+			<ul class="navbar-nav" *ngIf="_auth.isLogged">
+				<li class="nav-item" *ngIf="isAdmin"> 
 					<a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active link-danger" [routerLinkActiveOptions]="{exact: true}">الرئيسية</a>
 				</li>
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown" *ngIf="isAdmin">
 					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الخدمات</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
@@ -25,7 +25,7 @@
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown" *ngIf="isAdmin">
 					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة العملاء</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
@@ -35,11 +35,14 @@
 							<a class="nav-link" [routerLink]="['clientTypes']" routerLinkActive="active link-danger">أنواع العملاء</a>
 						</li>
 						<li class="dropdown-item">
+							<a class="nav-link" [routerLink]="['teacherAccount']" routerLinkActive="active link-danger">حسابات المدرسين</a>
+						</li>
+						<li class="dropdown-item">
 							<a class="nav-link" [routerLink]="['feadback']" routerLinkActive="active link-danger">تعليقات العملاء</a>
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown" *ngIf="isAdmin">
 					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الموظفون</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
@@ -50,7 +53,7 @@
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item dropdown">
+				<li class="nav-item dropdown" *ngIf="isAdmin">
 					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الخامات</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
@@ -61,30 +64,38 @@
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item">
+				<li class="nav-item" *ngIf="isAdmin">
 					<a class="nav-link" aria-current="page" [routerLink]="['notes']" routerLinkActive="active link-danger">المذكرات</a>
 				</li>
-				<li class="nav-item dropdown">
-					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الطلبات</span>
+				<li class="nav-item dropdown" >
+					<span  class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الطلبات</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<li class="dropdown-item">
+						<li class="dropdown-item" *ngIf="isAdmin || isUser">
 							<a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">جميع الطلبات</a>
 						</li>
-						<li class="dropdown-item">
-							<a class="nav-link disabled" aria-current="page" [routerLink]="['0']" routerLinkActive="active link-danger">الحجوزات</a>
+						<li class="dropdown-item" *ngIf="isAdmin">
+							<a class="nav-link" aria-current="page" [routerLink]="['notesReservations']" routerLinkActive="active link-danger">الحجوزات</a>
 						</li>
-						<li class="dropdown-item">
-							<a class="nav-link disabled" aria-current="page" [routerLink]="['returns']" routerLinkActive="active link-danger">المرتجعات</a>
+						<li class="dropdown-item" *ngIf="isAdmin"> 
+							<a class="nav-link" aria-current="page" [routerLink]="['returns']" routerLinkActive="active link-danger">المرتجعات</a>
 						</li>
 					</ul>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" aria-current="page" [routerLink]="['imcomesOutcomes']" routerLinkActive="active link-danger">الماليات</a>
+				<li class="nav-item dropdown" *ngIf="isAdmin">
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الماليات</span>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li class="dropdown-item">
+							<a class="nav-link" aria-current="page" [routerLink]="['imcomesOutcomes']" routerLinkActive="active link-danger">الصادر و الوارد</a>
+						</li>
+						<li class="dropdown-item">
+							<a class="nav-link" [routerLink]="['shifts']" routerLinkActive="active link-danger">الشيفتات</a>
+						</li>
+					</ul>
 				</li>
 			</ul>
 			<div class="navbar-nav align-items-center">
-				<li class="nav-item dropdown">
-					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">مرحبا {{ data.username.getValue() }} !</span>
+				<li class="nav-item dropdown" *ngIf="isAdmin || isUser">
+					<span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">مرحبا {{ _auth.username.getValue() }} !</span>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<li class="dropdown-item">
 							<a class="nav-link" aria-current="page" [routerLink]="['profile']" routerLinkActive="active link-danger">الصفحة الشخصية</a>
@@ -99,16 +110,14 @@
 								{{ !_attendance.checkedIn.getValue() ? 'تسجيل الحضور' : 'تسجيل الانصراف' }}
 							</button>
 						</li>
-						<li class="dropdown-item">
-							<button class="w-100" type="button" (click)="!data.isLogged ? handleLogin() : handleLogout()" mat-stroked-button [color]="!data.isLogged ? 'basic' : 'warn'">
-								{{ !data.isLogged ? 'تسجيل الدخول' : 'تسجيل خروج' }}
-							</button>
+						<li *ngIf="_auth.isLogged" class="dropdown-item">
+							<button class="w-100" type="button" (click)="handleLogout()" mat-stroked-button color="warn">تسجيل خروج</button>
 						</li>
 					</ul>
 				</li>
-				<button type="button" mat-icon-button (click)="toggleParentSidenave()" color="basic" aria-label="toggle side nav">
+				<!-- <button type="button" mat-icon-button (click)="toggleParentSidenave()" color="basic" aria-label="toggle side nav">
 					<mat-icon>{{ opened ? 'close' : 'menu' }}</mat-icon>
-				</button>
+				</button> -->
 			</div>
 		</div>
 	</div>

@@ -1,5 +1,4 @@
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-
 export class FormHelpers {
 	public static async getAppropriateDialogComponent(formName: FormDialogNames) {
 		const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
@@ -32,20 +31,40 @@ export class FormHelpers {
 			case FormDialogNames.ServiceTypeFormDialogComponent:
 				module = await import('../../serviceType/components/service-type-form-dialog/service-type-form-dialog.component');
 				return module.ServiceTypeFormDialogComponent;
-			case FormDialogNames.ServiceTypPerClientFormDialogComponent:
+			case FormDialogNames.ServicePricePerClientFormDialogComponent:
 				module = await import('../../service-price-per-client-type/Components/service-type-per-client-form-dialog/service-type-per-client-form-dialog.component');
 				return module.ServiceTypePerClientFormDialogComponent;
+			case FormDialogNames.AttendanceFormDialogComponent:
+				module = await import('../../attendance/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.feedbackFormDialogComponent:
+				module = await import('../../feadback/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.incomeOutcomeFormDialogComponent:
+				module = await import('../../incomes-outcomes/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.materialTrackingFormDialogComponent:
+				module = await import('../../material-tracking/components/formDialog/form.dialog.component');
+				return module.FormDialogComponent;
+			case FormDialogNames.orderTransactionFormDialogComponent:
+				module = await import('../../order/components/transaction/transaction.component');
+				return module.TransactionComponent;
+			case FormDialogNames.orderDetailsDialogComponent:
+				module = await import('../../order/components/details/details.component');
+				return module.DetailsComponent;
+			case FormDialogNames.shiftFormDialogComponent:
+				module = await import('../../incomes-outcomes/components/close-start-shift-form-dialog/close-start-shift-form-dialog.component');
+				return module.CloseStartShiftFormDialogComponent;
 		}
 	}
 
-	public static async getAppropriateDeleteDialogComponent() {
-		const appropriateComponent = await FormHelpers.getAppropriateDeleteComponent();
-		return appropriateComponent;
+	public static async getDeleteDialogComponent() {
+		const deleteDialogComponent = await FormHelpers.importDialogComponent();
+		return deleteDialogComponent;
 	}
 
-	private static async getAppropriateDeleteComponent() {
-		let module;
-		module = await import('../../material/components/delete/delete.dialog.component');
+	private static async importDialogComponent() {
+		const module = await import('../components/delete-dialog/delete-dialog.component');
 		return module.DeleteDialogComponent;
 	}
 }

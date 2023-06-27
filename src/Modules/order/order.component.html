@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<app-table
+	[canView]="true"
+	[hasTransaction]="true"
+	[canDelete]="false"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	[componentName]="componentName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	(onTransaction)="handleOrderTransaction($event)"
+	[database]="database">
+</app-table>

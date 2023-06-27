@@ -1,59 +1,62 @@
-import {AlertServiceService} from './../../../shared/services/alert-service.service';
+import {TranslateService} from '@ngx-translate/core';
 import {OrderDetail} from './../../interfaces/IorderDetail';
 import {OrderService} from './../../services/orders.service';
 import {Component, OnInit} from '@angular/core';
 import {Status} from '../../Enums/status';
+import {ToastrService} from 'ngx-toastr';
+import {HttpClient} from '@angular/common/http';
+import {TableCommonFunctionality} from 'src/Modules/shared/classes/tableCommonFunctionality';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
 
 @Component({
 	selector: 'app-returns',
 	templateUrl: './returns.component.html',
 	styleUrls: ['./returns.component.css'],
 })
-export class ReturnsComponent implements OnInit {
+export class ReturnsComponent extends TableCommonFunctionality implements OnInit {
 	tableColumns!: {columnDef: string; header: string; cell: any}[];
 	orderDetails: OrderDetail[] = [];
 	loading: boolean = false;
-	constructor(private orderService: OrderService, private alertService: AlertServiceService) {}
+	constructor(private translate: TranslateService, public override database: OrderService, public override toastr: ToastrService, public override httpClient: HttpClient) {
+		super(httpClient, toastr, database);
+	}
 	ngOnInit(): void {
 		this.initializeTableColumns();
-		this.getOrdersByStatus();
+		this.loadData();
 	}
 
 	private initializeTableColumns() {
 		this.tableColumns = [
 			{
-				columnDef: 'order Id',
-				header: 'رقم الطلب',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (orderDetails: OrderDetail) => orderDetails.id,
 			},
 			{
-				columnDef: 'returns',
-				header: 'حالة الطلب',
-				cell: (orderDetails: OrderDetail) => orderDetails.orderStatus,
+				columnDef: this.translate.instant('order.item.label'),
+				header: this.translate.instant('order.item'),
+				cell: (orderDetails: OrderDetail) => orderDetails.service ?? orderDetails.note,
 			},
 			{
-				columnDef: 'price',
-				header: 'السعر',
+				columnDef: this.translate.instant('order.number.label'),
+				header: this.translate.instant('order.number'),
+				cell: (orderDetails: OrderDetail) => orderDetails.orderId,
+			},
+			{
+				columnDef: this.translate.instant('shared.price.label'),
+				header: this.translate.instant('shared.price'),
 				cell: (orderDetails: OrderDetail) => orderDetails.price,
 			},
 			{
-				columnDef: 'quantity',
-				header: 'الكميه',
+				columnDef: this.translate.instant('quantity'),
+				header: this.translate.instant('quantity.label'),
 				cell: (orderDetails: OrderDetail) => orderDetails.quantity,
-			},
-			{
-				columnDef: 'item',
-				header: 'الصنف',
-				cell: (orderDetails: OrderDetail) => orderDetails.service ?? orderDetails.note,
 			},
 		];
 	}
-	private getOrdersByStatus() {
-		this.loading = true;
-		this.orderService.getOrdersByStatus(Status.مرتجع).subscribe({
-			next: (data) => (this.orderDetails = data),
-			error: (error) => this.alertService.onError(error.Message, 'Error'),
-			complete: () => (this.loading = false),
-		});
+
+	loadData() {
+		this.database = new OrderService(this.httpClient, this.toastr);
+		this.database.getOrdersByStatus(Status.مرتجع);
 	}
 }

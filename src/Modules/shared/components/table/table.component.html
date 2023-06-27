@@ -1,53 +1,54 @@
-<div class="mx-5 mt-4 mat-elevation-z2">
-	<mat-form-field floatPlaceholder="never" color="primary" class="w-100" style="background-color: white">
-		<input matInput #filter placeholder="Filter" />
-		<button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
-			<mat-icon>close</mat-icon>
-		</button>
-	</mat-form-field>
-</div>
-<!-- <mat-spinner *ngIf="loading" class="mx-auto mt-5" color="warn"></mat-spinner>
-<ng-container *ngIf="!loading"> -->
-<section class="example-container mat-elevation-z2 mx-5" tabindex="0" style="background-color: white">
-	<table #table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" recycleRows>
-		<ng-container *ngFor="let column of tableColumns; let first = first" [matColumnDef]="column.columnDef" [sticky]="first">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
-			<td mat-cell *matCellDef="let row">{{ column.cell(row) }}</td>
-		</ng-container>
-		<ng-container matColumnDef="actions" stickyEnd="true">
-			<th mat-header-cell *matHeaderCellDef>
-				<button mat-icon-button color="primary" (click)="HandleNew()">
-					<mat-icon aria-label="new item">add</mat-icon>
-				</button>
-			</th>
-			<td mat-cell *matCellDef="let row">
-				<button
-					[hidden]="isHideAllButtons"
-					*ngIf="hasTransaction"
-					mat-icon-button
-					matTooltip="add transaction"
-					color="basic"
-					aria-label="add transaction to selected row"
-					(click)="handleTransaction(row)">
-					<mat-icon>paid</mat-icon>
-				</button>
-				<button [hidden]="isHideAllButtons" *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row.id)">
-					<mat-icon>info</mat-icon>
-				</button>
-				<button [hidden]="isHideAllButtons" *ngIf="canEdit" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
-					<mat-icon>edit</mat-icon>
-				</button>
-				<button [hidden]="!isDisplayDeleteButton || isHideAllButtons" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
-					<mat-icon>delete</mat-icon>
-				</button>
-			</td>
-		</ng-container>
-		<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-		<tr class="mat-row" *matNoDataRow>
-			<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
-		</tr>
-	</table>
+<section class="container-fluid d-flex flex-column py-2 h-100">
+	<div class="d-flex align-items-center justify-content-between mat-elevation-z2">
+		<mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
+			<input matInput #filter placeholder="Filter" />
+			<button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-form-field>
+	</div>
+	<div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
+		<table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+			<ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="column.columnDef" [sticky]="first || last">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header  (click)="setActiveSortColumn(column.columnDef)" >{{ column.header }}</th>
+				<td mat-cell *matCellDef="let row">{{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}</td>
+			</ng-container>
+			<ng-container matColumnDef="actions" stickyEnd>
+				<th mat-header-cell *matHeaderCellDef>
+					<button *ngIf="canAdd" mat-icon-button color="basic" (click)="HandleNew()">
+						<mat-icon aria-label="new item">add</mat-icon>
+					</button>
+					<button *ngIf="toggleShift" mat-stroked-button color="warn" (click)="HandleNew()">تغيير الشيفت</button>
+				</th>
+				<td mat-cell *matCellDef="let row">
+					<button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row)">
+						<mat-icon>paid</mat-icon>
+					</button>
+					<button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row)">
+						<mat-icon>info</mat-icon>
+					</button>
+					<button *ngIf="canEdit" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
+						<mat-icon>edit</mat-icon>
+					</button>
+					<button *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row)">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</td>
+			</ng-container>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+			<tr class="mat-row" *matNoDataRow>
+				<ng-container *ngIf="database.isLoading">
+					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">
+						<mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
+					</td>
+				</ng-container>
+				<ng-container *ngIf="!database.isLoading">
+					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
+				</ng-container>
+			</tr>
+		</table>
+	</div>
+	<mat-paginator class="d-flex" #paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" [length]="dataSource.filteredData.length" showFirstLastButtons color="warn"></mat-paginator>
+
 </section>
-<mat-paginator class="mx-5 paginator-bottom mat-elevation-z2" #paginator [pageSizeOptions]="[15, 25, 50, 100]" showFirstLastButtons color="warn"> </mat-paginator>
-<!-- </ng-container> -->

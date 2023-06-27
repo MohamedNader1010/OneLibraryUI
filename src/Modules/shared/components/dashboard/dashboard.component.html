@@ -1,9 +1,41 @@
-<div style="display: block;">
-    <canvas baseChart width="400" height="400"
-      [type]="'line'"
-      [data]="lineChartData"
-      [options]="lineChartOptions"
-      [legend]="lineChartLegend">
-    </canvas>
+<div class="container flex-column">
+  <div class="row my-2">
+    
+    <div class="col-6">
+      <mat-card>
+        <mat-card-content>
+          <canvas
+            class="w-100 h-100"
+            baseChart
+            [type]="'pie'"
+            [datasets]="pieChartDatasets"
+            [labels]="pieChartLabels"
+            [options]="pieChartOptions"
+            [plugins]="pieChartPlugins"
+            [legend]="pieChartLegend"
+          >
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col-6">
+      <mat-card class="h-100 d-flex justify-content-center">
+        <mat-card-content class="row">
+        
+          <canvas
+            *ngIf="dashboardData"
+            class="w-100 h-100"
+            baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [plugins]="barChartPlugins"
+            [legend]="barChartLegend"
+            [type]="'bar'"
+          >
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
   
+</div>

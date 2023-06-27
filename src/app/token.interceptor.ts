@@ -34,7 +34,7 @@ export class TokenInterceptor implements HttpInterceptor {
 					this._auth.clearLocalStorage();
 					this._auth.username.next(null);
 					this.refreshTokenSubject.next(null);
-					this.router.navigate(['/auth/login']);
+					this.router.navigate(['/auth/login'], { queryParams: { returnUrl: this.router.url }, queryParamsHandling: 'merge' });
 					return throwError(() => error);
 				}),
 				switchMap((res: Response) => {
@@ -48,7 +48,7 @@ export class TokenInterceptor implements HttpInterceptor {
 						this._auth.clearLocalStorage();
 						this._auth.username.next(null);
 						this.refreshTokenSubject.next(null);
-						this.router.navigate(['/auth/login']);
+						this.router.navigate(['/auth/login', {queryParams: {returnUrl: this.router.routerState.snapshot.url}}]);
 					}
 					return next.handle(request.clone({setHeaders: {Authorization: `Bearer ${res.body.token}`}}));
 				})

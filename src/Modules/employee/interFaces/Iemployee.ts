@@ -7,4 +7,5 @@ export interface Employee {
 	emailConfirmed: boolean;
 	firstName: string;
 	lastName: string;
+	roles: string[];
 }

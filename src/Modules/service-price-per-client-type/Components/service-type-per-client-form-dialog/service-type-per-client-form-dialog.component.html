@@ -1,56 +1,33 @@
 <div class="container">
-    <h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل سعر الخدمة</h2>
-<ng-template #update>
-	<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
-</ng-template>
-<mat-dialog-content>
-    <mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
-	<form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="submit()" class="d-flex flex-column w-100">
-		<!-- SERVICES LIST -->
-		<div class="row">
-			<div class="col-6">
-				<mat-form-field appearance="fill" class="col-12">
-					<mat-label>الخدمات</mat-label>
-					<mat-select formControlName="serviceId">
-						<mat-option *ngFor="let serviceName of servicesNames" [value]="serviceName.id">{{ serviceName.name }}</mat-option>
-					</mat-select>
-				</mat-form-field>
-				<span *ngIf="f['serviceId']?.touched && f['serviceId']?.invalid"
-					><mat-error *ngIf="f['serviceId']?.errors?.['required']"> serviceName is <strong>required</strong> </mat-error></span
-				>
+	<h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل سعر الخدمة</h2>
+	<ng-template #update>
+		<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
+	</ng-template>
+	<mat-dialog-content>
+		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
+			<!-- SERVICES LIST -->
+			<div class="row">
+				<autocomplete class="col-6" label="الخدمات" [dataSource]="servicesDataSource" (selectedId)="setServiceId($event)" [selectedValue]="serviceId.value"></autocomplete>
+				<!-- END OF SERVICES LISTS -->
+				<!-- CLIENT TYPE LIST -->
+				<autocomplete class="col-6" label="نوع العميل" [dataSource]="clientsTypeDataSource" (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value"></autocomplete>
 			</div>
-			<!-- END OF SERVICES LISTS -->
-			<!-- CLIENT TYPE LIST -->
-			<div class="col-6">
-				<mat-form-field appearance="fill" class="col-12">
-					<mat-label>نوع العميل</mat-label>
-					<mat-select formControlName="clientTypeId">
-						<mat-option *ngFor="let clientType of clientsType" [value]="clientType.id">{{ clientType.name }}</mat-option>
-					</mat-select>
-				</mat-form-field>
-				<span *ngIf="f['clientTypeId']?.touched && f['clientTypeId']?.invalid"
-					><mat-error *ngIf="f['clientTypeId']?.errors?.['required']"> clientType is <strong>required</strong> </mat-error></span
-				>
+			<!-- END OF CLIENT TYPE LIST -->
+			<!-- PRICE TEXT FIELD -->
+			<div class="row">
+				<div class="col">
+					<mat-form-field class="w-100" color="warn">
+						<mat-label>السعر</mat-label>
+						<input type="number" matInput formControlName="price" min="0" />
+						<mat-error *ngIf="price.hasError('required') && (price.touched || price.dirty)"> يجب ادخال السعر </mat-error>
+					</mat-form-field>
+				</div>
 			</div>
-		</div>
-		<!-- END OF CLIENT TYPE LIST -->
-		<!-- PRICE TEXT FIELD -->
-		<div class="row">
-			<div class="col">
-				<mat-form-field class="w-100">
-					<mat-label>السعر</mat-label>
-					<input type="number" matInput formControlName="price" />
-				</mat-form-field>
-				<span *ngIf="f['price']?.touched && f['price']?.invalid"
-					><mat-error *ngIf="f['price']?.errors?.['required']"> Price is <strong>required</strong> </mat-error></span
-				>
+			<!-- END OF PRICE TEXT FIELD -->
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
-		</div>
-		<!-- END OF PRICE TEXT FIELD -->
-		<div class="my-2 d-flex flex-row-reverse">
-			<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !form.valid }}">حفظ</button>
-			<button type="button" mat-stroked-button color="basic" (click)="back()">رجوع</button>
-		</div>
-	</form>
-</mat-dialog-content>
+		</form>
+	</mat-dialog-content>
 </div>

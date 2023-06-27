@@ -1,47 +1,44 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {Subscription} from 'rxjs';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {TableDataSource} from '../shared/classes/tableDataSource';
-import {DialogServiceService} from '../shared/services/dialog-service.service';
 import {Material} from './interfaces/Imaterial';
 import {MaterialService} from './services/material.service';
-import {Response} from '../shared/interfaces/Iresponse';
+import {ComponentsName} from 'src/Persistents/enums/components.name';
+import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-material',
 	templateUrl: './material.component.html',
 	styleUrls: ['./material.component.css'],
 })
-export class MaterialComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
+export class MaterialComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
 	tableColumns!: any[];
-	tableData!: Material[];
 	loading!: boolean;
 	formName = FormDialogNames.MaterialFormDialogComponent;
-	database!: MaterialService;
 	dataSource!: TableDataSource;
-
-	constructor(public httpClient: HttpClient, private dialogService: DialogServiceService, private _material: MaterialService, public dialog: MatDialog, private toastr: ToastrService) {}
+	componentName = ComponentsName.material;
+	constructor(public override database: MaterialService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
+		super(httpClient, toastr, database);
+	}
 
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
-		// this.onDialogClosed();
 	}
 
 	private initiateTableHeaders() {
 		this.tableColumns = [
 			{
-				columnDef: 'id',
-				header: '#',
+				columnDef: this.translate.instant('table.id'),
+				header: this.translate.instant('table.id.label'),
 				cell: (element: Material) => element.id,
 			},
 			{
-				columnDef: 'Name',
-				header: 'الأسم',
+				columnDef: this.translate.instant('form.name'),
+				header: this.translate.instant('form.name.label'),
 				cell: (element: Material) => element.name,
 			},
 			{
@@ -57,33 +54,7 @@ export class MaterialComponent implements OnInit, OnDestroy {
 		];
 	}
 
-	// private onDialogClosed() {
-	// 	this.dialogService.onClose().subscribe((_) => {
-	// 	});
-	// }
-
 	public loadData() {
-		this.database = new MaterialService(this.httpClient, this.toastr);
 		this.database.getAllMaterials();
 	}
-
-	handleNewRow = (data: any) => {
-		this.database.dataChange.value.push(this._material.dialogData);
-		this.toastr.success(data.message);
-	};
-
-	handleEditRow = (data: Response) => {
-		this.database.dataChange.value[this.database.dataChange.value.findIndex((x) => x.id === data.body.id)] = this._material.dialogData;
-		this.toastr.success(data.message);
-	};
-
-	handleDelete = (data: Response) => {
-		this.database.dataChange.value.splice(
-			this.database.dataChange.value.findIndex((x) => x.id === data.body.id),
-			1
-		);
-		this.toastr.success(data.message);
-	};
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

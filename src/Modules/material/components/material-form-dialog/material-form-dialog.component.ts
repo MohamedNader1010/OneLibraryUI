@@ -1,38 +1,26 @@
-import {FormsDialogCommonFunctionality} from './../../../shared/classes/FormsDialog';
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {Subscription} from 'rxjs';
 import {MaterialService} from '../../services/material.service';
-import {TranslateService} from '@ngx-translate/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DialogServiceService} from 'src/Modules/shared/services/dialog-service.service';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {Material} from '../../interfaces/Imaterial';
-import {Response} from './../../../shared/interfaces/Iresponse';
 import {ToastrService} from 'ngx-toastr';
-
+import {TranslateService} from '@ngx-translate/core';
+import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 @Component({
 	selector: 'app-material-form-dialog',
 	templateUrl: './material-form-dialog.component.html',
 	styleUrls: ['./material-form-dialog.component.css'],
 })
 export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
-	subscriptions: Subscription[] = [];
-	Form!: FormGroup;
-	controllerName: string = 'materials';
-	isSubmitted: boolean = false;
-	isSubmitting: boolean = false;
-	isLoading = false;
 	constructor(
 		@Inject(MAT_DIALOG_DATA) private data: Material,
 		translate: TranslateService,
-		dialogService: DialogServiceService,
-		matDialogg: MatDialog,
-		private _material: MaterialService,
+		_material: MaterialService,
 		private fb: FormBuilder,
-		private matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
-		private toastr: ToastrService
+		matDialogRef: MatDialogRef<MaterialFormDialogComponent>,
+		toastr: ToastrService
 	) {
-		super(matDialogRef, dialogService, translate, matDialogg);
+		super(matDialogRef, translate, _material, toastr);
 		this.initiateFormControls();
 	}
 
@@ -58,61 +46,11 @@ export class MaterialFormDialogComponent extends FormsDialogCommonFunctionality 
 		if (this.data) this.Form.patchValue(this.data);
 	}
 
-	getSingle = (id: number) => {
-		this.isLoading = true;
-		this.subscriptions.push(
-			this._material.GetById(id).subscribe((data) => {
-				this.isLoading = false;
-				this.Form.patchValue(data);
-			})
-		);
-	};
-
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.isSubmitting = true;
-			if (this.id.value) this.update();
-			else this.add();
+			if (this.id.value) this.update(this.data.id, this.Form.value);
+			else this.add(this.Form.value);
 		}
 	}
-
-	update() {
-		this.subscriptions.push(
-			this._material.update(this.id.value, this.Form.value).subscribe({
-				next: (res) => {
-					this._material.dialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
-
-	add() {
-		this.subscriptions.push(
-			this._material.add(this.Form.value).subscribe({
-				next: (res) => {
-					this._material.dialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
 }

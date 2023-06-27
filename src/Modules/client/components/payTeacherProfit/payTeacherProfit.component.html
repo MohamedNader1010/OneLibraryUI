@@ -1,0 +1,21 @@
+<div class="container">
+	<h2 mat-dialog-title>تسديد مستحقات  العميل {{data.name}}</h2>
+	<mat-dialog-content>
+		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
+			<div class="row">
+				<div class="col">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
+						<mat-label>المبلغ</mat-label>
+						<input type="number" matInput formControlName="amount" min="0" [max]="data.rest"/>
+						<mat-error *ngIf="amount.hasError('min') && (amount.touched || amount.dirty)">لا يمكن ادخال قيمة اصغر من صفر</mat-error>
+						<mat-error *ngIf="amount.hasError('max') && (amount.touched || amount.dirty)">لا يمكن ادخال قيمة اكبر من القيمة المستحقة للعميل "{{data.rest}}" جنية.</mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+			</div>
+		</form>
+	</mat-dialog-content>
+</div>

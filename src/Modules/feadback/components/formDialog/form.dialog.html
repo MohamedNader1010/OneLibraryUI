@@ -6,17 +6,9 @@
 	<mat-dialog-content>
 		<form [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
 			<div class="row">
+				<autocomplete class="col-6" label="العميل" [dataSource]="ClientsDataSource" (selectedId)="setCleintId($event)" [selectedValue]="cleintId.value"></autocomplete>
 				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
-						<mat-label>العميل</mat-label>
-						<mat-select formControlName="cleintId">
-							<mat-option *ngFor="let emp of ClientsDataSource" [value]="emp.id">{{ emp.name }}</mat-option>
-						</mat-select>
-						<mat-error *ngIf="cleintId.hasError('required') && (cleintId.touched || cleintId.dirty)"> يجب اختيار العميل</mat-error>
-					</mat-form-field>
-				</div>
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>التاريخ</mat-label>
 						<mat-hint>MM/DD/YYYY</mat-hint>
 						<input matInput [matDatepicker]="datepicker" formControlName="feedBackDate" />
@@ -27,14 +19,14 @@
 			</div>
 			<div class="row">
 				<div class="col">
-					<mat-form-field appearance="fill" class="w-100">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>ملاحظات</mat-label>
 						<textarea matInput formControlName="feedBack"></textarea>
 					</mat-form-field>
 				</div>
 			</div>
-			<div mat-dialog-actions>
-				<button mat-raised-button type="submit" color="primary" [disabled]="!form.valid||isSubmitting" class="mx-2 px-4">{{isSubmitting?'انتظر من فضلك':'حفظ'}}</button>
+			<div class="my-2 d-flex flex-row-reverse">
+				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>

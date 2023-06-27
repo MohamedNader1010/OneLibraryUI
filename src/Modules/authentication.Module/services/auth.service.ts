@@ -1,4 +1,3 @@
-import {_HttpOptions} from './../../../Persistents/consts';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, catchError, of, shareReplay, tap} from 'rxjs';
@@ -9,6 +8,8 @@ import {ResetPassword} from '../interfaces/IResetPassword';
 import {UpdatePassword} from '../interfaces/IUpdatePassword';
 import {User} from '../interfaces/IUser';
 import {Response} from './../../shared/interfaces/Iresponse';
+import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
 
 @Injectable({
 	providedIn: 'root',
@@ -16,7 +17,7 @@ import {Response} from './../../shared/interfaces/Iresponse';
 export class AuthService {
 	public isLogged: boolean = !!localStorage.getItem('token');
 	public username: BehaviorSubject<any> = new BehaviorSubject(null);
-	constructor(private http: HttpClient) {
+	constructor(private router: Router, private http: HttpClient) {
 		this.isLogged = !!localStorage.getItem('token');
 	}
 	uri: string = `${environment.apiUrl}Authorzation/`;
@@ -54,5 +55,10 @@ export class AuthService {
 	}
 	public clearLocalStorage() {
 		localStorage.clear();
+	}
+
+	public logout() {
+		this.clearLocalStorage();
+		this.router.navigate(['/auth/login']);
 	}
 }

@@ -1,21 +1,40 @@
-<h2 mat-dialog-title>تفاصيل الطلب</h2>
-<mat-dialog-content class="mat-typography" id="print-section">
+<div class="d-flex w-100">
+	<div class="row mr-0 w-100 justify-content-between print-pad">
+		<h4 mat-dialog-title class="title-print" style="width: fit-content">تفاصيل الطلب</h4>
+		<div class="print-only" style="width: fit-content">
+			<img src="/assets/Layer.png" style="width: 50px; height: 50px" alt="One Library" />
+		</div>
+	</div>
+</div>
+<mat-dialog-content *ngIf="order" class="print-dialog-content mt-0">
 	<div class="info">
-		<div class="row direction">
-			<div class="col-4 w">
-				<span id="heading"><strong>التاريخ</strong></span>
+		<div class="row">
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>التاريخ</strong></span>
 				<br />
 				<span>{{ order.createdOn | date : 'dd/MM/yyyy' }}</span>
 			</div>
-			<div class="col-4 w">
-				<span id="heading"><strong>تم بواسطة</strong></span>
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>تم بواسطة</strong></span>
 				<br />
 				<span>{{ order.createdBy }}</span>
 			</div>
-			<div class="col-4 w">
-				<span id="heading"><strong>كود الطلب</strong></span>
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>كود الطلب</strong></span>
 				<br />
 				<span>{{ order.id }}</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>العميل</strong></span>
+				<br />
+				<span>{{ order.clientName }}</span>
+			</div>
+			<div class="col-md-4 col-12">
+				<span class="heading"><strong>رقم التليفون</strong></span>
+				<br />
+				<span>{{ order.clientPhoneNumber }}</span>
 			</div>
 		</div>
 	</div>
@@ -39,7 +58,7 @@
 				<h5>{{ o.quantity }}</h5>
 			</div>
 			<div class="col-3">
-				<h5>&pound;{{ o.price }}</h5>
+				<h5>&pound;{{ o.price | number: '1.2-2'}}</h5>
 			</div>
 		</div>
 	</div>
@@ -47,37 +66,37 @@
 		<div class="row">
 			<div class="col-9">الأجمالي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.totalPrice }}</strong>
+				<strong>&pound;{{ order.totalPrice | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">الخصم بالمبلغ</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.discount }}</strong>
+				<strong>&pound;{{ order.discount | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">نسبة الخصم</div>
 			<div class="col-3">
-				<strong>% {{ order.discountPercent }}</strong>
+				<strong>% {{ order.discountPercent | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">السعر النهائي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.finalPrice }}</strong>
+				<strong>&pound;{{ order.finalPrice | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">المدفوع</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.paid }}</strong>
+				<strong>&pound;{{ order.paid | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-9">المتبقي</div>
 			<div class="col-3">
-				<strong>&pound;{{ order.rest }}</strong>
+				<strong>&pound;{{ order.rest | number: '1.2-2'}}</strong>
 			</div>
 		</div>
 	</div>
@@ -95,8 +114,3 @@
 		</div>
 	</div>
 </mat-dialog-content>
-<!-- <mat-dialog-actions align="start" class="hide">
-	<button mat-stroked-button matTooltip="print" printSectionId="print-section" aria-label="print reset" ngxPrint [useExistingCss]="true" printTitle="فاتورة العميل">
-		<mat-icon>print</mat-icon>طباعة
-	</button>
-</mat-dialog-actions> -->

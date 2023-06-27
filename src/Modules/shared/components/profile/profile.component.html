@@ -14,7 +14,7 @@
 						<form [formGroup]="form" (ngSubmit)="handleSubmit()">
 							<div class="row">
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>الأسم الاول</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="firstName" />
 										<mat-error *ngIf="firstName.errors?.['required']">يجب ادخال الاسم الاول </mat-error>
@@ -24,7 +24,7 @@
 									</mat-form-field>
 								</div>
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>الأسم الاخير</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="lastName" />
 										<mat-error *ngIf="lastName.errors?.['required']"> يجب ادخال الاسم الاخير </mat-error>
@@ -36,13 +36,13 @@
 							</div>
 							<div class="row">
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>المكان</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="position" />
 									</mat-form-field>
 								</div>
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>المسمى</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="title" />
 										<mat-error *ngIf="title.errors?.['required']"> يجب ادخال المسمى </mat-error>
@@ -51,7 +51,7 @@
 							</div>
 							<div class="row">
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>أسم المستخدم</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="text" formControlName="userName" />
 										<mat-hint>مسموح فقط بالأحرف الانجليزية والارقام</mat-hint>
@@ -62,7 +62,7 @@
 									</mat-form-field>
 								</div>
 								<div class="col-6">
-									<mat-form-field appearance="fill" class="w-100">
+									<mat-form-field appearance="fill" class="w-100" color="warn">
 										<mat-label>رقم الهاتف</mat-label>
 										<input [readonly]="!IsEdit" matInput autocomplete="off" type="tel" formControlName="phoneNumber" />
 										<mat-icon matSuffix>phone</mat-icon>
@@ -71,7 +71,7 @@
 									</mat-form-field>
 								</div>
 							</div>
-							<mat-form-field appearance="fill" class="w-100">
+							<mat-form-field appearance="fill" class="w-100" color="warn">
 								<mat-label>البريد الالكتروني</mat-label>
 								<input [readonly]="!IsEdit" matInput autocomplete="off" type="email" formControlName="email" />
 								<mat-icon matSuffix>email</mat-icon>
@@ -81,7 +81,7 @@
 							<div *ngIf="IsEdit">
 								<section align="end" class="justify-content-between">
 									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancel()">إلغاء</button>
-									<button mat-raised-button color="primary" [disabled]="!form.valid || submitting">{{ submitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+									<button mat-raised-button color="warn" [disabled]="!form.valid || submitting">{{ submitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 								</section>
 							</div>
 						</form>
@@ -92,7 +92,7 @@
 						</div>
 						<div *ngIf="updatePassword">
 							<form [formGroup]="passwordForm" (ngSubmit)="handleSubmitNewPassword()">
-								<mat-form-field appearance="fill" class="w-100">
+								<mat-form-field appearance="fill" class="w-100" color="warn">
 									<mat-label>كلمة السر السابقة</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="off" [type]="hide ? 'password' : 'text'" formControlName="oldPassword" />
 									<button *ngIf="updatePassword" type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
@@ -100,7 +100,7 @@
 									</button>
 									<mat-error *ngIf="oldPassword.errors?.['required']"> يجب ادخال كلمة السر السابقة </mat-error>
 								</mat-form-field>
-								<mat-form-field appearance="fill" class="w-100">
+								<mat-form-field appearance="fill" class="w-100" color="warn">
 									<mat-label>كلمة السر الجديدة</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="new-password" [type]="hideNew ? 'password' : 'text'" formControlName="newPassword" />
 									<button type="button" mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
@@ -111,7 +111,7 @@
 									</mat-error>
 									<mat-error *ngIf="newPassword.errors?.['required']"> يجب ادخال كلمة السر </mat-error>
 								</mat-form-field>
-								<mat-form-field appearance="fill" class="w-100">
+								<mat-form-field appearance="fill" class="w-100" color="warn">
 									<mat-label>تأكيد كلمة السر</mat-label>
 									<input [readonly]="!updatePassword" matInput autocomplete="new-password" [type]="hideConfirm ? 'password' : 'text'" formControlName="confirmPassword" />
 									<button type="button" mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide confirm password'" [attr.aria-pressed]="hideConfirm">
@@ -122,7 +122,7 @@
 								<mat-error *ngIf="passwordForm.hasError('mismatch') &&!confirmPassword.errors?.['required']"> كلمة السر غير متطابقة </mat-error>
 								<section align="end" class="justify-content-between">
 									<button type="button" mat-stroked-button color="warn" class="mx-2" (click)="handleCancelPasswordEdit()">إلغاء</button>
-									<button mat-raised-button color="primary" [disabled]="!form.valid || submittingPassword">{{ submittingPassword ? 'انتظر من فضلك' : 'حفظ' }}</button>
+									<button mat-raised-button color="warn" [disabled]="!passwordForm.valid || submittingPassword">{{ submittingPassword ? 'انتظر من فضلك' : 'حفظ' }}</button>
 								</section>
 							</form>
 						</div>
