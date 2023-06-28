@@ -4,6 +4,6 @@ export interface ServicePricePerClientType {
 	originalPrice: number;
 	clientType: string;
 	service: string;
-	clientTypeId: string;
+	clientTypeId: number;
 	serviceId: string;
 }

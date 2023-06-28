@@ -1,4 +1,4 @@
-import {NoteComponent} from './noteComponent';
+import { NoteComponent } from "./noteComponent";
 export interface Note {
 	id: number;
 	name: string;
@@ -17,4 +17,6 @@ export interface Note {
 	originalPrice: number;
 	earning: number;
 	quantity: number;
+	fileName: string;
+	filePath: string;
 }
