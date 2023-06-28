@@ -1,19 +1,17 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {Note} from '../interfaces/Inote';
-import {environment} from 'src/environments/environment';
-import {Term} from '../interfaces/ITerm';
-import {Stage} from '../interfaces/IStage';
-import {Response} from 'src/Modules/shared/interfaces/Iresponse';
-import {ToastrService} from 'ngx-toastr';
-import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Note } from "../interfaces/Inote";
+import { environment } from "src/environments/environment";
+import { Response } from "src/Modules/shared/interfaces/Iresponse";
+import { ToastrService } from "ngx-toastr";
+import { GenericService } from "src/Modules/shared/services/genericCRUD.service";
 
 @Injectable({
-	providedIn: 'root',
+	providedIn: "root",
 })
 export class NoteService extends GenericService<Note> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Note');
+		super(http, "Note");
 	}
 
 	getAllNotes() {
@@ -36,5 +34,5 @@ export class NoteService extends GenericService<Note> {
 
 	getOneByTeacher = (id: number) => this.http.get<Response>(`${this.uri}/GetNotesByTeacherId?Id=${id}`);
 	getNoteCompnents = (id: number) => this.http.get<Response>(`${this.uri}/GetNoteComponent?id=${id}`);
-	deleteNoteComponents = (ids: number[]) => this.http.delete<Response>(`${this.uri}/DeleteNoteComponent`, {body: ids});
+	deleteNoteComponents = (ids: number[]) => this.http.delete<Response>(`${this.uri}/DeleteNoteComponent`, { body: ids });
 }
