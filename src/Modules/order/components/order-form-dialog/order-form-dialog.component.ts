@@ -305,7 +305,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 					id: [0],
 					noteOrService: ["service"],
 					price: [0],
-					quantity: [0, [Validators.required]],
+					quantity: [0, [Validators.required], [validateQuantityAsync]],
 					serviceId: [null],
 					service: [null],
 					noteId: [null],
