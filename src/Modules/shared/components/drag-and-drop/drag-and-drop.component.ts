@@ -20,7 +20,7 @@ export class DragAndDropComponent implements OnInit, OnDestroy {
 	deleteFile = () => {
 		this.file = null;
 		this.fileName = null;
-		this.selectedFile.emit(this.file);
+		this.selectedFile.emit(null);
 		this.progress = 0;
 	};
 	async prepareFilesList(file: File) {

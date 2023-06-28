@@ -113,7 +113,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<app-drag-and-drop [fileName]="oldFileName" (selectedFile)="getSelectedFiles($event)" [progress]="progress"></app-drag-and-drop>
+				<app-drag-and-drop [fileName]="fileName.value" (selectedFile)="getSelectedFiles($event)" [progress]="progress"></app-drag-and-drop>
 			</div>
 		</form>
 	</mat-dialog-content>

@@ -8,7 +8,7 @@
 				</h4>
 			</div>
 			<div>
-				<button class="formDocBtn" mat-icon-button color="warn" aria-label="remove file" matTooltip="delete cetrificate" (click)="deleteFile()">
+				<button class="formDocBtn" mat-icon-button color="warn" aria-label="remove file" matTooltip="delete note" (click)="deleteFile()">
 					<mat-icon>delete</mat-icon>
 				</button>
 			</div>
@@ -19,9 +19,8 @@
 	<div class="wrapper" appDragAndDrop (fileDropped)="onFileDropped($event)" *ngIf="!file">
 		<input type="file" accept=".pdf" #fileDropRef id="fileDropRef" (change)="fileBrowseHandler($event)" />
 		<mat-icon color="warn" shake>folder</mat-icon>
-		<h3>Click to upload certificate or simply drag and drop file here</h3>
-		<h5>supported media types : <strong>PDF</strong></h5>
-		<h5>maximum file size : <strong>5 MB</strong></h5>
+		<h3>أسحب الملف هنا, أو أضغط لأختيار الملف</h3>
+		<h4>يجب ان تكون صيغة الملف <strong>PDF</strong></h4>
 	</div>
 	<div class="mt-2">
 		<div class="single-file" *ngIf="file">
@@ -39,7 +38,7 @@
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+					<mat-progress-bar mode="determinate" [value]="progress" color="warn"></mat-progress-bar>
 				</div>
 			</div>
 		</div>

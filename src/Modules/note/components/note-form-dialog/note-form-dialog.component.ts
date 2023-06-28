@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from "@angular/forms";
-import { map, forkJoin, switchMap, filter, startWith } from "rxjs";
+import { map, forkJoin, switchMap, filter, startWith, Observer } from "rxjs";
 import { NoteService } from "../../services/note.service";
 import { ToastrService } from "ngx-toastr";
 import { ClientService } from "src/Modules/client/services/client.service";
@@ -17,7 +17,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormsDialogCommonFunctionality } from "src/Modules/shared/classes/FormsDialog";
 import { ClientType } from "../../../clientType/interFaces/IclientType";
 import { Client } from "../../../client/interFaces/Iclient";
-import { HttpEventType } from "@angular/common/http";
+import { HttpEvent, HttpEventType } from "@angular/common/http";
 @Component({
 	selector: "app-note-form-dialog",
 	templateUrl: "./note-form-dialog.component.html",
@@ -33,7 +33,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	progress: number = 0;
 	selectedFile!: File | null;
 	formData: FormData = new FormData();
-	oldFileName: string | null = null;
 
 	constructor(
 		private _note: NoteService,
@@ -77,14 +76,8 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	get finalPrice(): FormControl {
 		return this.Form.get("finalPrice") as FormControl;
 	}
-	get base64File(): FormControl {
-		return this.Form.get("base64File") as FormControl;
-	}
 	get fileName(): FormControl {
 		return this.Form.get("fileName") as FormControl;
-	}
-	get filePath(): FormControl {
-		return this.Form.get("filePath") as FormControl;
 	}
 	getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get("id") as FormControl;
 	getNoteComponentServiceId = (index: number): FormControl => this.noteComponents.at(index).get("serviceId") as FormControl;
@@ -92,9 +85,12 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get("originalPrice") as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get("quantity") as FormControl;
 	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? "";
-	getPricedServicesForSelectedClientType = (clientTypeId: number) => {
-		return this.ServicesDataSource.filter((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientTypeId));
-	};
+	getPricedServicesForSelectedClientType = (clientTypeId: number) =>
+		this.ServicesDataSource.filter((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientTypeId));
+	getServicePriceForClientType = (serviceId: number) =>
+		+(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.price ?? 0);
+	getServiceOriginalPriceForClientType = (serviceId: number) =>
+		+(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.originalPrice ?? 0);
 
 	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
 	setClientId = (data: any) => this.clientId.setValue(data);
@@ -124,7 +120,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 				originalPrice += +this.serviceOriginalPriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
 				actualPrice += +this.servicePriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
 			});
-
 			const earning = +actualPrice - +originalPrice;
 			const finalPrice = +actualPrice + +this.teacherPrice.value;
 			this.originalPrice.setValue(originalPrice, { emitEvent: false });
@@ -199,17 +194,8 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	patchData = () => {
 		this.data.noteComponents.forEach((noteComponent, index) => {
 			this.handleNewNoteComponent();
-			this.servicePriceFormControl(index).setValue(
-				+(this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.price ?? 0),
-				{ emitEvent: false },
-			);
-			this.serviceOriginalPriceFormControl(index).setValue(
-				+(
-					this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)
-						?.originalPrice ?? 0
-				),
-				{ emitEvent: false },
-			);
+			this.servicePriceFormControl(index).setValue(this.getServicePriceForClientType(noteComponent.serviceId), { emitEvent: false });
+			this.serviceOriginalPriceFormControl(index).setValue(this.getServiceOriginalPriceForClientType(noteComponent.serviceId), { emitEvent: false });
 		});
 		this.Form.patchValue(this.data, { emitEvent: false });
 	};
@@ -232,8 +218,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 					earning: [0],
 					teacherPrice: [0, [Validators.required, Validators.min(0)]],
 					finalPrice: [0],
-					base64File: [null],
-					filePath: [null],
 					fileName: [null],
 				});
 				break;
@@ -269,41 +253,19 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 
 	getSelectedFiles = (file: File | null) => {
 		if (!file) {
-			this.base64File.setValue(null);
-			this.filePath.setValue(null);
 			this.fileName.setValue(null);
 			return;
 		}
-		// Check if the selected file is a PDF
-		if (file.type != "application/pdf") {
-			console.error("Invalid file format. Only PDF files are allowed.");
+		if (file.type !== "application/pdf") {
+			this.toastr.error("يجب ان يكون صيغة الملف PDF");
+			this.fileName.setValue(null);
 			return;
 		}
-		this.fileName.setValue(file.name);
 		this.selectedFile = file;
 	};
 
-	appendNestedObjectToFormData(formData: FormData, object: any, parentKey?: string) {
-		for (const key in object) {
-			if (object.hasOwnProperty(key)) {
-				const value = object[key];
-				const formKey = parentKey ? `${parentKey}.${key}` : key;
-				if (typeof value === "object" && value !== null) {
-					this.appendNestedObjectToFormData(formData, value, formKey);
-				} else {
-					formData.append(formKey, value);
-				}
-			}
-		}
-	}
-
 	handleSubmit() {
 		if (this.Form.valid) {
-			const formData = new FormData();
-			this.appendNestedObjectToFormData(formData, this.Form.value);
-			if (this.selectedFile) formData.append("pdf", this.selectedFile);
-			console.log(formData);
-
 			this.isSubmitting = true;
 			if (this.id.value) {
 				this.subscriptions.push(
@@ -313,21 +275,35 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 							let res: Response = e.error ?? e;
 							this.toastr.error(res.message);
 						},
-						complete: () => this.update(this.data.id, this.Form.value),
+						complete: () => {
+							this.subscriptions.push(this._note.updateFormData(this.id.value, this.Form.value, this.selectedFile, "pdf").subscribe(this.addAndUpdateFormDataObserver()));
+						},
 					}),
 				);
+			} else {
+				this.subscriptions.push(this._note.addFormData(this.Form.value, this.selectedFile, "pdf").subscribe(this.addAndUpdateFormDataObserver()));
 			}
-			// this.add(this.Form.value);
-			else
-				this.subscriptions.push(
-					this._note.addWithFile(formData).subscribe((event) => {
-						if (event.type === HttpEventType.UploadProgress) {
-							this.progress = Math.round((event.loaded / (event.total ?? 1)) * 100);
-						} else if (event.type === HttpEventType.Response) {
-							console.log("File uploaded successfully.");
-						}
-					}),
-				);
 		}
+	}
+
+	addAndUpdateFormDataObserver(): Partial<Observer<HttpEvent<Object>>> | (((value: HttpEvent<Object>) => void) | undefined) {
+		return {
+			next: (res) => {
+				if (res.type === HttpEventType.UploadProgress) {
+					this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
+				} else if (res.type === HttpEventType.Response) {
+					this.service.dialogData = (res.body as Response).body;
+					this.matDialogRef.close({ data: res.body });
+				}
+			},
+			error: (e) => {
+				this.isSubmitting = false;
+				let res: Response = e.error ?? e;
+				this.toastr.error(res.message);
+			},
+			complete: () => {
+				this.isSubmitting = false;
+			},
+		};
 	}
 }
