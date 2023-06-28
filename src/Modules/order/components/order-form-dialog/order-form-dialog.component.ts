@@ -119,7 +119,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 
 	getAvailableStatus(i: number): Status[] {
 		if (this.data) return this.availableStatus.filter((s) => s >= this.getOrderDetailStatus(i).value);
-		else return this.availableStatus;
+		else return [Status.حجز, Status.استلم];
 	}
 
 	forkJoins() {
