@@ -281,7 +281,7 @@ export class OrderFormDialogComponent
           service: [""],
           noteId: [null],
           note: [""],
-          availableNoteQuantity: [""], // this is hidden control. ==> you can read auto complete to see why this is needed here.
+          availableNoteQuantity: [""],
           orderStatus: [null, [Validators.required]],
           counts: [0],
           copies: [0],
