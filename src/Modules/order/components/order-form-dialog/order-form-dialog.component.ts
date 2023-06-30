@@ -109,6 +109,12 @@ export class OrderFormDialogComponent
     return this.Form.get("discountPercent") as FormControl;
   }
 
+  resetOrderDetail = (index: number): void => {
+   this.OrderDetails.at(index).get('counts')?.setValue(0);
+   this.OrderDetails.at(index).get('copies')?.setValue(0); 
+   this.OrderDetails.at(index).get('quantity')?.setValue(0);
+   this.OrderDetails.at(index).get('orderStatus')?.setValue(null);
+  };
   getOrderDetailId = (index: number): FormControl =>
     this.OrderDetails.at(index).get("id") as FormControl;
   getNoteOrService = (index: number): FormControl =>
@@ -300,6 +306,7 @@ export class OrderFormDialogComponent
     this.subscribeCopiesChanges(index);
     this.subscribeCountChanges(index);
     this.subscribeOrderStatusChangesByiIndex(index);
+    this.subscribeNoteOrServiceChanges(index);
   };
 
   handleDeleteDetail = (index: number) => {
@@ -321,6 +328,13 @@ export class OrderFormDialogComponent
         } else {
           this.getQuantityControl(index).updateValueAndValidity();
         }
+      })
+    );
+  }
+  private subscribeNoteOrServiceChanges(index: number) {
+    this.subscriptions.push(
+      this.getNoteOrService(index).valueChanges.subscribe((_) => {
+        this.resetOrderDetail(index);
       })
     );
   }
