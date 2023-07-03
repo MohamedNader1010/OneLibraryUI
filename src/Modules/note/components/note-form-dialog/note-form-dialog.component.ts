@@ -84,7 +84,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 	servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get("price") as FormControl;
 	serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get("originalPrice") as FormControl;
 	serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get("quantity") as FormControl;
-	getServiceName = (index: number): string => this.ServicesDataSource.find((option) => option.id === this.getNoteComponentServiceId(index).value)?.name ?? "";
+	getServiceName = (index: number): FormControl => this.noteComponents.at(index).get("service") as FormControl;
 	getPricedServicesForSelectedClientType = (clientTypeId: number) =>
 		this.ServicesDataSource.filter((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientTypeId));
 	getServicePriceForClientType = (serviceId: number) =>
@@ -196,6 +196,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 			this.handleNewNoteComponent();
 			this.servicePriceFormControl(index).setValue(this.getServicePriceForClientType(noteComponent.serviceId), { emitEvent: false });
 			this.serviceOriginalPriceFormControl(index).setValue(this.getServiceOriginalPriceForClientType(noteComponent.serviceId), { emitEvent: false });
+			// this.getServiceName(index).setValue(noteComponent.service);
 		});
 		this.Form.patchValue(this.data, { emitEvent: false });
 	};
@@ -226,6 +227,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
 					id: [0],
 					noteId: [this.id.value],
 					serviceId: [null, [Validators.required]],
+					service: [""],
 					quantity: [1, [Validators.required, Validators.min(1)]],
 					price: [0],
 					originalPrice: [0],

@@ -1,3 +1,4 @@
+import { NoteClient } from "./InoteClient";
 import { NoteComponent } from "./noteComponent";
 export interface Note {
 	id: number;
@@ -14,6 +15,7 @@ export interface Note {
 	stageId: number;
 	stage: string;
 	noteComponents: NoteComponent[];
+	noteClients: NoteClient[];
 	originalPrice: number;
 	earning: number;
 	quantity: number;
