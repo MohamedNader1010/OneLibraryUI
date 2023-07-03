@@ -61,7 +61,7 @@
 							<ng-template #disabled>
 								<mat-form-field color="warn" appearance="fill" class="w-100">
 									<mat-label>الخدمات</mat-label>
-									<input type="text" matInput readonly="true" [value]="getServiceName(i)" />
+									<input type="text" matInput formControlName="service" readonly="true" />
 								</mat-form-field>
 							</ng-template>
 						</div>

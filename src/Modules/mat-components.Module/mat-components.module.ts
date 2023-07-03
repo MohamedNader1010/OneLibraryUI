@@ -35,6 +35,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatListModule} from '@angular/material/list';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
 	declarations: [],
 
@@ -57,6 +58,7 @@ import {MatListModule} from '@angular/material/list';
 		MatTableModule,
 		MatTabsModule,
 		MatToolbarModule,
+		MatTooltipModule,
 		MatSidenavModule,
 		MatCardModule,
 		MatSlideToggleModule,
