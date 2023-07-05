@@ -109,7 +109,7 @@
 					  </mat-form-field>
 					</ng-template>
 				  </ng-container>
-  
+
 				  <ng-container *ngIf="getNoteOrService(i).value == 'note'">
 					<autocomplete
 					  *ngIf="!data; else note"
@@ -132,7 +132,7 @@
 					</ng-template>
 				  </ng-container>
 				</div>
-  
+
 				<div class="col-5 d-flex justify-content-between">
 				  <mat-form-field
 					*ngIf="isServiceSelected(i) && !data"
@@ -162,7 +162,7 @@
 					  min="0"
 					/>
 				  </mat-form-field>
-  
+
 				  <mat-form-field
 					appearance="fill"
 					[class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'"
@@ -198,7 +198,7 @@
 					/>
 				  </mat-form-field>
 				</div>
-  
+
 				<div class="col-3">
 				  <!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
 				  <mat-form-field appearance="fill" class="w-100" color="warn">

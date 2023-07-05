@@ -109,12 +109,14 @@ export class OrderFormDialogComponent
     return this.Form.get("discountPercent") as FormControl;
   }
 
-  resetOrderDetail = (index: number): void => {
-   this.OrderDetails.at(index).get('counts')?.setValue(0);
-   this.OrderDetails.at(index).get('copies')?.setValue(0); 
-   this.OrderDetails.at(index).get('quantity')?.setValue(0);
-   this.OrderDetails.at(index).get('orderStatus')?.setValue(null);
-  };
+  private resetOrderDetail(index: number): void {
+    this.OrderDetails.at(index).get("counts")?.setValue(0);
+    this.OrderDetails.at(index).get("copies")?.setValue(0);
+    this.OrderDetails.at(index).get("quantity")?.setValue(0);
+    this.OrderDetails.at(index).get("orderStatus")?.setValue(null);
+    this.OrderDetails.at(index).get("noteId")?.setValue(null);
+    this.OrderDetails.at(index).get("serviceId")?.setValue(null);
+  }
   getOrderDetailId = (index: number): FormControl =>
     this.OrderDetails.at(index).get("id") as FormControl;
   getNoteOrService = (index: number): FormControl =>
@@ -249,17 +251,25 @@ export class OrderFormDialogComponent
   }
 
   patchData = () => {
-    this.data.orderDetails.forEach((orderDetail: OrderDetail) => {
-      let index = this.data.orderDetails.indexOf(orderDetail);
-      this.OrderDetails.push(this.createFormItem("detail"));
-      this.getNoteOrService(index).setValue(
-        orderDetail.noteId ? "note" : "service"
-      );
-    });
+    this.data.orderDetails.forEach(
+      (orderDetail: OrderDetail, index: number) => {
+        // here I want to send this value for each orderDetail to inform validator that the initial value of orderStatus is receieved
+        // so DON'T validate.
+        const previousStatus:Status = orderDetail.orderStatus;
+        this.OrderDetails.push(this.createFormItem("detail", true, previousStatus));
+        this.getNoteOrService(index).setValue(
+          orderDetail.noteId ? "note" : "service"
+        );
+      }
+    );
     this.Form.patchValue(this.data);
   };
 
-  createFormItem(type: string): FormGroup {
+  createFormItem(
+    type: string,
+    isUpdateMode: boolean = false,
+    previousStatus: Status | null = null
+  ): FormGroup {
     let formItem: FormGroup = this.fb.group({});
     switch (type) {
       case "init":
@@ -282,7 +292,11 @@ export class OrderFormDialogComponent
           id: [0],
           noteOrService: ["service"],
           price: [0],
-          quantity: [0, [Validators.required], [validateQuantityAsync]],
+          quantity: [
+            0,
+            [Validators.required],
+            [validateQuantityAsync(isUpdateMode, previousStatus)],
+          ],
           serviceId: [null],
           service: [""],
           noteId: [null],
@@ -340,15 +354,35 @@ export class OrderFormDialogComponent
   }
   private subscribeOrderStatusChanges() {
     this.OrderDetails.controls.forEach((od, index) => {
-      od.get("orderStatus")?.valueChanges.subscribe((_) => {
-        const noteId = od.get("noteId")?.value;
-        this._note.GetById(noteId).subscribe((n) => {
-          this.setAvailableQuantity(index, n.body.quantity ?? 0);
-        });
+      const noteId = od.get("noteId")?.value;
+      const orderStatusControl = od.get("orderStatus") as FormControl;
+
+      // here I want to set the qty of each note in case of update and the value of orderStatus is still not changed!
+      if (noteId && this.NotesDataSource)
+        this.initiateAvailableQtyControl(orderStatusControl, noteId, index);
+
+      orderStatusControl?.valueChanges.subscribe((_) => {
+        // in case of update note, we don't call the forkJoin method, so the NoteDataSource is empty.
+        // so I need to get the qty of the selected note to validate it.
+        if (noteId && this.NotesDataSource.length == 0)
+          this.getNoteById(noteId, index);
       });
     });
   }
-
+  private getNoteById(noteId: number, index: number) {
+    this._note.GetById(noteId).subscribe((note) => {
+      this.setAvailableQuantity(index, note.body.quantity ?? 0);
+    });
+  }
+  private initiateAvailableQtyControl(
+    orderStatus: FormControl,
+    noteId: number,
+    index: number
+  ) {
+    if (orderStatus.value == Status.استلم && noteId) {
+      this.getNoteById(noteId, index);
+    }
+  }
   subscribeQuantityChanges(index: number) {
     this.subscriptions.push(
       this.getOrderDetailQuantity(index).valueChanges.subscribe(() => {
@@ -380,32 +414,37 @@ export class OrderFormDialogComponent
     );
   }
   setServicePriceForClientType(index: number) {
-    this.subscriptions.push(
-      this._servicePrice
-        .getPrice(
-          this.clientTypeId.value,
-          this.getOrderDetailServiceId(index).value
-        )
-        .subscribe({
-          next: (res) => {
-            if (!res.body) {
-              this.toastr.error("هذه الخدمة غير مسعرة");
+    const serviceOrNote = this.getNoteOrService(index).value;
+    const serviceId = this.getServiceId(index).value;
+    // this check to ensure that any service is selected and only service.
+    if (serviceOrNote == "service" && serviceId) {
+      this.subscriptions.push(
+        this._servicePrice
+          .getPrice(
+            this.clientTypeId.value,
+            this.getOrderDetailServiceId(index).value
+          )
+          .subscribe({
+            next: (res) => {
+              if (!res.body) {
+                this.toastr.error("هذه الخدمة غير مسعرة");
+                this.getOrderDetailPrice(index).setValue(0);
+                return;
+              }
+              this.getOrderDetailPrice(index).setValue(res.body.price);
+            },
+            error: (e) => {
+              this.isSubmitting = false;
+              let res: Response = e.error ?? e;
+              // this.toastr.error(res.message);
               this.getOrderDetailPrice(index).setValue(0);
-              return;
-            }
-            this.getOrderDetailPrice(index).setValue(res.body.price);
-          },
-          error: (e) => {
-            this.isSubmitting = false;
-            let res: Response = e.error ?? e;
-            // this.toastr.error(res.message);
-            this.getOrderDetailPrice(index).setValue(0);
-          },
-          complete: () => {
-            this.calculateTotalPrice();
-          },
-        })
-    );
+            },
+            complete: () => {
+              this.calculateTotalPrice();
+            },
+          })
+      );
+    }
   }
 
   subscribeClientTypeChange() {

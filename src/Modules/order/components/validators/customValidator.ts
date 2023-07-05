@@ -39,30 +39,63 @@ export function conditionalRequiredValidator(
     return null;
   };
 }
+
 export function validateQuantityAsync(
-  control: AbstractControl
-): Observable<ValidationErrors | null> {
-  const formGroup = control.parent as FormGroup;
-  if (!formGroup) {
-    return of(null);
-  }
-  const isReceivedStatus =
-    formGroup.controls["orderStatus"].value == Status.استلم;
-  const isNote = formGroup.controls["noteId"].value;
-  const availableNoteQuantity = formGroup.get("availableNoteQuantity")?.value;
+  isUpdateMode: boolean,
+  previousStatus: Status | null
+): AsyncValidatorFn {
+  return (control: AbstractControl): Observable<ValidationErrors | null> => {
+    const formGroup = control.parent as FormGroup;
+    if (!formGroup) {
+      return of(null);
+    }
 
-  if (availableNoteQuantity == 0 && isReceivedStatus && isNote) {
-    return of({
-        exceedQuantity: { value: true, availableQuantity: availableNoteQuantity },
-      });
-  }
+    const isReceivedStatus =
+      formGroup.controls["orderStatus"].value === Status.استلم;
+    const isNote = formGroup.controls["noteId"].value;
+    const availableNoteQuantity = formGroup.get("availableNoteQuantity")?.value;
 
-  if (availableNoteQuantity != 0 && isNote) {
-    if (control.value > availableNoteQuantity && isReceivedStatus) {
+    // here I'm check If the I am in update mode and the status is already received so, let the validation pass.
+    if (isUpdateMode && StatusHelper.isAlreadyReceived(previousStatus)) {
+      return of(null);
+    }
+
+    if (isUpdateMode && StatusHelper.isReadyStatus(previousStatus)) {
+      console.log("reservedStatus");
+      return of(null);
+    }
+
+    if (availableNoteQuantity === 0 && isReceivedStatus && isNote) {
       return of({
-        exceedQuantity: { value: true, availableQuantity: availableNoteQuantity },
+        exceedQuantity: {
+          value: true,
+          availableQuantity: availableNoteQuantity,
+        },
       });
     }
+
+    if (availableNoteQuantity !== 0 && isNote) {
+      if (control.value > availableNoteQuantity && isReceivedStatus) {
+        return of({
+          exceedQuantity: {
+            value: true,
+            availableQuantity: availableNoteQuantity,
+          },
+        });
+      }
+    }
+
+    return of(null);
+  };
+}
+class StatusHelper {
+  static isAlreadyReceived(status: Status | null): boolean {
+    if (status && status == Status.استلم) return true;
+    else return false;
   }
-  return of(null);
+  static isReadyStatus(status: Status | null): boolean {
+    console.log("Function");
+    if (status && status == Status.جاهز) return true;
+    else return false;
+  }
 }
