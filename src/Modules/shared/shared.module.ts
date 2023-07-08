@@ -23,23 +23,47 @@ import { ServiceFactory } from "./classes/ServiceFactory";
 import { AuthGuard } from "../authentication.Module/guards/auth.guard";
 import { DragAndDropDirective } from "./directives/dragAndDrop.directive";
 import { DragAndDropComponent } from "./components/drag-and-drop/drag-and-drop.component";
+import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
 
 @NgModule({
-	declarations: [
-		DragAndDropDirective,
-		SharedComponent,
-		ProfileComponent,
-		FooterComponent,
-		NavbarComponent,
-		NotfoundComponent,
-		TableComponent,
-		DashboardComponent,
-		AutocompleteComponent,
-		DeleteDialogComponent,
-		DragAndDropComponent,
-	],
-	imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule],
-	exports: [TableComponent, AutocompleteComponent, DragAndDropDirective, DragAndDropComponent],
-	providers: [LoginGuard, AuthService, ToastrService, { provide: NgChartsConfiguration, useValue: { generateColors: false } }, ServiceFactory, AuthGuard],
+  declarations: [
+    DragAndDropDirective,
+    SharedComponent,
+    ProfileComponent,
+    FooterComponent,
+    NavbarComponent,
+    NotfoundComponent,
+    DashboardComponent,
+    AutocompleteComponent,
+    DeleteDialogComponent,
+    DragAndDropComponent,
+    TableComponent,
+    CdkDetailRowDirective,
+  ],
+  imports: [
+    NgChartsModule,
+    LoadingBarRouterModule,
+    CommonModule,
+    SharedRoutingModule,
+    MatComponentsModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+  ],
+  exports: [
+    TableComponent,
+    AutocompleteComponent,
+    DragAndDropDirective,
+    DragAndDropComponent,
+  ],
+  providers: [
+    LoginGuard,
+    AuthService,
+    ToastrService,
+    { provide: NgChartsConfiguration, useValue: { generateColors: false } },
+    ServiceFactory,
+    AuthGuard,
+    CdkDetailRowDirective,
+  ],
 })
 export class SharedModule {}

@@ -14,11 +14,16 @@ export interface Note {
 	term: string;
 	stageId: number;
 	stage: string;
+	noteClients: NoteClients[];
 	noteComponents: NoteComponent[];
-	noteClients: NoteClient[];
 	originalPrice: number;
 	earning: number;
 	quantity: number;
 	fileName: string;
 	filePath: string;
+}
+export interface NoteClients {
+	id: number; 
+	name: string; 
+	quantity: number;
 }
