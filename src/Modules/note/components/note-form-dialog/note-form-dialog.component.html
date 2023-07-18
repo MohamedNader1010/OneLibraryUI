@@ -4,7 +4,7 @@
 		<h2 class="w-100 text-center mt-3">مذكرة جديدة</h2>
 	</ng-template>
 	<mat-dialog-content>
-		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+		<form [formGroup]="Form" class="d-flex flex-column">
 			<div class="row">
 				<autocomplete class="col-3" label="نوع العميل" [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value"></autocomplete>
 				<autocomplete class="col-3" label="أسم العميل" [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)" [selectedValue]="clientId.value"></autocomplete>
@@ -41,14 +41,7 @@
 					</mat-form-field>
 				</div>
 				<div class="col-1">
-					<button
-						type="button"
-						mat-icon-button
-						matTooltip="add"
-						color="basic"
-						aria-label="add note component row"
-						(click)="handleNewNoteComponent()"
-						[disabled]="!clientId.value || clientId.invalid">
+					<button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add note component row" (click)="handleNewNoteComponent()" [disabled]="!clientId.value || clientId.invalid">
 						<mat-icon>add</mat-icon>
 					</button>
 					<!-- <mat-hint>test</mat-hint> -->
@@ -62,13 +55,13 @@
 							<mat-form-field color="warn" appearance="fill" class="w-100" *ngIf="!component.value['id']; else disabled">
 								<mat-label>الخدمات</mat-label>
 								<mat-select formControlName="serviceId">
-									<mat-option *ngFor="let service of ServicesDataSource" [value]="service.id">{{ service.name }}</mat-option>
+									<mat-option *ngFor="let service of getPricedServicesForSelectedClientType(clientTypeId.value)" [value]="service.id">{{ service.name }}</mat-option>
 								</mat-select>
 							</mat-form-field>
 							<ng-template #disabled>
 								<mat-form-field color="warn" appearance="fill" class="w-100">
 									<mat-label>الخدمات</mat-label>
-									<input type="text" matInput readonly="true" [value]="getServiceName(i)" />
+									<input type="text" matInput formControlName="service" readonly="true" />
 								</mat-form-field>
 							</ng-template>
 						</div>
@@ -119,9 +112,8 @@
 					</mat-form-field>
 				</div>
 			</div>
-			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+			<div class="row">
+				<app-drag-and-drop [fileName]="fileName.value" (selectedFile)="getSelectedFiles($event)" [progress]="progress"></app-drag-and-drop>
 			</div>
 		</form>
 	</mat-dialog-content>
