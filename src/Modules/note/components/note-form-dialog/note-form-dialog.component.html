@@ -52,18 +52,26 @@
 				<div class="row" *ngFor="let component of noteComponents.controls; let i = index">
 					<ng-container [formGroupName]="i">
 						<div class="col-6">
-							<mat-form-field color="warn" appearance="fill" class="w-100" *ngIf="!component.value['id']; else disabled">
-								<mat-label>الخدمات</mat-label>
-								<mat-select formControlName="serviceId">
-									<mat-option *ngFor="let service of getPricedServicesForSelectedClientType(clientTypeId.value)" [value]="service.id">{{ service.name }}</mat-option>
-								</mat-select>
-							</mat-form-field>
-							<ng-template #disabled>
-								<mat-form-field color="warn" appearance="fill" class="w-100">
+							<ng-container>
+								<autocomplete
+								  *ngIf="!data; else service"
+								  class="col-3"
+								  label="الخدمات"
+								  [dataSource]="ServicesDataSource"
+								  (selectedId)="setServiceId(i, $event)"
+								  [selectedValue]="getNoteComponentServiceId(i).value"
+								></autocomplete>
+								<ng-template #service>
+								  <mat-form-field class="w-100" color="warn">
 									<mat-label>الخدمات</mat-label>
-									<input type="text" matInput formControlName="service" readonly="true" />
-								</mat-form-field>
-							</ng-template>
+									<input
+									  matInput
+									  [value]="getServiceName(i).value"
+									  [readonly]="true"
+									/>
+								  </mat-form-field>
+								</ng-template>
+							  </ng-container>
 						</div>
 						<div class="col-3">
 							<mat-form-field color="warn" appearance="fill" class="w-100">
