@@ -8,6 +8,7 @@ import {MaterialService} from './services/material.service';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {TranslateService} from '@ngx-translate/core';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-material',
@@ -55,6 +56,14 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 	}
 
 	public loadData() {
-		this.database.getAllMaterials();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

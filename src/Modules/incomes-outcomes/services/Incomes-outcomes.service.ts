@@ -10,8 +10,8 @@ import {Response} from '../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class IncomesOutcomesService extends GenericService<IncomesOutcomes> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'IncomeOutcome');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'IncomeOutcome', toastr);
 	}
 	getAllIncomesOutcomes() {
 		this.loadingData.next(true);

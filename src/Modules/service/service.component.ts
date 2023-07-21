@@ -8,6 +8,7 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-service',
@@ -63,6 +64,14 @@ export class ServiceComponent extends TableCommonFunctionality implements OnInit
 	}
 
 	public loadData() {
-		this.database.getAllServices();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

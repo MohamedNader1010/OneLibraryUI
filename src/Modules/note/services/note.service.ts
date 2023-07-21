@@ -10,8 +10,8 @@ import { GenericService } from "src/Modules/shared/services/genericCRUD.service"
 	providedIn: "root",
 })
 export class NoteService extends GenericService<Note> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, "Note");
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, "Note", toastr);
 	}
 
 	getAllNotes() {

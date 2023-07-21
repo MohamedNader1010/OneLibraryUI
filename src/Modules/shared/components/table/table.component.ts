@@ -9,11 +9,18 @@ import {
   ElementRef,
   QueryList,
   ViewChildren,
+  AfterViewInit,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import {  Subscription, fromEvent } from 'rxjs';
+import {
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  fromEvent,
+  switchMap,
+} from 'rxjs';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 import { FormHelpers } from '../../classes/form-helpers';
 import { TableDataSource } from '../../classes/tableDataSource';
@@ -28,6 +35,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
+import { PaginationDto } from '../../interfaces/paginationDto';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -40,7 +48,7 @@ const detailExpandAnimation = trigger('detailExpand', [
   styleUrls: ['./table.component.css'],
   animations: [detailExpandAnimation],
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   subscriptions: Subscription[] = [];
   displayedColumns!: string[];
   dataSource!: TableDataSource;
@@ -75,28 +83,30 @@ export class TableComponent implements OnInit, OnDestroy {
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
   constructor(public dialog: MatDialog) {}
+  ngAfterViewInit(): void {
+    this.loadData();
+  }
 
   ngOnInit(): void {
     this.displayedColumns = [
       ...this.tableColumns.map((c: any) => c.columnDef),
       'actions',
     ];
-    this.loadData();
   }
   isRowExpanded(rowId: string): boolean {
-    if(this.detailRowDirectives) {
+    if (this.detailRowDirectives) {
       const isExists = this.detailRowDirectives.find((x) =>
-      x.isRowExpanded(rowId)
-    );
-    return isExists ? true : false;
+        x.isRowExpanded(rowId)
+      );
+      return isExists ? true : false;
     }
     return false;
   }
 
   collapseAllRows() {
-    this.detailRowDirectives.forEach(x => x.collapseAllRows())
+    this.detailRowDirectives.forEach((x) => x.collapseAllRows());
   }
-  public loadData() {
+  loadData() {
     this.dataSource = new TableDataSource(
       this.database,
       this.paginator,
@@ -106,20 +116,42 @@ export class TableComponent implements OnInit, OnDestroy {
       this.filteredDataLength = length;
     });
     this.subscriptions.push(
-      fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
-        if (!this.dataSource) return;
-        this.dataSource.filter = this.filter.nativeElement.value;
-        this.dataSource.filteredDataLength$.subscribe((length) => {
-          this.filteredDataLength = length;
-        });
-      })
+      fromEvent(this.filter.nativeElement, 'keyup')
+        .pipe(
+          debounceTime(300), // Add a debounce time to avoid frequent API calls on every keyup
+          distinctUntilChanged(), // Ensure that the API is called only when the filter value changes
+          switchMap(() => {
+            const filterValue = this.filter.nativeElement.value;
+            const pagingCriteria: PaginationDto = {
+              isDesc: true,
+              keyWord: filterValue,
+              length: this.paginator.pageSize,
+              orderByPropertyName: 'id',
+              pageIndex: this.paginator.pageIndex,
+            };
+            return this.database.getOrderPerPage(pagingCriteria);
+          })
+        )
+        .subscribe((data) => {
+          console.log(data)
+        })
     );
   }
   setActiveSortColumn(column: string): void {
     this.activeSortColumn = column;
   }
-  clearFilter = () =>
-    (this.dataSource.filter = this.filter.nativeElement.value = '');
+  clearFilter = () => {
+    this.dataSource.filter = this.filter.nativeElement.value = '';
+    const pagingCriteria: PaginationDto = {
+      isDesc: true,
+      keyWord: '',
+      length: this.paginator.pageSize,
+      orderByPropertyName: 'id',
+      pageIndex: this.paginator.pageIndex,
+    };
+    this.database.getOrderPerPage(pagingCriteria);
+    this.loadData();
+  };
 
   async HandleNew() {
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
@@ -205,7 +237,25 @@ export class TableComponent implements OnInit, OnDestroy {
       window.open(`${environment.host}${trimmedPath}`, '_blank');
     }
   };
-
+  onPageChange(event: any) {
+    const pagingCriteria: PaginationDto = {
+      isDesc: true,
+      keyWord: this.filter.nativeElement.value ?? '',
+      length: event.pageSize,
+      orderByPropertyName: 'id',
+      pageIndex: event.pageIndex,
+    };
+    this.database.getOrderPerPage(pagingCriteria).subscribe();
+    this.paginator.pageIndex = event.pageIndex;
+    this.paginator.pageSize = event.pageSize;
+    this.loadData();
+  }
+  onFilterChange(value: string) {
+    if (!value) this.clearFilter();
+    else {
+      this.loadData();
+    }
+  }
   refreshTable = () => {
     this.paginator._changePageSize(this.paginator.pageSize);
   };

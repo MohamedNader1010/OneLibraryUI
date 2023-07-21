@@ -10,6 +10,7 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {ToastrService} from 'ngx-toastr';
 import {Response} from '../shared/interfaces/Iresponse';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-order',
@@ -74,7 +75,15 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	}
 
 	loadData() {
-		this.database.getAllOrders();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 
 	public handleOrderTransaction(row: Response) {

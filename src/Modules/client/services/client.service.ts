@@ -10,8 +10,8 @@ import { TeacherProfit } from '../interFaces/IteacherProfit'
 	providedIn: 'root',
 })
 export class ClientService extends GenericService<Client> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Client');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'Client', toastr);
 	}
 
 	getAllClients() {
@@ -35,7 +35,7 @@ export class ClientService extends GenericService<Client> {
 		this.loadingData.next(true);
 		this.http.get<Response>(`${this.uri}/GetTeacherProfit`).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

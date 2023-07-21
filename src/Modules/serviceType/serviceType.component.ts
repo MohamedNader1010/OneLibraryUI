@@ -8,6 +8,7 @@ import {FormDialogNames} from 'src/Persistents/enums/forms-name';
 import {Service} from '../service/interfaces/Iservice';
 import {ServicesTypeService} from './services/serviceType.service';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-serviceType',
@@ -45,6 +46,14 @@ export class ServiceTypeComponent extends TableCommonFunctionality implements On
 	}
 
 	private loadData() {
-		this.database.getAllServices();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

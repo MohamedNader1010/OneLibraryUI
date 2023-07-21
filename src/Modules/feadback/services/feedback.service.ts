@@ -8,8 +8,8 @@ import {ToastrService} from 'ngx-toastr';
 	providedIn: 'root',
 })
 export class FeedbackService extends GenericService<Feedback> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'ClientFeedback');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'ClientFeedback',toastr);
 	}
 
 	getAllClientFeedbacks() {

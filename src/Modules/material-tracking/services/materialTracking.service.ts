@@ -9,8 +9,8 @@ import {Response} from '../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class MaterialTrackingService extends GenericService<MaterialTracking> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'MaterialIncomeOutcome');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'MaterialIncomeOutcome',toastr);
 	}
 	getAllMaterialTracking() {
 		this.loadingData.next(true);

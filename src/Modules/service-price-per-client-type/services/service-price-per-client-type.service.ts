@@ -9,8 +9,8 @@ import {Response} from 'src/Modules/shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class ServicePricePerClientTypeService extends GenericService<ServicePricePerClientType> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'ServicePricePerClientType');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'ServicePricePerClientType', toastr);
 	}
 
 	getAllServicePrices() {

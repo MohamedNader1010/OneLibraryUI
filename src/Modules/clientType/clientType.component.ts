@@ -7,6 +7,7 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {HttpClient} from '@angular/common/http';
 import {TranslateService} from '@ngx-translate/core';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-clientType',
@@ -42,6 +43,14 @@ export class ClientTypeComponent extends TableCommonFunctionality implements OnI
 	}
 	loadData() {
 		this.loading = true;
-		this.database.getAllClientTypes();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

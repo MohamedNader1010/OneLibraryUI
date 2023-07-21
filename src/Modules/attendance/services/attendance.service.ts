@@ -10,8 +10,8 @@ import {Response} from './../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class AttendanceService extends GenericService<Attendance> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Attendance');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'Attendance', toastr);
 	}
 
 	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -20,7 +20,7 @@ export class AttendanceService extends GenericService<Attendance> {
 		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

@@ -6,7 +6,8 @@ import { ComponentsName } from "../../../../Persistents/enums/components.name"
 import { FormDialogNames } from "../../../../Persistents/enums/forms-name"
 import { TableCommonFunctionality } from "../../../shared/classes/tableCommonFunctionality"
 import { ShiftService } from "../../services/shift.service"
-import { Shift } from "../../interFaces/Ishift"
+import { Shift } from "../../interfaces/Ishift";
+
 
 @Component({
   selector: 'app-shifts',

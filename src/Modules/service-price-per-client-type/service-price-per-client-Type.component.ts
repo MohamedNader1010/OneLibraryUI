@@ -8,6 +8,7 @@ import {ServicePricePerClientType} from './Interfaces/ServicePricePerClientType'
 import {ServicePricePerClientTypeService} from './services/service-price-per-client-type.service';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 import {TranslateService} from '@ngx-translate/core';
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-service-price-per-client-Type',
@@ -53,6 +54,14 @@ export class ServicePricePerClientTypeComponent extends TableCommonFunctionality
 		];
 	}
 	private loadData() {
-		this.database.getAllServicePrices();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

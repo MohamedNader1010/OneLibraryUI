@@ -1,3 +1,4 @@
+import { Shift } from './interfaces/Ishift';
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
@@ -9,8 +10,9 @@ import {IncomesOutcomes} from './interfaces/Incomes-outcomes';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import { Shift } from "./interFaces/Ishift"
+
 import { ShiftService } from "./services/shift.service"
+import { PaginationDto } from '../shared/interfaces/paginationDto';
 
 @Component({
 	selector: 'app-Incomes-outcomes',
@@ -73,6 +75,14 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 	}
 
 	public loadData() {
-		this.database.getAllIncomesOutcomes();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

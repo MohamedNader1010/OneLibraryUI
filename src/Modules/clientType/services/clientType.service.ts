@@ -10,8 +10,8 @@ import {Response} from './../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class ClientTypeService extends GenericService<ClientType> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'ClientType');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'ClientType', toastr);
 	}
 
 	getAllClientTypes() {

@@ -9,15 +9,15 @@ import {ToastrService} from 'ngx-toastr';
 	providedIn: 'root',
 })
 export class EmployeeService extends GenericService<Employee> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Employee');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'Employee',toastr);
 	}
 
 	getAllEmployees() {
 		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

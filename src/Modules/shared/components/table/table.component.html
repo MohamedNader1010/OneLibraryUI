@@ -8,7 +8,7 @@
       class="w-100"
       style="background-color: white"
     >
-      <input matInput #filter placeholder="Filter" />
+      <input matInput #filter placeholder="Filter" (input)="onFilterChange(filter.value)"/>
       <button
         *ngIf="filter.value"
         matSuffix
@@ -166,6 +166,7 @@
     [pageSizeOptions]="PAGE_SIZE_OPTIONS"
     [pageSize]="25"
     [length]="filteredDataLength"
+    (page)="onPageChange($event)"
     showFirstLastButtons
     color="warn"
   ></mat-paginator>

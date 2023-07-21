@@ -1,24 +1,24 @@
+import { Shift } from './../interfaces/Ishift';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Response} from './../../shared/interfaces/Iresponse';
 import {ToastrService} from 'ngx-toastr';
-import { Shift } from "../interFaces/Ishift"
-import { CloseAndStartShift } from "../interfaces/IcloseAndStartShift"
+import { CloseAndStartShift } from "../interfaces/IcloseAndStartShift";
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ShiftService extends GenericService<Shift> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Shift');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'Shift', toastr);
 	}
 
 	getAllShifts() {
 		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

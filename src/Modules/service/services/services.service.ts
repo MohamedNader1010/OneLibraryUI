@@ -2,7 +2,6 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Service} from '../interfaces/Iservice';
 import {ToastrService} from 'ngx-toastr';
-import {BehaviorSubject} from 'rxjs';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Response} from './../../shared/interfaces/Iresponse';
 
@@ -10,8 +9,8 @@ import {Response} from './../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class ServicesService extends GenericService<Service> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Service');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'Service',toastr);
 	}
 
 	getAllServices() {

@@ -9,8 +9,8 @@ import {Response} from './../../shared/interfaces/Iresponse';
 	providedIn: 'root',
 })
 export class ServicesTypeService extends GenericService<ServiceType> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'ServiceType');
+	constructor(http: HttpClient, public override toastr: ToastrService) {
+		super(http, 'ServiceType', toastr);
 	}
 
 	getAllServices() {

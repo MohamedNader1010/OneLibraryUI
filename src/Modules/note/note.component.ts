@@ -8,6 +8,7 @@ import { NoteService } from "./services/note.service";
 import { Note } from "./interfaces/Inote";
 import { TableCommonFunctionality } from "../shared/classes/tableCommonFunctionality";
 import { TranslateService } from "@ngx-translate/core";
+import { PaginationDto } from "../shared/interfaces/paginationDto";
 
 @Component({
 	selector: "app-note",
@@ -94,6 +95,14 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
 	}
 
 	public loadData() {
-		this.database.getAllNotes();
+		// this is the defaul criteria when first call the endpoint.
+		const pagingCriteria : PaginationDto = {
+			isDesc: true, 
+			keyWord: '', 
+			length: 25,
+			orderByPropertyName: 'id', 
+			pageIndex: 0
+		} 
+		this.database.getOrderPerPage(pagingCriteria).subscribe();
 	}
 }

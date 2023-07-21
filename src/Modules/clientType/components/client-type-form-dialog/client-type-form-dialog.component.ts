@@ -3,7 +3,7 @@ import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {ClientTypeService} from '../../services/clientType.service';
 import {FormsDialogCommonFunctionality} from 'src/Modules/shared/classes/FormsDialog';
 import {TranslateService} from '@ngx-translate/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ClientType} from '../../interFaces/IclientType';
 import {ToastrService} from 'ngx-toastr';
 

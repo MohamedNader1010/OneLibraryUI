@@ -85,7 +85,7 @@ export class TeacherAccountComponent
         columnDef: this.translate.instant("table.id"),
         header: this.translate.instant("table.id.label"),
         cell: (row: TeacherProfitResponse) =>
-          this.database.data.indexOf(row) + 1,
+          this.database.data.body.indexOf(row) + 1,
       },
       {
         columnDef: "name",
@@ -124,8 +124,8 @@ export class TeacherAccountComponent
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {
-          this.database.dataChange.value[
-            this.database.dataChange.value.findIndex(
+          this.database.dataChange.value.body[
+            this.database.dataChange.value.body.findIndex(
               (x: any) => x.id === result.row.id
             )
           ] = result.row;
