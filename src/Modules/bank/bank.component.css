@@ -1,10 +1,10 @@
-.mat-mdc-card.mdc-card{
+.main_card{
   background: linear-gradient(to right, rgb(246 101 101), rgb(151 6 6));
   color: white;
 }
 
 .mat-mdc-card.mdc-card {
-  transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3 ease-in-out;
 }
 
 .mat-mdc-card.mdc-card:hover  {

@@ -13,5 +13,6 @@ export enum ComponentsName {
 	serviceType = 'serviceType',
 	employee = 'employee',
 	shift = 'shift',
+	Bank = 'bank',
 
 }

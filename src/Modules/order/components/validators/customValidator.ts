@@ -61,7 +61,6 @@ export function validateQuantityAsync(
     }
 
     if (isUpdateMode && StatusHelper.isReadyStatus(previousStatus)) {
-      console.log("reservedStatus");
       return of(null);
     }
 
@@ -94,7 +93,6 @@ class StatusHelper {
     else return false;
   }
   static isReadyStatus(status: Status | null): boolean {
-    console.log("Function");
     if (status && status == Status.جاهز) return true;
     else return false;
   }

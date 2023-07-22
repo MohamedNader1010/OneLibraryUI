@@ -27,6 +27,9 @@
 					<button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row)">
 						<mat-icon>info</mat-icon>
 					</button>
+					<button *ngIf="canNavigateToDetails" mat-icon-button matTooltip="view details" color="basic" aria-label="view selected row" (click)="navigate(row)">
+						<mat-icon>info</mat-icon>
+					</button>
 					<button *ngIf="canEdit" mat-icon-button matTooltip="edit" color="basic" aria-label="Edit selected row" (click)="handleEdit(row)">
 						<mat-icon>edit</mat-icon>
 					</button>

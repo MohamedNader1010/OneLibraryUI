@@ -9,6 +9,7 @@ import { TableDataSource } from "../../classes/tableDataSource";
 import { ComponentsName } from "src/Persistents/enums/components.name";
 import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component";
 import { environment } from "../../../../environments/environment";
+import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
 	selector: "app-table",
@@ -41,10 +42,11 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() canDelete: boolean = false;
 	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
+  @Input() canNavigateToDetails: boolean = false;
 	@Input() formName!: FormDialogNames;
 	@Input() componentName!: ComponentsName;
 
-	constructor(public dialog: MatDialog) {}
+	constructor(public dialog: MatDialog,private router: Router, private activatedRoute: ActivatedRoute) {}
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), "actions"];
 		this.loadData();
@@ -137,6 +139,10 @@ export class TableComponent implements OnInit, OnDestroy {
 			window.open(`${environment.host}${trimmedPath}`, "_blank");
 		}
 	};
+
+  navigate(row: any) {
+    this.router.navigate(["details",row.id], { relativeTo: this.activatedRoute });
+  }
 
 	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 

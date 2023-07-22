@@ -14,6 +14,7 @@ import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.
 import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
 import {EmployeeService} from 'src/Modules/employee/services/employee.service';
 import { ShiftService } from "../../incomes-outcomes/services/shift.service"
+import { BankService } from './../../bank/services/bank.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -33,7 +34,8 @@ export class ServiceFactory {
 		private serviceTypeService: ServicesTypeService,
 		private servicePricePerClientTypeService: ServicePricePerClientTypeService,
 		private employeeService: EmployeeService,
-		private shiftService: ShiftService
+		private shiftService: ShiftService,
+    private bankService: BankService
 	) {}
 
 	getService(componentName: ComponentsName) {
@@ -66,6 +68,8 @@ export class ServiceFactory {
 				return this.employeeService;
 			case ComponentsName.shift:
 				return this.shiftService;
+        case ComponentsName.Bank:
+          return this.bankService;
 		}
 	}
 }

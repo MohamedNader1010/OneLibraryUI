@@ -8,10 +8,11 @@ import {IncomesOutcomesComponent} from './incomes-outcomes.component';
 import {SharedModule} from '../shared/shared.module';
 import {FormDialogComponent} from './components/formDialog/form.dialog.component';
 import { CloseStartShiftFormDialogComponent } from "./components/close-start-shift-form-dialog/close-start-shift-form-dialog.component"
-import { ShiftsComponent } from "./components/shifts/shifts.component"
+import { ShiftsComponent } from "./components/shifts/shifts.component";
+import { ShiftDetailsComponent } from './components/shift-details/shift-details.component'
 
 @NgModule({
-	declarations: [IncomesOutcomesComponent, FormDialogComponent, ShiftsComponent, CloseStartShiftFormDialogComponent],
+	declarations: [IncomesOutcomesComponent, FormDialogComponent, ShiftsComponent, CloseStartShiftFormDialogComponent, ShiftDetailsComponent],
 	imports: [CommonModule, IncomesOutcomesRoutingModule, FormsModule, ReactiveFormsModule, CommonModule, SharedModule, MatComponentsModule],
 	providers: [LoginGuard, DatePipe],
 })

@@ -1,15 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
-import {BehaviorSubject} from 'rxjs';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import {IncomesOutcomes} from '../interfaces/Incomes-outcomes';
 import {Response} from '../../shared/interfaces/Iresponse';
+import { IncomeOutcome } from "../interFaces/Iincome-outcome";
 
 @Injectable({
 	providedIn: 'root',
 })
-export class IncomesOutcomesService extends GenericService<IncomesOutcomes> {
+export class IncomesOutcomesService extends GenericService<IncomeOutcome> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'IncomeOutcome');
 	}

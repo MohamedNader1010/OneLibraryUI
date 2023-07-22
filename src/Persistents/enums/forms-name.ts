@@ -15,4 +15,5 @@ export enum FormDialogNames {
 	orderTransactionFormDialogComponent,
 	orderDetailsDialogComponent,
 	shiftFormDialogComponent,
+  bankFormDialogComponent
 }

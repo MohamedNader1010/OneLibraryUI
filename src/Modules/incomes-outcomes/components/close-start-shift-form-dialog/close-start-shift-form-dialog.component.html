@@ -6,14 +6,23 @@
 				<div class="row">
 					<div class="col">
 						<mat-form-field class="w-100" color="warn">
-							<mat-label>العهدة</mat-label>
+							<mat-label>تسليم العهدة</mat-label>
 							<input type="number" matInput formControlName="guarante" min="0"/>
 							<mat-error *ngIf="guarante.errors?.['required']">يجب إدخال قيمة العهدة</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
+        <div class="row">
+					<div class="col">
+						<mat-form-field class="w-100" color="warn">
+							<mat-label>توريد للبنك</mat-label>
+							<input type="number" matInput formControlName="bankGuarante" min="0"/>
+							<mat-error *ngIf="bankGuarante.errors?.['required']">يجب إدخال المبلغ</mat-error>
+						</mat-form-field>
+					</div>
+				</div>
 				<div class="my-2 d-flex flex-row-reverse">
-					<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+					<button mat-flat-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 					<button type="button" mat-stroked-button color="basic" (click)="onNoClick()">رجوع</button>
 				</div>
 			</form>
