@@ -38,12 +38,18 @@ export class ShiftDetailsComponent implements OnInit{
   }
 
   loadShiftData(){
-    this.shiftService.GetById(+this.id).subscribe((res)=>{
-      this.shift=res.body;
-      this.attendanceService.dataChange.next(this.shift.attendance);
-      this.inOutService.dataChange.next(this.shift.incomeOutcomes);
-      this.matInOutService.dataChange.next(this.shift.materialIncomeOutcomes);
-    })}
+    this.shiftService.GetById(+this.id).subscribe(
+    {
+      next:(res)=>{
+        this.shift=res.body;
+      },
+      complete:()=>{
+        this.attendanceService.dataChange.next(this.shift.attendance);
+        this.inOutService.dataChange.next(this.shift.incomeOutcomes);
+        this.matInOutService.dataChange.next(this.shift.materialIncomeOutcomes);
+      }
+    })
+  }
 
 	private initiateTableHeaders() {
 		this.attendanceTableColumns =  [
