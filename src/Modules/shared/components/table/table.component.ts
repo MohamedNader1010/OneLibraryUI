@@ -10,6 +10,8 @@ import { ComponentsName } from "src/Persistents/enums/components.name";
 import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component";
 import { environment } from "../../../../environments/environment";
 import { Router, ActivatedRoute } from "@angular/router";
+import * as signalR from '@microsoft/signalr';
+import { Order } from 'src/Modules/order/interfaces/Iorder';
 
 @Component({
 	selector: "app-table",
@@ -21,6 +23,7 @@ export class TableComponent implements OnInit, OnDestroy {
 	displayedColumns!: string[];
 	dataSource!: TableDataSource;
 	activeSortColumn: string = "id";
+	connection!: signalR.HubConnection;
 
 	@Output() OnDelete = new EventEmitter<any>();
 	@Output() OnView = new EventEmitter<any>();
@@ -50,7 +53,28 @@ export class TableComponent implements OnInit, OnDestroy {
 	ngOnInit(): void {
 		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), "actions"];
 		this.loadData();
+    if(this.componentName == ComponentsName.order)
+      this.connectToOrderHub();
+  }
+
+
+  connectToOrderHub(){
+		this.connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${environment.host}OrderHub`)
+    .withAutomaticReconnect()
+    .build();
+		this.connection.start().then(()=>console.log("connected")).catch((err) => console.log(err));
+
+		this.connection.on("add", (res : Order) => {
+      let lastOrder: Order = this.database.dataChange.value[-1];
+      if(lastOrder.id != res.id){
+        this.database.dataChange.value.push(res);
+        this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+        this.refreshTable();
+      }
+    });
 	}
+
 
 	public loadData() {
 		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
