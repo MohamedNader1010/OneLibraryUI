@@ -7,7 +7,6 @@ import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
-import { ShiftService } from "../incomes-outcomes/services/shift.service";
 import { Bank } from "./interfaces/Ibank";
 import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
 import { IncomeOutcome } from "../incomes-outcomes/interFaces/Iincome-outcome";
