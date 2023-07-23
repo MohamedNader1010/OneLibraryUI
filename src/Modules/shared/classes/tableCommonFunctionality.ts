@@ -11,13 +11,16 @@ export class TableCommonFunctionality {
 	constructor(public httpClient: HttpClient, public toastr: ToastrService, public database: GenericService<any>) {}
 
 	handleNewRow = (message: string) => {
-		this.database.dataChange.value.push(this.database.dialogData);
-		this.toastr.success(message);
+		if(this.database.dialogData)
+      this.database.dataChange.value.push(this.database.dialogData);
+      this.toastr.success(message);
+      this.database.dialogDasta = null;
 	};
 
 	handleEditRow = (data: Response) => {
 		this.database.dataChange.value[this.database.dataChange.value.findIndex((x: any) => x.id === data.body.id)] = this.database.dialogData;
 		this.toastr.success(data.message);
+    this.database.dialogData = null;
 	};
 
 	handleDelete = (data: Response) => {
@@ -26,6 +29,7 @@ export class TableCommonFunctionality {
 			1
 		);
 		this.toastr.success(data.message);
+    this.database.dialogData = null;
 	};
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

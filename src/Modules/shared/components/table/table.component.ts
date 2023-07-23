@@ -20,6 +20,7 @@ import {
   trigger,
 } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
+import { Response } from "../../interfaces/Iresponse";
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -86,12 +87,9 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.connection.start().then(()=>console.log("connected")).catch((err) => console.log(err));
 
 		this.connection.on("add", (res : Order) => {
-      let lastOrder: Order = this.database.dataChange.value[-1];
-      if(lastOrder.id != res.id){
-        this.database.dataChange.value.push(res);
-        this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
-        this.refreshTable();
-      }
+      this.database.dataChange.value.push(res);
+      this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+      this.refreshTable();
     });
 	}
 
@@ -137,7 +135,18 @@ export class TableComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {
-          if (result?.data) this.onNew.emit(result.data.message);
+          if(result?.data){
+            if(this.componentName == ComponentsName.order){
+              let newOrder: Order = (result.data as Response).body;
+              let lastOrder: Order = this.database.dataChange.value[-1];
+              if(lastOrder.id != newOrder.id){
+                this.onNew.emit(result.data.message);
+              }
+            }
+            else{
+              this.onNew.emit(result.data.message);
+            }
+          }
         },
         complete: () => this.refreshTable(),
       })
