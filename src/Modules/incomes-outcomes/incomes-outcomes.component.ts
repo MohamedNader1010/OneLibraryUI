@@ -87,7 +87,7 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 
 
 	override handleNewRow = (message: string) => {
-		this.database.dataChange.value.push(this.database.dialogData);
+		this.database.dataChange.value.push(this.database.DialogData);
 		this.toastr.success(message);
     this.getCurrentShift();
 	};

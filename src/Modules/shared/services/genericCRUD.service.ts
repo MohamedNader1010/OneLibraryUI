@@ -15,11 +15,14 @@ export abstract class GenericService<Tin> {
 		return this.dataChange.value ?? [];
 	}
 
-	dialogData: any;
+	private dialogData: any;
 
 	get DialogData() {
 		return this.dialogData;
 	}
+  set DialogData(value: any){
+    this.dialogData = value;
+  }
 
 	constructor(public http: HttpClient, private controller: string) {}
 
