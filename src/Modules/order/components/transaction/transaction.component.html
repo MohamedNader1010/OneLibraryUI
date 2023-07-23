@@ -21,7 +21,7 @@
 			<div class="row">
 				<mat-form-field appearance="fill" class="w-100" color="warn">
 					<mat-label>المدفوع حاليا</mat-label>
-					<input id="paid" matInput type="number" formControlName="paid" />
+					<input id="paid" matInput type="number" formControlName="paid" min="0"/>
 					<mat-error *ngIf="paid.errors?.['required']">المبلغ المدفوع مطلوب</mat-error>
 					<mat-error *ngIf="paid.hasError('exceed')"> المبلغ المدفوع &lt; او = {{paid.errors?.['value']}} </mat-error>
 				</mat-form-field>

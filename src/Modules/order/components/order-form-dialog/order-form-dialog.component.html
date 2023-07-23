@@ -181,7 +181,7 @@
 					<mat-error
 					  *ngIf="detail.get('quantity')?.hasError('exceedQuantity')"
 					>
-					لا يمكن الاستلام ولا توجد كميه كافيه "{{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity }}" 
+					لا يمكن الاستلام ولا توجد كميه كافيه "{{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity }}"
 					</mat-error>
 				  </div>
 				  <mat-form-field
@@ -306,6 +306,7 @@
 				type="number"
 				matInput
 				formControlName="paid"
+        min="0"
 				[readonly]="OrderDetails.controls.length <= 0 || !!data"
 			  />
 			  <mat-error *ngIf="paid.invalid && (paid.dirty || paid.touched)">
