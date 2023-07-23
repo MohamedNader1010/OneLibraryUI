@@ -571,7 +571,7 @@ export class OrderFormDialogComponent
         this.subscriptions.push(
           this._order.updateOrderDetailsStatus(this.Form.value).subscribe({
             next: (res) => {
-              this._order.dialogData = res.body;
+              this._order.DialogData = res.body;
               this.matDialogRef.close({ data: res });
             },
             error: (e) => {

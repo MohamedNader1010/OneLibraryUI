@@ -138,7 +138,7 @@ export class TableComponent implements OnInit, OnDestroy {
           if(result?.data){
             if(this.componentName == ComponentsName.order){
               let newOrder: Order = (result.data as Response).body;
-              let lastOrder: Order = this.database.dataChange.value[-1];
+              let lastOrder: Order = this.database.dataChange.value[this.database.dataChange.value.length -1];
               if(lastOrder.id != newOrder.id){
                 this.onNew.emit(result.data.message);
               }

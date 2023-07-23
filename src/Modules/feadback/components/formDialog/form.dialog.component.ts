@@ -86,7 +86,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._feedback.update(this.id.value, this.form.value).subscribe({
 				next: (res) => {
-					this._feedback.dialogData = res.body;
+					this._feedback.DialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -105,7 +105,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._feedback.add(this.form.value).subscribe({
 				next: (res) => {
-					this._feedback.dialogData = res.body;
+					this._feedback.DialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {

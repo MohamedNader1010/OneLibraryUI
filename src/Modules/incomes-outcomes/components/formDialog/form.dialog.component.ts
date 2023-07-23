@@ -76,7 +76,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			this._inOut.add(this.form.value).subscribe({
 				next: (res) => {
 					// if(this.source.value == IncomeOutcomeSource.IcoumeOutcome){
-            this._inOut.dialogData = res.body;
+            this._inOut.DialogData = res.body;
           // }
 					this.dialogRef.close({data: res});
 				},

@@ -378,7 +378,7 @@ export class NoteFormDialogComponent
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
-          this.service.dialogData = (res.body as Response).body;
+          this.service.DialogData = (res.body as Response).body;
           this.matDialogRef.close({ data: res.body });
         }
       },

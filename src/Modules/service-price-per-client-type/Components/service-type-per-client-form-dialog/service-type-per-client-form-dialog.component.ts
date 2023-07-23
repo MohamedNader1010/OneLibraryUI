@@ -105,7 +105,7 @@ export class ServiceTypePerClientFormDialogComponent implements OnInit, OnDestro
 			this._servicePricePerClientType.update(this.id.value, this.form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._servicePricePerClientType.dialogData = res.body;
+					this._servicePricePerClientType.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -125,7 +125,7 @@ export class ServiceTypePerClientFormDialogComponent implements OnInit, OnDestro
 			this._servicePricePerClientType.add(this.form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._servicePricePerClientType.dialogData = res.body;
+					this._servicePricePerClientType.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
