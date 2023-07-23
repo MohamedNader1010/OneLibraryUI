@@ -29,17 +29,20 @@ export class CloseStartShiftFormDialogComponent extends FormsDialogCommonFunctio
 	get guarante(): FormControl {
 		return this.Form.get('guarante') as FormControl;
 	}
+	get bankGuarante(): FormControl {
+		return this.Form.get('bankGuarante') as FormControl;
+	}
 
 	private initiateFormControls() {
 		this.Form = this.fb.group({
-			id: [null],
-			guarante: [0, [Validators.required, Validators.min(0.1)]]
+			guarante: [null],
+			bankGuarante: [null]
 		});
 	}
 	ngOnInit(): void {
-		
+
 	}
-	
+
 	handleSubmit() {
 		if (this.Form.valid) {
 			this.add(this.Form.value);

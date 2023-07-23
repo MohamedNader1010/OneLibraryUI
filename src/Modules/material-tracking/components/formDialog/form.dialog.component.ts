@@ -8,8 +8,8 @@ import {MaterialTrackingService} from '../../services/materialTracking.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {MaterialService} from './../../../material/services/material.service';
 import {Material} from './../../../material/interfaces/Imaterial';
-import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
 import {TranslateService} from '@ngx-translate/core';
+import { IncomeOutcomeStatus } from "../../../../Persistents/enums/IncomeOutcome.enum";
 @Component({
 	selector: 'app-form.dialog',
 	templateUrl: './form.dialog.html',
@@ -86,7 +86,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	add() {
-		this.status.setValue(this.quantity.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
+		this.status.setValue(this.quantity.value > 0 ? IncomeOutcomeStatus.وارد : IncomeOutcomeStatus.صادر);
 		this.subscriptions.push(
 			this._matTracking.add(this.form.value).subscribe({
 				next: (res) => {

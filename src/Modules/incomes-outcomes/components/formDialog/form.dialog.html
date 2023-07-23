@@ -5,10 +5,18 @@
 			<div class="row">
 				<div class="col">
 					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>الكمية</mat-label>
+						<mat-label>المبلغ</mat-label>
 						<input type="number" matInput formControlName="amount" />
 					</mat-form-field>
 				</div>
+        <div class="col">
+				<mat-form-field appearance="fill" class="w-100" color="warn" >
+					<mat-label>المصدر</mat-label>
+					<mat-select formControlName="source">
+						<mat-option *ngFor="let source of incomeOutcomeSources" [value]="source.value">{{ source.name }}</mat-option>
+					</mat-select>
+				</mat-form-field>
+        </div>
 			</div>
 			<div class="row">
 				<div class="col">
@@ -19,7 +27,7 @@
 				</div>
 			</div>
 			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+				<button mat-raised-button type="submit" color="warn" [disabled]="!form.valid || isSubmitting || amount.value == 0" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
 				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
 			</div>
 		</form>

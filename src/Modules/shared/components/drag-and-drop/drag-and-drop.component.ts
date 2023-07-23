@@ -24,7 +24,7 @@ export class DragAndDropComponent implements OnInit, OnDestroy {
 		this.progress = 0;
 	};
 	async prepareFilesList(file: File) {
-		if (file.size > 1024 * 1024 * 5) {
+		if (file.size > 1024 * 1024 * 100) {
 			this.toastr.error("file size exceeded the accepted file size ,please select smaller file", "too larg document");
 			return;
 		}

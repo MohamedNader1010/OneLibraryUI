@@ -1,0 +1,31 @@
+.starting_card{
+  background: linear-gradient(to right, rgb(246 101 101), rgb(151 6 6));
+  color: white;
+}
+.income_card{
+  background: linear-gradient(to right, rgb(186, 246, 101), rgb(6, 151, 25));
+  color: white;
+}
+.outcome_card{
+  background: linear-gradient(to right, rgb(246, 198, 101), rgb(151, 136, 6));
+  color: white;
+}
+.closing_card{
+  background: linear-gradient(to right, rgb(101, 191, 246), rgb(6, 25, 151));
+  color: white;
+}
+
+.mat-mdc-card.mdc-card {
+  transition: box-shadow 0.3 ease-in-out;
+}
+
+.mat-mdc-card.mdc-card:hover  {
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.spinner{
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;}

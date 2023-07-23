@@ -1,14 +1,13 @@
+import { Material } from "../../material/interfaces/Imaterial";
 import { IncomeOutcomeStatus } from "../../../Persistents/enums/IncomeOutcome.enum";
 
-export interface MaterialTracking {
+export interface MaterialIncomeOutcome {
 	id: number;
-	material: string;
-	materialId: number;
 	status: IncomeOutcomeStatus;
 	quantity: number;
 	comment: string;
+  material: Material;
+  materialId:number;
 	createdOn: Date;
 	createdBy: string;
-	// modifiedBy: string;
-	// modifiedOn: Date;
 }

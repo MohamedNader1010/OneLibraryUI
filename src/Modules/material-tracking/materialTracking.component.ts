@@ -4,12 +4,11 @@ import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {Service} from '../service/interfaces/Iservice';
-import {IncomeOutcome} from './Enums/IncomeOutcomeEnum';
 import {MaterialTracking} from './interfaces/materialTracking';
 import {MaterialTrackingService} from './services/materialTracking.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
 
 @Component({
 	selector: 'app-materialTracking',
@@ -50,7 +49,7 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
 			{
 				columnDef: 'status',
 				header: 'الحالة',
-				cell: (element: MaterialTracking) => (element.status == IncomeOutcome.صادر ? 'صادر' : 'وارد'),
+				cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
 			},
 			{
 				columnDef: 'comment',

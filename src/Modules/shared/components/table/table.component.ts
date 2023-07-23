@@ -1,25 +1,17 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  OnDestroy,
-  Output,
-  ViewChild,
-  ElementRef,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import {  Subscription, fromEvent } from 'rxjs';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
-import { FormHelpers } from '../../classes/form-helpers';
-import { TableDataSource } from '../../classes/tableDataSource';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
-import { environment } from '../../../../environments/environment';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, ViewChildren, QueryList } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { Subscription, fromEvent } from "rxjs";
+import { FormDialogNames } from "src/Persistents/enums/forms-name";
+import { FormHelpers } from "../../classes/form-helpers";
+import { TableDataSource } from "../../classes/tableDataSource";
+import { ComponentsName } from "src/Persistents/enums/components.name";
+import { DeleteDialogComponent } from "../delete-dialog/delete-dialog.component";
+import { environment } from "../../../../environments/environment";
+import { Router, ActivatedRoute } from "@angular/router";
+import * as signalR from '@microsoft/signalr';
+import { Order } from 'src/Modules/order/interfaces/Iorder';
 import {
   animate,
   state,
@@ -41,11 +33,11 @@ const detailExpandAnimation = trigger('detailExpand', [
   animations: [detailExpandAnimation],
 })
 export class TableComponent implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
-  displayedColumns!: string[];
-  dataSource!: TableDataSource;
-  activeSortColumn: string = 'id';
-  noteFormDialogName = FormDialogNames.NoteFormDialogComponent;
+	subscriptions: Subscription[] = [];
+	displayedColumns!: string[];
+	dataSource!: TableDataSource;
+	activeSortColumn: string = "id";
+	connection!: signalR.HubConnection;
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
 
@@ -60,29 +52,55 @@ export class TableComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
-  @Input() database: any;
-  @Input() loading: any;
-  @Input() tableColumns: any;
-  @Input() canAdd: boolean = true;
-  @Input() toggleShift: boolean = false;
-  @Input() canEdit: boolean = true;
-  @Input() canDelete: boolean = false;
-  @Input() canView: boolean = false;
-  @Input() hasTransaction: boolean = false;
-  @Input() formName!: FormDialogNames;
-  @Input() componentName!: ComponentsName;
+	@Input() database: any;
+	@Input() loading: any;
+	@Input() tableColumns: any;
+	@Input() canAdd: boolean = true;
+	@Input() toggleShift: boolean = false;
+	@Input() canEdit: boolean = true;
+	@Input() canDelete: boolean = false;
+	@Input() canView: boolean = false;
+	@Input() hasTransaction: boolean = false;
+  @Input() canNavigateToDetails: boolean = false;
+  @Input() canExpand: boolean = false;
+	@Input() formName!: FormDialogNames;
+	@Input() componentName!: ComponentsName;
 
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
-  constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    this.displayedColumns = [
-      ...this.tableColumns.map((c: any) => c.columnDef),
-      'actions',
-    ];
-    this.loadData();
+	constructor(public dialog: MatDialog,private router: Router, private activatedRoute: ActivatedRoute) {}
+	ngOnInit(): void {
+		this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), "actions"];
+		this.loadData();
+    if(this.componentName == ComponentsName.order)
+      this.connectToOrderHub();
   }
+
+
+  connectToOrderHub(){
+		this.connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${environment.host}OrderHub`)
+    .withAutomaticReconnect()
+    .build();
+		this.connection.start().then(()=>console.log("connected")).catch((err) => console.log(err));
+
+		this.connection.on("add", (res : Order) => {
+      let lastOrder: Order = this.database.dataChange.value[-1];
+      if(lastOrder.id != res.id){
+        this.database.dataChange.value.push(res);
+        this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+        this.refreshTable();
+      }
+    });
+	}
+
+	setActiveSortColumn(column: string): void {
+		this.activeSortColumn = column;
+	}
+
+	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = "");
+
   isRowExpanded(rowId: string): boolean {
     if(this.detailRowDirectives) {
       const isExists = this.detailRowDirectives.find((x) =>
@@ -96,30 +114,18 @@ export class TableComponent implements OnInit, OnDestroy {
   collapseAllRows() {
     this.detailRowDirectives.forEach(x => x.collapseAllRows())
   }
+
   public loadData() {
-    this.dataSource = new TableDataSource(
-      this.database,
-      this.paginator,
-      this.sort
-    );
-    this.dataSource.filteredDataLength$.subscribe((length) => {
-      this.filteredDataLength = length;
-    });
+		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
+    this.dataSource.filteredDataLength$.subscribe((length) => this.filteredDataLength = length);
     this.subscriptions.push(
       fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
         if (!this.dataSource) return;
         this.dataSource.filter = this.filter.nativeElement.value;
-        this.dataSource.filteredDataLength$.subscribe((length) => {
-          this.filteredDataLength = length;
-        });
+        this.dataSource.filteredDataLength$.subscribe((length) => this.filteredDataLength = length);
       })
     );
   }
-  setActiveSortColumn(column: string): void {
-    this.activeSortColumn = column;
-  }
-  clearFilter = () =>
-    (this.dataSource.filter = this.filter.nativeElement.value = '');
 
   async HandleNew() {
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
@@ -137,7 +143,8 @@ export class TableComponent implements OnInit, OnDestroy {
       })
     );
   }
-  async handleEdit(row: any) {
+  async handleEdit(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       this.formName
     );
@@ -152,7 +159,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleDelete(row: any) {
+  async handleDelete(row: any, $event: any) {
+    $event.stopPropagation();
     const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
     const dialogRef = this.dialog.open<DeleteDialogComponent>(
       deleteDialogComponent,
@@ -169,7 +177,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleTransaction(row: any) {
+  async handleTransaction(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       FormDialogNames.orderTransactionFormDialogComponent
     );
@@ -187,7 +196,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleView(row: any) {
+  async handleView(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       FormDialogNames.orderDetailsDialogComponent
     );
@@ -197,7 +207,13 @@ export class TableComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleViewPdf = (row: any) => {
+  navigate(row: any, $event: any) {
+    $event.stopPropagation();
+    this.router.navigate(["details",row.id], { relativeTo: this.activatedRoute });
+  }
+
+  handleViewPdf = (row: any, $event: any) => {
+    $event.stopPropagation();
     const filePath = row.filePath;
     const uploadsIndex = filePath.indexOf('uploads');
     if (uploadsIndex !== -1) {
@@ -206,9 +222,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   };
 
-  refreshTable = () => {
-    this.paginator._changePageSize(this.paginator.pageSize);
-  };
+  private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
   ngOnDestroy = () => {
     this.subscriptions.forEach((s) => s.unsubscribe());

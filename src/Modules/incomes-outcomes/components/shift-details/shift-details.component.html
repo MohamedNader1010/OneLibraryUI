@@ -1,0 +1,128 @@
+<ng-container *ngIf="shift;else loading">
+  <div class="container-fluid my-5 d-flex flex-column">
+    <div class="row d-flex flex-row justify-content-between">
+      <div class="col">
+        <div class="col-12">
+          <h1>تفاصيل الوردية</h1>
+        </div>
+        <div class="col-12">
+          <h2>رقم الشيفت: {{shift.id}}</h2>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-12">
+          <h3>تم التسجيل بواسطة: {{shift.createdBy}}</h3>
+        </div>
+        <div class="col-12">
+          <h3>
+            بداية الشيفت : {{shift.startTime|date : "dd/MM/yyyy || hh:mm a"}}
+          </h3>
+        </div>
+        <div class="col-12">
+          <h3>
+            نهاية الشيفت : {{shift.endTime|date : "dd/MM/yyyy || hh:mm a"}}
+          </h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <mat-card class="mat-elevation-z8 starting_card">
+          <mat-card-header>الرصيد الأفتتاحي</mat-card-header>
+          <mat-card-content>
+            <p>
+              {{shift.startingBalance}} جنية
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-3">
+        <mat-card class="mat-elevation-z8 income_card">
+          <mat-card-header>إجمالي الوارد</mat-card-header>
+          <mat-card-content>
+            <p>
+              {{shift.totalIncome }} جنية
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-3">
+        <mat-card class="mat-elevation-z8 outcome_card">
+          <mat-card-header>إجمالي الصادر</mat-card-header>
+          <mat-card-content>
+            <p>
+              {{shift.totalOutcome}} جنية
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+      <div class="col-3">
+        <mat-card class="mat-elevation-z8 closing_card">
+          <mat-card-header>الرصيد النهائي</mat-card-header>
+          <mat-card-content>
+            <p>
+              {{shift.closingBalance}} جنية
+            </p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div class="row">
+      <mat-accordion class="my-3">
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              الحضور و الانصراف
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+            <app-table
+            [loading]="!shift"
+            [tableColumns]="attendanceTableColumns"
+            [canAdd]="false"
+            [canEdit]="false"
+            [database]="attendanceService"></app-table>
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              الصادر و الوارد
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+            <app-table
+            [loading]="!shift"
+            [tableColumns]="inOutTableColumns"
+            [canAdd]="false"
+            [canEdit]="false"
+            [database]="inOutService"></app-table>
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              الصادر و الوارد للخامات
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div>
+            <app-table
+            [loading]="!shift"
+            [tableColumns]="matInOutTableColumns"
+            [canAdd]="false"
+            [canEdit]="false"
+            [database]="matInOutService"></app-table>
+          </div>
+        </mat-expansion-panel>
+
+      </mat-accordion>
+    </div>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <div class="spinner">
+    <mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
+  </div>
+</ng-template>

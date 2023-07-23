@@ -178,7 +178,7 @@ export class OrderFormDialogComponent
 
   forkJoins() {
     let services = [
-      this._note.getAll(),
+      this._note.getAllVisible(),
       this._clientType.getAll(),
       this._service.getAll(),
     ];

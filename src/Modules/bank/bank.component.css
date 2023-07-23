@@ -4,7 +4,7 @@
 }
 
 .mat-mdc-card.mdc-card {
-  transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3 ease-in-out;
 }
 
 .mat-mdc-card.mdc-card:hover  {
