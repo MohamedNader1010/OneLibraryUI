@@ -14,5 +14,5 @@ export interface Shift {
   createdBy: string|null;
   incomeOutcomes: IncomeOutcome[];
   materialIncomeOutcomes: MaterialIncomeOutcome[];
-  attendance: Attendance[];
+  attendances: Attendance[];
 }

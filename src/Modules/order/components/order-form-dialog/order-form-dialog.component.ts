@@ -1,13 +1,13 @@
-import { TranslateService } from "@ngx-translate/core";
-import { ServicePricePerClientTypeService } from "../../../service-price-per-client-type/services/service-price-per-client-type.service";
-import { Component, OnDestroy, OnInit, Inject } from "@angular/core";
+import { TranslateService } from '@ngx-translate/core';
+import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
+import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
   Validators,
-} from "@angular/forms";
+} from '@angular/forms';
 import {
   forkJoin,
   map,
@@ -15,35 +15,35 @@ import {
   of,
   startWith,
   BehaviorSubject,
-} from "rxjs";
-import { NoteService } from "src/Modules/note/services/note.service";
-import { ServicesService } from "src/Modules/service/services/services.service";
-import { OrderService } from "../../services/orders.service";
-import { Service } from "src/Modules/service/interfaces/Iservice";
-import { Note } from "src/Modules/note/interfaces/Inote";
-import { Client } from "src/Modules/client/interFaces/Iclient";
-import { ClientType } from "src/Modules/clientType/interFaces/IclientType";
-import { ClientTypeService } from "src/Modules/clientType/services/clientType.service";
-import { ClientService } from "src/Modules/client/services/client.service";
-import { Status } from "../../Enums/status";
-import { Order } from "../../interfaces/Iorder";
-import { Response } from "./../../../shared/interfaces/Iresponse";
-import { FormsDialogCommonFunctionality } from "src/Modules/shared/classes/FormsDialog";
+} from 'rxjs';
+import { NoteService } from 'src/Modules/note/services/note.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { OrderService } from '../../services/orders.service';
+import { Service } from 'src/Modules/service/interfaces/Iservice';
+import { Note } from 'src/Modules/note/interfaces/Inote';
+import { Client } from 'src/Modules/client/interFaces/Iclient';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { ClientService } from 'src/Modules/client/services/client.service';
+import { Status } from '../../Enums/status';
+import { Order } from '../../interfaces/Iorder';
+import { Response } from './../../../shared/interfaces/Iresponse';
+import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
-} from "@angular/material/dialog";
-import { ToastrService } from "ngx-toastr";
-import { OrderDetail } from "../../interfaces/IorderDetail";
-import { FormHelpers } from "src/Modules/shared/classes/form-helpers";
-import { FormDialogNames } from "src/Persistents/enums/forms-name";
-import { validateQuantityAsync } from "../validators/customValidator";
+} from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { OrderDetail } from '../../interfaces/IorderDetail';
+import { FormHelpers } from 'src/Modules/shared/classes/form-helpers';
+import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { validateQuantityAsync } from '../validators/customValidator';
 
 @Component({
-  selector: "app-order-form-dialog",
-  templateUrl: "./order-form-dialog.component.html",
-  styleUrls: ["./order-form-dialog.component.css"],
+  selector: 'app-order-form-dialog',
+  templateUrl: './order-form-dialog.component.html',
+  styleUrls: ['./order-form-dialog.component.css'],
 })
 export class OrderFormDialogComponent
   extends FormsDialogCommonFunctionality
@@ -79,79 +79,79 @@ export class OrderFormDialogComponent
     public override toastr: ToastrService // Status: Status
   ) {
     super(matDialogRef, translate, _order, toastr);
-    this.Form = this.createFormItem("init");
+    this.Form = this.createFormItem('init');
   }
   get clientId(): FormControl {
-    return this.Form.get("clientId") as FormControl;
+    return this.Form.get('clientId') as FormControl;
   }
   get clientTypeId(): FormControl {
-    return this.Form.get("clientTypeId") as FormControl;
+    return this.Form.get('clientTypeId') as FormControl;
   }
   get OrderDetails(): FormArray {
-    return this.Form.get("orderDetails") as FormArray;
+    return this.Form.get('orderDetails') as FormArray;
   }
   get totalPrice(): FormControl {
-    return this.Form.get("totalPrice") as FormControl;
+    return this.Form.get('totalPrice') as FormControl;
   }
   get finalPrice(): FormControl {
-    return this.Form.get("finalPrice") as FormControl;
+    return this.Form.get('finalPrice') as FormControl;
   }
   get rest(): FormControl {
-    return this.Form.get("rest") as FormControl;
+    return this.Form.get('rest') as FormControl;
   }
   get paid(): FormControl {
-    return this.Form.get("paid") as FormControl;
+    return this.Form.get('paid') as FormControl;
   }
   get discount(): FormControl {
-    return this.Form.get("discount") as FormControl;
+    return this.Form.get('discount') as FormControl;
   }
   get discountPercent(): FormControl {
-    return this.Form.get("discountPercent") as FormControl;
+    return this.Form.get('discountPercent') as FormControl;
   }
 
   private resetOrderDetail(index: number): void {
-    this.OrderDetails.at(index).get("counts")?.setValue(0);
-    this.OrderDetails.at(index).get("copies")?.setValue(0);
-    this.OrderDetails.at(index).get("quantity")?.setValue(0);
-    this.OrderDetails.at(index).get("orderStatus")?.setValue(null);
-    this.OrderDetails.at(index).get("noteId")?.setValue(null);
-    this.OrderDetails.at(index).get("serviceId")?.setValue(null);
+    this.OrderDetails.at(index).get('counts')?.setValue(0);
+    this.OrderDetails.at(index).get('copies')?.setValue(0);
+    this.OrderDetails.at(index).get('quantity')?.setValue(0);
+    this.OrderDetails.at(index).get('orderStatus')?.setValue(null);
+    this.OrderDetails.at(index).get('noteId')?.setValue(null);
+    this.OrderDetails.at(index).get('serviceId')?.setValue(null);
   }
   getOrderDetailId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("id") as FormControl;
+    this.OrderDetails.at(index).get('id') as FormControl;
   getNoteOrService = (index: number): FormControl =>
-    this.OrderDetails.at(index)?.get("noteOrService") as FormControl;
+    this.OrderDetails.at(index)?.get('noteOrService') as FormControl;
   getOrderDetailServiceId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("serviceId") as FormControl;
+    this.OrderDetails.at(index).get('serviceId') as FormControl;
   getOrderDetailService = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("service") as FormControl;
+    this.OrderDetails.at(index).get('service') as FormControl;
   getOrderDetailNoteId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("noteId") as FormControl;
+    this.OrderDetails.at(index).get('noteId') as FormControl;
   getOrderDetailNote = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("note") as FormControl;
+    this.OrderDetails.at(index).get('note') as FormControl;
   getOrderDetailQuantity = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("quantity") as FormControl;
+    this.OrderDetails.at(index).get('quantity') as FormControl;
   getOrderDetailPrice = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("price") as FormControl;
+    this.OrderDetails.at(index).get('price') as FormControl;
   getOrderDetailStatus = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("orderStatus") as FormControl;
+    this.OrderDetails.at(index).get('orderStatus') as FormControl;
   getServiceId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("serviceId") as FormControl;
+    this.OrderDetails.at(index).get('serviceId') as FormControl;
   getNoteId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("noteId") as FormControl;
+    this.OrderDetails.at(index).get('noteId') as FormControl;
   getCountControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("counts") as FormControl;
+    this.OrderDetails.at(index).get('counts') as FormControl;
   getCopiesControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("copies") as FormControl;
+    this.OrderDetails.at(index).get('copies') as FormControl;
   getQuantityControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get("quantity") as FormControl;
+    this.OrderDetails.at(index).get('quantity') as FormControl;
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setServiceId = (index: number, data: any) =>
-    this.OrderDetails.at(index).get("serviceId")?.setValue(data);
+    this.OrderDetails.at(index).get('serviceId')?.setValue(data);
 
   setNoteId = (index: number, data: any) =>
-    this.OrderDetails.at(index).get("noteId")?.setValue(data);
+    this.OrderDetails.at(index).get('noteId')?.setValue(data);
 
   async setClientId(data: any) {
     if (data === -1) {
@@ -178,7 +178,7 @@ export class OrderFormDialogComponent
 
   forkJoins() {
     let services = [
-      this._note.getAll(),
+      this._note.getAllVisible(),
       this._clientType.getAll(),
       this._service.getAll(),
     ];
@@ -251,18 +251,25 @@ export class OrderFormDialogComponent
   }
 
   patchData = () => {
-    this.data.orderDetails.forEach(
-      (orderDetail: OrderDetail, index: number) => {
-        // here I want to send this value for each orderDetail to inform validator that the initial value of orderStatus is receieved
-        // so DON'T validate.
-        const previousStatus:Status = orderDetail.orderStatus;
-        this.OrderDetails.push(this.createFormItem("detail", true, previousStatus));
-        this.getNoteOrService(index).setValue(
-          orderDetail.noteId ? "note" : "service"
+    this._order.GetById(this.data.id).subscribe((order) => {
+      this.data.orderDetails = order.body.orderDetails;
+      if (this.data.orderDetails) {
+        this.data.orderDetails.forEach(
+          (orderDetail: OrderDetail, index: number) => {
+            // here I want to send this value for each orderDetail to inform validator that the initial value of orderStatus is receieved
+            // so DON'T validate.
+            const previousStatus: Status = orderDetail.orderStatus;
+            this.OrderDetails.push(
+              this.createFormItem('detail', true, previousStatus)
+            );
+            this.getNoteOrService(index).setValue(
+              orderDetail.noteId ? 'note' : 'service'
+            );
+          }
         );
+        this.Form.patchValue(this.data);
       }
-    );
-    this.Form.patchValue(this.data);
+    });
   };
 
   createFormItem(
@@ -272,7 +279,7 @@ export class OrderFormDialogComponent
   ): FormGroup {
     let formItem: FormGroup = this.fb.group({});
     switch (type) {
-      case "init":
+      case 'init':
         formItem = this.fb.group({
           id: [0],
           totalPrice: [0],
@@ -287,10 +294,10 @@ export class OrderFormDialogComponent
           remarks: [null],
         });
         break;
-      case "detail":
+      case 'detail':
         formItem = this.fb.group({
           id: [0],
-          noteOrService: ["service"],
+          noteOrService: ['service'],
           price: [0],
           quantity: [
             0,
@@ -298,10 +305,10 @@ export class OrderFormDialogComponent
             [validateQuantityAsync(isUpdateMode, previousStatus)],
           ],
           serviceId: [null],
-          service: [""],
+          service: [''],
           noteId: [null],
-          note: [""],
-          availableNoteQuantity: [""],
+          note: [''],
+          availableNoteQuantity: [''],
           orderStatus: [null, [Validators.required]],
           counts: [0],
           copies: [0],
@@ -313,7 +320,7 @@ export class OrderFormDialogComponent
 
   handleNewDetail = () => {
     let index = this.OrderDetails.length;
-    this.OrderDetails.push(this.createFormItem("detail"));
+    this.OrderDetails.push(this.createFormItem('detail'));
     this.subscribeQuantityChanges(index);
     this.subscribeServiceChanges(index);
     this.subscribeNoteChanges(index);
@@ -354,8 +361,8 @@ export class OrderFormDialogComponent
   }
   private subscribeOrderStatusChanges() {
     this.OrderDetails.controls.forEach((od, index) => {
-      const noteId = od.get("noteId")?.value;
-      const orderStatusControl = od.get("orderStatus") as FormControl;
+      const noteId = od.get('noteId')?.value;
+      const orderStatusControl = od.get('orderStatus') as FormControl;
 
       // here I want to set the qty of each note in case of update and the value of orderStatus is still not changed!
       if (noteId && this.NotesDataSource)
@@ -417,7 +424,7 @@ export class OrderFormDialogComponent
     const serviceOrNote = this.getNoteOrService(index).value;
     const serviceId = this.getServiceId(index).value;
     // this check to ensure that any service is selected and only service.
-    if (serviceOrNote == "service" && serviceId) {
+    if (serviceOrNote == 'service' && serviceId) {
       this.subscriptions.push(
         this._servicePrice
           .getPrice(
@@ -427,7 +434,7 @@ export class OrderFormDialogComponent
           .subscribe({
             next: (res) => {
               if (!res.body) {
-                this.toastr.error("هذه الخدمة غير مسعرة");
+                this.toastr.error('هذه الخدمة غير مسعرة');
                 this.getOrderDetailPrice(index).setValue(0);
                 return;
               }
@@ -456,13 +463,13 @@ export class OrderFormDialogComponent
             next: (data) => {
               let newClient: Client = {
                 id: -1,
-                name: "أضافة عميل جديد",
-                phoneNumber: "",
-                clientType: "",
+                name: 'أضافة عميل جديد',
+                phoneNumber: '',
+                clientType: '',
                 clientTypeId: -1,
-                paid: "",
-                rest: "",
-                total: "",
+                paid: '',
+                rest: '',
+                total: '',
               };
               this.ClientsDataSource = [newClient, ...data.body];
               this.clearAutocomplete.next(1);
@@ -488,7 +495,7 @@ export class OrderFormDialogComponent
       FormDialogNames.ClientFormDialogComponent
     );
     const dialogRef = this.dialog.open<any>(dialogComponent, {
-      minWidth: "30%",
+      minWidth: '30%',
     });
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
@@ -509,7 +516,7 @@ export class OrderFormDialogComponent
 
   reloadServicesPrices() {
     for (let index = 0; index < this.OrderDetails.controls.length; index++) {
-      if (this.getNoteOrService(index).value === "note") continue;
+      if (this.getNoteOrService(index).value === 'note') continue;
       else this.setServicePriceForClientType(index);
     }
   }
@@ -538,7 +545,7 @@ export class OrderFormDialogComponent
   }
 
   isServiceSelected(index: number): boolean {
-    return this.getNoteOrService(index).value == "service";
+    return this.getNoteOrService(index).value == 'service';
   }
   calculateTotalPrice() {
     let total = 0;
@@ -587,7 +594,7 @@ export class OrderFormDialogComponent
     const noteId = this.getNoteId(index).value;
     if (noteId) {
       const availableQtyControl = this.OrderDetails.at(index).get(
-        "availableNoteQuantity"
+        'availableNoteQuantity'
       );
       availableQtyControl?.setValue(availableQty);
       this.getQuantityControl(index).updateValueAndValidity();

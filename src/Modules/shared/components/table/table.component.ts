@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, ViewChildren, QueryList } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
@@ -12,11 +12,25 @@ import { environment } from "../../../../environments/environment";
 import { Router, ActivatedRoute } from "@angular/router";
 import * as signalR from '@microsoft/signalr';
 import { Order } from 'src/Modules/order/interfaces/Iorder';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 
+const detailExpandAnimation = trigger('detailExpand', [
+  state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
+  state('*', style({ height: '*', visibility: 'visible' })),
+  transition('void <=> *', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+]);
 @Component({
-	selector: "app-table",
-	templateUrl: "./table.component.html",
-	styleUrls: ["./table.component.css"],
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css'],
+  animations: [detailExpandAnimation],
 })
 export class TableComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
@@ -24,17 +38,19 @@ export class TableComponent implements OnInit, OnDestroy {
 	dataSource!: TableDataSource;
 	activeSortColumn: string = "id";
 	connection!: signalR.HubConnection;
+  PAGE_SIZE_OPTIONS = [25, 50, 100];
+  filteredDataLength = 0;
 
-	@Output() OnDelete = new EventEmitter<any>();
-	@Output() OnView = new EventEmitter<any>();
-	@Output() onClose = new EventEmitter();
-	@Output() onNew = new EventEmitter<any>();
-	@Output() onEdit = new EventEmitter<any>();
-	@Output() onTransaction = new EventEmitter<any>();
+  @Output() OnDelete = new EventEmitter<any>();
+  @Output() OnView = new EventEmitter<any>();
+  @Output() onClose = new EventEmitter();
+  @Output() onNew = new EventEmitter<any>();
+  @Output() onEdit = new EventEmitter<any>();
+  @Output() onTransaction = new EventEmitter<any>();
 
-	@ViewChild("paginator", { static: true }) paginator!: MatPaginator;
-	@ViewChild(MatSort, { static: true }) sort!: MatSort;
-	@ViewChild("filter", { static: true }) filter!: ElementRef;
+  @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  @ViewChild('filter', { static: true }) filter!: ElementRef;
 
 	@Input() database: any;
 	@Input() loading: any;
@@ -46,8 +62,12 @@ export class TableComponent implements OnInit, OnDestroy {
 	@Input() canView: boolean = false;
 	@Input() hasTransaction: boolean = false;
   @Input() canNavigateToDetails: boolean = false;
+  @Input() canExpand: boolean = false;
 	@Input() formName!: FormDialogNames;
 	@Input() componentName!: ComponentsName;
+
+  @ViewChildren(CdkDetailRowDirective)
+  detailRowDirectives!: QueryList<CdkDetailRowDirective>;
 
 	constructor(public dialog: MatDialog,private router: Router, private activatedRoute: ActivatedRoute) {}
 	ngOnInit(): void {
@@ -75,100 +95,136 @@ export class TableComponent implements OnInit, OnDestroy {
     });
 	}
 
-
-	public loadData() {
-		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
-		this.subscriptions.push(
-			fromEvent(this.filter.nativeElement, "keyup").subscribe(() => {
-				if (!this.dataSource) return;
-				this.dataSource.filter = this.filter.nativeElement.value;
-			}),
-		);
-	}
 	setActiveSortColumn(column: string): void {
 		this.activeSortColumn = column;
 	}
+
 	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = "");
 
-	async HandleNew() {
-		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		const dialogRef = this.dialog.open<any>(dialogComponent, {
-			minWidth: "30%",
-		});
-		this.subscriptions.push(
-			dialogRef.afterClosed().subscribe({
-				next: (result) => {
-					if (result?.data) this.onNew.emit(result.data.message);
-				},
-				complete: () => this.refreshTable(),
-			}),
-		);
-	}
-	async handleEdit(row: any) {
-		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-		const dialogRef = this.dialog.open<any>(dialogComponent, { data: row });
-		this.subscriptions.push(
-			dialogRef.afterClosed().subscribe({
-				next: (result) => {
-					if (result?.data) this.onEdit.emit(result.data);
-				},
-				complete: () => this.refreshTable(),
-			}),
-		);
-	}
+  isRowExpanded(rowId: string): boolean {
+    if(this.detailRowDirectives) {
+      const isExists = this.detailRowDirectives.find((x) =>
+      x.isRowExpanded(rowId)
+    );
+    return isExists ? true : false;
+    }
+    return false;
+  }
 
-	async handleDelete(row: any) {
-		const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
-		const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, { data: { row: row, componentName: this.componentName }, minWidth: "30%" });
-		this.subscriptions.push(
-			dialogRef.afterClosed().subscribe((result) => {
-				if (result?.data) {
-					result.data.body = row;
-					this.OnDelete.emit(result.data);
-					this.refreshTable();
-				}
-			}),
-		);
-	}
+  collapseAllRows() {
+    this.detailRowDirectives.forEach(x => x.collapseAllRows())
+  }
 
-	async handleTransaction(row: any) {
-		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
-		const dialogRef = this.dialog.open<any>(dialogComponent, {
-			data: row,
-			minWidth: "30%",
-		});
-		this.subscriptions.push(
-			dialogRef.afterClosed().subscribe({
-				next: (result) => {
-					if (result?.data) this.onTransaction.emit(result.data);
-				},
-				complete: () => this.refreshTable(),
-			}),
-		);
-	}
+  public loadData() {
+		this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
+    this.dataSource.filteredDataLength$.subscribe((length) => this.filteredDataLength = length);
+    this.subscriptions.push(
+      fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+        if (!this.dataSource) return;
+        this.dataSource.filter = this.filter.nativeElement.value;
+        this.dataSource.filteredDataLength$.subscribe((length) => this.filteredDataLength = length);
+      })
+    );
+  }
 
-	async handleView(row: any) {
-		const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
-		const dialogRef = this.dialog.open<any>(dialogComponent, {
-			data: row,
-			minWidth: "30%",
-		});
-	}
+  async HandleNew() {
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
+      this.formName
+    );
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      minWidth: '30%',
+    });
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe({
+        next: (result) => {
+          if (result?.data) this.onNew.emit(result.data.message);
+        },
+        complete: () => this.refreshTable(),
+      })
+    );
+  }
+  async handleEdit(row: any, $event: any) {
+    $event.stopPropagation();
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
+      this.formName
+    );
+    const dialogRef = this.dialog.open<any>(dialogComponent, { data: row });
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe({
+        next: (result) => {
+          if (result?.data) this.onEdit.emit(result.data);
+        },
+        complete: () => this.refreshTable(),
+      })
+    );
+  }
 
-	handleViewPdf = (row: any) => {
-		const filePath = row.filePath;
-		const uploadsIndex = filePath.indexOf("uploads");
-		if (uploadsIndex !== -1) {
-			const trimmedPath = filePath.substring(uploadsIndex);
-			window.open(`${environment.host}${trimmedPath}`, "_blank");
-		}
-	};
+  async handleDelete(row: any, $event: any) {
+    $event.stopPropagation();
+    const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
+    const dialogRef = this.dialog.open<DeleteDialogComponent>(
+      deleteDialogComponent,
+      { data: { row: row, componentName: this.componentName }, minWidth: '30%' }
+    );
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result?.data) {
+          result.data.body = row;
+          this.OnDelete.emit(result.data);
+          this.refreshTable();
+        }
+      })
+    );
+  }
 
-  navigate(row: any) {
+  async handleTransaction(row: any, $event: any) {
+    $event.stopPropagation();
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
+      FormDialogNames.orderTransactionFormDialogComponent
+    );
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      data: row,
+      minWidth: '30%',
+    });
+    this.subscriptions.push(
+      dialogRef.afterClosed().subscribe({
+        next: (result) => {
+          if (result?.data) this.onTransaction.emit(result.data);
+        },
+        complete: () => this.refreshTable(),
+      })
+    );
+  }
+
+  async handleView(row: any, $event: any) {
+    $event.stopPropagation();
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
+      FormDialogNames.orderDetailsDialogComponent
+    );
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      data: row,
+      minWidth: '30%',
+    });
+  }
+
+  navigate(row: any, $event: any) {
+    $event.stopPropagation();
     this.router.navigate(["details",row.id], { relativeTo: this.activatedRoute });
   }
 
-	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
+  handleViewPdf = (row: any, $event: any) => {
+    $event.stopPropagation();
+    const filePath = row.filePath;
+    const uploadsIndex = filePath.indexOf('uploads');
+    if (uploadsIndex !== -1) {
+      const trimmedPath = filePath.substring(uploadsIndex);
+      window.open(`${environment.host}${trimmedPath}`, '_blank');
+    }
+  };
 
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
+  private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
+
+  ngOnDestroy = () => {
+    this.subscriptions.forEach((s) => s.unsubscribe());
+  };
 }

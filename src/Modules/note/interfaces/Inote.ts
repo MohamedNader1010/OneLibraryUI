@@ -21,4 +21,5 @@ export interface Note {
 	quantity: number;
 	fileName: string;
 	filePath: string;
+	isVisible: boolean;
 }

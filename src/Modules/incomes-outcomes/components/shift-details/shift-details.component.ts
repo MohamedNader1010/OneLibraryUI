@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ShiftService } from "../../services/shift.service";
 import { Shift } from "../../interFaces/Ishift";
 import { IncomeOutcomeStatus } from "../../../../Persistents/enums/IncomeOutcome.enum";
@@ -28,7 +28,8 @@ export class ShiftDetailsComponent implements OnInit{
     public attendanceService: AttendanceService,
     public inOutService: IncomesOutcomesService,
     public matInOutService: MaterialTrackingService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private router: Router
     ) { }
 
   ngOnInit(): void {
@@ -43,8 +44,11 @@ export class ShiftDetailsComponent implements OnInit{
       next:(res)=>{
         this.shift=res.body;
       },
+      error:()=>{
+        this.router.navigateByUrl(this.route.snapshot.url.toString());
+      },
       complete:()=>{
-        this.attendanceService.dataChange.next(this.shift.attendance);
+        this.attendanceService.dataChange.next(this.shift.attendances);
         this.inOutService.dataChange.next(this.shift.incomeOutcomes);
         this.matInOutService.dataChange.next(this.shift.materialIncomeOutcomes);
       }
