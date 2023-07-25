@@ -1,3 +1,4 @@
+import { Shift } from './interfaces/Ishift';
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
@@ -8,7 +9,7 @@ import {IncomeOutcomeStatus} from '../../Persistents/enums/IncomeOutcome.enum';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import { Shift } from "./interFaces/Ishift"
+
 import { ShiftService } from "./services/shift.service"
 import { IncomeOutcome } from "./interFaces/Iincome-outcome";
 import { IncomeOutcomeSource } from "../../Persistents/enums/IncomeOutcomeSource.emun";

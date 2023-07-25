@@ -97,10 +97,10 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 							element.reservedNotes.findIndex((r) => r.noteId === noteId),
 							1
 						);
-						if (element.reservedNotes.length) this.database.dataChange.value[this.database.dataChange.value.indexOf(element)] = element;
+						if (element.reservedNotes.length) this.database.dataChange.value.body[this.database.dataChange.value.body.indexOf(element)] = element;
 						else
-							this.database.dataChange.value.splice(
-								this.database.dataChange.value.findIndex((x: any) => x.id === element.id),
+							this.database.dataChange.value.body.splice(
+								this.database.dataChange.value.body.findIndex((x: any) => x.id === element.id),
 								1
 							);
 						this.refreshTable();

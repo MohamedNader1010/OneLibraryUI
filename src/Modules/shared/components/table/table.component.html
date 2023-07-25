@@ -88,8 +88,18 @@
       <!-- End of No Data found -->
     </table>
   </div>
-  <mat-paginator class="d-flex" #paginator [pageSizeOptions]="PAGE_SIZE_OPTIONS" [pageSize]="25"
-    [length]="filteredDataLength" showFirstLastButtons color="warn"></mat-paginator>
+
+  <mat-paginator
+    class="d-flex"
+    #paginator
+    [pageSizeOptions]="PAGE_SIZE_OPTIONS"
+    [pageSize]="25"
+    (page)="onPageChange()"
+    [length]="filteredDataLength"
+    showFirstLastButtons
+    color="warn"
+  ></mat-paginator>
+
 </section>
 <ng-template #tpl let-row>
   <td [attr.colspan]="displayedColumns.length" *ngIf="row.noteClients && row.noteClients.length > 0">
