@@ -35,21 +35,20 @@ export class TableDataSource extends DataSource<any> {
 
     return merge(...displayDataChanges).pipe(
       map(() => {
-        console.log(this.database.data.body)
         this.filteredData = this.database.data.body
           ?.slice()
           ?.filter((item: any) => {
             const searchStr = this.generateSearchString(item);
             return searchStr.includes(this.filter.toLowerCase());
           });
-        const sortedData = this.sortData(this.filteredData.slice());
+        const sortedData = this.sortData(this.filteredData?.slice());
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-        this.renderedData = sortedData.splice(
+        this.renderedData = sortedData?.splice(
           startIndex,
           this._paginator.pageSize
         );
         setTimeout(() => {
-          this._filteredDataLengthSubject.next(this.filteredData.length);
+          this._filteredDataLengthSubject.next(this.filteredData?.length??0);
         });
         return this.renderedData;
       })
@@ -58,6 +57,7 @@ export class TableDataSource extends DataSource<any> {
 
   disconnect() {}
   sortData(data: any[]): any[] {
+    if(!data) return data;
     if (!this._sort.active || this._sort.direction === '') return data;
     return data.sort((a, b) => {
       let propertyA: any, propertyB: any;

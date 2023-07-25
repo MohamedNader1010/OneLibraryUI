@@ -65,8 +65,8 @@ export class TableComponent implements OnInit, OnDestroy {
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
   _pagingCriteria:PagingCriteria = {
-    direction: "desc", 
-    filter: "", 
+    direction: "desc",
+    filter: "",
     orderBy: "Id",
     pageIndex: 0,
     pageSize: 25
@@ -122,7 +122,7 @@ export class TableComponent implements OnInit, OnDestroy {
 		this.connection.start().then(()=>console.log("connected")).catch((err) => console.log(err));
 
 		this.connection.on("add", (res : Order) => {
-      this.database.dataChange.value.push(res);
+      (this.database.dataChange.value as Response).body.push(res);
       this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
       this.refreshTable();
     });
@@ -158,8 +158,8 @@ export class TableComponent implements OnInit, OnDestroy {
         .pipe(
           debounceTime(1500), // Add a debounce time to avoid frequent API calls on every keyup
           distinctUntilChanged(), // Ensure that the API is called only when the filter value changes
-          
-          switchMap(() => { 
+
+          switchMap(() => {
             this.setPagingCriteria();
             return this.database.getPagedOrders(this._pagingCriteria);
           })
@@ -192,15 +192,15 @@ export class TableComponent implements OnInit, OnDestroy {
   setActiveSortColumn(column: string): void {
     if(this.isPaginated) {
       this.activeSortColumn = column;
-      this.setPagingCriteria(); 
-      this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+      this.setPagingCriteria();
+      this.database.getPagedOrders(this._pagingCriteria).subscribe()
     }
   }
   clearFilter = () => {
     if(this.isPaginated) {
       this.dataSource.filter = this.filter.nativeElement.value = '';
       this.setPagingCriteria();
-      this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+      this.database.getPagedOrders(this._pagingCriteria).subscribe()
     } else {
       this.dataSource.filter = this.filter.nativeElement.value = '';
     }
@@ -220,7 +220,7 @@ export class TableComponent implements OnInit, OnDestroy {
           if(result?.data){
             if(this.componentName == ComponentsName.order){
               let newOrder: Order = (result.data as Response).body;
-              let lastOrder: Order = this.database.dataChange.value[this.database.dataChange.value.length -1];
+              let lastOrder: Order = (this.database.dataChange.value as Response).body[(this.database.dataChange.value as Response).body.length -1];
               if(lastOrder.id != newOrder.id){
                 this.onNew.emit(result.data.message);
               }
@@ -317,18 +317,18 @@ export class TableComponent implements OnInit, OnDestroy {
   onPageChange() {
     if (this.isPaginated) {
         this.setPagingCriteria();
-        this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+        this.database.getPagedOrders(this._pagingCriteria).subscribe()
     }
   }
 
   private setPagingCriteria() {
     this._pagingCriteria.direction = this.sort.direction ?? "desc";
-    this._pagingCriteria.filter = this.filter.nativeElement.value ?? ""; 
-    this._pagingCriteria.orderBy =  this.activeSortColumn; 
-    this._pagingCriteria.pageIndex = this.paginator.pageIndex; 
-    this._pagingCriteria.pageSize = this.paginator.pageSize; 
+    this._pagingCriteria.filter = this.filter.nativeElement.value ?? "";
+    this._pagingCriteria.orderBy =  this.activeSortColumn;
+    this._pagingCriteria.pageIndex = this.paginator.pageIndex;
+    this._pagingCriteria.pageSize = this.paginator.pageSize;
   }
- 
+
   private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
 

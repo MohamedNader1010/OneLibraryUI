@@ -9,7 +9,7 @@ export abstract class GenericService<Tin> {
 		return this.loadingData.value;
 	}
 	_emptyResponse: Response = {
-		body: [], 
+		body: [],
 		message: "",
 		status: true,
 		totalCount: 0

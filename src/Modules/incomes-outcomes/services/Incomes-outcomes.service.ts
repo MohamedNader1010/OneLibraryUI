@@ -16,7 +16,7 @@ export class IncomesOutcomesService extends GenericService<IncomeOutcome> {
 		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

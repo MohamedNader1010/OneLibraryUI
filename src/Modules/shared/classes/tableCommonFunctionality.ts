@@ -15,19 +15,22 @@ export class TableCommonFunctionality {
   ) {}
 
   handleNewRow = (message: string) => {
-    this.database.dataChange.value.body.push(this.database.DialogData);
+    if(this.database.DialogData)
+    (this.database.dataChange.value as Response).body.push(this.database.DialogData);
     this.toastr.success(message);
   };
 
   handleEditRow = (data: Response) => {
-	this.database.dataChange.value.body[this.database.dataChange.value.body.findIndex((x: any) => x.id === data.body.id)] = this.database.DialogData;
+    if(this.database.DialogData)
+	(this.database.dataChange.value as Response).body[(this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id)] = this.database.DialogData;
     this.toastr.success(data.message);
     this.database.DialogData = null;
   };
 
   handleDelete = (data: Response) => {
-    this.database.dataChange.value.body.splice(
-      this.database.dataChange.value.body.findIndex((x: any) => x.id === data),
+    if(this.database.DialogData)
+    (this.database.dataChange.value as Response).body.splice(
+      (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data),
       1
     );
     this.toastr.success(data.message);
