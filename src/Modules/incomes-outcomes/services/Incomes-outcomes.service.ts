@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Response} from '../../shared/interfaces/Iresponse';
-import { IncomeOutcome } from "../interFaces/Iincome-outcome";
+import { IncomeOutcome } from "../interfaces/Iincome-outcome";
 
 @Injectable({
 	providedIn: 'root',
@@ -16,7 +16,7 @@ export class IncomesOutcomesService extends GenericService<IncomeOutcome> {
 		this.loadingData.next(true);
 		this.http.get<Response>(this.uri).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data);
+				this.dataChange.next(data.body);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

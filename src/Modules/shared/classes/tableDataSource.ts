@@ -35,6 +35,7 @@ export class TableDataSource extends DataSource<any> {
 
     return merge(...displayDataChanges).pipe(
       map(() => {
+        console.log(this.database.data.body)
         this.filteredData = this.database.data.body
           ?.slice()
           ?.filter((item: any) => {

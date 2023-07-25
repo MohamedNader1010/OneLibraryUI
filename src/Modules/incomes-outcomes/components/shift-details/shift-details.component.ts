@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ShiftService } from "../../services/shift.service";
-import { Shift } from "../../interFaces/Ishift";
+import { Shift } from "../../interfaces/Ishift";
 import { IncomeOutcomeStatus } from "../../../../Persistents/enums/IncomeOutcome.enum";
 import { IncomeOutcomeSource } from "../../../../Persistents/enums/IncomeOutcomeSource.emun";
-import { IncomeOutcome } from "../../interFaces/Iincome-outcome";
+import { IncomeOutcome } from "../../interfaces/Iincome-outcome";
 import { TranslateService } from "@ngx-translate/core";
 import { Attendance } from "../../../attendance/interfaces/attendance";
 import { MaterialTracking } from "../../../material-tracking/interfaces/materialTracking";
 import { AttendanceService } from "../../../attendance/services/attendance.service";
 import { IncomesOutcomesService } from "../../services/Incomes-outcomes.service";
 import { MaterialTrackingService } from "../../../material-tracking/services/materialTracking.service";
+import { Response } from 'src/Modules/shared/interfaces/Iresponse';
 
 @Component({
   selector: 'app-shift-details',
@@ -48,9 +49,9 @@ export class ShiftDetailsComponent implements OnInit{
         this.router.navigateByUrl(this.route.snapshot.url.toString());
       },
       complete:()=>{
-        this.attendanceService.dataChange.next(this.shift.attendances);
-        this.inOutService.dataChange.next(this.shift.incomeOutcomes);
-        this.matInOutService.dataChange.next(this.shift.materialIncomeOutcomes);
+        this.attendanceService.dataChange.next({body: this.shift.attendances} as Response);
+        this.inOutService.dataChange.next({body: this.shift.incomeOutcomes} as Response);
+        this.matInOutService.dataChange.next({body: this.shift.materialIncomeOutcomes} as Response);
       }
     })
   }

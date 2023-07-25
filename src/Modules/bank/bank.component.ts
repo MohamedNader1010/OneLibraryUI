@@ -9,7 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { Bank } from "./interfaces/Ibank";
 import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
-import { IncomeOutcome } from "../incomes-outcomes/interFaces/Iincome-outcome";
+import { IncomeOutcome } from "../incomes-outcomes/interfaces/Iincome-outcome";
 
 @Component({
   selector: 'app-bank',

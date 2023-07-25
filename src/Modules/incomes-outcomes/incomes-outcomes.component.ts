@@ -11,8 +11,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 
 import { ShiftService } from "./services/shift.service"
-import { IncomeOutcome } from "./interFaces/Iincome-outcome";
+
 import { IncomeOutcomeSource } from "../../Persistents/enums/IncomeOutcomeSource.emun";
+import { IncomeOutcome } from './interfaces/Iincome-outcome';
 
 @Component({
 	selector: 'app-Incomes-outcomes',
@@ -88,7 +89,7 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 
 
 	override handleNewRow = (message: string) => {
-		this.database.dataChange.value.push(this.database.DialogData);
+		this.database.dataChange.value.body.push(this.database.DialogData);
 		this.toastr.success(message);
     this.getCurrentShift();
 	};

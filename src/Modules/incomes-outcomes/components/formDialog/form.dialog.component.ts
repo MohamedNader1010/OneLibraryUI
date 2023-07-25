@@ -8,7 +8,7 @@ import {Response} from './../../../shared/interfaces/Iresponse';
 import {Material} from './../../../material/interfaces/Imaterial';
 import {IncomeOutcomeStatus} from '../../../../Persistents/enums/IncomeOutcome.enum';
 import {TranslateService} from '@ngx-translate/core';
-import { IncomeOutcome } from "../../interFaces/Iincome-outcome";
+import { IncomeOutcome } from "../../interfaces/Iincome-outcome";
 import { IncomeOutcomeSource } from "../../../../Persistents/enums/IncomeOutcomeSource.emun";
 @Component({
 	selector: 'app-form.dialog',

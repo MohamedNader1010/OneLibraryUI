@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {ServicePricePerClientType} from '../Interfaces/ServicePricePerClientType';
 import {ToastrService} from 'ngx-toastr';

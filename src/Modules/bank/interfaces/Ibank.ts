@@ -1,4 +1,4 @@
-import { IncomeOutcome } from "../../incomes-outcomes/interFaces/Iincome-outcome";
+import { IncomeOutcome } from "../../incomes-outcomes/interfaces/Iincome-outcome";
 
 export interface Bank {
 

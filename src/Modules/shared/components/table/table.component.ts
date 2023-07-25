@@ -26,8 +26,7 @@ import { TableDataSource } from '../../classes/tableDataSource';
 import { ComponentsName } from 'src/Persistents/enums/components.name';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
-import { MatPaginator, PageEvent } from "@angular/material/paginator";
-import { MatSort } from "@angular/material/sort";
+import { MatPaginator } from "@angular/material/paginator";
 
 import { Router, ActivatedRoute } from "@angular/router";
 import * as signalR from '@microsoft/signalr';
@@ -128,12 +127,6 @@ export class TableComponent implements OnInit, OnDestroy {
       this.refreshTable();
     });
 	}
-
-	setActiveSortColumn(column: string): void {
-		this.activeSortColumn = column;
-	}
-
-	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = "");
 
   isRowExpanded(rowId: string): boolean {
     if (this.detailRowDirectives) {
