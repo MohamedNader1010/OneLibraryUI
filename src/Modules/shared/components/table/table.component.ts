@@ -1,3 +1,4 @@
+
 import {
   Component,
   EventEmitter,
@@ -11,7 +12,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import {
   Subscription,
@@ -26,6 +26,12 @@ import { TableDataSource } from '../../classes/tableDataSource';
 import { ComponentsName } from 'src/Persistents/enums/components.name';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+
+import { Router, ActivatedRoute } from "@angular/router";
+import * as signalR from '@microsoft/signalr';
+import { Order } from 'src/Modules/order/interfaces/Iorder';
 import {
   animate,
   state,
@@ -36,6 +42,7 @@ import {
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
+import { Response } from "../../interfaces/Iresponse";
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -49,11 +56,13 @@ const detailExpandAnimation = trigger('detailExpand', [
   animations: [detailExpandAnimation],
 })
 export class TableComponent implements OnInit, OnDestroy {
+
   subscriptions: Subscription[] = [];
   displayedColumns!: string[];
   dataSource!: TableDataSource | PaginatedTableDatasource;
   activeSortColumn: string = 'Id';
-  noteFormDialogName = FormDialogNames.NoteFormDialogComponent;
+	connection!: signalR.HubConnection;
+
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
   _pagingCriteria:PagingCriteria = {
@@ -75,6 +84,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
+
   @Input() database: any;
   @Input() loading: any;
   @Input() tableColumns: any;
@@ -86,10 +96,12 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() hasTransaction: boolean = false;
   @Input() formName!: FormDialogNames;
   @Input() componentName!: ComponentsName;
+  @Input() canNavigateToDetails: boolean = false;
+  @Input() canExpand: boolean = false;
   @Input() isPaginated: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
-  constructor(public dialog: MatDialog) {}
+ constructor(public dialog: MatDialog,private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.setPagingCriteria();
@@ -98,7 +110,31 @@ export class TableComponent implements OnInit, OnDestroy {
       'actions',
     ];
     this.loadData();
+ if(this.componentName == ComponentsName.order)
+      this.connectToOrderHub();
   }
+
+
+  connectToOrderHub(){
+		this.connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${environment.host}OrderHub`)
+    .withAutomaticReconnect()
+    .build();
+		this.connection.start().then(()=>console.log("connected")).catch((err) => console.log(err));
+
+		this.connection.on("add", (res : Order) => {
+      this.database.dataChange.value.push(res);
+      this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+      this.refreshTable();
+    });
+	}
+
+	setActiveSortColumn(column: string): void {
+		this.activeSortColumn = column;
+	}
+
+	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = "");
+
   isRowExpanded(rowId: string): boolean {
     if (this.detailRowDirectives) {
       const isExists = this.detailRowDirectives.find((x) =>
@@ -155,12 +191,11 @@ export class TableComponent implements OnInit, OnDestroy {
       fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
         if (!this.dataSource) return;
         this.dataSource.filter = this.filter.nativeElement.value;
-        this.dataSource.filteredDataLength$.subscribe((length) => {
-          this.filteredDataLength = length;
-        });
+        this.dataSource.filteredDataLength$.subscribe((length) => this.filteredDataLength = length);
       })
     );
   }
+
   setActiveSortColumn(column: string): void {
     if(this.isPaginated) {
       this.activeSortColumn = column;
@@ -178,6 +213,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
+
   async HandleNew() {
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       this.formName
@@ -188,13 +224,25 @@ export class TableComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {
-          if (result?.data) this.onNew.emit(result.data.message);
+          if(result?.data){
+            if(this.componentName == ComponentsName.order){
+              let newOrder: Order = (result.data as Response).body;
+              let lastOrder: Order = this.database.dataChange.value[this.database.dataChange.value.length -1];
+              if(lastOrder.id != newOrder.id){
+                this.onNew.emit(result.data.message);
+              }
+            }
+            else{
+              this.onNew.emit(result.data.message);
+            }
+          }
         },
         complete: () => this.refreshTable(),
       })
     );
   }
-  async handleEdit(row: any) {
+  async handleEdit(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       this.formName
     );
@@ -209,7 +257,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleDelete(row: any) {
+  async handleDelete(row: any, $event: any) {
+    $event.stopPropagation();
     const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
     const dialogRef = this.dialog.open<DeleteDialogComponent>(
       deleteDialogComponent,
@@ -226,7 +275,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleTransaction(row: any) {
+  async handleTransaction(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       FormDialogNames.orderTransactionFormDialogComponent
     );
@@ -244,7 +294,8 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
 
-  async handleView(row: any) {
+  async handleView(row: any, $event: any) {
+    $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
       FormDialogNames.orderDetailsDialogComponent
     );
@@ -254,7 +305,13 @@ export class TableComponent implements OnInit, OnDestroy {
     });
   }
 
-  handleViewPdf = (row: any) => {
+  navigate(row: any, $event: any) {
+    $event.stopPropagation();
+    this.router.navigate(["details",row.id], { relativeTo: this.activatedRoute });
+  }
+
+  handleViewPdf = (row: any, $event: any) => {
+    $event.stopPropagation();
     const filePath = row.filePath;
     const uploadsIndex = filePath.indexOf('uploads');
     if (uploadsIndex !== -1) {
@@ -262,6 +319,7 @@ export class TableComponent implements OnInit, OnDestroy {
       window.open(`${environment.host}${trimmedPath}`, '_blank');
     }
   };
+
 
   onPageChange() {
     if (this.isPaginated) {
@@ -277,9 +335,9 @@ export class TableComponent implements OnInit, OnDestroy {
     this._pagingCriteria.pageIndex = this.paginator.pageIndex; 
     this._pagingCriteria.pageSize = this.paginator.pageSize; 
   }
-  refreshTable = () => {
-    this.paginator._changePageSize(this.paginator.pageSize);
-  };
+ 
+  private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
+
 
   ngOnDestroy = () => {
     this.subscriptions.forEach((s) => s.unsubscribe());

@@ -5,13 +5,14 @@ import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {IncomeOutcome} from './Enums/IncomeOutcomeEnum';
-import {IncomesOutcomes} from './interfaces/Incomes-outcomes';
+import {IncomeOutcomeStatus} from '../../Persistents/enums/IncomeOutcome.enum';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 
 import { ShiftService } from "./services/shift.service"
+import { IncomeOutcome } from "./interFaces/Iincome-outcome";
+import { IncomeOutcomeSource } from "../../Persistents/enums/IncomeOutcomeSource.emun";
 
 @Component({
 	selector: 'app-Incomes-outcomes',
@@ -31,11 +32,7 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 	ngOnInit(): void {
 		this.initiateTableHeaders();
 		this.loadData();
-		this.shiftService.GetCurrentShift().subscribe({
-			next:(response) => {
-				console.log(response.body);
-				this.currentShift = response.body}
-		});
+    this.getCurrentShift();
 	}
 
 	private initiateTableHeaders() {
@@ -43,37 +40,56 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
 			{
 				columnDef: this.translate.instant('table.id'),
 				header: this.translate.instant('table.id.label'),
-				cell: (element: IncomesOutcomes) => element.id,
+				cell: (element: IncomeOutcome) => element.id,
 			},
 			{
 				columnDef: 'amount',
 				header: 'المبلغ',
-				cell: (element: IncomesOutcomes) => element.amount,
+				cell: (element: IncomeOutcome) => element.amount,
 			},
 			{
 				columnDef: 'status',
 				header: 'الحالة',
-				cell: (element: IncomesOutcomes) => (element.status == IncomeOutcome.صادر ? 'صادر' : 'وارد'),
+				cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+			},
+			{
+				columnDef: 'source',
+				header: 'المصدر',
+				cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
 			},
 			{
 				columnDef: 'comment',
 				header: 'ملاحظات',
-				cell: (element: IncomesOutcomes) => element.comment,
+				cell: (element: IncomeOutcome) => element.comment,
 			},
 			{
 				columnDef: 'createdBy',
 				header: 'التسجيل بواسطة',
-				cell: (element: IncomesOutcomes) => element.createdBy,
+				cell: (element: IncomeOutcome) => element.createdBy,
 			},
 			{
 				columnDef: 'time-createdOn',
 				header: 'وقت التسجيل',
-				cell: (element: IncomesOutcomes) => element.createdOn,
+				cell: (element: IncomeOutcome) => element.createdOn,
 			},
 		];
 	}
 
+  getCurrentShift(){
+		this.shiftService.GetCurrentShift().subscribe({
+			next:(response) => {
+				this.currentShift = response.body}
+		});
+  }
+
 	public loadData() {
 		this.database.getAllIncomesOutcomes();
 	}
+
+
+	override handleNewRow = (message: string) => {
+		this.database.dataChange.value.push(this.database.DialogData);
+		this.toastr.success(message);
+    this.getCurrentShift();
+	};
 }

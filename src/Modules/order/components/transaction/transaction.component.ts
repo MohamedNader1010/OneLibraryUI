@@ -87,7 +87,7 @@ export class TransactionComponent implements OnDestroy {
     this.subscriptions.push(
       this._order.addOrderTransaction(this.Form.value).subscribe({
         next: (res) => {
-          this._order.dialogData = res.body;
+          this._order.DialogData = res.body;
           this.dialogRef.close({ data: res });
         },
         error: (e) => {

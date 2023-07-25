@@ -159,7 +159,7 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._service.update(this.id.value, this.Form.value).subscribe({
 				next: (res) => {
-					this._service.dialogData = res.body;
+					this._service.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -178,7 +178,7 @@ export class ServiceFormDialogComponent implements OnInit, OnDestroy {
 		this.subscriptions.push(
 			this._service.add(this.Form.value).subscribe({
 				next: (res) => {
-					this._service.dialogData = res.body;
+					this._service.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {

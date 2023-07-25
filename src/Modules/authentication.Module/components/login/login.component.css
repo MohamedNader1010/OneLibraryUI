@@ -8,3 +8,7 @@ mat-card {
 	vertical-align: middle;
 	align-items: center;
 }
+body{
+  background: linear-gradient(to right, rgb(246 101 101), rgb(151 6 6));
+  color: white;
+}

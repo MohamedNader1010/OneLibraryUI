@@ -92,7 +92,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			this._attendance.update(this.id.value, this.form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._attendance.dialogData = res.body;
+					this._attendance.DialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -112,7 +112,7 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 			this._attendance.add(this.form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._attendance.dialogData = res.body;
+					this._attendance.DialogData = res.body;
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {

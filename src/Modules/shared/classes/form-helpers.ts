@@ -55,6 +55,9 @@ export class FormHelpers {
 			case FormDialogNames.shiftFormDialogComponent:
 				module = await import('../../incomes-outcomes/components/close-start-shift-form-dialog/close-start-shift-form-dialog.component');
 				return module.CloseStartShiftFormDialogComponent;
+        case FormDialogNames.bankFormDialogComponent:
+          module = await import('../../bank/components/bank-form-dialog/bank-form-dialog.component');
+          return module.BankFormDialogComponent;
 		}
 	}
 

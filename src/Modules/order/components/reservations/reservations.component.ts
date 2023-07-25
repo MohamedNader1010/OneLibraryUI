@@ -85,7 +85,7 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 			this.subscriptions.push(
 				this._order.updateRangeOrderDetailsStatus(data).subscribe({
 					next: (res) => {
-						this._order.dialogData = res.body;
+						this._order.DialogData = res.body;
 						this.toastr.success(res.message);
 					},
 					error: (e) => {

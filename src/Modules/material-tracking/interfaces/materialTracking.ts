@@ -1,10 +1,10 @@
-import {IncomeOutcome} from '../Enums/IncomeOutcomeEnum';
+import { IncomeOutcomeStatus } from "../../../Persistents/enums/IncomeOutcome.enum";
 
 export interface MaterialTracking {
 	id: number;
 	material: string;
 	materialId: number;
-	status: IncomeOutcome;
+	status: IncomeOutcomeStatus;
 	quantity: number;
 	comment: string;
 	createdOn: Date;

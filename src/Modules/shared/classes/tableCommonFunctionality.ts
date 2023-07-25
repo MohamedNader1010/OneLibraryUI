@@ -17,7 +17,10 @@ export class TableCommonFunctionality {
 
 	handleEditRow = (data: Response) => {
 		this.database.dataChange.value.body[this.database.dataChange.value.body.findIndex((x: any) => x.id === data.body.id)] = this.database.dialogData;
-		this.toastr.success(data.message);
+		if(this.database.DialogData)
+      this.database.dataChange.value.push(this.database.DialogData);
+      this.toastr.success(message);
+      this.database.DialogData = null;
 	};
 
 	handleDelete = (data: Response) => {
@@ -26,6 +29,7 @@ export class TableCommonFunctionality {
 			1
 		);
 		this.toastr.success(data.message);
+    this.database.DialogData = null;
 	};
 
 	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());

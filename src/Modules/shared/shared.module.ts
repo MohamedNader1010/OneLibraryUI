@@ -33,11 +33,11 @@ import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
     FooterComponent,
     NavbarComponent,
     NotfoundComponent,
+    TableComponent,
     DashboardComponent,
     AutocompleteComponent,
     DeleteDialogComponent,
     DragAndDropComponent,
-    TableComponent,
     CdkDetailRowDirective,
   ],
   imports: [

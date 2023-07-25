@@ -51,7 +51,7 @@ export class ServiceTypeFormDialogComponent implements OnInit, OnDestroy {
 			this._serviceType.update(this.id.value, this.Form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._serviceType.dialogData = res.body;
+					this._serviceType.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {
@@ -71,7 +71,7 @@ export class ServiceTypeFormDialogComponent implements OnInit, OnDestroy {
 			this._serviceType.add(this.Form.value).subscribe({
 				next: (res) => {
 					this.isSubmitting = true;
-					this._serviceType.dialogData = res.body;
+					this._serviceType.DialogData = res.body;
 					this.matDialogRef.close({data: res});
 				},
 				error: (e) => {

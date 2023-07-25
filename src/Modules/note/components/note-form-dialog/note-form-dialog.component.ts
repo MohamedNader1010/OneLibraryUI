@@ -1,20 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormControl,
-} from '@angular/forms';
-import {
-  map,
-  forkJoin,
-  switchMap,
-  filter,
-  startWith,
-  Observer,
-  BehaviorSubject,
-} from 'rxjs';
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from "@angular/forms";
+import { map, forkJoin, switchMap, filter, startWith, Observer } from "rxjs";
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
 import { ClientService } from 'src/Modules/client/services/client.service';
@@ -96,6 +82,10 @@ export class NoteFormDialogComponent
   get fileName(): FormControl {
     return this.Form.get('fileName') as FormControl;
   }
+
+  get isVisible(): FormControl {
+    return this.Form.get('isVisible') as FormControl;
+  }
   getNoteComponentId = (index: number): FormControl =>
     this.noteComponents.at(index).get('id') as FormControl;
   getNoteComponentServiceId = (index: number): FormControl =>
@@ -135,6 +125,7 @@ export class NoteFormDialogComponent
   setClientId = (data: any) => this.clientId.setValue(data);
   setServiceId = (index: number, data: any) =>
     this.noteComponents.at(index).get('serviceId')?.setValue(data);
+
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
     this.forkJoins();
@@ -273,7 +264,6 @@ export class NoteFormDialogComponent
         this.getServiceOriginalPriceForClientType(noteComponent.serviceId),
         { emitEvent: false }
       );
-      // this.getServiceName(index).setValue(noteComponent.service);
     });
     this.Form.patchValue(this.data, { emitEvent: false });
   };
@@ -297,6 +287,7 @@ export class NoteFormDialogComponent
           teacherPrice: [0, [Validators.required, Validators.min(0)]],
           finalPrice: [0],
           fileName: [null],
+          isVisible: [true],
         });
         break;
       case 'noteComponent':
@@ -387,7 +378,7 @@ export class NoteFormDialogComponent
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
-          this.service.dialogData = (res.body as Response).body;
+          this.service.DialogData = (res.body as Response).body;
           this.matDialogRef.close({ data: res.body });
         }
       },

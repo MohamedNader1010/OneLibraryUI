@@ -1,48 +1,18 @@
 <section class="container-fluid d-flex flex-column py-2 h-100">
-  <div
-    class="d-flex align-items-center justify-content-between mat-elevation-z2"
-  >
-    <mat-form-field
-      floatPlaceholder="never"
-      color="warn"
-      class="w-100"
-      style="background-color: white"
-    >
+  <div class="d-flex align-items-center justify-content-between mat-elevation-z2">
+    <mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
       <input matInput #filter placeholder="Filter" />
-      <button
-        *ngIf="filter.value"
-        matSuffix
-        mat-icon-button
-        aria-label="Clear"
-        (click)="clearFilter()"
-      >
+      <button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
   </div>
   <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
-    <table
-      tabindex="0"
-      style="background-color: white"
-      mat-table
-      [dataSource]="dataSource"
-      multiTemplateDataRows
-      matSort
-      [matSortActive]="activeSortColumn"
-      matSortDirection="desc"
-      recycleRows
-    >
-      <ng-container
-        *ngFor="let column of tableColumns; let first = first; let last = last"
-        [matColumnDef]="column.columnDef"
-        [sticky]="first || last"
-      >
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          (click)="setActiveSortColumn(column.columnDef)"
-        >
+    <table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows
+      matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last"
+        [matColumnDef]="column.columnDef" [sticky]="first || last">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="setActiveSortColumn(column.columnDef)">
           {{ column.header }}
         </th>
         <td mat-cell *matCellDef="let row">
@@ -55,94 +25,53 @@
       </ng-container>
       <ng-container matColumnDef="actions" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>
-          <button
-            *ngIf="canAdd"
-            mat-icon-button
-            color="basic"
-            (click)="HandleNew()"
-            matTooltip="اضافة جديد"
-          >
+          <button *ngIf="canAdd" mat-icon-button color="basic" (click)="HandleNew()" matTooltip="اضافة جديد">
             <mat-icon aria-label="new item">add</mat-icon>
           </button>
-
-          <button mat-icon-button color="basic" (click)="collapseAllRows()" *ngIf="formName == noteFormDialogName" matTooltip="اغلاق الكل">
+          <button *ngIf="toggleShift" mat-stroked-button color="warn" (click)="HandleNew()">تغيير الشيفت</button>
+          <button mat-icon-button color="basic" (click)="collapseAllRows()" *ngIf="canExpand"
+            matTooltip="اغلاق الكل">
             <mat-icon aria-label="new item">&#8722;</mat-icon>
-          </button>
-          <button
-            *ngIf="toggleShift"
-            mat-stroked-button
-            color="warn"
-            (click)="HandleNew()"
-          >
-            تغيير الشيفت
           </button>
         </th>
         <td mat-cell *matCellDef="let row">
-          <button
-            *ngIf="hasTransaction"
-            mat-icon-button
-            matTooltip="add transaction"
-            color="basic"
-            aria-label="add transaction to selected row"
-            (click)="handleTransaction(row)"
-          >
+          <button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic"
+            aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
             <mat-icon>paid</mat-icon>
           </button>
-          <button
-            *ngIf="canView"
-            mat-icon-button
-            matTooltip="view"
-            color="basic"
-            aria-label="view selected row"
-            (click)="handleView(row)"
-          >
+          <button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row"
+            (click)="handleView(row, $event)">
             <mat-icon>info</mat-icon>
           </button>
-          <button
-            *ngIf="canEdit"
-            mat-icon-button
-            matTooltip="تعديل"
-            color="basic"
-            aria-label="Edit selected row"
-            (click)="handleEdit(row)"
-          >
+          <button *ngIf="canNavigateToDetails" mat-icon-button matTooltip="view details" color="basic"
+            aria-label="view selected row" (click)="navigate(row, $event)">
+            <mat-icon>info</mat-icon>
+          </button>
+          <button *ngIf="canEdit" mat-icon-button matTooltip="تعديل" color="basic" aria-label="Edit selected row"
+            (click)="handleEdit(row, $event)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button
-            *ngIf="canDelete"
-            mat-icon-button
-            matTooltip="delete"
-            color="warn"
-            aria-label="delete selected row"
-            (click)="handleDelete(row)"
-          >
+          <button *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row"
+            (click)="handleDelete(row, $event)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button
-            *ngIf="row.filePath"
-            mat-icon-button
-            matTooltip="open"
-            color="basic"
-            aria-label="view certificate"
-            (click)="handleViewPdf(row)"
-          >
+          <button *ngIf="row.filePath" mat-icon-button matTooltip="open" color="basic" aria-label="view certificate"
+            (click)="handleViewPdf(row, $event)">
             <mat-icon>open_in_new</mat-icon>
           </button>
-          <button mat-icon-button color="basic" *ngIf="formName == noteFormDialogName" [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
+          <button mat-icon-button color="basic" *ngIf="row.noteClients && row.noteClients.length > 0"
+            [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
             <mat-icon>{{ (isRowExpanded(row.id) ) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
           </button>
         </td>
       </ng-container>
-
-     
       <!-- Header row definition -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <!-- end of header row definition -->
-
       <!-- Row Data -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row"
+        [cdkDetailRowTpl]="tpl"></tr>
       <!-- Ends of Row Data -->
-
       <!-- No Data Found Row Definition -->
       <tr class="mat-row" *matNoDataRow>
         <ng-container *ngIf="database.isLoading">
@@ -152,14 +81,14 @@
         </ng-container>
         <ng-container *ngIf="!database.isLoading">
           <td class="mat-cell text-center" [colSpan]="displayedColumns.length">
-            No data found
+            لا يوجد بيانات
           </td>
         </ng-container>
       </tr>
       <!-- End of No Data found -->
     </table>
-    
   </div>
+
   <mat-paginator
     class="d-flex"
     #paginator
@@ -170,11 +99,10 @@
     showFirstLastButtons
     color="warn"
   ></mat-paginator>
+
 </section>
-
-
-<ng-template #tpl let-row >
-  <td [attr.colspan]="displayedColumns.length" *ngIf="formName == noteFormDialogName">
+<ng-template #tpl let-row>
+  <td [attr.colspan]="displayedColumns.length" *ngIf="row.noteClients && row.noteClients.length > 0">
     <table class="table table-striped">
       <thead>
         <tr>
@@ -183,21 +111,13 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngIf="row.noteClients && row.noteClients.length > 0; else emptyNoteClients">
+        <ng-container *ngIf="row.noteClients && row.noteClients.length > 0">
           <tr *ngFor="let noteClient of row.noteClients" class="expanded-table">
             <td>{{ noteClient?.name  }}</td>
             <td>{{ noteClient?.quantity}}</td>
           </tr>
         </ng-container>
-
       </tbody>
     </table>
   </td>
-</ng-template>
-
-<ng-template #emptyNoteClients>
-  <tr>
-    <td>{{'--'}}</td>
-    <td>{{'--'}}</td>
-  </tr>
 </ng-template>

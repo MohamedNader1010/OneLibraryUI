@@ -3,12 +3,13 @@ import {FormGroup, FormBuilder, FormControl} from '@angular/forms';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
 import {Subscription} from 'rxjs';
-import {IncomesOutcomes} from '../../interfaces/Incomes-outcomes';
 import {IncomesOutcomesService} from '../../services/Incomes-outcomes.service';
 import {Response} from './../../../shared/interfaces/Iresponse';
 import {Material} from './../../../material/interfaces/Imaterial';
-import {IncomeOutcome} from '../../Enums/IncomeOutcomeEnum';
+import {IncomeOutcomeStatus} from '../../../../Persistents/enums/IncomeOutcome.enum';
 import {TranslateService} from '@ngx-translate/core';
+import { IncomeOutcome } from "../../interFaces/Iincome-outcome";
+import { IncomeOutcomeSource } from "../../../../Persistents/enums/IncomeOutcomeSource.emun";
 @Component({
 	selector: 'app-form.dialog',
 	templateUrl: './form.dialog.html',
@@ -19,17 +20,22 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	form: FormGroup;
 	isSubmitting: boolean = false;
 	MaterialDataSource: Material[] = [];
+  incomeOutcomeSources: any[] = [];
 	constructor(
 		public dialogRef: MatDialogRef<FormDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: IncomesOutcomes,
+		@Inject(MAT_DIALOG_DATA) public data: IncomeOutcome,
 		private _inOut: IncomesOutcomesService,
 		private fb: FormBuilder,
 		private toastr: ToastrService,
 		public translate: TranslateService
 	) {
+    this.incomeOutcomeSources = [
+      {value: IncomeOutcomeSource.IcoumeOutcome, name: 'اليومية'},
+      {value: IncomeOutcomeSource.Bank, name: 'البنك'},
+    ];
 		this.form = this.fb.group({
-			// id: [null],
 			status: [null],
+      source: [IncomeOutcomeSource.IcoumeOutcome],
 			amount: [0],
 			comment: [''],
 		});
@@ -42,6 +48,9 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	}
 	get status(): FormControl {
 		return this.form.get('status') as FormControl;
+	}
+	get source(): FormControl {
+		return this.form.get('source') as FormControl;
 	}
 
 	ngOnInit() {
@@ -62,11 +71,13 @@ export class FormDialogComponent implements OnInit, OnDestroy {
 	}
 
 	add() {
-		this.status.setValue(this.amount.value > 0 ? IncomeOutcome.وارد : IncomeOutcome.صادر);
+		this.status.setValue(this.amount.value > 0 ? IncomeOutcomeStatus.وارد : IncomeOutcomeStatus.صادر);
 		this.subscriptions.push(
 			this._inOut.add(this.form.value).subscribe({
 				next: (res) => {
-					this._inOut.dialogData = res.body;
+					// if(this.source.value == IncomeOutcomeSource.IcoumeOutcome){
+            this._inOut.DialogData = res.body;
+          // }
 					this.dialogRef.close({data: res});
 				},
 				error: (e) => {

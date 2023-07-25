@@ -19,7 +19,7 @@ export class FormsDialogCommonFunctionality {
 	addAndUpdateObserver(): Observer<Response> {
 		return {
 			next: (res) => {
-				this.service.dialogData = res.body;
+				this.service.DialogData = res.body;
 				this.matDialogRef.close({ data: res });
 			},
 			error: (e) => {
