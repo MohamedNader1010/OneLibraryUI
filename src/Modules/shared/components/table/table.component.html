@@ -165,6 +165,7 @@
     #paginator
     [pageSizeOptions]="PAGE_SIZE_OPTIONS"
     [pageSize]="25"
+    (page)="onPageChange()"
     [length]="filteredDataLength"
     showFirstLastButtons
     color="warn"

@@ -1,3 +1,4 @@
+import { Shift } from './interfaces/Ishift';
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
@@ -9,7 +10,7 @@ import {IncomesOutcomes} from './interfaces/Incomes-outcomes';
 import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import { Shift } from "./interFaces/Ishift"
+
 import { ShiftService } from "./services/shift.service"
 
 @Component({

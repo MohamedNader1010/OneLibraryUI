@@ -11,18 +11,18 @@ export class TableCommonFunctionality {
 	constructor(public httpClient: HttpClient, public toastr: ToastrService, public database: GenericService<any>) {}
 
 	handleNewRow = (message: string) => {
-		this.database.dataChange.value.push(this.database.dialogData);
+		this.database.dataChange.value.body.push(this.database.dialogData);
 		this.toastr.success(message);
 	};
 
 	handleEditRow = (data: Response) => {
-		this.database.dataChange.value[this.database.dataChange.value.findIndex((x: any) => x.id === data.body.id)] = this.database.dialogData;
+		this.database.dataChange.value.body[this.database.dataChange.value.body.findIndex((x: any) => x.id === data.body.id)] = this.database.dialogData;
 		this.toastr.success(data.message);
 	};
 
 	handleDelete = (data: Response) => {
-		this.database.dataChange.value.splice(
-			this.database.dataChange.value.findIndex((x: any) => x.id === data),
+		this.database.dataChange.value.body.splice(
+			this.database.dataChange.value.body.findIndex((x: any) => x.id === data),
 			1
 		);
 		this.toastr.success(data.message);

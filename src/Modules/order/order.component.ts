@@ -10,6 +10,7 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 import {ComponentsName} from 'src/Persistents/enums/components.name';
 import {ToastrService} from 'ngx-toastr';
 import {Response} from '../shared/interfaces/Iresponse';
+import { PagingCriteria } from '../shared/interfaces/pagingCriteria';
 
 @Component({
 	selector: 'app-order',
@@ -36,7 +37,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 				cell: (element: Order) => `${element.id}`,
 			},
 			{
-				columnDef: this.translate.instant('shared.totatPrice.label'),
+				columnDef: this.translate.instant('shared.totalPrice.label'),
 				header: this.translate.instant('shared.totalPrice'),
 				cell: (element: Order) => `${element.totalPrice}`,
 			},
@@ -74,7 +75,14 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 	}
 
 	loadData() {
-		this.database.getAllOrders();
+		const pagingCriteria : PagingCriteria =  {
+			direction:"desc", 
+			filter: "", 
+			orderBy: "Id", 
+			pageIndex: 0, 
+			pageSize: 25
+		}
+		this.database.getPagedOrders(pagingCriteria).subscribe();
 	}
 
 	public handleOrderTransaction(row: Response) {

@@ -8,11 +8,16 @@ export abstract class GenericService<Tin> {
 	get isLoading(): boolean {
 		return this.loadingData.value;
 	}
+	_emptyResponse: Response = {
+		body: [], 
+		message: "",
+		status: true,
+		totalCount: 0
+	}
+	dataChange: BehaviorSubject<Response> = new BehaviorSubject<Response>(this._emptyResponse);
 
-	dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
-	get data(): any[] {
-		return this.dataChange.value ?? [];
+	get data(): Response {
+		return this.dataChange.value ?? this._emptyResponse;
 	}
 
 	dialogData: any;

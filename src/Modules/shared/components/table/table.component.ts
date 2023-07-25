@@ -13,7 +13,13 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import {  Subscription, fromEvent } from 'rxjs';
+import {
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  fromEvent,
+  switchMap,
+} from 'rxjs';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 import { FormHelpers } from '../../classes/form-helpers';
 import { TableDataSource } from '../../classes/tableDataSource';
@@ -28,6 +34,8 @@ import {
   trigger,
 } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
+import { PagingCriteria } from '../../interfaces/pagingCriteria';
+import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -43,11 +51,18 @@ const detailExpandAnimation = trigger('detailExpand', [
 export class TableComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   displayedColumns!: string[];
-  dataSource!: TableDataSource;
-  activeSortColumn: string = 'id';
+  dataSource!: TableDataSource | PaginatedTableDatasource;
+  activeSortColumn: string = 'Id';
   noteFormDialogName = FormDialogNames.NoteFormDialogComponent;
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
+  _pagingCriteria:PagingCriteria = {
+    direction: "desc", 
+    filter: "", 
+    orderBy: "Id",
+    pageIndex: 0,
+    pageSize: 25
+  };
 
   @Output() OnDelete = new EventEmitter<any>();
   @Output() OnView = new EventEmitter<any>();
@@ -71,12 +86,13 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() hasTransaction: boolean = false;
   @Input() formName!: FormDialogNames;
   @Input() componentName!: ComponentsName;
-
+  @Input() isPaginated: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
   constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
+    this.setPagingCriteria();
     this.displayedColumns = [
       ...this.tableColumns.map((c: any) => c.columnDef),
       'actions',
@@ -84,19 +100,49 @@ export class TableComponent implements OnInit, OnDestroy {
     this.loadData();
   }
   isRowExpanded(rowId: string): boolean {
-    if(this.detailRowDirectives) {
+    if (this.detailRowDirectives) {
       const isExists = this.detailRowDirectives.find((x) =>
-      x.isRowExpanded(rowId)
-    );
-    return isExists ? true : false;
+        x.isRowExpanded(rowId)
+      );
+      return isExists ? true : false;
     }
     return false;
   }
 
   collapseAllRows() {
-    this.detailRowDirectives.forEach(x => x.collapseAllRows())
+    this.detailRowDirectives.forEach((x) => x.collapseAllRows());
   }
+
   public loadData() {
+    if (this.isPaginated) {
+      this.setPaginatedTableDatasource();
+    } else {
+      this.setTableDataSource();
+    }
+  }
+  private setPaginatedTableDatasource() {
+    this.dataSource = new PaginatedTableDatasource(
+      this.database,
+    );
+    this.subscriptions.push(
+      fromEvent(this.filter.nativeElement, 'keyup')
+        .pipe(
+          debounceTime(1500), // Add a debounce time to avoid frequent API calls on every keyup
+          distinctUntilChanged(), // Ensure that the API is called only when the filter value changes
+          
+          switchMap(() => { 
+            this.setPagingCriteria();
+            return this.database.getPagedOrders(this._pagingCriteria);
+          })
+        )
+        .subscribe((_) => {
+        })
+    );
+    this.dataSource.filteredDataLength$.subscribe(length => {
+      this.filteredDataLength = length;
+    })
+  }
+  private setTableDataSource() {
     this.dataSource = new TableDataSource(
       this.database,
       this.paginator,
@@ -116,10 +162,21 @@ export class TableComponent implements OnInit, OnDestroy {
     );
   }
   setActiveSortColumn(column: string): void {
-    this.activeSortColumn = column;
+    if(this.isPaginated) {
+      this.activeSortColumn = column;
+      this.setPagingCriteria(); 
+      this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+    }
   }
-  clearFilter = () =>
-    (this.dataSource.filter = this.filter.nativeElement.value = '');
+  clearFilter = () => {
+    if(this.isPaginated) {
+      this.dataSource.filter = this.filter.nativeElement.value = '';
+      this.setPagingCriteria();
+      this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+    } else {
+      this.dataSource.filter = this.filter.nativeElement.value = '';
+    }
+  }
 
   async HandleNew() {
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
@@ -206,6 +263,20 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   };
 
+  onPageChange() {
+    if (this.isPaginated) {
+        this.setPagingCriteria();
+        this.database.getPagedOrders(this._pagingCriteria).subscribe((data: any) => console.log(data))
+    }
+  }
+
+  private setPagingCriteria() {
+    this._pagingCriteria.direction = this.sort.direction ?? "desc";
+    this._pagingCriteria.filter = this.filter.nativeElement.value ?? ""; 
+    this._pagingCriteria.orderBy =  this.activeSortColumn; 
+    this._pagingCriteria.pageIndex = this.paginator.pageIndex; 
+    this._pagingCriteria.pageSize = this.paginator.pageSize; 
+  }
   refreshTable = () => {
     this.paginator._changePageSize(this.paginator.pageSize);
   };

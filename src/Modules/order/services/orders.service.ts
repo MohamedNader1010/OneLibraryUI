@@ -7,6 +7,8 @@ import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Response} from './../../shared/interfaces/Iresponse';
 import {OrderDetail} from './../interfaces/IorderDetail';
+import { PagingCriteria } from 'src/Modules/shared/interfaces/pagingCriteria';
+import { Observable, catchError, finalize, tap } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -15,26 +17,27 @@ export class OrderService extends GenericService<Order> {
 	constructor(http: HttpClient, private toastr: ToastrService) {
 		super(http, 'Order');
 	}
-
-	getAllOrders() {
+	getPagedOrders(pagingCriteria: PagingCriteria): Observable<any> {
 		this.loadingData.next(true);
-		this.http.get<Response>(this.uri).subscribe({
-			next: (data: Response) => {
-				this.dataChange.next(data.body);
-			},
-			error: (e) => {
-				this.loadingData.next(false);
-				let res: Response = e.error ?? e;
-				this.toastr.error(res.message);
-			},
-			complete: () => this.loadingData.next(false),
-		});
-	}
+		return this.http.post<Response>(`${this.uri}/GetAllOrders`, pagingCriteria)
+		  .pipe(
+			tap((data: Response) => {
+			  this.dataChange.next(data);
+			}),
+			catchError((e) => {
+			  this.loadingData.next(false);
+			  let res: Response = e.error ?? e;
+			  this.toastr.error(res.message);
+			  return [];
+			}),
+			finalize(() => this.loadingData.next(false))
+		  );
+	  }
 	getOrdersByStatus(status: Status) {
 		this.loadingData.next(true);
 		this.http.get<Response>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);
@@ -49,7 +52,7 @@ export class OrderService extends GenericService<Order> {
 		this.http.get<Response>(`${this.uri}/GetReservedOrderDetails`).subscribe({
 			next: (data: Response) => {
 				this.loadingData.next(true);
-				this.dataChange.next(data.body);
+				this.dataChange.next(data);
 			},
 			error: (e) => {
 				this.loadingData.next(false);
