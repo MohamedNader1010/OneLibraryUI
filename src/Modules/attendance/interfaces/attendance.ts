@@ -4,4 +4,6 @@ export interface Attendance {
 	checkOut: Date;
 	employeeId: string;
 	employee: string;
+  duration: string;
+  formattedDuration: string;
 }

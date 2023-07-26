@@ -48,6 +48,11 @@ export class AttendanceComponent extends TableCommonFunctionality implements OnI
 				header: 'انصراف',
 				cell: (element: Attendance) => element.checkOut,
 			},
+			{
+				columnDef: 'formattedDuration',
+				header: 'عدد الساعات',
+				cell: (element: Attendance) => element.formattedDuration,
+			},
 		];
 	}
 	private loadData() {

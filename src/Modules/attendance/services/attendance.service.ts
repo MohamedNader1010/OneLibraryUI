@@ -39,4 +39,5 @@ export class AttendanceService extends GenericService<Attendance> {
 	checkIn = () => this.http.post<Response>(`${this.uri}/CheckIn`, {headers: this.headers});
 
 	checkOut = () => this.http.post<Response>(`${this.uri}/CheckOut`, {headers: this.headers});
+	AttendanceState = (id: string) => this.http.get<Response>(`${this.uri}/AttendanceState`, { params:{id: id}, headers: this.headers});
 }

@@ -30,9 +30,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @Output() toggleSidenav = new EventEmitter<boolean>();
   ngOnInit(): void {
     this._auth.username.next(localStorage.getItem("uname"));
-    this._attendance.checkedIn.next(
-      localStorage.getItem("iSCheckedIn")?.toString().toLowerCase() == "true"
-    );
+    this._attendance.AttendanceState(localStorage.getItem("uid")??"").subscribe({
+      next: (res) =>{
+        this._attendance.checkedIn.next(res.body);
+      }
+    })
   }
 
   get isAdmin(): boolean {
