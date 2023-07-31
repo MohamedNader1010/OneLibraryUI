@@ -1,21 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import {
-  forkJoin,
-  map,
-  catchError,
-  of,
-  startWith,
-  BehaviorSubject,
-} from 'rxjs';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { forkJoin, map, catchError, of, startWith, BehaviorSubject, pairwise } from 'rxjs';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
 import { OrderService } from '../../services/orders.service';
@@ -29,34 +16,21 @@ import { Status } from '../../Enums/status';
 import { Order } from '../../interfaces/Iorder';
 import { Response } from './../../../shared/interfaces/Iresponse';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { OrderDetail } from '../../interfaces/IorderDetail';
 import { FormHelpers } from 'src/Modules/shared/classes/form-helpers';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 import { validateQuantityAsync } from '../validators/customValidator';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-order-form-dialog',
   templateUrl: './order-form-dialog.component.html',
   styleUrls: ['./order-form-dialog.component.css'],
 })
-export class OrderFormDialogComponent
-  extends FormsDialogCommonFunctionality
-  implements OnInit, OnDestroy
-{
-  availableStatus: Status[] = [
-    Status.استلم,
-    Status.حجز,
-    Status.اعداد,
-    Status.جاهز,
-    Status.مرتجع,
-    Status.هالك,
-  ];
+export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+  availableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز, Status.مرتجع, Status.هالك];
   StatusInstance: any = Status;
   ServicesDataSource: Service[] = [];
   NotesDataSource: Note[] = [];
@@ -76,7 +50,7 @@ export class OrderFormDialogComponent
     matDialogRef: MatDialogRef<OrderFormDialogComponent>,
     private _servicePrice: ServicePricePerClientTypeService,
     public dialog: MatDialog,
-    public override toastr: ToastrService // Status: Status
+    public override toastr: ToastrService, // Status: Status
   ) {
     super(matDialogRef, translate, _order, toastr);
     this.Form = this.createFormItem('init');
@@ -117,41 +91,35 @@ export class OrderFormDialogComponent
     this.OrderDetails.at(index).get('noteId')?.setValue(null);
     this.OrderDetails.at(index).get('serviceId')?.setValue(null);
   }
-  getOrderDetailId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('id') as FormControl;
-  getNoteOrService = (index: number): FormControl =>
-    this.OrderDetails.at(index)?.get('noteOrService') as FormControl;
-  getOrderDetailServiceId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('serviceId') as FormControl;
-  getOrderDetailService = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('service') as FormControl;
-  getOrderDetailNoteId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('noteId') as FormControl;
-  getOrderDetailNote = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('note') as FormControl;
-  getOrderDetailQuantity = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('quantity') as FormControl;
-  getOrderDetailPrice = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('price') as FormControl;
-  getOrderDetailStatus = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('orderStatus') as FormControl;
-  getServiceId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('serviceId') as FormControl;
-  getNoteId = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('noteId') as FormControl;
-  getCountControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('counts') as FormControl;
-  getCopiesControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('copies') as FormControl;
-  getQuantityControl = (index: number): FormControl =>
-    this.OrderDetails.at(index).get('quantity') as FormControl;
+  getOrderDetailId = (index: number): FormControl => this.OrderDetails.at(index).get('id') as FormControl;
+  getNoteOrService = (index: number): FormControl => this.OrderDetails.at(index)?.get('noteOrService') as FormControl;
+  getOrderDetailServiceId = (index: number): FormControl => this.OrderDetails.at(index).get('serviceId') as FormControl;
+  getOrderDetailService = (index: number): FormControl => this.OrderDetails.at(index).get('service') as FormControl;
+  getOrderDetailNoteId = (index: number): FormControl => this.OrderDetails.at(index).get('noteId') as FormControl;
+  getOrderDetailNote = (index: number): FormControl => this.OrderDetails.at(index).get('note') as FormControl;
+  getOrderDetailQuantity = (index: number): FormControl => this.OrderDetails.at(index).get('quantity') as FormControl;
+  getOrderDetailPrice = (index: number): FormControl => this.OrderDetails.at(index).get('price') as FormControl;
+  getOrderDetailStatus = (index: number): FormControl => this.OrderDetails.at(index).get('orderStatus') as FormControl;
+  getServiceId = (index: number): FormControl => this.OrderDetails.at(index).get('serviceId') as FormControl;
+  getNoteId = (index: number): FormControl => this.OrderDetails.at(index).get('noteId') as FormControl;
+  getCountControl = (index: number): FormControl => this.OrderDetails.at(index).get('counts') as FormControl;
+  getCopiesControl = (index: number): FormControl => this.OrderDetails.at(index).get('copies') as FormControl;
+  getQuantityControl = (index: number): FormControl => this.OrderDetails.at(index).get('quantity') as FormControl;
+  getOrderDetailFilePath = (index: number) => {
+    let filePath: any;
+    if (this.data?.orderDetails) {
+      filePath = this.data.orderDetails[index].filePath;
+    } else {
+      let noteId = this.getOrderDetailNoteId(index).value;
+      filePath = this.NotesDataSource.find((note) => note.id == noteId)?.filePath;
+    }
+    return filePath;
+  };
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
-  setServiceId = (index: number, data: any) =>
-    this.OrderDetails.at(index).get('serviceId')?.setValue(data);
+  setServiceId = (index: number, data: any) => this.OrderDetails.at(index).get('serviceId')?.setValue(data);
 
-  setNoteId = (index: number, data: any) =>
-    this.OrderDetails.at(index).get('noteId')?.setValue(data);
+  setNoteId = (index: number, data: any) => this.OrderDetails.at(index).get('noteId')?.setValue(data);
 
   async setClientId(data: any) {
     if (data === -1) {
@@ -169,19 +137,12 @@ export class OrderFormDialogComponent
   }
 
   getAvailableStatus(i: number): Status[] {
-    if (this.data)
-      return this.availableStatus.filter(
-        (s) => s >= this.getOrderDetailStatus(i).value
-      );
+    if (this.data) return this.availableStatus.filter((s) => s >= this.getOrderDetailStatus(i).value);
     else return this.availableStatus;
   }
 
   forkJoins() {
-    let services = [
-      this._note.getAllVisible(),
-      this._clientType.getAll(),
-      this._service.getAll(),
-    ];
+    let services = [this._note.getAllVisible(), this._clientType.getAll(), this._service.getAll()];
     return forkJoin(services)
       .pipe(
         catchError((err) => of(err)),
@@ -191,7 +152,7 @@ export class OrderFormDialogComponent
             clientsType: clientTypeResponse,
             services: serviceResponse,
           };
-        })
+        }),
       )
       .subscribe({
         next: (response) => {
@@ -202,51 +163,59 @@ export class OrderFormDialogComponent
         complete: () => {
           this.subscribeClientTypeChange();
           this.subscribeFormMoneyChanges();
+          this.subscribeDiscountChange();
+          this.subscribeDiscountPercentChange();
         },
       });
   }
 
   subscribeFormMoneyChanges() {
-    this.Form.valueChanges.subscribe((changes) => {
-      const discount = changes.discount;
-      const discountPercent = changes.discountPercent;
-      const totalPrice = changes.totalPrice;
-      const paid = changes.paid;
-      if (discount !== null) {
-        const newPrice = totalPrice - discount;
-        const newDiscountPercent =
-          discount == 0 ? 0 : +((discount / totalPrice) * 100).toFixed(2);
+    this.Form.valueChanges.pipe(pairwise()).subscribe(([oldValues, newValues]) => {
+      const totalPrice = oldValues.totalPrice == newValues.totalPrice ? null : newValues.totalPrice;
+      const paid = oldValues.paid == newValues.paid ? null : newValues.paid;
+      if (totalPrice !== null) {
+        const discount = this.discount.value;
+        const newDiscountPercent = discount == 0 ? 0 : +((discount / totalPrice) * 100).toFixed(2);
+        this.Form.patchValue({ discountPercent: newDiscountPercent }, { emitEvent: false });
+      } else if (paid !== null) {
+        this.rest.setValue(+this.finalPrice.value - paid, { emitEvent: false });
+      }
+    });
+  }
+
+  subscribeDiscountChange() {
+    this.discount.valueChanges.subscribe({
+      next: (value) => {
+        const totalPrice = this.totalPrice.value;
+        const newPrice = +(totalPrice - value).toFixed(2);
+        const newDiscountPercent = value == 0 ? 0 : +((value / totalPrice) * 100).toFixed(2);
         this.Form.patchValue(
           {
             finalPrice: newPrice,
             discountPercent: newDiscountPercent,
-            rest: newPrice - this.paid.value,
+            rest: +(newPrice - this.paid.value).toFixed(2),
           },
-          { emitEvent: false }
+          { emitEvent: false },
         );
-      } else if (discountPercent !== null) {
-        const newDiscount = (discountPercent / 100) * totalPrice;
-        const newPrice = totalPrice - newDiscount;
+      },
+    });
+  }
+
+  subscribeDiscountPercentChange() {
+    this.discountPercent.valueChanges.subscribe({
+      next: (value) => {
+        const totalPrice = this.totalPrice.value;
+        const newDiscount = +((value / 100) * totalPrice).toFixed(2);
+        const newPrice = +(totalPrice - newDiscount).toFixed(2);
         this.Form.patchValue(
           {
             finalPrice: newPrice,
             discount: newDiscount,
-            rest: newPrice - this.paid.value,
+            rest: +(newPrice - this.paid.value).toFixed(2),
           },
-          { emitEvent: false }
+          { emitEvent: false },
         );
-      } else if (totalPrice !== null) {
-        const newDiscountPercent =
-          totalPrice - discount == 0
-            ? 0
-            : +(((totalPrice - discount) / totalPrice) * 100).toFixed(2);
-        this.Form.patchValue(
-          { discountPercent: newDiscountPercent },
-          { emitEvent: false }
-        );
-      } else if (paid !== null) {
-        this.rest.setValue(+this.finalPrice.value - paid, { emitEvent: false });
-      }
+      },
     });
   }
 
@@ -254,29 +223,19 @@ export class OrderFormDialogComponent
     this._order.GetById(this.data.id).subscribe((order) => {
       this.data.orderDetails = order.body.orderDetails;
       if (this.data.orderDetails) {
-        this.data.orderDetails.forEach(
-          (orderDetail: OrderDetail, index: number) => {
-            // here I want to send this value for each orderDetail to inform validator that the initial value of orderStatus is receieved
-            // so DON'T validate.
-            const previousStatus: Status = orderDetail.orderStatus;
-            this.OrderDetails.push(
-              this.createFormItem('detail', true, previousStatus)
-            );
-            this.getNoteOrService(index).setValue(
-              orderDetail.noteId ? 'note' : 'service'
-            );
-          }
-        );
+        this.data.orderDetails.forEach((orderDetail: OrderDetail, index: number) => {
+          // here I want to send this value for each orderDetail to inform validator that the initial value of orderStatus is receieved
+          // so DON'T validate.
+          const previousStatus: Status = orderDetail.orderStatus;
+          this.OrderDetails.push(this.createFormItem('detail', true, previousStatus));
+          this.getNoteOrService(index).setValue(orderDetail.noteId ? 'note' : 'service');
+        });
         this.Form.patchValue(this.data);
       }
     });
   };
 
-  createFormItem(
-    type: string,
-    isUpdateMode: boolean = false,
-    previousStatus: Status | null = null
-  ): FormGroup {
+  createFormItem(type: string, isUpdateMode: boolean = false, previousStatus: Status | null = null): FormGroup {
     let formItem: FormGroup = this.fb.group({});
     switch (type) {
       case 'init':
@@ -299,11 +258,7 @@ export class OrderFormDialogComponent
           id: [0],
           noteOrService: ['service'],
           price: [0],
-          quantity: [
-            0,
-            [Validators.required],
-            [validateQuantityAsync(isUpdateMode, previousStatus)],
-          ],
+          quantity: [0, [Validators.required], [validateQuantityAsync(isUpdateMode, previousStatus)]],
           serviceId: [null],
           service: [''],
           noteId: [null],
@@ -342,21 +297,19 @@ export class OrderFormDialogComponent
       this.getOrderDetailStatus(index).valueChanges.subscribe((status) => {
         if (status == Status.استلم) {
           const noteId = this.getNoteId(index).value;
-          const qty = this.NotesDataSource.find(
-            (note) => note.id == noteId
-          )?.quantity;
+          const qty = this.NotesDataSource.find((note) => note.id == noteId)?.quantity;
           this.setAvailableQuantity(index, qty ?? 0);
         } else {
           this.getQuantityControl(index).updateValueAndValidity();
         }
-      })
+      }),
     );
   }
   private subscribeNoteOrServiceChanges(index: number) {
     this.subscriptions.push(
       this.getNoteOrService(index).valueChanges.subscribe((_) => {
         this.resetOrderDetail(index);
-      })
+      }),
     );
   }
   private subscribeOrderStatusChanges() {
@@ -365,14 +318,12 @@ export class OrderFormDialogComponent
       const orderStatusControl = od.get('orderStatus') as FormControl;
 
       // here I want to set the qty of each note in case of update and the value of orderStatus is still not changed!
-      if (noteId && this.NotesDataSource)
-        this.initiateAvailableQtyControl(orderStatusControl, noteId, index);
+      if (noteId && this.NotesDataSource) this.initiateAvailableQtyControl(orderStatusControl, noteId, index);
 
       orderStatusControl?.valueChanges.subscribe((_) => {
         // in case of update note, we don't call the forkJoin method, so the NoteDataSource is empty.
         // so I need to get the qty of the selected note to validate it.
-        if (noteId && this.NotesDataSource.length == 0)
-          this.getNoteById(noteId, index);
+        if (noteId && this.NotesDataSource.length == 0) this.getNoteById(noteId, index);
       });
     });
   }
@@ -381,11 +332,7 @@ export class OrderFormDialogComponent
       this.setAvailableQuantity(index, note.body.quantity ?? 0);
     });
   }
-  private initiateAvailableQtyControl(
-    orderStatus: FormControl,
-    noteId: number,
-    index: number
-  ) {
+  private initiateAvailableQtyControl(orderStatus: FormControl, noteId: number, index: number) {
     if (orderStatus.value == Status.استلم && noteId) {
       this.getNoteById(noteId, index);
     }
@@ -394,7 +341,7 @@ export class OrderFormDialogComponent
     this.subscriptions.push(
       this.getOrderDetailQuantity(index).valueChanges.subscribe(() => {
         this.calculateTotalPrice();
-      })
+      }),
     );
   }
   subscribeCountChanges(index: number) {
@@ -402,7 +349,7 @@ export class OrderFormDialogComponent
       this.getCountControl(index).valueChanges.subscribe((countValue) => {
         const quantityValue = +this.getCopiesControl(index).value * countValue;
         this.getOrderDetailQuantity(index).setValue(quantityValue);
-      })
+      }),
     );
   }
   subscribeCopiesChanges(index: number) {
@@ -410,14 +357,14 @@ export class OrderFormDialogComponent
       this.getCopiesControl(index).valueChanges.subscribe((copiesValue) => {
         const quantityValue = +this.getCountControl(index).value * copiesValue;
         this.getOrderDetailQuantity(index).setValue(quantityValue);
-      })
+      }),
     );
   }
   subscribeServiceChanges(index: number) {
     this.subscriptions.push(
       this.getOrderDetailServiceId(index).valueChanges.subscribe({
         next: () => this.setServicePriceForClientType(index),
-      })
+      }),
     );
   }
   setServicePriceForClientType(index: number) {
@@ -426,30 +373,25 @@ export class OrderFormDialogComponent
     // this check to ensure that any service is selected and only service.
     if (serviceOrNote == 'service' && serviceId) {
       this.subscriptions.push(
-        this._servicePrice
-          .getPrice(
-            this.clientTypeId.value,
-            this.getOrderDetailServiceId(index).value
-          )
-          .subscribe({
-            next: (res) => {
-              if (!res.body) {
-                this.toastr.error('هذه الخدمة غير مسعرة');
-                this.getOrderDetailPrice(index).setValue(0);
-                return;
-              }
-              this.getOrderDetailPrice(index).setValue(res.body.price);
-            },
-            error: (e) => {
-              this.isSubmitting = false;
-              let res: Response = e.error ?? e;
-              // this.toastr.error(res.message);
+        this._servicePrice.getPrice(this.clientTypeId.value, this.getOrderDetailServiceId(index).value).subscribe({
+          next: (res) => {
+            if (!res.body) {
+              this.toastr.error('هذه الخدمة غير مسعرة');
               this.getOrderDetailPrice(index).setValue(0);
-            },
-            complete: () => {
-              this.calculateTotalPrice();
-            },
-          })
+              return;
+            }
+            this.getOrderDetailPrice(index).setValue(res.body.price);
+          },
+          error: (e) => {
+            this.isSubmitting = false;
+            let res: Response = e.error ?? e;
+            // this.toastr.error(res.message);
+            this.getOrderDetailPrice(index).setValue(0);
+          },
+          complete: () => {
+            this.calculateTotalPrice();
+          },
+        }),
       );
     }
   }
@@ -484,16 +426,14 @@ export class OrderFormDialogComponent
               this.reloadServicesPrices();
               this.calculateTotalPrice();
             },
-          })
+          }),
         );
-      })
+      }),
     );
   }
 
   async HandleNewClient() {
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(
-      FormDialogNames.ClientFormDialogComponent
-    );
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });
@@ -510,7 +450,7 @@ export class OrderFormDialogComponent
             }
           }
         },
-      })
+      }),
     );
   }
 
@@ -525,13 +465,10 @@ export class OrderFormDialogComponent
     this.subscriptions.push(
       this.getOrderDetailNoteId(index).valueChanges.subscribe({
         next: (id) => {
-          let notePrice =
-            this.NotesDataSource.find((note) => note.id == id)?.finalPrice ?? 0;
+          let notePrice = this.NotesDataSource.find((note) => note.id == id)?.finalPrice ?? 0;
           this.getOrderDetailPrice(index).setValue(notePrice);
           this.calculateTotalPrice();
-          const qty = this.NotesDataSource.find(
-            (note) => note.id == id
-          )?.quantity;
+          const qty = this.NotesDataSource.find((note) => note.id == id)?.quantity;
           this.setAvailableQuantity(index, qty ?? 0);
         },
         error: (e) => {
@@ -540,7 +477,7 @@ export class OrderFormDialogComponent
           this.toastr.error(res.message);
           this.getOrderDetailPrice(index).setValue(0);
         },
-      })
+      }),
     );
   }
 
@@ -550,9 +487,7 @@ export class OrderFormDialogComponent
   calculateTotalPrice() {
     let total = 0;
     for (let index = 0; index < this.OrderDetails.controls.length; index++) {
-      total +=
-        +this.getOrderDetailPrice(index).value *
-        +this.getOrderDetailQuantity(index).value;
+      total += +this.getOrderDetailPrice(index).value * +this.getOrderDetailQuantity(index).value;
     }
     this.totalPrice.setValue(total);
   }
@@ -582,7 +517,7 @@ export class OrderFormDialogComponent
             complete: () => {
               this.isSubmitting = false;
             },
-          })
+          }),
         );
       } else {
         this.add(this.Form.value);
@@ -593,11 +528,19 @@ export class OrderFormDialogComponent
   private setAvailableQuantity(index: number, availableQty: number) {
     const noteId = this.getNoteId(index).value;
     if (noteId) {
-      const availableQtyControl = this.OrderDetails.at(index).get(
-        'availableNoteQuantity'
-      );
+      const availableQtyControl = this.OrderDetails.at(index).get('availableNoteQuantity');
       availableQtyControl?.setValue(availableQty);
       this.getQuantityControl(index).updateValueAndValidity();
     }
   }
+
+  handleViewPdf = (index: number) => {
+    const filePath = this.getOrderDetailFilePath(index);
+    console.log(filePath);
+    const uploadsIndex = filePath.indexOf('uploads');
+    if (uploadsIndex !== -1) {
+      const trimmedPath = filePath.substring(uploadsIndex);
+      window.open(`${environment.host}${trimmedPath}`, '_blank');
+    }
+  };
 }

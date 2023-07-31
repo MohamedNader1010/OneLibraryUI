@@ -9,4 +9,5 @@ export interface OrderDetail {
 	orderId: number;
 	quantity: number;
 	orderStatus: Status;
+  filePath : string;
 }
