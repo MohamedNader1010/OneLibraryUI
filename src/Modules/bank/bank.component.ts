@@ -14,19 +14,19 @@ import { IncomeOutcome } from "../incomes-outcomes/interfaces/Iincome-outcome";
 @Component({
   selector: 'app-bank',
   templateUrl: './bank.component.html',
-  styleUrls: ['./bank.component.css']
+  styleUrls: ['./bank.component.css'],
 })
-export class BankComponent  extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
-	loading!: boolean;
-	formName = FormDialogNames.bankFormDialogComponent;
-	componentName = ComponentsName.Bank;
-	bank!: Bank | null;
-  defualtBankId:number = 1;
+export class BankComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+  tableColumns!: any[];
+  loading!: boolean;
+  formName = FormDialogNames.bankFormDialogComponent;
+  componentName = ComponentsName.Bank;
+  bank!: Bank | null;
+  defualtBankId: number = 3;
 
-	constructor(httpClient: HttpClient, toastr: ToastrService, public override database: BankService, private translate: TranslateService, public dialog: MatDialog) {
-		super(httpClient, toastr, database);
-	}
+  constructor(httpClient: HttpClient, toastr: ToastrService, public override database: BankService, private translate: TranslateService, public dialog: MatDialog) {
+    super(httpClient, toastr, database);
+  }
   isHovered = false;
 
   onMouseEnter() {
@@ -37,61 +37,61 @@ export class BankComponent  extends TableCommonFunctionality implements OnInit, 
     this.isHovered = false;
   }
 
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
     this.getBankDtata();
-	}
-
-  getBankDtata(){
-		this.database.GetById(this.defualtBankId).subscribe({
-			next:(response) => {
-				this.bank = response.body}
-		});
   }
 
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: IncomeOutcome) => element.id,
-			},
-			{
-				columnDef: 'amount',
-				header: 'المبلغ',
-				cell: (element: IncomeOutcome) => element.amount,
-			},
-			{
-				columnDef: 'status',
-				header: 'الحالة',
-				cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
-			},
-			{
-				columnDef: 'comment',
-				header: 'ملاحظات',
-				cell: (element: IncomeOutcome) => element.comment,
-			},
-			{
-				columnDef: 'createdBy',
-				header: 'التسجيل بواسطة',
-				cell: (element: IncomeOutcome) => element.createdBy,
-			},
-			{
-				columnDef: 'time-createdOn',
-				header: 'وقت التسجيل',
-				cell: (element: IncomeOutcome) => element.createdOn,
-			},
-		];
-	}
+  getBankDtata() {
+    this.database.GetById(this.defualtBankId).subscribe({
+      next: (response) => {
+        this.bank = response.body;
+      },
+    });
+  }
 
-	public loadData() {
-		this.database.getAllBankTransactions(this.defualtBankId);
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this.translate.instant('table.id'),
+        header: this.translate.instant('table.id.label'),
+        cell: (element: IncomeOutcome) => element.id,
+      },
+      {
+        columnDef: 'amount',
+        header: 'المبلغ',
+        cell: (element: IncomeOutcome) => element.amount,
+      },
+      {
+        columnDef: 'status',
+        header: 'الحالة',
+        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+      },
+      {
+        columnDef: 'comment',
+        header: 'ملاحظات',
+        cell: (element: IncomeOutcome) => element.comment,
+      },
+      {
+        columnDef: 'createdBy',
+        header: 'التسجيل بواسطة',
+        cell: (element: IncomeOutcome) => element.createdBy,
+      },
+      {
+        columnDef: 'time-createdOn',
+        header: 'وقت التسجيل',
+        cell: (element: IncomeOutcome) => element.createdOn,
+      },
+    ];
+  }
 
-	override handleNewRow = (message: string) => {
+  public loadData() {
+    this.database.getAllBankTransactions(this.defualtBankId);
+  }
+
+  override handleNewRow = (message: string) => {
     this.getBankDtata();
-		this.toastr.success(message);
-	};
-
+    this.toastr.success(message);
+  };
 }

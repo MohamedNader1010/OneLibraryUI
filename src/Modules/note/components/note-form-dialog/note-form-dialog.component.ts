@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from "@angular/forms";
-import { map, forkJoin, switchMap, filter, startWith, Observer } from "rxjs";
+import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { map, forkJoin, switchMap, filter, startWith, Observer } from 'rxjs';
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
 import { ClientService } from 'src/Modules/client/services/client.service';
@@ -23,10 +23,7 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
   templateUrl: './note-form-dialog.component.html',
   styleUrls: ['./note-form-dialog.component.css'],
 })
-export class NoteFormDialogComponent
-  extends FormsDialogCommonFunctionality
-  implements OnInit, OnDestroy
-{
+export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
   TermsDataSource: Term[] = [];
   StagesDataSource: Stage[] = [];
   ServicesDataSource: Service[] = [];
@@ -46,7 +43,7 @@ export class NoteFormDialogComponent
     toastr: ToastrService,
     matDialogRef: MatDialogRef<NoteFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Note,
-    translate: TranslateService
+    translate: TranslateService,
   ) {
     super(matDialogRef, translate, _note, toastr);
     this.Form = this.createFormItem('init');
@@ -86,45 +83,22 @@ export class NoteFormDialogComponent
   get isVisible(): FormControl {
     return this.Form.get('isVisible') as FormControl;
   }
-  getNoteComponentId = (index: number): FormControl =>
-    this.noteComponents.at(index).get('id') as FormControl;
-  getNoteComponentServiceId = (index: number): FormControl =>
-    this.noteComponents.at(index).get('serviceId') as FormControl;
-  servicePriceFormControl = (index: number): FormControl =>
-    this.noteComponents.at(index).get('price') as FormControl;
-  serviceOriginalPriceFormControl = (index: number): FormControl =>
-    this.noteComponents.at(index).get('originalPrice') as FormControl;
-  serviceQuantityFormControl = (index: number): FormControl =>
-    this.noteComponents.at(index).get('quantity') as FormControl;
-  getServiceName = (index: number): FormControl =>
-    this.noteComponents.at(index).get('service') as FormControl;
+  getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get('id') as FormControl;
+  getNoteComponentServiceId = (index: number): FormControl => this.noteComponents.at(index).get('serviceId') as FormControl;
+  servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
+  serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
+  serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
+  getServiceName = (index: number): FormControl => this.noteComponents.at(index).get('service') as FormControl;
   getPricedServicesForSelectedClientType = (clientTypeId: number) =>
-    this.ServicesDataSource.filter((service) =>
-      service.servicePricePerClientTypes.some(
-        (option) => option.clientTypeId === clientTypeId
-      )
-    );
+    this.ServicesDataSource.filter((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientTypeId));
   getServicePriceForClientType = (serviceId: number) =>
-    +(
-      this.ServicesDataSource.find(
-        (service) => service.id === serviceId
-      )?.servicePricePerClientTypes.find(
-        (option) => option.clientTypeId === this.data.clientTypeId
-      )?.price ?? 0
-    );
+    +(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.price ?? 0);
   getServiceOriginalPriceForClientType = (serviceId: number) =>
-    +(
-      this.ServicesDataSource.find(
-        (service) => service.id === serviceId
-      )?.servicePricePerClientTypes.find(
-        (option) => option.clientTypeId === this.data.clientTypeId
-      )?.originalPrice ?? 0
-    );
+    +(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.originalPrice ?? 0);
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setClientId = (data: any) => this.clientId.setValue(data);
-  setServiceId = (index: number, data: any) =>
-    this.noteComponents.at(index).get('serviceId')?.setValue(data);
+  setServiceId = (index: number, data: any) => this.noteComponents.at(index).get('serviceId')?.setValue(data);
 
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
@@ -138,38 +112,27 @@ export class NoteFormDialogComponent
       let actualPrice = 0;
       noteComponents.forEach((noteComponent, index) => {
         this.serviceOriginalPriceFormControl(index).setValue(
-          +(
-            this.ServicesDataSource.find(
-              (service) => service.id === noteComponent.serviceId
-            )?.servicePricePerClientTypes.find(
-              (option) => option.clientTypeId == this.clientTypeId.value
-            )?.originalPrice ?? 0
-          ),
-          { emitEvent: false }
+          (+(
+            this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId == this.clientTypeId.value)
+              ?.originalPrice ?? 0
+          )).toFixed(2),
+          { emitEvent: false },
         );
         this.servicePriceFormControl(index).setValue(
-          +(
-            this.ServicesDataSource.find(
-              (service) => service.id === noteComponent.serviceId
-            )?.servicePricePerClientTypes.find(
-              (option) => option.clientTypeId == this.clientTypeId.value
-            )?.price ?? 0
-          ),
-          { emitEvent: false }
+          (+(
+            this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId == this.clientTypeId.value)?.price ?? 0
+          )).toFixed(2),
+          { emitEvent: false },
         );
-        originalPrice +=
-          +this.serviceOriginalPriceFormControl(index).value *
-          +this.serviceQuantityFormControl(index).value;
-        actualPrice +=
-          +this.servicePriceFormControl(index).value *
-          +this.serviceQuantityFormControl(index).value;
+        originalPrice += +this.serviceOriginalPriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
+        actualPrice += +this.servicePriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
       });
       const earning = +actualPrice - +originalPrice;
       const finalPrice = +actualPrice + +this.teacherPrice.value;
-      this.originalPrice.setValue(originalPrice, { emitEvent: false });
-      this.actualPrice.setValue(actualPrice, { emitEvent: false });
-      this.earning.setValue(earning, { emitEvent: false });
-      this.finalPrice.setValue(finalPrice, { emitEvent: false });
+      this.originalPrice.setValue(originalPrice.toFixed(2), { emitEvent: false });
+      this.actualPrice.setValue(actualPrice.toFixed(2), { emitEvent: false });
+      this.earning.setValue(earning.toFixed(2), { emitEvent: false });
+      this.finalPrice.setValue(finalPrice.toFixed(2), { emitEvent: false });
     });
   }
 
@@ -179,7 +142,7 @@ export class NoteFormDialogComponent
         .pipe(
           startWith(this.clientTypeId.value),
           filter((id) => !!id),
-          switchMap((id) => this._client.getAllByType(id))
+          switchMap((id) => this._client.getAllByType(id)),
         )
         .subscribe({
           next: (data) => {
@@ -192,34 +155,22 @@ export class NoteFormDialogComponent
             let res: Response = e.error ?? e;
             this.toastr.error(res.message);
           },
-        })
+        }),
     );
   }
 
   private forkJoins() {
-    let observables = [
-      this._note.getStages(),
-      this._note.getTerms(),
-      this._clientType.getAll(),
-      this._service.GetAllPriced(),
-    ];
+    let observables = [this._note.getStages(), this._note.getTerms(), this._clientType.getAll(), this._service.GetAllPriced()];
     return forkJoin(observables)
       .pipe(
-        map(
-          ([
-            stagesResponse,
-            termsResponse,
-            clientTypeResponse,
-            serviceResponse,
-          ]) => {
-            return {
-              stages: stagesResponse,
-              terms: termsResponse,
-              clientsType: clientTypeResponse,
-              services: serviceResponse,
-            };
-          }
-        )
+        map(([stagesResponse, termsResponse, clientTypeResponse, serviceResponse]) => {
+          return {
+            stages: stagesResponse,
+            terms: termsResponse,
+            clientsType: clientTypeResponse,
+            services: serviceResponse,
+          };
+        }),
       )
       .subscribe({
         next: (response) => {
@@ -230,14 +181,8 @@ export class NoteFormDialogComponent
           let emptyStage: Stage = { id: null, name: 'بدون' };
           this.StagesDataSource.unshift(emptyStage);
           this.ServicesDataSource = response.services.body;
-          this.ClientTypesDataSource = (
-            response.clientsType.body as ClientType[]
-          ).filter((clientType) =>
-            this.ServicesDataSource.some((service) =>
-              service.servicePricePerClientTypes.some(
-                (option) => option.clientTypeId === clientType.id
-              )
-            )
+          this.ClientTypesDataSource = (response.clientsType.body as ClientType[]).filter((clientType) =>
+            this.ServicesDataSource.some((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientType.id)),
           );
         },
         error: (e) => {
@@ -256,14 +201,8 @@ export class NoteFormDialogComponent
   patchData = () => {
     this.data.noteComponents.forEach((noteComponent, index) => {
       this.handleNewNoteComponent();
-      this.servicePriceFormControl(index).setValue(
-        this.getServicePriceForClientType(noteComponent.serviceId),
-        { emitEvent: false }
-      );
-      this.serviceOriginalPriceFormControl(index).setValue(
-        this.getServiceOriginalPriceForClientType(noteComponent.serviceId),
-        { emitEvent: false }
-      );
+      this.servicePriceFormControl(index).setValue(this.getServicePriceForClientType(noteComponent.serviceId), { emitEvent: false });
+      this.serviceOriginalPriceFormControl(index).setValue(this.getServiceOriginalPriceForClientType(noteComponent.serviceId), { emitEvent: false });
     });
     this.Form.patchValue(this.data, { emitEvent: false });
   };
@@ -310,8 +249,7 @@ export class NoteFormDialogComponent
   };
 
   handleDeleteNoteComponent = (index: number) => {
-    if (this.data)
-      this.deletedComponents.push(this.getNoteComponentId(index).value);
+    if (this.data) this.deletedComponents.push(this.getNoteComponentId(index).value);
     this.noteComponents.removeAt(index);
   };
 
@@ -347,39 +285,24 @@ export class NoteFormDialogComponent
               this.toastr.error(res.message);
             },
             complete: () => {
-              this.subscriptions.push(
-                this._note
-                  .updateFormData(
-                    this.id.value,
-                    this.Form.value,
-                    this.selectedFile,
-                    'pdf'
-                  )
-                  .subscribe(this.addAndUpdateFormDataObserver())
-              );
+              this.subscriptions.push(this._note.updateFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver()));
             },
-          })
+          }),
         );
       } else {
-        this.subscriptions.push(
-          this._note
-            .addFormData(this.Form.value, this.selectedFile, 'pdf')
-            .subscribe(this.addAndUpdateFormDataObserver())
-        );
+        this.subscriptions.push(this._note.addFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver()));
       }
     }
   }
 
-  addAndUpdateFormDataObserver():
-    | Partial<Observer<HttpEvent<Object>>>
-    | (((value: HttpEvent<Object>) => void) | undefined) {
+  addAndUpdateFormDataObserver(): Partial<Observer<HttpEvent<Object>>> | (((value: HttpEvent<Object>) => void) | undefined) {
     return {
       next: (res) => {
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
           this.service.DialogData = (res.body as Response).body;
-          this.matDialogRef.close({ data: (res.body as Response) });
+          this.matDialogRef.close({ data: res.body as Response });
         }
       },
       error: (e) => {

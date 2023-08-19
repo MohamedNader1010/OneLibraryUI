@@ -310,6 +310,8 @@ export class TableComponent implements OnInit, OnDestroy {
     if (uploadsIndex !== -1) {
       const trimmedPath = filePath.substring(uploadsIndex);
       window.open(`${environment.host}${trimmedPath}`, '_blank');
+    }else{
+      alert("not found")
     }
   };
 

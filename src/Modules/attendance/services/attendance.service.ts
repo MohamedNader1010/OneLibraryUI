@@ -7,37 +7,37 @@ import {Attendance} from '../interfaces/attendance';
 import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
-	providedIn: 'root',
+  providedIn: 'root',
 })
 export class AttendanceService extends GenericService<Attendance> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'Attendance');
-	}
+  constructor(http: HttpClient, private toastr: ToastrService) {
+    super(http, 'Attendance');
+  }
 
-	checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-	getAllAttendance() {
-		this.loadingData.next(true);
-		this.http.get<Response>(this.uri).subscribe({
-			next: (data: Response) => {
-				this.dataChange.next(data);
-			},
-			error: (e) => {
-				this.loadingData.next(false);
-				let res: Response = e.error ?? e;
-				this.toastr.error(res.message);
-			},
-			complete: () => this.loadingData.next(false),
-		});
-	}
+  getAllAttendance() {
+    this.loadingData.next(true);
+    this.http.get<Response>(this.uri).subscribe({
+      next: (data: Response) => {
+        this.dataChange.next(data);
+      },
+      error: (e) => {
+        this.loadingData.next(false);
+        let res: Response = e.error ?? e;
+        this.toastr.error(res.message);
+      },
+      complete: () => this.loadingData.next(false),
+    });
+  }
 
-	getEmpAttendance = (id: string, from: Date, to: Date) =>
-		this.http.get<Response>(`${this.uri}/GetEmpAttendance`, {headers: this.headers, params: {Id: id, from: from.toDateString(), to: to.toDateString()}});
+  getEmpAttendance = (id: string, from: Date, to: Date) =>
+    this.http.get<Response>(`${this.uri}/GetEmpAttendance/${id}`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
 
-	getByDate = (from: Date, to: Date) => this.http.get<Response>(`${this.uri}/GetByDate`, {headers: this.headers, params: {from: from.toDateString(), to: to.toDateString()}});
+  getByDate = (from: Date, to: Date) => this.http.get<Response>(`${this.uri}/GetByDate`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
 
-	checkIn = () => this.http.post<Response>(`${this.uri}/CheckIn`, {headers: this.headers});
+  checkIn = () => this.http.post<Response>(`${this.uri}/CheckIn`, { headers: this.headers });
 
-	checkOut = () => this.http.post<Response>(`${this.uri}/CheckOut`, {headers: this.headers});
-	AttendanceState = (id: string) => this.http.get<Response>(`${this.uri}/AttendanceState`, { params:{id: id}, headers: this.headers});
+  checkOut = () => this.http.post<Response>(`${this.uri}/CheckOut`, { headers: this.headers });
+  AttendanceState = (id: string) => this.http.get<Response>(`${this.uri}/AttendanceState/${id}`, { headers: this.headers });
 }

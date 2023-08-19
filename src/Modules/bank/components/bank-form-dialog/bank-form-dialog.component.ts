@@ -33,9 +33,9 @@ export class BankFormDialogComponent extends FormsDialogCommonFunctionality impl
 
 	private initiateFormControls() {
 		this.Form = this.fb.group({
-      id: [1],
-			startingBalance: [null, [Validators.required]],
-		});
+      id: [3],
+      startingBalance: [null, [Validators.required]],
+    });
 	}
 	ngOnInit(): void {
 
