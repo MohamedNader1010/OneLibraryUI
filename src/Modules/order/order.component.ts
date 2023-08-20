@@ -71,15 +71,25 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 				header: this.translate.instant('shared.remarks'),
 				cell: (element: Order) => element.remarks,
 			},
+			{
+				columnDef: this.translate.instant('table.createdBy'),
+				header: this.translate.instant('table.createdBy.label'),
+				cell: (element: Order) => element.createdBy,
+			},
+			{
+				columnDef: this.translate.instant('table.createdAt'),
+				header: this.translate.instant('table.createdAt.label'),
+				cell: (element: Order) => element.createdOn,
+			},
 		];
 	}
 
 	loadData() {
 		const pagingCriteria : PagingCriteria =  {
-			direction:"desc", 
-			filter: "", 
-			orderBy: "Id", 
-			pageIndex: 0, 
+			direction:"desc",
+			filter: "",
+			orderBy: "Id",
+			pageIndex: 0,
 			pageSize: 25
 		}
 		this.database.getPagedOrders(pagingCriteria).subscribe();

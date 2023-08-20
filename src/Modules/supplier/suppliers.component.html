@@ -1,0 +1,10 @@
+<app-table
+	[loading]="loading"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+  [canDelete]="true"
+	[componentName]="componentName"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	[database]="database"></app-table>

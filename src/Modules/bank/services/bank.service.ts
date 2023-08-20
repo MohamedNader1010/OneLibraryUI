@@ -16,7 +16,7 @@ export class BankService extends GenericService<Bank> {
 		this.loadingData.next(true);
     this.GetById(id).subscribe({
 			next: (data: Response) => {
-				this.dataChange.next({body: ((this.data.body) as Bank).transactions } as Response);
+				this.dataChange.next({ body: (this.data.body as Bank)?.transactions } as Response);
 			},
 			error: (e) => {
 				this.loadingData.next(false);

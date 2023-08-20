@@ -6,8 +6,6 @@ import { forkJoin, map, catchError, of, startWith, BehaviorSubject, pairwise } f
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
 import { OrderService } from '../../services/orders.service';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { Note } from 'src/Modules/note/interfaces/Inote';
 import { Client } from 'src/Modules/client/interFaces/Iclient';
 import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
 import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
@@ -23,6 +21,8 @@ import { FormHelpers } from 'src/Modules/shared/classes/form-helpers';
 import { FormDialogNames } from 'src/Persistents/enums/forms-name';
 import { validateQuantityAsync } from '../validators/customValidator';
 import { environment } from '../../../../environments/environment';
+import { NoteOnly } from '../../../note/interfaces/Inote-only';
+import { ServiceOnly } from '../../../service/interfaces/Iservice-only';
 
 @Component({
   selector: 'app-order-form-dialog',
@@ -32,8 +32,8 @@ import { environment } from '../../../../environments/environment';
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
   availableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز, Status.مرتجع, Status.هالك];
   StatusInstance: any = Status;
-  ServicesDataSource: Service[] = [];
-  NotesDataSource: Note[] = [];
+  ServicesDataSource: ServiceOnly[] = [];
+  NotesDataSource: NoteOnly[] = [];
   ClientsDataSource: Client[] = [];
   ClientTypesDataSource: ClientType[] = [];
   clearAutocomplete: BehaviorSubject<number> = new BehaviorSubject(0);
@@ -142,7 +142,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   }
 
   forkJoins() {
-    let services = [this._note.getAllVisible(), this._clientType.getAll(), this._service.getAll()];
+    let services = [this._note.getAllVisible(), this._clientType.getAll(), this._service.GetAllPriced()];
     return forkJoin(services)
       .pipe(
         catchError((err) => of(err)),
@@ -534,9 +534,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     }
   }
 
-  handleViewPdf = (index: number) => {
+  handleViewPdf = (index: number, $event: any) => {
+    $event.stopPropagation();
     const filePath = this.getOrderDetailFilePath(index);
-    console.log(filePath);
     const uploadsIndex = filePath.indexOf('uploads');
     if (uploadsIndex !== -1) {
       const trimmedPath = filePath.substring(uploadsIndex);

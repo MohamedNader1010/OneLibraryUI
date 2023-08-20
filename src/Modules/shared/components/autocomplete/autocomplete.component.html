@@ -2,6 +2,10 @@
 	<mat-option *ngFor="let item of filteredData$ | async" [value]="item">
 		{{ item.name }}
 	</mat-option>
+  <!-- <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+    <mat-option *cdkVirtualFor="let item of filteredData$" class="example-item">{{item}}</mat-option>
+  </cdk-virtual-scroll-viewport> -->
+
 </mat-autocomplete>
 
 <mat-form-field color="warn" appearance="fill" class="w-100">

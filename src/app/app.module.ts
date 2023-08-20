@@ -19,40 +19,39 @@ export function tokenGetter() {
 	return localStorage.getItem('token');
 }
 @NgModule({
-	declarations: [AppComponent],
-	imports: [
-		BrowserModule,
-		HttpClientModule,
-		AppRoutingModule,
-		CommonModule,
-		JwtModule.forRoot({
-			config: {
-				tokenGetter: tokenGetter,
-				allowedDomains: [environment.host],
-				disallowedRoutes: [],
-			},
-		}),
-		ToastrModule.forRoot({preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing'}),
-		BrowserAnimationsModule,
-		TranslateModule.forRoot({
-			defaultLanguage: 'en',
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        })
-
-	],
-	bootstrap: [AppComponent],
-	providers: [
-		LoginGuard,
-		{
-			provide: HTTP_INTERCEPTORS,
-			useClass: TokenInterceptor,
-			multi: true,
-		},
-	],
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    CommonModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: [environment.host],
+        disallowedRoutes: [],
+      },
+    }),
+    ToastrModule.forRoot({ preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing' }),
+    BrowserAnimationsModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'ar',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+  ],
+  bootstrap: [AppComponent],
+  providers: [
+    LoginGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true,
+    },
+  ],
 })
 export class AppModule {}
 

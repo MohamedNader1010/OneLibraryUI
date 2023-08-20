@@ -15,61 +15,65 @@ import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-cl
 import {EmployeeService} from 'src/Modules/employee/services/employee.service';
 import { ShiftService } from "../../incomes-outcomes/services/shift.service"
 import { BankService } from './../../bank/services/bank.service';
+import { SupplierService } from '../../supplier/services/supplier.service';
 
 @Injectable({
-	providedIn: 'root',
+  providedIn: 'root',
 })
 export class ServiceFactory {
-	constructor(
-		private materialService: MaterialService,
-		private attendnaceService: AttendanceService,
-		private clientService: ClientService,
-		private feedbackService: FeedbackService,
-		private incomeOutcomeService: IncomesOutcomesService,
-		private materialTrackingService: MaterialTrackingService,
-		private noteService: NoteService,
-		private orderService: OrderService,
-		private serviceService: ServicesService,
-		private clientTypeService: ClientTypeService,
-		private serviceTypeService: ServicesTypeService,
-		private servicePricePerClientTypeService: ServicePricePerClientTypeService,
-		private employeeService: EmployeeService,
-		private shiftService: ShiftService,
-    private bankService: BankService
-	) {}
+  constructor(
+    private materialService: MaterialService,
+    private attendnaceService: AttendanceService,
+    private clientService: ClientService,
+    private feedbackService: FeedbackService,
+    private incomeOutcomeService: IncomesOutcomesService,
+    private materialTrackingService: MaterialTrackingService,
+    private noteService: NoteService,
+    private orderService: OrderService,
+    private serviceService: ServicesService,
+    private clientTypeService: ClientTypeService,
+    private serviceTypeService: ServicesTypeService,
+    private servicePricePerClientTypeService: ServicePricePerClientTypeService,
+    private employeeService: EmployeeService,
+    private shiftService: ShiftService,
+    private bankService: BankService,
+    private supplierService: SupplierService,
+  ) {}
 
-	getService(componentName: ComponentsName) {
-		switch (componentName) {
-			case ComponentsName.material:
-				return this.materialService;
-			case ComponentsName.attendance:
-				return this.attendnaceService;
-			case ComponentsName.client:
-				return this.clientService;
-			case ComponentsName.clientType:
-				return this.clientTypeService;
-			case ComponentsName.feedback:
-				return this.feedbackService;
-			case ComponentsName.incomeOutcome:
-				return this.incomeOutcomeService;
-			case ComponentsName.materialTracking:
-				return this.materialTrackingService;
-			case ComponentsName.note:
-				return this.noteService;
-			case ComponentsName.order:
-				return this.orderService;
-			case ComponentsName.service:
-				return this.serviceService;
-			case ComponentsName.serviceType:
-				return this.serviceTypeService;
-			case ComponentsName.servicePricePerClientType:
-				return this.servicePricePerClientTypeService;
-			case ComponentsName.employee:
-				return this.employeeService;
-			case ComponentsName.shift:
-				return this.shiftService;
-        case ComponentsName.Bank:
-          return this.bankService;
-		}
-	}
+  getService(componentName: ComponentsName) {
+    switch (componentName) {
+      case ComponentsName.material:
+        return this.materialService;
+      case ComponentsName.attendance:
+        return this.attendnaceService;
+      case ComponentsName.client:
+        return this.clientService;
+      case ComponentsName.clientType:
+        return this.clientTypeService;
+      case ComponentsName.feedback:
+        return this.feedbackService;
+      case ComponentsName.incomeOutcome:
+        return this.incomeOutcomeService;
+      case ComponentsName.materialTracking:
+        return this.materialTrackingService;
+      case ComponentsName.note:
+        return this.noteService;
+      case ComponentsName.order:
+        return this.orderService;
+      case ComponentsName.service:
+        return this.serviceService;
+      case ComponentsName.serviceType:
+        return this.serviceTypeService;
+      case ComponentsName.servicePricePerClientType:
+        return this.servicePricePerClientTypeService;
+      case ComponentsName.employee:
+        return this.employeeService;
+      case ComponentsName.shift:
+        return this.shiftService;
+      case ComponentsName.Bank:
+        return this.bankService;
+      case ComponentsName.supplier:
+        return this.supplierService;
+    }
+  }
 }

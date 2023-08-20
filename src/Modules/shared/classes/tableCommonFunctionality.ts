@@ -8,31 +8,26 @@ import { GenericService } from '../services/genericCRUD.service';
 export class TableCommonFunctionality {
   subscriptions: Subscription[] = [];
 
-  constructor(
-    public httpClient: HttpClient,
-    public toastr: ToastrService,
-    public database: GenericService<any>
-  ) {}
+  constructor(public httpClient: HttpClient, public toastr: ToastrService, public database: GenericService<any>) {}
 
   handleNewRow = (message: string) => {
-    if(this.database.DialogData)
-    (this.database.dataChange.value as Response).body.push(this.database.DialogData);
+    if (this.database.DialogData) (this.database.dataChange.value as Response).body.push(this.database.DialogData);
     this.toastr.success(message);
   };
 
   handleEditRow = (data: Response) => {
-    if(this.database.DialogData)
-	(this.database.dataChange.value as Response).body[(this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id)] = this.database.DialogData;
+    if (this.database.DialogData) {
+      debugger;
+      const updatedElementIndex = (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
+      (this.database.dataChange.value as Response).body[updatedElementIndex] = this.database.DialogData;
+      this.database.DialogData = null;
+    }
     this.toastr.success(data.message);
-    this.database.DialogData = null;
   };
 
   handleDelete = (data: Response) => {
-    if(this.database.DialogData)
-    (this.database.dataChange.value as Response).body.splice(
-      (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data),
-      1
-    );
+    const deletedElementIndex = (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
+    ((this.database.dataChange.value as Response).body as []).splice(deletedElementIndex, 1);
     this.toastr.success(data.message);
     this.database.DialogData = null;
   };
