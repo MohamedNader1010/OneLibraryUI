@@ -17,7 +17,6 @@ export class TableCommonFunctionality {
 
   handleEditRow = (data: Response) => {
     if (this.database.DialogData) {
-      debugger;
       const updatedElementIndex = (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
       (this.database.dataChange.value as Response).body[updatedElementIndex] = this.database.DialogData;
       this.database.DialogData = null;
