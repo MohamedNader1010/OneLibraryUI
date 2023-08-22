@@ -16,142 +16,141 @@ import { Response } from 'src/Modules/shared/interfaces/Iresponse';
 @Component({
   selector: 'app-shift-details',
   templateUrl: './shift-details.component.html',
-  styleUrls: ['./shift-details.component.css']
+  styleUrls: ['./shift-details.component.css'],
 })
-export class ShiftDetailsComponent implements OnInit{
-  id!: any;
-  shift!:Shift;
+export class ShiftDetailsComponent implements OnInit {
+  shift!: Shift;
   attendanceTableColumns!: any[];
   inOutTableColumns!: any[];
   matInOutTableColumns!: any[];
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     public shiftService: ShiftService,
     public attendanceService: AttendanceService,
     public inOutService: IncomesOutcomesService,
     public matInOutService: MaterialTrackingService,
     private translate: TranslateService,
-    private router: Router
-    ) { }
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.id = this.route.snapshot.paramMap.get('id');
-    if(this.id) this.loadShiftData();
+    let id = this.route.snapshot.paramMap.get('id');
+    if (id) this.loadShiftData(+id);
   }
 
-  loadShiftData(){
-    this.shiftService.GetById(+this.id).subscribe(
-    {
-      next:(res)=>{
-        this.shift=res.body;
+  loadShiftData(id: number) {
+    this.shiftService.GetShiftDetails(id).subscribe({
+      next: (res) => {
+        this.shift = res.body;
       },
-      error:()=>{
+      error: () => {
         this.router.navigateByUrl(this.route.snapshot.url.toString());
       },
-      complete:()=>{
-        this.attendanceService.dataChange.next({body: this.shift.attendances} as Response);
-        this.inOutService.dataChange.next({body: this.shift.incomeOutcomes} as Response);
-        this.matInOutService.dataChange.next({body: this.shift.materialIncomeOutcomes} as Response);
-      }
-    })
+      complete: () => {
+        this.attendanceService.dataChange.next({ body: this.shift.attendances } as Response);
+        this.inOutService.dataChange.next({ body: this.shift.incomeOutcomes } as Response);
+        this.matInOutService.dataChange.next({ body: this.shift.materialIncomeOutcomes } as Response);
+      },
+    });
   }
 
-	private initiateTableHeaders() {
-		this.attendanceTableColumns =  [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: Attendance) => element.id,
-			},
-			{
-				columnDef: 'name',
-				header: 'أسم الموظف',
-				cell: (element: Attendance) => element.employee,
-			},
-			{
-				columnDef: 'time-in',
-				header: 'حضور',
-				cell: (element: Attendance) => element.checkIn,
-			},
-			{
-				columnDef: 'time-out',
-				header: 'انصراف',
-				cell: (element: Attendance) => element.checkOut,
-			},
-		];
+  private initiateTableHeaders() {
+    this.attendanceTableColumns = [
+      {
+        columnDef: this.translate.instant('table.id'),
+        header: this.translate.instant('table.id.label'),
+        cell: (element: Attendance) => element.id,
+      },
+      {
+        columnDef: 'name',
+        header: 'أسم الموظف',
+        cell: (element: Attendance) => element.employee,
+      },
+      {
+        columnDef: 'time-in',
+        header: 'حضور',
+        cell: (element: Attendance) => element.checkIn,
+      },
+      {
+        columnDef: 'time-out',
+        header: 'انصراف',
+        cell: (element: Attendance) => element.checkOut,
+      },
+    ];
     this.inOutTableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: IncomeOutcome) => element.id,
-			},
-			{
-				columnDef: 'amount',
-				header: 'المبلغ',
-				cell: (element: IncomeOutcome) => element.amount,
-			},
-			{
-				columnDef: 'status',
-				header: 'الحالة',
-				cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
-			},
-			{
-				columnDef: 'source',
-				header: 'المصدر',
-				cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
-			},
-			{
-				columnDef: 'comment',
-				header: 'ملاحظات',
-				cell: (element: IncomeOutcome) => element.comment,
-			},
-			{
-				columnDef: 'createdBy',
-				header: 'التسجيل بواسطة',
-				cell: (element: IncomeOutcome) => element.createdBy,
-			},
-			{
-				columnDef: 'time-createdOn',
-				header: 'وقت التسجيل',
-				cell: (element: IncomeOutcome) => element.createdOn,
-			},
-		];
+      {
+        columnDef: this.translate.instant('table.id'),
+        header: this.translate.instant('table.id.label'),
+        cell: (element: IncomeOutcome) => element.id,
+      },
+      {
+        columnDef: 'amount',
+        header: 'المبلغ',
+        cell: (element: IncomeOutcome) => element.amount,
+      },
+      {
+        columnDef: 'status',
+        header: 'الحالة',
+        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+      },
+      {
+        columnDef: 'source',
+        header: 'المصدر',
+        cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+      },
+      {
+        columnDef: 'comment',
+        header: 'ملاحظات',
+        cell: (element: IncomeOutcome) => element.comment,
+      },
+      {
+        columnDef: 'createdBy',
+        header: 'التسجيل بواسطة',
+        cell: (element: IncomeOutcome) => element.createdBy,
+      },
+      {
+        columnDef: 'time-createdOn',
+        header: 'وقت التسجيل',
+        cell: (element: IncomeOutcome) => element.createdOn,
+      },
+    ];
     this.matInOutTableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: MaterialTracking) => element.id,
-			},
-			{
-				columnDef: 'material',
-				header: 'أسم الخامة',
-				cell: (element: MaterialTracking) => element.material,
-			},
-			{
-				columnDef: 'quantity',
-				header: 'الكمية',
-				cell: (element: MaterialTracking) => element.quantity,
-			},
-			{
-				columnDef: 'status',
-				header: 'الحالة',
-				cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
-			},
-			{
-				columnDef: 'comment',
-				header: 'ملاحظات',
-				cell: (element: MaterialTracking) => element.comment,
-			},
-			{
-				columnDef: 'createdBy',
-				header: 'التسجيل بواسطة',
-				cell: (element: MaterialTracking) => element.createdBy,
-			},
-			{
-				columnDef: 'time-createdOn',
-				header: 'وقت التسجيل',
-				cell: (element: MaterialTracking) => element.createdOn,
-			},
-		];
-	}
+      {
+        columnDef: this.translate.instant('table.id'),
+        header: this.translate.instant('table.id.label'),
+        cell: (element: MaterialTracking) => element.id,
+      },
+      {
+        columnDef: 'material',
+        header: 'أسم الخامة',
+        cell: (element: MaterialTracking) => element.material,
+      },
+      {
+        columnDef: 'quantity',
+        header: 'الكمية',
+        cell: (element: MaterialTracking) => element.quantity,
+      },
+      {
+        columnDef: 'status',
+        header: 'الحالة',
+        cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+      },
+      {
+        columnDef: 'comment',
+        header: 'ملاحظات',
+        cell: (element: MaterialTracking) => element.comment,
+      },
+      {
+        columnDef: 'createdBy',
+        header: 'التسجيل بواسطة',
+        cell: (element: MaterialTracking) => element.createdBy,
+      },
+      {
+        columnDef: 'time-createdOn',
+        header: 'وقت التسجيل',
+        cell: (element: MaterialTracking) => element.createdOn,
+      },
+    ];
+  }
 }

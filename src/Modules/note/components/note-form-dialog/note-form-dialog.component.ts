@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { map, forkJoin, switchMap, filter, startWith, Observer } from 'rxjs';
+import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject, pairwise } from 'rxjs';
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
 import { ClientService } from 'src/Modules/client/services/client.service';
@@ -8,8 +8,6 @@ import { ClientTypeService } from 'src/Modules/clientType/services/clientType.se
 import { Stage } from '../../interfaces/IStage';
 import { Term } from '../../interfaces/ITerm';
 import { NoteComponent } from '../../interfaces/noteComponent';
-import { Service } from 'src/Modules/service/interfaces/Iservice';
-import { ServicesService } from 'src/Modules/service/services/services.service';
 import { Note } from '../../interfaces/Inote';
 import { Response } from './../../../shared/interfaces/Iresponse';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -18,6 +16,9 @@ import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/Forms
 import { ClientType } from '../../../clientType/interFaces/IclientType';
 import { Client } from '../../../client/interFaces/Iclient';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
+import { validateArrayLingth } from '../../../order/components/validators/customValidator';
+import { PricedServicesWithOriginalPrices } from '../../../service-price-per-client-type/Interfaces/IPricedServicesWithOriginalPrices';
 @Component({
   selector: 'app-note-form-dialog',
   templateUrl: './note-form-dialog.component.html',
@@ -26,20 +27,23 @@ import { HttpEvent, HttpEventType } from '@angular/common/http';
 export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
   TermsDataSource: Term[] = [];
   StagesDataSource: Stage[] = [];
-  ServicesDataSource: Service[] = [];
+  ServicePricesForClientTypesDataSource: PricedServicesWithOriginalPrices[] = [];
   ClientsDataSource: Client[] = [];
   ClientTypesDataSource: ClientType[] = [];
   deletedComponents: number[] = [];
+  clearAutocomplete: BehaviorSubject<number> = new BehaviorSubject(0);
   progress: number = 0;
   selectedFile!: File | null;
   formData: FormData = new FormData();
+  clientsLoading: boolean = false;
+  serviceLoading: boolean = false;
 
   constructor(
     private _note: NoteService,
     private fb: FormBuilder,
     private _client: ClientService,
     private _clientType: ClientTypeService,
-    private _service: ServicesService,
+    private _servicePricePerClientType: ServicePricePerClientTypeService,
     toastr: ToastrService,
     matDialogRef: MatDialogRef<NoteFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Note,
@@ -85,90 +89,46 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
   getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get('id') as FormControl;
   getNoteComponentServiceId = (index: number): FormControl => this.noteComponents.at(index).get('serviceId') as FormControl;
-  servicePriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
-  serviceOriginalPriceFormControl = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
-  serviceQuantityFormControl = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
-  getServiceName = (index: number): FormControl => this.noteComponents.at(index).get('service') as FormControl;
-  getPricedServicesForSelectedClientType = (clientTypeId: number) =>
-    this.ServicesDataSource.filter((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientTypeId));
-  getServicePriceForClientType = (serviceId: number) =>
-    +(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.price ?? 0);
-  getServiceOriginalPriceForClientType = (serviceId: number) =>
-    +(this.ServicesDataSource.find((service) => service.id === serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId === this.data.clientTypeId)?.originalPrice ?? 0);
+  getNoteComponentOriginalPrice = (index: number): FormControl => this.noteComponents.at(index).get('originalPrice') as FormControl;
+  getNoteComponentQuantity = (index: number): FormControl => this.noteComponents.at(index).get('quantity') as FormControl;
+  getNoteComponentServiceName = (index: number) => {
+    let servicePricePerClientType = this.ServicePricesForClientTypesDataSource.find(
+      (sp) => sp.serviceId === this.getNoteComponentServiceId(index).value && sp.clientTypeId === this.clientTypeId.value,
+    );
+    return servicePricePerClientType?.service ?? 'جاري التحميل';
+  };
+  getNoteComponentPrice = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setClientId = (data: any) => this.clientId.setValue(data);
-  setServiceId = (index: number, data: any) => this.noteComponents.at(index).get('serviceId')?.setValue(data);
+
+  getServicePriceForClientTypeId = (index: number) => {
+    let servicePricePerClientType = this.ServicePricesForClientTypesDataSource.find(
+      (sp) => sp.serviceId === this.getNoteComponentServiceId(index).value && sp.clientTypeId === this.clientTypeId.value,
+    )?.id;
+    return servicePricePerClientType;
+  };
+  setServicePriceForClientTypeId = (index: number, data: any) => {
+    let serviceId = this.ServicePricesForClientTypesDataSource.find((sp) => sp.id === data)?.serviceId;
+    this.getNoteComponentServiceId(index).setValue(serviceId);
+  };
 
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
     this.forkJoins();
   }
 
-  subscribeFormMoneyChanges() {
-    this.Form.valueChanges.subscribe((changes) => {
-      const noteComponents = changes.noteComponents as NoteComponent[];
-      let originalPrice = 0;
-      let actualPrice = 0;
-      noteComponents.forEach((noteComponent, index) => {
-        this.serviceOriginalPriceFormControl(index).setValue(
-          (+(
-            this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId == this.clientTypeId.value)
-              ?.originalPrice ?? 0
-          )).toFixed(2),
-          { emitEvent: false },
-        );
-        this.servicePriceFormControl(index).setValue(
-          (+(
-            this.ServicesDataSource.find((service) => service.id === noteComponent.serviceId)?.servicePricePerClientTypes.find((option) => option.clientTypeId == this.clientTypeId.value)?.price ?? 0
-          )).toFixed(2),
-          { emitEvent: false },
-        );
-        originalPrice += +this.serviceOriginalPriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
-        actualPrice += +this.servicePriceFormControl(index).value * +this.serviceQuantityFormControl(index).value;
-      });
-      const earning = +actualPrice - +originalPrice;
-      const finalPrice = +actualPrice + +this.teacherPrice.value;
-      this.originalPrice.setValue(originalPrice.toFixed(2), { emitEvent: false });
-      this.actualPrice.setValue(actualPrice.toFixed(2), { emitEvent: false });
-      this.earning.setValue(earning.toFixed(2), { emitEvent: false });
-      this.finalPrice.setValue(finalPrice.toFixed(2), { emitEvent: false });
-    });
-  }
-
-  subscribeClientTypeChange() {
-    this.subscriptions.push(
-      this.clientTypeId.valueChanges
-        .pipe(
-          startWith(this.clientTypeId.value),
-          filter((id) => !!id),
-          switchMap((id) => this._client.getAllByType(id)),
-        )
-        .subscribe({
-          next: (data) => {
-            this.ClientsDataSource = data.body;
-          },
-          error: (e) => {
-            this.ClientsDataSource = [];
-            this.clientId.reset();
-            this.isSubmitting = false;
-            let res: Response = e.error ?? e;
-            this.toastr.error(res.message);
-          },
-        }),
-    );
-  }
-
   private forkJoins() {
-    let observables = [this._note.getStages(), this._note.getTerms(), this._clientType.getAll(), this._service.GetAllPriced()];
+    let observables = [this._note.getStages(), this._note.getTerms(), this._clientType.getAll()];
     return forkJoin(observables)
       .pipe(
-        map(([stagesResponse, termsResponse, clientTypeResponse, serviceResponse]) => {
+        tap(() => (this.clientsLoading = this.serviceLoading = true)),
+        catchError((err) => of(err)),
+        map(([stagesResponse, termsResponse, clientTypeResponse]) => {
           return {
             stages: stagesResponse,
             terms: termsResponse,
             clientsType: clientTypeResponse,
-            services: serviceResponse,
           };
         }),
       )
@@ -180,10 +140,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           this.StagesDataSource = response.stages.body;
           let emptyStage: Stage = { id: null, name: 'بدون' };
           this.StagesDataSource.unshift(emptyStage);
-          this.ServicesDataSource = response.services.body;
-          this.ClientTypesDataSource = (response.clientsType.body as ClientType[]).filter((clientType) =>
-            this.ServicesDataSource.some((service) => service.servicePricePerClientTypes.some((option) => option.clientTypeId === clientType.id)),
-          );
+          this.ClientTypesDataSource = response.clientsType.body;
         },
         error: (e) => {
           this.isSubmitting = false;
@@ -199,11 +156,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   patchData = () => {
-    this.data.noteComponents.forEach((noteComponent, index) => {
-      this.handleNewNoteComponent();
-      this.servicePriceFormControl(index).setValue(this.getServicePriceForClientType(noteComponent.serviceId), { emitEvent: false });
-      this.serviceOriginalPriceFormControl(index).setValue(this.getServiceOriginalPriceForClientType(noteComponent.serviceId), { emitEvent: false });
-    });
+    this.data.noteComponents.forEach(() => this.noteComponents.push(this.createFormItem('noteComponent')));
     this.Form.patchValue(this.data, { emitEvent: false });
   };
 
@@ -211,23 +164,26 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     let formItem: FormGroup = this.fb.group({});
     switch (type) {
       case 'init':
-        formItem = this.fb.group({
-          id: [0],
-          name: ['', [Validators.required]],
-          termId: [null],
-          stageId: [null],
-          clientTypeId: [null],
-          clientId: [null, [Validators.required]],
-          noteComponents: this.fb.array([], Validators.minLength(1)),
-          quantity: [0],
-          originalPrice: [0],
-          actualPrice: [0],
-          earning: [0],
-          teacherPrice: [0, [Validators.required, Validators.min(0)]],
-          finalPrice: [0],
-          fileName: [null],
-          isVisible: [true],
-        });
+        formItem = this.fb.group(
+          {
+            id: [0],
+            name: ['', [Validators.required]],
+            termId: [null],
+            stageId: [null],
+            clientTypeId: [null],
+            clientId: [null, [Validators.required]],
+            noteComponents: this.fb.array([], Validators.minLength(1)),
+            quantity: [0],
+            originalPrice: [0],
+            actualPrice: [0],
+            earning: [0],
+            teacherPrice: [0, [Validators.required, Validators.min(0)]],
+            finalPrice: [0],
+            fileName: [null],
+            isVisible: [true],
+          },
+          { validators: validateArrayLingth('noteComponents') },
+        );
         break;
       case 'noteComponent':
         formItem = this.fb.group({
@@ -245,13 +201,123 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   handleNewNoteComponent = () => {
+    let index = this.noteComponents.length;
     this.noteComponents.push(this.createFormItem('noteComponent'));
+    this.subscribeServiceChanges(index);
+    this.subscribeQuantityChanges(index);
   };
 
   handleDeleteNoteComponent = (index: number) => {
     if (this.data) this.deletedComponents.push(this.getNoteComponentId(index).value);
     this.noteComponents.removeAt(index);
+    if (this.noteComponents.length) {
+      this.calculateTotalActualPrice();
+    } else this.resetFormMoney();
   };
+
+  subscribeFormMoneyChanges() {
+    this.Form.valueChanges.pipe().subscribe(() => {
+      let finalPrice = (+this.actualPrice.value - +this.originalPrice.value).toFixed(2);
+      this.earning.setValue(finalPrice, { emitEvent: false });
+      this.finalPrice.setValue((+this.actualPrice.value + +this.teacherPrice.value).toFixed(2), { emitEvent: false });
+    });
+  }
+
+  subscribeClientTypeChange() {
+    this.subscriptions.push(
+      this.clientTypeId.valueChanges
+        .pipe(
+          tap(() => {
+            this.clientsLoading = this.serviceLoading = true;
+          }),
+          startWith(this.clientTypeId.value),
+          filter((id: any) => !!id),
+          switchMap((id) => {
+            const getAllByType$ = this._client.getAllByType(id);
+            const getAllPriced$ = this._servicePricePerClientType.GetAllPricedWithOriginalPrices(id);
+            return forkJoin([getAllByType$, getAllPriced$]);
+          }),
+        )
+        .subscribe({
+          next: ([clientsResponse, servicesResponse]) => {
+            this.ClientsDataSource = clientsResponse.body;
+            this.clearAutocomplete.next(1);
+            this.ServicePricesForClientTypesDataSource = servicesResponse.body;
+            this.reloadServicesPrices();
+            this.calculateTotalActualPrice();
+            this.serviceLoading = this.clientsLoading = false;
+          },
+          error: ([clientError, serviceError]) => {
+            if (clientError) {
+              this.ClientsDataSource = [];
+              this.clientId.reset();
+              this.isSubmitting = false;
+              let res: Response = clientError.error ?? clientError;
+              this.toastr.error(res.message);
+            }
+            if (serviceError) {
+              this.ServicePricesForClientTypesDataSource = [];
+              this.noteComponents.value.forEach((noteComponent: NoteComponent, index: number) => {
+                this.getNoteComponentServiceId(index).reset();
+              });
+              this.isSubmitting = false;
+              let res: Response = serviceError.error ?? serviceError;
+              this.toastr.error(res.message);
+            }
+          },
+        }),
+    );
+  }
+
+  reloadServicesPrices() {
+    this.noteComponents.value.forEach((noteComponent: NoteComponent, index: number) => {
+      this.setServicePriceForClientType(index);
+    });
+  }
+
+  calculateTotalActualPrice() {
+    let total = 0;
+    for (let index = 0; index < this.noteComponents.controls.length; index++) {
+      total += +this.getNoteComponentPrice(index).value * +this.getNoteComponentQuantity(index).value;
+    }
+    this.actualPrice.setValue(total);
+  }
+
+  calculateTotalOriginalPrice() {
+    let total = 0;
+    for (let index = 0; index < this.noteComponents.controls.length; index++) {
+      total += +this.getNoteComponentOriginalPrice(index).value * +this.getNoteComponentQuantity(index).value;
+    }
+    this.originalPrice.setValue(total);
+  }
+
+  setServicePriceForClientType(index: number) {
+    const serviceId = this.getNoteComponentServiceId(index).value;
+    if (serviceId) {
+      let service = this.ServicePricesForClientTypesDataSource.find((sp) => sp.serviceId === serviceId);
+      this.getNoteComponentPrice(index).setValue(service?.price);
+      this.getNoteComponentOriginalPrice(index).setValue(service?.originalPrice);
+      this.calculateTotalActualPrice();
+      this.calculateTotalOriginalPrice();
+    }
+  }
+
+  subscribeServiceChanges(index: number) {
+    this.subscriptions.push(
+      this.getNoteComponentServiceId(index).valueChanges.subscribe({
+        next: () => this.setServicePriceForClientType(index),
+      }),
+    );
+  }
+
+  subscribeQuantityChanges(index: number) {
+    this.subscriptions.push(
+      this.getNoteComponentQuantity(index).valueChanges.subscribe(() => {
+        this.calculateTotalActualPrice();
+        this.calculateTotalOriginalPrice();
+      }),
+    );
+  }
 
   resetFormMoney() {
     this.originalPrice.setValue(0, { emitEvent: false });

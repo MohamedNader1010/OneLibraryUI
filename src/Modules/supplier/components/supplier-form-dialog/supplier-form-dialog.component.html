@@ -1,7 +1,7 @@
-  <div class="container">
-    <h2 mat-dialog-title *ngIf="id.value; else update">{{ 'supplier.edit' | translate }}</h2>
+  <div class="container w-100">
+    <h2 mat-dialog-title *ngIf="id.value; else update">تعديل بيانات المورد</h2>
     <ng-template #update>
-      <h2 mat-dialog-title>{{ 'supplier.new' | translate }}</h2>
+      <h2 mat-dialog-title>مورد جديد</h2>
     </ng-template>
     <mat-dialog-content>
       <form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">

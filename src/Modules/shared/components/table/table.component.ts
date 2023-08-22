@@ -217,7 +217,7 @@ export class TableComponent implements OnInit, OnDestroy {
   async handleEdit(row: any, $event: any) {
     $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
-    const dialogRef = this.dialog.open<any>(dialogComponent, { data: row });
+    const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%', data: row });
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {
@@ -231,7 +231,7 @@ export class TableComponent implements OnInit, OnDestroy {
   async handleDelete(row: any, $event: any) {
     $event.stopPropagation();
     const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
-    const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, { data: { row: row, componentName: this.componentName }, minWidth: '30%' });
+    const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, { minWidth: '30%', data: { row: row, componentName: this.componentName } });
     this.subscriptions.push(
       dialogRef.afterClosed().subscribe({
         next: (result) => {

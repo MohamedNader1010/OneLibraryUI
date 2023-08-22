@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container w-100">
   <ng-container *ngIf="data; else update">
     <h2 class="w-100 text-center mt-3">{{ 'order.edit' | translate }}</h2>
     <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة
@@ -11,7 +11,7 @@
     <h2 class="w-100 text-center mt-3">{{ 'order.new' | translate }}</h2>
   </ng-template>
   <mat-dialog-content>
-    <form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column">
+    <form [formGroup]="Form" class="d-flex flex-column">
       <div class="row">
         <autocomplete *ngIf="!data; else clientType" class="col-5" [label]="'shared.clientType' | translate"
           [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)">
@@ -24,7 +24,7 @@
         </ng-template>
         <autocomplete *ngIf="!data; else client" class="col-6" [label]="'shared.client' | translate"
           [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)" [clear]="clearAutocomplete"
-          [selectedValue]="selectedClientId">
+          [selectedValue]="clientId.value" [loading]="clientsLoading">
         </autocomplete>
         <ng-template #client>
           <mat-form-field class="col-6" color="warn">
@@ -55,8 +55,9 @@
               <div class="col-3">
                 <ng-container *ngIf="getNoteOrService(i).value == 'service'">
                   <autocomplete *ngIf="!data; else service" class="col-3" [label]="'shared.service' | translate"
-                    [dataSource]="ServicesDataSource" (selectedId)="setServiceId(i, $event)" [clear]="clearAutocomplete"
-                    [selectedValue]="getServiceId(i).value"></autocomplete>
+                    [dataSource]="ServicePricesForClientTypesDataSource" desplayTextKey="service"
+                    (selectedId)="setServiceIdFromServicePricePerClientType(i, $event)" [clear]="clearAutocomplete"
+                    [selectedValue]="getServicePriceForClientTypeId(i)" [loading]="serviceLoading"></autocomplete>
                   <ng-template #service>
                     <mat-form-field class="w-100" color="warn">
                       <mat-label>{{ 'service.name' | translate }}</mat-label>
@@ -67,7 +68,7 @@
                 <ng-container *ngIf="getNoteOrService(i).value == 'note'">
                   <autocomplete *ngIf="!data; else note" class="col-4" [label]="'shared.note' | translate"
                     [dataSource]="NotesDataSource" (selectedId)="setNoteId(i, $event)" [clear]="clearAutocomplete"
-                    [selectedValue]="getNoteId(i).value">
+                    [selectedValue]="getOrderDetailNoteId(i).value" [loading]="notesLoading">
                   </autocomplete>
 
                   <ng-template #note>
@@ -94,13 +95,11 @@
                   <mat-label>{{ 'quantity.label' | translate }}</mat-label>
                   <input type="number" matInput formControlName="quantity" [readonly]="isServiceSelected(i) || !!data"
                     min="0" />
+                    <mat-error *ngIf="detail.get('quantity')?.hasError('exceedQuantity')">
+                      الكمية الحالية {{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity}} فقط.
+                    </mat-error>
+                    <!-- "" -->
                 </mat-form-field>
-                <div>
-                  <mat-error *ngIf="detail.get('quantity')?.hasError('exceedQuantity')">
-                    لا يمكن الاستلام ولا توجد كميه كافيه
-                    "{{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity}}"
-                  </mat-error>
-                </div>
                 <mat-form-field [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
                   <mat-label>{{ 'shared.price' | translate }}</mat-label>
                   <input type="number" matInput formControlName="price" [readonly]="true" #priceRef />
@@ -108,7 +107,6 @@
               </div>
 
               <div [ngClass]="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i) ? 'col-2' : 'col-3'">
-                <!-- <mat-form-field *ngIf="!data || data.orderStatus != 6; else status" appearance="fill" class="w-100" color="warn"> -->
                 <mat-form-field appearance="fill" class="w-100" color="warn">
                   <mat-label>{{ 'order.status' | translate }}</mat-label>
                   <mat-select formControlName="orderStatus">
@@ -195,15 +193,12 @@
           </mat-form-field>
         </div>
       </div>
-      <!-- <div class="my-2 d-flex flex-row-reverse" *ngIf="!data || data.orderStatus != 6"> -->
-      <div class="my-2 d-flex flex-row-reverse">
-        <button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">
-          {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
-        </button>
-        <button type="button" mat-stroked-button color="warn" (click)="onNoClick()">
-          {{ 'button.back' | translate }}
-        </button>
-      </div>
     </form>
   </mat-dialog-content>
+  <div mat-dialog-actions class="d-flex justify-content-end">
+    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+    </button>
+  </div>
 </div>

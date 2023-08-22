@@ -1,9 +1,8 @@
-export interface ServicePricePerClientType {
+export interface PricedServicesWithOriginalPrices {
   id: number;
   price: number;
-  originalPrice: number;
-  clientType: string;
   service: string;
   clientTypeId: number;
   serviceId: number;
+  originalPrice: number;
 }
