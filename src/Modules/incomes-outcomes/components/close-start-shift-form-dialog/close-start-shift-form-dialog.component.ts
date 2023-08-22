@@ -45,7 +45,7 @@ export class CloseStartShiftFormDialogComponent extends FormsDialogCommonFunctio
 
 	handleSubmit() {
 		if (this.Form.valid) {
-			this.add(this.Form.value);
+			this.subscriptions.push(this._shift.closeAndStartNewShift(this.Form.value).subscribe(this.addAndUpdateObserver()));
 		}
 	}
 }

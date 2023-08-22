@@ -30,7 +30,7 @@ export class ShiftService extends GenericService<Shift> {
     });
   }
 
-  closeAndStartNewShift = (model: CloseAndStartShift) => this.http.post<Response>(`${this.uri}`, model, { headers: this.headers });
+  closeAndStartNewShift = (model: CloseAndStartShift) => this.http.post<Response>(`${this.uri}/EndShiftStartNewOne`, model, { headers: this.headers });
 
   GetCurrentShift = () => this.http.get<Response>(`${this.uri}/CurrentShift`, { headers: this.headers });
 
