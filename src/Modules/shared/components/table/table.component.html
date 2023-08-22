@@ -8,19 +8,13 @@
     </mat-form-field>
   </div>
   <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
-    <table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows
-      matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
-      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last"
-        [matColumnDef]="column.columnDef" [sticky]="first || last">
+    <table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="column.columnDef" [sticky]="first || last">
         <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="setActiveSortColumn(column.columnDef)">
           {{ column.header }}
         </th>
         <td mat-cell *matCellDef="let row">
-          {{
-            column.columnDef.indexOf("time") >= 0
-              ? (column.cell(row) | date : "dd/MM/yyyy || hh:mm a")
-              : column.cell(row)
-          }}
+          {{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
         </td>
       </ng-container>
       <ng-container matColumnDef="actions" stickyEnd>
@@ -29,39 +23,31 @@
             <mat-icon aria-label="new item">add</mat-icon>
           </button>
           <button *ngIf="toggleShift" mat-stroked-button color="warn" (click)="HandleNew()">تغيير الشيفت</button>
-          <button mat-icon-button color="basic" (click)="collapseAllRows()" *ngIf="canExpand"
-            matTooltip="اغلاق الكل">
+          <button mat-icon-button color="basic" (click)="collapseAllRows()" *ngIf="canExpand" matTooltip="اغلاق الكل">
             <mat-icon aria-label="new item">&#8722;</mat-icon>
           </button>
         </th>
         <td mat-cell *matCellDef="let row">
-          <button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic"
-            aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
+          <button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
             <mat-icon>paid</mat-icon>
           </button>
-          <button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row"
-            (click)="handleView(row, $event)">
+          <button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row, $event)">
             <mat-icon>info</mat-icon>
           </button>
-          <button *ngIf="canNavigateToDetails" mat-icon-button matTooltip="view details" color="basic"
-            aria-label="view selected row" (click)="navigate(row, $event)">
+          <button *ngIf="canNavigateToDetails" mat-icon-button matTooltip="view details" color="basic" aria-label="view selected row" (click)="navigate(row, $event)">
             <mat-icon>info</mat-icon>
           </button>
-          <button *ngIf="canEdit" mat-icon-button matTooltip="تعديل" color="basic" aria-label="Edit selected row"
-            (click)="handleEdit(row, $event)">
+          <button *ngIf="canEdit" mat-icon-button matTooltip="تعديل" color="basic" aria-label="Edit selected row" (click)="handleEdit(row, $event)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row"
-            (click)="handleDelete(row, $event)">
+          <button *ngIf="canDelete" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDelete(row, $event)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button *ngIf="row.filePath" mat-icon-button matTooltip="open" color="basic" aria-label="view certificate"
-            (click)="handleViewPdf(row, $event)">
+          <button *ngIf="row.filePath" mat-icon-button matTooltip="open" color="basic" aria-label="view certificate" (click)="handleViewPdf(row, $event)">
             <mat-icon>open_in_new</mat-icon>
           </button>
-          <button mat-icon-button color="basic" *ngIf="row.noteClients && row.noteClients.length > 0"
-            [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
-            <mat-icon>{{ (isRowExpanded(row.id) ) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+          <button mat-icon-button color="basic" *ngIf="row.noteClients && row.noteClients.length > 0" [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
+            <mat-icon>{{ isRowExpanded(row.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
           </button>
         </td>
       </ng-container>
@@ -69,8 +55,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <!-- end of header row definition -->
       <!-- Row Data -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row"
-        [cdkDetailRowTpl]="tpl"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl"></tr>
       <!-- Ends of Row Data -->
       <!-- No Data Found Row Definition -->
       <tr class="mat-row" *matNoDataRow>
@@ -80,9 +65,7 @@
           </td>
         </ng-container>
         <ng-container *ngIf="!database.isLoading">
-          <td class="mat-cell text-center" [colSpan]="displayedColumns.length">
-            لا يوجد بيانات
-          </td>
+          <td class="mat-cell text-center" [colSpan]="displayedColumns.length">لا يوجد بيانات</td>
         </ng-container>
       </tr>
       <!-- End of No Data found -->
@@ -99,25 +82,23 @@
     showFirstLastButtons
     color="warn"
   ></mat-paginator>
-
 </section>
 <ng-template #tpl let-row>
   <td [attr.colspan]="displayedColumns.length" *ngIf="row.noteClients && row.noteClients.length > 0">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>الإسم</th>
-          <th>الكميه</th>
-        </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngIf="row.noteClients && row.noteClients.length > 0">
-          <tr *ngFor="let noteClient of row.noteClients" class="expanded-table">
-            <td>{{ noteClient?.name  }}</td>
-            <td>{{ noteClient?.quantity}}</td>
-          </tr>
-        </ng-container>
-      </tbody>
+    <table mat-table [dataSource]="row.noteClients" class="table table-striped shadow-sm">
+      <ng-container matColumnDef="name" [sticky]="true">
+        <th mat-header-cell *matHeaderCellDef style="width: 800px;">الإسم</th>
+        <td mat-cell *matCellDef="let noteClient" style="width: 800px;">{{ noteClient?.name }}</td>
+        <td mat-footer-cell *matFooterCellDef style="width: 800px;">الأجمالي</td>
+      </ng-container>
+      <ng-container matColumnDef="quantity" [sticky]="true">
+        <th mat-header-cell *matHeaderCellDef>الكمية</th>
+        <td mat-cell *matCellDef="let noteClient">{{ noteClient?.quantity }}</td>
+        <td mat-footer-cell *matFooterCellDef>{{getTotal(row.noteClients)}}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['name', 'quantity']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['name', 'quantity']"></tr>
+      <tr mat-footer-row *matFooterRowDef="['name', 'quantity']" class="border-top border-bottom border-danger"></tr>
     </table>
   </td>
 </ng-template>

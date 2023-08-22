@@ -1,4 +1,4 @@
-import { map, Observable, of } from "rxjs";
+import { map, Observable, of } from 'rxjs';
 import { AbstractControl, ValidationErrors, AsyncValidatorFn, ValidatorFn, FormGroup, FormArray } from '@angular/forms';
 import { OrderService } from '../../services/orders.service';
 import { Status } from '../../Enums/status';
@@ -9,9 +9,9 @@ export function ValidatePaid(orderService: OrderService, id: number): AsyncValid
   };
 }
 
-export function validateQuantityAsync(isUpdateMode: boolean, previousStatus: Status | null): AsyncValidatorFn {
+export function validateQuantityAsync(previousStatus: Status | null): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    if (isUpdateMode && previousStatus && (previousStatus === Status.استلم || previousStatus === Status.جاهز)) return of(null);
+    if (previousStatus && (previousStatus === Status.استلم || previousStatus === Status.جاهز)) return of(null);
     const formGroup = control.parent as FormGroup;
     if (!formGroup) return of(null);
     const isReceivedStatus = formGroup.controls['orderStatus'].value === Status.استلم;
@@ -23,7 +23,10 @@ export function validateQuantityAsync(isUpdateMode: boolean, previousStatus: Sta
         availableQuantity: availableNoteQuantity,
       },
     };
-    if (isNote && isReceivedStatus && control.value > availableNoteQuantity) return of(exceedQuantityError);
+    if (isNote && isReceivedStatus && control.value > availableNoteQuantity) {
+      formGroup.get('quantity')?.markAsTouched();
+      return of(exceedQuantityError);
+    }
     return of(null);
   };
 }

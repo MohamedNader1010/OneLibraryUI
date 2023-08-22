@@ -42,6 +42,8 @@ import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
 import { Response } from "../../interfaces/Iresponse";
+import { Note } from '../../../note/interfaces/Inote';
+import { NoteClient } from '../../../note/interfaces/InoteClient';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -307,4 +309,9 @@ export class TableComponent implements OnInit, OnDestroy {
   ngOnDestroy = () => {
     this.subscriptions.forEach((s) => s.unsubscribe());
   };
+
+  /** Gets the total quantities of all noteclients. */
+  getTotal(noteClients: NoteClient[]): number {
+    return noteClients.map((t) => t.quantity).reduce((acc, value) => acc + value, 0);
+  }
 }

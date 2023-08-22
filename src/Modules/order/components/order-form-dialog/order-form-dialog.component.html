@@ -24,7 +24,7 @@
         </ng-template>
         <autocomplete *ngIf="!data; else client" class="col-6" [label]="'shared.client' | translate"
           [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)" [clear]="clearAutocomplete"
-          [selectedValue]="clientId.value" [loading]="clientsLoading">
+          [selectedValue]="clientId.value" [loading]="clientsLoading" #clientAutocomplete>
         </autocomplete>
         <ng-template #client>
           <mat-form-field class="col-6" color="warn">
@@ -95,10 +95,9 @@
                   <mat-label>{{ 'quantity.label' | translate }}</mat-label>
                   <input type="number" matInput formControlName="quantity" [readonly]="isServiceSelected(i) || !!data"
                     min="0" />
-                    <mat-error *ngIf="detail.get('quantity')?.hasError('exceedQuantity')">
-                      الكمية الحالية {{detail.get('quantity')?.errors?.['exceedQuantity'].availableQuantity}} فقط.
+                    <mat-error *ngIf="getOrderDetailQuantity(i).hasError('exceedQuantity')">
+                      الكمية الحالية {{getOrderDetailQuantity(i).errors?.['exceedQuantity'].availableQuantity}} فقط.
                     </mat-error>
-                    <!-- "" -->
                 </mat-form-field>
                 <mat-form-field [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
                   <mat-label>{{ 'shared.price' | translate }}</mat-label>

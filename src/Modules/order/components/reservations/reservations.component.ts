@@ -79,34 +79,34 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 	}
 	clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 
-	handlePrint(element: ReservedOrderDetails, noteId: number, data: OrderDetail[]) {
+	handlePrint(reservedOrderDetails: ReservedOrderDetails, noteId: number, data: OrderDetail[]) {
 		if (data.length) {
 			data.map((od) => (od.orderStatus = Status.جاهز));
 			this.subscriptions.push(
-				this._order.updateRangeOrderDetailsStatus(data).subscribe({
-					next: (res) => {
-						this._order.DialogData = res.body;
-						this.toastr.success(res.message);
-					},
-					error: (e) => {
-						let res: Response = e.error ?? e;
-						this.toastr.error(res.message);
-					},
-					complete: () => {
-						element.reservedNotes.splice(
-							element.reservedNotes.findIndex((r) => r.noteId === noteId),
-							1
-						);
-						if (element.reservedNotes.length) this.database.dataChange.value.body[this.database.dataChange.value.body.indexOf(element)] = element;
-						else
-							this.database.dataChange.value.body.splice(
-								this.database.dataChange.value.body.findIndex((x: any) => x.id === element.id),
-								1
-							);
-						this.refreshTable();
-					},
-				})
-			);
+        this._order.markOrderDetailsAsReady(data).subscribe({
+          next: (res) => {
+            this._order.DialogData = res.body;
+            this.toastr.success(res.message);
+          },
+          error: (e) => {
+            let res: Response = e.error ?? e;
+            this.toastr.error(res.message);
+          },
+          complete: () => {
+            reservedOrderDetails.reservedNotes.splice(
+              reservedOrderDetails.reservedNotes.findIndex((r) => r.noteId === noteId),
+              1,
+            );
+            if (reservedOrderDetails.reservedNotes.length) this.database.dataChange.value.body[this.database.dataChange.value.body.indexOf(reservedOrderDetails)] = reservedOrderDetails;
+            else
+              this.database.dataChange.value.body.splice(
+                this.database.dataChange.value.body.findIndex((x: any) => x.id === reservedOrderDetails.id),
+                1,
+              );
+            this.refreshTable();
+          },
+        }),
+      );
 		}
 	}
 	private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);

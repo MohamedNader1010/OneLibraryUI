@@ -29,8 +29,9 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
   styleUrls: ['./order-form-dialog.component.css'],
 })
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+  //#region variables
   availableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز, Status.مرتجع, Status.هالك];
-  newOrderAvailableStatus: Status[] = [Status.استلم, Status.حجز];
+  newOrderAvailableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز];
   StatusInstance: any = Status;
   ServicePricesForClientTypesDataSource: PricedServices[] = [];
   NotesDataSource: NoteOnly[] = [];
@@ -40,6 +41,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   clientsLoading: boolean = false;
   serviceLoading: boolean = false;
   notesLoading: boolean = false;
+  //#endregion
 
   constructor(
     matDialogRef: MatDialogRef<OrderFormDialogComponent>,
@@ -58,6 +60,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     this.Form = this.createFormItem('init');
   }
 
+  //#region getters and setters
   get clientId(): FormControl {
     return this.Form.get('clientId') as FormControl;
   }
@@ -85,7 +88,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   get discountPercent(): FormControl {
     return this.Form.get('discountPercent') as FormControl;
   }
-
   getOrderDetailId = (index: number): FormControl => this.OrderDetails.at(index).get('id') as FormControl;
   getNoteOrService = (index: number): FormControl => this.OrderDetails.at(index)?.get('noteOrService') as FormControl;
   getOrderDetailServiceId = (index: number): FormControl => this.OrderDetails.at(index).get('serviceId') as FormControl;
@@ -128,6 +130,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   };
   setNoteId = (index: number, data: any) => this.OrderDetails.at(index).get('noteId')?.setValue(data);
   setClientId = async (data: any) => (data === -1 ? await this.HandleNewClient() : this.clientId.setValue(data));
+  //#endregion
 
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
@@ -168,19 +171,20 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     this._order.GetById(this.data.id).subscribe((order) => {
       this.data = order.body;
       this.data.orderDetails.forEach((orderDetail: OrderDetail, index: number) => {
-        this.OrderDetails.push(this.createFormItem('detail', true, orderDetail.orderStatus));
+        this.OrderDetails.push(this.createFormItem('detail', orderDetail.orderStatus));
         this.getNoteOrService(index).setValue(orderDetail.noteId ? 'note' : 'service');
         if (orderDetail.noteId) {
           const availableNoteQuantity = this.getNoteById(orderDetail.noteId)?.quantity ?? 0;
           this.getOrderDetailNoteAvailableQuantity(index).setValue(availableNoteQuantity);
-          this.getOrderDetailQuantity(index).updateValueAndValidity();
+          this.subscribeOrderDetailStatusChanges(index);
         }
       });
       this.Form.patchValue(this.data);
     });
   };
 
-  createFormItem(type: string, isUpdateMode: boolean = false, previousStatus: Status | null = null): FormGroup {
+  //#region form items
+  createFormItem(type: string, previousStatus: Status | null = null): FormGroup {
     let formItem: FormGroup = this.fb.group({});
     switch (type) {
       case 'init':
@@ -206,7 +210,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
           id: [0],
           noteOrService: ['service'],
           price: [0],
-          quantity: [0, [Validators.required], [validateQuantityAsync(isUpdateMode, previousStatus)]],
+          quantity: [0, [Validators.required], [validateQuantityAsync(previousStatus)]],
           serviceId: [null],
           service: [''],
           noteId: [null],
@@ -239,7 +243,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       this.calculateTotalPrice();
     } else this.resetFormMoney();
   };
+  //#endregion
 
+  //#region value changes subscribtions
   subscribeTotalPriceChanges() {
     this.totalPrice.valueChanges.subscribe({
       next: (value) => {
@@ -252,6 +258,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       },
     });
   }
+
   subscribeDiscountChanges() {
     this.discount.valueChanges.subscribe({
       next: (discount) => {
@@ -289,7 +296,11 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   }
 
   subscribeOrderDetailStatusChanges(index: number) {
-    this.subscriptions.push(this.getOrderDetailStatus(index).valueChanges.subscribe(() => this.getOrderDetailQuantity(index).updateValueAndValidity()));
+    this.subscriptions.push(
+      this.getOrderDetailStatus(index)
+        .valueChanges.pipe(startWith(this.getOrderDetailStatus(index).value))
+        .subscribe(() => this.getOrderDetailQuantity(index).updateValueAndValidity()),
+    );
   }
 
   subscribeNoteOrServiceChanges(index: number) {
@@ -384,14 +395,16 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       this.getOrderDetailNoteId(index).valueChanges.subscribe({
         next: (id) => {
           let notePrice = this.getNoteById(id)?.finalPrice ?? 0;
-          this.getOrderDetailPrice(index).setValue(notePrice, { onlySelf: true });
+          this.getOrderDetailNoteAvailableQuantity(index).setValue(this.getNoteById(id)?.quantity);
+          this.getOrderDetailQuantity(index).updateValueAndValidity();
+          this.getOrderDetailPrice(index).setValue(notePrice);
           this.calculateTotalPrice();
         },
         error: (e) => {
           this.isSubmitting = false;
           let res: Response = e.error ?? e;
           this.toastr.error(res.message);
-          this.getOrderDetailPrice(index).setValue(0, { onlySelf: true });
+          this.getOrderDetailPrice(index).setValue(0);
           this.getOrderDetailNoteAvailableQuantity(index).setValue(0);
           this.getOrderDetailQuantity(index).updateValueAndValidity();
           this.calculateTotalPrice();
@@ -399,6 +412,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       }),
     );
   }
+  //#endregion
 
   setServicePriceForClientType(index: number) {
     const serviceId = this.getOrderDetailServiceId(index).value;
@@ -477,14 +491,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     });
   }
 
-  handleSubmit() {
-    if (this.Form.valid) {
-      this.isSubmitting = true;
-      if (this.data) this.subscriptions.push(this._order.updateOrderDetailsStatus(this.Form.value).subscribe(this.addAndUpdateObserver()));
-      else this.add(this.Form.value);
-    }
-  }
-
   handleViewPdf = (index: number, $event: any) => {
     $event.stopPropagation();
     const filePath = this.getOrderDetailFilePath(index);
@@ -494,4 +500,12 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       window.open(`${environment.host}${trimmedPath}`, '_blank');
     }
   };
+
+  handleSubmit() {
+    if (this.Form.valid) {
+      this.isSubmitting = true;
+      if (this.data) this.subscriptions.push(this._order.updateOrderDetailsStatus(this.Form.value).subscribe(this.addAndUpdateObserver()));
+      else this.add(this.Form.value);
+    }
+  }
 }

@@ -31,16 +31,12 @@
 								<mat-expansion-panel *ngFor="let note of element.reservedNotes">
 									<mat-expansion-panel-header>
 										<mat-panel-title>
-											<!-- <mat-checkbox [checked]="allComplete" color="warn" [indeterminate]="someComplete()" (change)="setAll($event.checked)"> -->
 											أسم المذكرة : {{ note.note }}
-											<!-- </mat-checkbox> -->
 										</mat-panel-title>
 										<mat-panel-description> أجمالي الكمية المحجوزة :{{ note.totalQuantity }} </mat-panel-description>
 									</mat-expansion-panel-header>
 									<p *ngFor="let orderDetail of note.orderDetails">
-										<!-- <mat-checkbox [(ngModel)]="orderDetail.completed" color="warn" (ngModelChange)="updateAllComplete()"> -->
 										رقم الطلب : {{ orderDetail.orderId }} - الكمية : {{ orderDetail.quantity }}
-										<!-- </mat-checkbox> -->
 									</p>
 									<mat-action-row>
 										<button mat-icon-button matTooltip="edit" color="basic" aria-label="print selected note" (click)="handlePrint(element, note.noteId, note.orderDetails)">
