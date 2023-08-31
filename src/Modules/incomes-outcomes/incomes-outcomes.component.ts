@@ -16,81 +16,82 @@ import { IncomeOutcomeSource } from "../../Persistents/enums/IncomeOutcomeSource
 import { IncomeOutcome } from './interfaces/Iincome-outcome';
 
 @Component({
-	selector: 'app-Incomes-outcomes',
-	templateUrl: './Incomes-outcomes.component.html',
-	styleUrls: ['./Incomes-outcomes.component.css'],
+  selector: 'app-Incomes-outcomes',
+  templateUrl: './Incomes-outcomes.component.html',
+  styleUrls: ['./Incomes-outcomes.component.css'],
 })
 export class IncomesOutcomesComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
-	loading!: boolean;
-	formName = FormDialogNames.incomeOutcomeFormDialogComponent;
-	componentName = ComponentsName.incomeOutcome;
-	currentShift!: Shift | null;
+  formName = FormDialogNames.incomeOutcomeFormDialogComponent;
+  componentName = ComponentsName.incomeOutcome;
+  currentShift!: Shift | null;
 
-	constructor(httpClient: HttpClient, toastr: ToastrService, public override database: IncomesOutcomesService, private translate: TranslateService, public dialog: MatDialog,private shiftService: ShiftService) {
-		super(httpClient, toastr, database);
-	}
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
+  constructor(
+    httpClient: HttpClient,
+    toastrService: ToastrService,
+    override databaseService: IncomesOutcomesService,
+    private _translateService: TranslateService,
+    public dialog: MatDialog,
+    private _shiftService: ShiftService,
+  ) {
+    super(httpClient, toastrService, databaseService);
+  }
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
     this.getCurrentShift();
-	}
-
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: IncomeOutcome) => element.id,
-			},
-			{
-				columnDef: 'amount',
-				header: 'المبلغ',
-				cell: (element: IncomeOutcome) => element.amount,
-			},
-			{
-				columnDef: 'status',
-				header: 'الحالة',
-				cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
-			},
-			{
-				columnDef: 'source',
-				header: 'المصدر',
-				cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
-			},
-			{
-				columnDef: 'comment',
-				header: 'ملاحظات',
-				cell: (element: IncomeOutcome) => element.comment,
-			},
-			{
-				columnDef: 'createdBy',
-				header: 'التسجيل بواسطة',
-				cell: (element: IncomeOutcome) => element.createdBy,
-			},
-			{
-				columnDef: 'time-createdOn',
-				header: 'وقت التسجيل',
-				cell: (element: IncomeOutcome) => element.createdOn,
-			},
-		];
-	}
-
-  getCurrentShift(){
-		this.shiftService.GetCurrentShift().subscribe({
-			next:(response) => {
-				this.currentShift = response.body}
-		});
   }
 
-	public loadData() {
-		this.database.getAllIncomesOutcomes();
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
+        cell: (element: IncomeOutcome) => element.id,
+      },
+      {
+        columnDef: 'amount',
+        header: 'المبلغ',
+        cell: (element: IncomeOutcome) => element.amount,
+      },
+      {
+        columnDef: 'status',
+        header: 'الحالة',
+        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+      },
+      {
+        columnDef: 'source',
+        header: 'المصدر',
+        cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+      },
+      {
+        columnDef: 'comment',
+        header: 'ملاحظات',
+        cell: (element: IncomeOutcome) => element.comment,
+      },
+      {
+        columnDef: 'createdBy',
+        header: 'التسجيل بواسطة',
+        cell: (element: IncomeOutcome) => element.createdBy,
+      },
+      {
+        columnDef: 'time-createdOn',
+        header: 'وقت التسجيل',
+        cell: (element: IncomeOutcome) => element.createdOn,
+      },
+    ];
+  }
 
+  getCurrentShift() {
+    this._shiftService.GetCurrentShift().subscribe({
+      next: (response) => {
+        this.currentShift = response.body;
+      },
+    });
+  }
 
-	override handleNewRow = (message: string) => {
-		this.database.dataChange.value.body.push(this.database.DialogData);
-		this.toastr.success(message);
+  override handleNewRow = (message: string) => {
+    this.databaseService.dataChange.value.body.push(this.databaseService.DialogData);
+    this.toastrService.success(message);
     this.getCurrentShift();
-	};
+  };
 }

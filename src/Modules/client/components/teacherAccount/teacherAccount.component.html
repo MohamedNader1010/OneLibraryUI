@@ -47,12 +47,12 @@
 				(click)="expandedElement = expandedElement === element ? null : element"></tr>
 			<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 			<tr class="mat-row" *matNoDataRow>
-				<ng-container *ngIf="database.isLoading">
+				<ng-container *ngIf="databaseService.isLoading">
 					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">
 						<mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
 					</td>
 				</ng-container>
-				<ng-container *ngIf="!database.isLoading">
+				<ng-container *ngIf="!databaseService.isLoading">
 					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
 				</ng-container>
 			</tr>

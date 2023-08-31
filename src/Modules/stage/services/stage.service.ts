@@ -7,7 +7,7 @@ import {Stage} from '../interFaces/Istage';
   providedIn: 'root',
 })
 export class StageService {
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
   uri: string = `${environment.apiUrl}Stage/`;
-  getAll = () => this.http.get<Stage[]>(`${this.uri}`);
+  getAll = () => this._http.get<Stage[]>(`${this.uri}`);
 }

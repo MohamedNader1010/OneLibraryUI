@@ -14,7 +14,7 @@
     <form [formGroup]="Form" class="d-flex flex-column">
       <div class="row">
         <autocomplete *ngIf="!data; else clientType" class="col-5" [label]="'shared.clientType' | translate"
-          [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)">
+          [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)" [loading]="clientTypeLoading">
         </autocomplete>
         <ng-template #clientType>
           <mat-form-field class="col-5" color="warn">

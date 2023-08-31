@@ -11,65 +11,59 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
 
 @Component({
-	selector: 'app-materialTracking',
-	templateUrl: './materialTracking.component.html',
-	styleUrls: ['./materialTracking.component.css'],
+  selector: 'app-materialTracking',
+  templateUrl: './materialTracking.component.html',
+  styleUrls: ['./materialTracking.component.css'],
 })
 export class materialTrackingComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
-	loading!: boolean;
-	formName = FormDialogNames.materialTrackingFormDialogComponent;
-	componentName = ComponentsName.materialTracking;
+  formName = FormDialogNames.materialTrackingFormDialogComponent;
+  componentName = ComponentsName.materialTracking;
 
-	constructor(httpClient: HttpClient, public override database: MaterialTrackingService, private translate: TranslateService, toastr: ToastrService, public dialog: MatDialog) {
-		super(httpClient, toastr, database);
-	}
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
-	}
+  constructor(httpClient: HttpClient, override databaseService: MaterialTrackingService, private _translateService: TranslateService, toastrService: ToastrService, public dialog: MatDialog) {
+    super(httpClient, toastrService, databaseService);
+  }
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
+  }
 
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: MaterialTracking) => element.id,
-			},
-			{
-				columnDef: 'material',
-				header: 'أسم الخامة',
-				cell: (element: MaterialTracking) => element.material,
-			},
-			{
-				columnDef: 'quantity',
-				header: 'الكمية',
-				cell: (element: MaterialTracking) => element.quantity,
-			},
-			{
-				columnDef: 'status',
-				header: 'الحالة',
-				cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
-			},
-			{
-				columnDef: 'comment',
-				header: 'ملاحظات',
-				cell: (element: MaterialTracking) => element.comment,
-			},
-			{
-				columnDef: 'createdBy',
-				header: 'التسجيل بواسطة',
-				cell: (element: MaterialTracking) => element.createdBy,
-			},
-			{
-				columnDef: 'time-createdOn',
-				header: 'وقت التسجيل',
-				cell: (element: MaterialTracking) => element.createdOn,
-			},
-		];
-	}
-
-	public loadData() {
-		this.database.getAllMaterialTracking();
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
+        cell: (element: MaterialTracking) => element.id,
+      },
+      {
+        columnDef: 'material',
+        header: 'أسم الخامة',
+        cell: (element: MaterialTracking) => element.material,
+      },
+      {
+        columnDef: 'quantity',
+        header: 'الكمية',
+        cell: (element: MaterialTracking) => element.quantity,
+      },
+      {
+        columnDef: 'status',
+        header: 'الحالة',
+        cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+      },
+      {
+        columnDef: 'comment',
+        header: 'ملاحظات',
+        cell: (element: MaterialTracking) => element.comment,
+      },
+      {
+        columnDef: 'createdBy',
+        header: 'التسجيل بواسطة',
+        cell: (element: MaterialTracking) => element.createdBy,
+      },
+      {
+        columnDef: 'time-createdOn',
+        header: 'وقت التسجيل',
+        cell: (element: MaterialTracking) => element.createdOn,
+      },
+    ];
+  }
 }

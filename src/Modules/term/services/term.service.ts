@@ -7,7 +7,7 @@ import {Term} from '../interFaces/Iterm';
   providedIn: 'root',
 })
 export class TermService {
-  constructor(private http: HttpClient) {}
+  constructor(private _http: HttpClient) {}
   uri: string = `${environment.apiUrl}Term/`;
-  getAll = () => this.http.get<Term[]>(`${this.uri}`);
+  getAll = () => this._http.get<Term[]>(`${this.uri}`);
 }

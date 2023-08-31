@@ -1,14 +1,13 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
-import { environment } from "src/environments/environment";
-import { Response } from "../interfaces/Iresponse";
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Response } from '../interfaces/Iresponse';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DashboardService {
-  constructor(private _http: HttpClient, private _toastr: ToastrService) {}
+  constructor(private _http: HttpClient) {}
 
   getDashboardData() {
     const uri: string = `${environment.apiUrl}Dashboard`;

@@ -2,7 +2,7 @@
 	<h2 class="w-100 text-center mt-3">تغيير قيمة الرصيد الافتتاحي للبنك</h2>
 	<mat-dialog-content>
 		<section class="d-flex">
-			<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
+			<form [formGroup]="Form" class="d-flex flex-column w-100">
 				<div class="row">
 					<div class="col">
 						<mat-form-field class="w-100" color="warn">
@@ -12,11 +12,13 @@
 						</mat-form-field>
 					</div>
 				</div>
-				<div class="my-2 d-flex flex-row-reverse">
-					<button mat-flat-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
-					<button type="button" mat-stroked-button color="basic" (click)="onNoClick()">رجوع</button>
-				</div>
 			</form>
 		</section>
 	</mat-dialog-content>
+  <div mat-dialog-actions class="d-flex justify-content-end">
+    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+    </button>
+  </div>
 </div>

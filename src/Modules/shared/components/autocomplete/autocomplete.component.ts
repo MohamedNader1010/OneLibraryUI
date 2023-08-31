@@ -1,14 +1,6 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnDestroy,
-  Output,
-  EventEmitter,
-  OnChanges,
-} from "@angular/core";
-import { FormControl, Validators } from "@angular/forms";
-import { BehaviorSubject, Observable, Subscription, debounceTime, map, startWith } from 'rxjs';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, OnChanges } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable, Subject, debounceTime, map, startWith, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'autocomplete',
@@ -16,13 +8,12 @@ import { BehaviorSubject, Observable, Subscription, debounceTime, map, startWith
   styleUrls: ['./autocomplete.component.css'],
 })
 export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
-  subscriptions: Subscription[] = [];
+  destroy$ = new Subject<void>();
   @Input() label: string = '';
   @Input() desplayTextKey: string = 'name';
   @Input() clear: BehaviorSubject<number> = new BehaviorSubject(0);
   @Input() loading: boolean = false;
   @Input() placeholder: string = '';
-  @Input() formControlName: string = '';
   @Input() dataSource: any[] = [];
   @Input() selectedValue!: any;
   @Output() selectedId = new EventEmitter<number>();
@@ -49,14 +40,13 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
         }
         return this.dataSource.slice();
       }),
+      takeUntil(this.destroy$),
     );
-    this.subscriptions.push(
-      this.clear.subscribe({
-        next: () => {
-          this.nameControl.reset();
-        },
-      }),
-    );
+    this.clear.pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => {
+        this.nameControl.reset();
+      },
+    });
   }
   ngOnChanges(changes: any) {
     if (changes.dataSource) this.nameControl.reset();
@@ -80,9 +70,13 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
     });
     return filteredData;
   };
+
   displayFn = (item: any): string => (item ? item[this.desplayTextKey] : '');
 
-  getItemId = (item: any) => this.selectedId.emit(item ? item.id : null);
+  emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);
 
-  ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

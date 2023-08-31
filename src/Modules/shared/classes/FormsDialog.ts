@@ -2,29 +2,35 @@ import { Injectable } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenericService } from '../services/genericCRUD.service';
-import { Observer, Subscription } from 'rxjs';
+import { Observer, Subject, takeUntil } from 'rxjs';
 import { Response } from '../interfaces/Iresponse';
 import { ToastrService } from 'ngx-toastr';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 @Injectable()
 export class FormsDialogCommonFunctionality {
-  subscriptions: Subscription[] = [];
+  destroy$ = new Subject<void>();
   Form!: FormGroup;
   isSubmitting: boolean = false;
-  constructor(public matDialogRef: MatDialogRef<any>, public translate: TranslateService, public service: GenericService<any>, public toastr: ToastrService) {}
+  constructor(public matDialogRef: MatDialogRef<any>, public translateService: TranslateService, public databaseService: GenericService<any>, public toastrService: ToastrService) {
+    this.destroy$.subscribe((v) => console.log(v, 'des'));
+  }
+
+  get id(): FormControl {
+    return this.Form.get('id') as FormControl;
+  }
 
   onNoClick = () => this.matDialogRef.close();
 
   addAndUpdateObserver(): Observer<Response> {
     return {
       next: (res) => {
-        this.service.DialogData = res.body;
+        this.databaseService.DialogData = res.body;
         this.matDialogRef.close({ data: res });
       },
       error: (e) => {
         this.isSubmitting = false;
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this.toastrService.error(res.message);
       },
       complete: () => {
         this.isSubmitting = false;
@@ -32,9 +38,21 @@ export class FormsDialogCommonFunctionality {
     };
   }
 
-  public add = (values: any) => this.subscriptions.push(this.service.add(values).subscribe(this.addAndUpdateObserver()));
+  public add = (values: any) => this.databaseService.add(values).pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateObserver());
 
-  public update = (id: number | string, values: any) => this.subscriptions.push(this.service.update(id, values).subscribe(this.addAndUpdateObserver()));
+  public update = (id: number | string, values: any) => this.databaseService.update(id, values).pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateObserver());
 
-  ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
+  handleSubmit() {
+    if (this.Form.valid) {
+      const id = this.id?.value;
+      this.isSubmitting = true;
+      if (id) this.update(id, this.Form.value);
+      else this.add(this.Form.value);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

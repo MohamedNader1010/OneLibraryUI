@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject, pairwise } from 'rxjs';
+import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject, pairwise, takeUntil } from 'rxjs';
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
 import { ClientService } from 'src/Modules/client/services/client.service';
@@ -37,25 +37,23 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   formData: FormData = new FormData();
   clientsLoading: boolean = false;
   serviceLoading: boolean = false;
+  clientTypeLoading = false;
 
   constructor(
-    private _note: NoteService,
-    private fb: FormBuilder,
-    private _client: ClientService,
-    private _clientType: ClientTypeService,
-    private _servicePricePerClientType: ServicePricePerClientTypeService,
-    toastr: ToastrService,
+    private _databaseService: NoteService,
+    private _fb: FormBuilder,
+    private _clientService: ClientService,
+    private _clientTypeService: ClientTypeService,
+    private _servicePricePerClientTypeService: ServicePricePerClientTypeService,
+    toastrService: ToastrService,
     matDialogRef: MatDialogRef<NoteFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Note,
-    translate: TranslateService,
+    translateService: TranslateService,
   ) {
-    super(matDialogRef, translate, _note, toastr);
+    super(matDialogRef, translateService, _databaseService, toastrService);
     this.Form = this.createFormItem('init');
   }
 
-  get id(): FormControl {
-    return this.Form.get('id') as FormControl;
-  }
   get noteComponents(): FormArray {
     return this.Form.get('noteComponents') as FormArray;
   }
@@ -119,10 +117,10 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   private forkJoins() {
-    let observables = [this._note.getStages(), this._note.getTerms(), this._clientType.getAll()];
+    let observables = [this._databaseService.getStages(), this._databaseService.getTerms(), this._clientTypeService.getAll()];
     return forkJoin(observables)
       .pipe(
-        tap(() => (this.clientsLoading = this.serviceLoading = true)),
+        tap(() => (this.clientTypeLoading = this.clientsLoading = this.serviceLoading = true)),
         catchError((err) => of(err)),
         map(([stagesResponse, termsResponse, clientTypeResponse]) => {
           return {
@@ -131,6 +129,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
             clientsType: clientTypeResponse,
           };
         }),
+        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {
@@ -145,9 +144,10 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         error: (e) => {
           this.isSubmitting = false;
           let res: Response = e.error ?? e;
-          this.toastr.error(res.message);
+          this.toastrService.error(res.message);
         },
         complete: () => {
+          this.clientTypeLoading = false;
           if (this.data) this.patchData();
           this.subscribeClientTypeChange();
           this.subscribeFormMoneyChanges();
@@ -161,18 +161,18 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   };
 
   createFormItem(type: string): FormGroup {
-    let formItem: FormGroup = this.fb.group({});
+    let formItem: FormGroup = this._fb.group({});
     switch (type) {
       case 'init':
-        formItem = this.fb.group(
+        formItem = this._fb.group(
           {
-            id: [0],
+            id: [null],
             name: ['', [Validators.required]],
             termId: [null],
             stageId: [null],
             clientTypeId: [null],
             clientId: [null, [Validators.required]],
-            noteComponents: this.fb.array([], Validators.minLength(1)),
+            noteComponents: this._fb.array([], Validators.minLength(1)),
             quantity: [0],
             originalPrice: [0],
             actualPrice: [0],
@@ -186,8 +186,8 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         );
         break;
       case 'noteComponent':
-        formItem = this.fb.group({
-          id: [0],
+        formItem = this._fb.group({
+          id: [null],
           noteId: [this.id.value],
           serviceId: [null, [Validators.required]],
           service: [''],
@@ -216,7 +216,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   };
 
   subscribeFormMoneyChanges() {
-    this.Form.valueChanges.pipe().subscribe(() => {
+    this.Form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       let finalPrice = (+this.actualPrice.value - +this.originalPrice.value).toFixed(2);
       this.earning.setValue(finalPrice, { emitEvent: false });
       this.finalPrice.setValue((+this.actualPrice.value + +this.teacherPrice.value).toFixed(2), { emitEvent: false });
@@ -224,49 +224,48 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   subscribeClientTypeChange() {
-    this.subscriptions.push(
-      this.clientTypeId.valueChanges
-        .pipe(
-          tap(() => {
-            this.clientsLoading = this.serviceLoading = true;
-          }),
-          startWith(this.clientTypeId.value),
-          filter((id: any) => !!id),
-          switchMap((id) => {
-            const getAllByType$ = this._client.getAllByType(id);
-            const getAllPriced$ = this._servicePricePerClientType.GetAllPricedWithOriginalPrices(id);
-            return forkJoin([getAllByType$, getAllPriced$]);
-          }),
-        )
-        .subscribe({
-          next: ([clientsResponse, servicesResponse]) => {
-            this.ClientsDataSource = clientsResponse.body;
-            this.clearAutocomplete.next(1);
-            this.ServicePricesForClientTypesDataSource = servicesResponse.body;
-            this.reloadServicesPrices();
-            this.calculateTotalActualPrice();
-            this.serviceLoading = this.clientsLoading = false;
-          },
-          error: ([clientError, serviceError]) => {
-            if (clientError) {
-              this.ClientsDataSource = [];
-              this.clientId.reset();
-              this.isSubmitting = false;
-              let res: Response = clientError.error ?? clientError;
-              this.toastr.error(res.message);
-            }
-            if (serviceError) {
-              this.ServicePricesForClientTypesDataSource = [];
-              this.noteComponents.value.forEach((noteComponent: NoteComponent, index: number) => {
-                this.getNoteComponentServiceId(index).reset();
-              });
-              this.isSubmitting = false;
-              let res: Response = serviceError.error ?? serviceError;
-              this.toastr.error(res.message);
-            }
-          },
+    this.clientTypeId.valueChanges
+      .pipe(
+        tap(() => {
+          this.clientsLoading = this.serviceLoading = true;
         }),
-    );
+        startWith(this.clientTypeId.value),
+        filter((id: any) => !!id),
+        switchMap((id) => {
+          const getAllByType$ = this._clientService.getAllByType(id);
+          const getAllPriced$ = this._servicePricePerClientTypeService.GetAllPricedWithOriginalPrices(id);
+          return forkJoin([getAllByType$, getAllPriced$]);
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: ([clientsResponse, servicesResponse]) => {
+          this.ClientsDataSource = clientsResponse.body;
+          this.clearAutocomplete.next(1);
+          this.ServicePricesForClientTypesDataSource = servicesResponse.body;
+          this.reloadServicesPrices();
+          this.calculateTotalActualPrice();
+          this.serviceLoading = this.clientsLoading = false;
+        },
+        error: ([clientError, serviceError]) => {
+          if (clientError) {
+            this.ClientsDataSource = [];
+            this.clientId.reset();
+            this.isSubmitting = false;
+            let res: Response = clientError.error ?? clientError;
+            this.toastrService.error(res.message);
+          }
+          if (serviceError) {
+            this.ServicePricesForClientTypesDataSource = [];
+            this.noteComponents.value.forEach((noteComponent: NoteComponent, index: number) => {
+              this.getNoteComponentServiceId(index).reset();
+            });
+            this.isSubmitting = false;
+            let res: Response = serviceError.error ?? serviceError;
+            this.toastrService.error(res.message);
+          }
+        },
+      });
   }
 
   reloadServicesPrices() {
@@ -303,20 +302,20 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   subscribeServiceChanges(index: number) {
-    this.subscriptions.push(
-      this.getNoteComponentServiceId(index).valueChanges.subscribe({
+    this.getNoteComponentServiceId(index)
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe({
         next: () => this.setServicePriceForClientType(index),
-      }),
-    );
+      });
   }
 
   subscribeQuantityChanges(index: number) {
-    this.subscriptions.push(
-      this.getNoteComponentQuantity(index).valueChanges.subscribe(() => {
+    this.getNoteComponentQuantity(index)
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
         this.calculateTotalActualPrice();
         this.calculateTotalOriginalPrice();
-      }),
-    );
+      });
   }
 
   resetFormMoney() {
@@ -332,31 +331,32 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
       return;
     }
     if (file.type !== 'application/pdf') {
-      this.toastr.error('يجب ان يكون صيغة الملف PDF');
+      this.toastrService.error('يجب ان يكون صيغة الملف PDF');
       this.fileName.setValue(null);
       return;
     }
     this.selectedFile = file;
   };
 
-  handleSubmit() {
+  override handleSubmit() {
     if (this.Form.valid) {
       this.isSubmitting = true;
       if (this.id.value) {
-        this.subscriptions.push(
-          this._note.deleteNoteComponents(this.deletedComponents).subscribe({
+        this._databaseService
+          .deleteNoteComponents(this.deletedComponents)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
             error: (e) => {
               this.isSubmitting = false;
               let res: Response = e.error ?? e;
-              this.toastr.error(res.message);
+              this.toastrService.error(res.message);
             },
             complete: () => {
-              this.subscriptions.push(this._note.updateFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver()));
+              this._databaseService.updateFormData(this.Form.value, this.selectedFile, 'pdf').pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateFormDataObserver());
             },
-          }),
-        );
+          });
       } else {
-        this.subscriptions.push(this._note.addFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver()));
+        this._databaseService.addFormData(this.Form.value, this.selectedFile, 'pdf').pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateFormDataObserver());
       }
     }
   }
@@ -367,14 +367,14 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
-          this.service.DialogData = (res.body as Response).body;
+          this.databaseService.DialogData = (res.body as Response).body;
           this.matDialogRef.close({ data: res.body as Response });
         }
       },
       error: (e) => {
         this.isSubmitting = false;
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this.toastrService.error(res.message);
       },
       complete: () => {
         this.isSubmitting = false;

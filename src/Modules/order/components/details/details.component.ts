@@ -1,48 +1,49 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {Subscription} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
-import {SendDataFromTableToMatDialoge} from './../../../shared/services/sendDataFromTableToMatDialoge.service';
-import {OrderService} from '../../services/orders.service';
-import {Order} from '../../interfaces/Iorder';
-import {Status} from '../../Enums/status';
+import { OrderService } from '../../services/orders.service';
+import { Order } from '../../interfaces/Iorder';
+import { Status } from '../../Enums/status';
 @Component({
-	selector: 'app-details',
-	templateUrl: './details.component.html',
-	styleUrls: ['./details.component.css'],
+  selector: 'app-details',
+  templateUrl: './details.component.html',
+  styleUrls: ['./details.component.css'],
 })
 export class DetailsComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
-	id!: number;
-	order!: Order;
+  id!: number;
+  order!: Order;
+  destroy$ = new Subject<void>();
 
-	constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _order: OrderService, public dialog: MatDialog) {}
-	ngOnInit(): void {
-		this._order.GetById(this.data.id).subscribe({
-      next: (res) => {
-        this.order = res.body;
-      },
-    });
-	}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _orderService: OrderService, public dialog: MatDialog) {}
+  ngOnInit(): void {
+    this._orderService
+      .GetById(this.data.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.order = res.body;
+        },
+      });
+  }
 
-	ngOnDestroy() {
-		this.subscriptions.forEach((s) => s.unsubscribe());
-	}
+  orderTrackingProgress(status: Status): number {
+    switch (status) {
+      case Status.غير_مكتمل:
+        return 0;
+      case Status.جاهز:
+        return 33;
+      case Status.استلم:
+        return 66;
+      case Status.اكتمل:
+        return 100;
+      default:
+        return 0;
+    }
+  }
 
-	orderTrackingProgress(status: Status): number {
-		switch (status) {
-			case Status.غير_مكتمل:
-				return 0;
-			case Status.اعداد:
-				return 25;
-			case Status.جاهز:
-				return 50;
-			case Status.استلم:
-				return 75;
-			case Status.اكتمل:
-				return 100;
-			default:
-				return 0;
-		}
-	}
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

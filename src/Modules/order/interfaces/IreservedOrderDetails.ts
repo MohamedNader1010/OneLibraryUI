@@ -5,8 +5,9 @@ export interface ReservedOrderDetails {
 	reservedNotes: ReservedNotes[];
 }
 export interface ReservedNotes {
-	totalQuantity: number;
-	noteId: number;
-	note: string;
-	orderDetails: OrderDetail[];
+  totalQuantity: number;
+  noteId: number;
+  note: string;
+  noteQuantity: number;
+  orderDetails: OrderDetail[];
 }

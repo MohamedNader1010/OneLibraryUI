@@ -8,10 +8,11 @@ import {NoteRoutingModule} from './routing/note-routing.module';
 import {NoteService} from './services/note.service';
 import {LoginGuard} from '../authentication.Module/guards/login.guard';
 import {NoteFormDialogComponent} from './components/note-form-dialog/note-form-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-	declarations: [NoteComponent, NoteFormDialogComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, NoteRoutingModule, SharedModule, MatComponentsModule],
-	providers: [LoginGuard, NoteService],
+  declarations: [NoteComponent, NoteFormDialogComponent],
+  imports: [TranslateModule, FormsModule, ReactiveFormsModule, CommonModule, NoteRoutingModule, SharedModule, MatComponentsModule],
+  providers: [LoginGuard, NoteService],
 })
 export class NoteModule {}

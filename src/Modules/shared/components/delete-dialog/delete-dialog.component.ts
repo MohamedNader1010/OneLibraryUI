@@ -17,15 +17,15 @@ export class DeleteDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<DeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData,
-    private serviceFactory: ServiceFactory,
-    private toastr: ToastrService,
-    private translate: TranslateService,
+    private _serviceFactoryService: ServiceFactory,
+    private _toastrService: ToastrService,
+    private _translateService: TranslateService,
   ) {}
   onNoClick(): void {
     this.dialogRef.close();
   }
   confirmDelete(): void {
-    const service: GenericService<any> = this.serviceFactory.getService(this.data.componentName);
+    const service: GenericService<any> = this._serviceFactoryService.getService(this.data.componentName);
     service.delete(this.data.row.id).subscribe({
       next: (res: Response) => {
         this.isSubmitting = true;
@@ -34,7 +34,7 @@ export class DeleteDialogComponent {
       error: (e: any) => {
         this.isSubmitting = false;
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this._toastrService.error(res.message);
       },
       complete: () => {
         this.isSubmitting = false;
@@ -42,6 +42,6 @@ export class DeleteDialogComponent {
     });
   }
   public getTranslatedString(key: any): string {
-    return this.translate.instant(`keys.${this.data.componentName}.` + key.toString());
+    return this._translateService.instant(`keys.${this.data.componentName}.` + key.toString());
   }
 }

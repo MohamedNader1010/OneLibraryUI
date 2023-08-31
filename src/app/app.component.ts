@@ -9,14 +9,14 @@ import {SessionTimeoutService} from './session-timeout.service';
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'OneLibraryUI';
-  constructor(translate: TranslateService, private sessionTimeoutService: SessionTimeoutService) {
-    translate.setDefaultLang('ar');
-    translate.use('ar');
+  constructor(translateService: TranslateService, private _sessionTimeoutService: SessionTimeoutService) {
+    translateService.setDefaultLang('ar');
+    translateService.use('ar');
   }
   ngOnInit(): void {
-    this.sessionTimeoutService.startTimeout();
+    this._sessionTimeoutService.startTimeout();
   }
   ngOnDestroy(): void {
-    this.sessionTimeoutService.stopTimeout();
+    this._sessionTimeoutService.stopTimeout();
   }
 }

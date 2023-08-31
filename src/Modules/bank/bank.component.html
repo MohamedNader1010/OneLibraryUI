@@ -46,13 +46,12 @@
   <div style="height: 87%;">
     <app-table
     class="h-100"
-      [loading]="loading"
       [tableColumns]="tableColumns"
       [formName]="formName"
       [componentName]="componentName"
       (onNew)="handleNewRow($event)"
       [canEdit]="false"
-      [database]="database">
+      [database]="databaseService">
     </app-table>
   </div>
 </div>

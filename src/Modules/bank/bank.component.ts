@@ -17,15 +17,13 @@ import { IncomeOutcome } from "../incomes-outcomes/interfaces/Iincome-outcome";
   styleUrls: ['./bank.component.css'],
 })
 export class BankComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-  tableColumns!: any[];
-  loading!: boolean;
   formName = FormDialogNames.bankFormDialogComponent;
   componentName = ComponentsName.Bank;
   bank!: Bank | null;
   defualtBankId: number = 3;
 
-  constructor(httpClient: HttpClient, toastr: ToastrService, public override database: BankService, private translate: TranslateService, public dialog: MatDialog) {
-    super(httpClient, toastr, database);
+  constructor(httpClient: HttpClient, toastrService: ToastrService, override databaseService: BankService, private _translateService: TranslateService, public dialog: MatDialog) {
+    super(httpClient, toastrService, databaseService);
   }
   isHovered = false;
 
@@ -44,7 +42,7 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   }
 
   getBankDtata() {
-    this.database.GetById(this.defualtBankId).subscribe({
+    this.databaseService.GetById(this.defualtBankId).subscribe({
       next: (response) => {
         this.bank = response.body;
       },
@@ -54,8 +52,8 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translate.instant('table.id'),
-        header: this.translate.instant('table.id.label'),
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
         cell: (element: IncomeOutcome) => element.id,
       },
       {
@@ -86,12 +84,12 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
     ];
   }
 
-  public loadData() {
-    this.database.getAllBankTransactions(this.defualtBankId);
+  override loadData() {
+    this.databaseService.getAllBankTransactions(this.defualtBankId);
   }
 
   override handleNewRow = (message: string) => {
     this.getBankDtata();
-    this.toastr.success(message);
+    this.toastrService.success(message);
   };
 }

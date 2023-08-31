@@ -1,144 +1,92 @@
 import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ServicePricePerClientTypeService} from '../../services/service-price-per-client-type.service';
-import {ServicesService} from 'src/Modules/service/services/services.service';
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {Subscription} from 'rxjs';
-import {ServicePricePerClientType} from '../../Interfaces/ServicePricePerClientType';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
-import {Service} from 'src/Modules/service/interfaces/Iservice';
-import {ToastrService} from 'ngx-toastr';
-import {Response} from 'src/Modules/shared/interfaces/Iresponse';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { ServicePricePerClientTypeService } from '../../services/service-price-per-client-type.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { forkJoin, map, takeUntil } from 'rxjs';
+import { ServicePricePerClientType } from '../../Interfaces/ServicePricePerClientType';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { Service } from 'src/Modules/service/interfaces/Iservice';
+import { ToastrService } from 'ngx-toastr';
+import { Response } from 'src/Modules/shared/interfaces/Iresponse';
+import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-	selector: 'app-service-type-per-client-form-dialog',
-	templateUrl: './service-type-per-client-form-dialog.component.html',
-	styleUrls: ['./service-type-per-client-form-dialog.component.css'],
+  selector: 'app-service-type-per-client-form-dialog',
+  templateUrl: './service-type-per-client-form-dialog.component.html',
+  styleUrls: ['./service-type-per-client-form-dialog.component.css'],
 })
-export class ServiceTypePerClientFormDialogComponent implements OnInit, OnDestroy {
-	subscriptions: Subscription[] = [];
-	public form: FormGroup;
-	isSubmitting: boolean = false;
-	public servicesDataSource: Service[] = [];
-	public clientsTypeDataSource: ClientType[] = [];
-	constructor(
-		private matDialogRef: MatDialogRef<ServiceTypePerClientFormDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: ServicePricePerClientType,
-		private _servicePricePerClientType: ServicePricePerClientTypeService,
-		private _service: ServicesService,
-		private fb: FormBuilder,
-		private _clientType: ClientTypeService,
-		private toastr: ToastrService
-	) {
-		this.form = fb.group({
-			id: [null],
-			price: [0, [Validators.required]],
-			serviceId: [null, [Validators.required]],
-			clientTypeId: [null, [Validators.required]],
-		});
-	}
+export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+  public servicesDataSource: Service[] = [];
+  public clientsTypeDataSource: ClientType[] = [];
+  clientTypeLoading = false;
+  serviceLoading = false;
 
-	ngOnInit(): void {
-		this.getAllClientTypes();
-	}
-	get id(): FormControl {
-		return this.form.get('id') as FormControl;
-	}
-	get price(): FormControl {
-		return this.form.get('price') as FormControl;
-	}
-	get serviceId(): FormControl {
-		return this.form.get('serviceId') as FormControl;
-	}
-	get clientTypeId(): FormControl {
-		return this.form.get('clientTypeId') as FormControl;
-	}
+  constructor(
+    matDialogRef: MatDialogRef<ServiceTypePerClientFormDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ServicePricePerClientType,
+    translateService: TranslateService,
+    toastrService: ToastrService,
+    private _serviceService: ServicesService,
+    private _clientTypeService: ClientTypeService,
+    databaseService: ServicePricePerClientTypeService,
+    fb: FormBuilder,
+  ) {
+    super(matDialogRef, translateService, databaseService, toastrService);
+    this.Form = fb.group({
+      id: [null],
+      price: [0, [Validators.required]],
+      serviceId: [null, [Validators.required]],
+      clientTypeId: [null, [Validators.required]],
+    });
+  }
 
-	getAllClientTypes() {
-		this.subscriptions.push(
-			this._clientType.getAll().subscribe({
-				next: (data) => {
-					this.clientsTypeDataSource = data.body;
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.getAllServices();
-				},
-			})
-		);
-	}
+  ngOnInit(): void {
+    this.forkJoins();
+  }
+  get price(): FormControl {
+    return this.Form.get('price') as FormControl;
+  }
+  get serviceId(): FormControl {
+    return this.Form.get('serviceId') as FormControl;
+  }
+  get clientTypeId(): FormControl {
+    return this.Form.get('clientTypeId') as FormControl;
+  }
 
-	getAllServices() {
-		this.subscriptions.push(
-			this._service.getAll().subscribe({
-				next: (data) => {
-					this.servicesDataSource = data.body;
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					if (this.data) this.form.patchValue(this.data);
-				},
-			})
-		);
-	}
+  forkJoins() {
+    this.clientTypeLoading = this.serviceLoading = true;
+    let observalbles = [this._serviceService.getAll(), this._clientTypeService.getAll()];
+    return forkJoin(observalbles)
+      .pipe(
+        // tap(() => (this.clientTypeLoading  = this.serviceLoading = true)),
+        map(([serviceResponse, clientTypeResponse]) => {
+          return {
+            services: serviceResponse,
+            clientsTypes: clientTypeResponse,
+          };
+        }),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: (response) => {
+          this.servicesDataSource = response.services.body;
+          this.clientsTypeDataSource = response.clientsTypes.body;
+        },
+        error: (e) => {
+          this.isSubmitting = false;
+          let res: Response = e.error ?? e;
+          this.toastrService.error(res.message);
+        },
+        complete: () => {
+          this.clientTypeLoading = this.serviceLoading = false;
+          if (this.data) this.Form.patchValue(this.data);
+        },
+      });
+  }
 
-	onNoClick = () => this.matDialogRef.close();
-
-	setServiceId = (data: any) => this.serviceId.setValue(data);
-	setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
-
-	handleSubmit() {
-		if (this.form.valid) this.id.value ? this.update() : this.add();
-	}
-
-	update() {
-		this.subscriptions.push(
-			this._servicePricePerClientType.update(this.id.value, this.form.value).subscribe({
-				next: (res) => {
-					this.isSubmitting = true;
-					this._servicePricePerClientType.DialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
-
-	add() {
-		this.subscriptions.push(
-			this._servicePricePerClientType.add(this.form.value).subscribe({
-				next: (res) => {
-					this.isSubmitting = true;
-					this._servicePricePerClientType.DialogData = res.body;
-					this.matDialogRef.close({data: res});
-				},
-				error: (e) => {
-					this.isSubmitting = false;
-					let res: Response = e.error ?? e;
-					this.toastr.error(res.message);
-				},
-				complete: () => {
-					this.isSubmitting = false;
-				},
-			})
-		);
-	}
-
-	ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
+  setServiceId = (data: any) => this.serviceId.setValue(data);
+  setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
 }

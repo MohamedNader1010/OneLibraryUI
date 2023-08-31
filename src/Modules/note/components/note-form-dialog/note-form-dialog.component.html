@@ -7,7 +7,7 @@
     <form [formGroup]="Form" class="d-flex flex-column">
       <div class="row">
         <autocomplete class="col-3" label="نوع العميل" [dataSource]="ClientTypesDataSource"
-          (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value"></autocomplete>
+          (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value" [loading]="clientTypeLoading"></autocomplete>
         <autocomplete class="col-3" label="أسم العميل" [dataSource]="ClientsDataSource"
           (selectedId)="setClientId($event)" [selectedValue]="clientId.value"[loading]="clientsLoading"></autocomplete>
         <mat-form-field color="warn" appearance="fill" class="col-3">
@@ -126,8 +126,9 @@
     </form>
   </mat-dialog-content>
   <div mat-dialog-actions class="d-flex justify-content-end">
-    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
-    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()"
-      [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? "انتظر من فضلك" : "حفظ" }}</button>
+    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+    </button>
   </div>
 </div>

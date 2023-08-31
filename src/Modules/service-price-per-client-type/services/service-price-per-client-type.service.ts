@@ -9,23 +9,8 @@ import {Response} from 'src/Modules/shared/interfaces/Iresponse';
   providedIn: 'root',
 })
 export class ServicePricePerClientTypeService extends GenericService<ServicePricePerClientType> {
-  constructor(http: HttpClient, private toastr: ToastrService) {
-    super(http, 'ServicePricePerClientType');
-  }
-
-  getAllServicePrices() {
-    this.loadingData.next(true);
-    this.http.get<Response>(this.uri).subscribe({
-      next: (data: Response) => {
-        this.dataChange.next(data);
-      },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
-      },
-      complete: () => this.loadingData.next(false),
-    });
+  constructor(http: HttpClient, toastrService: ToastrService) {
+    super(http, 'ServicePricePerClientType', toastrService);
   }
 
   GetAllPriced = (clientTypeId: number) => this.http.get<Response>(`${this.uri}/GetAllPriced`, { params: { clientTypeId } });
@@ -34,5 +19,5 @@ export class ServicePricePerClientTypeService extends GenericService<ServicePric
 
   getPrice = (clientTypeId: number, serviceId: number) => this.http.get<Response>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 
-  deleteServicePrices = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServicePrices`, { body: ids });
+  // deleteServicePrices = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServicePrices`, { body: ids });
 }

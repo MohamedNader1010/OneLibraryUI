@@ -14,19 +14,15 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class SupplierFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: Supplier,
-    translate: TranslateService,
-    _suppler: SupplierService,
-    private fb: FormBuilder,
+    @Inject(MAT_DIALOG_DATA) private _data: Supplier,
+    translateService: TranslateService,
+    _databaseService: SupplierService,
+    private _fb: FormBuilder,
     matDialogRef: MatDialogRef<SupplierFormDialogComponent>,
-    toastr: ToastrService,
+    toastrService: ToastrService,
   ) {
-    super(matDialogRef, translate, _suppler, toastr);
+    super(matDialogRef, translateService, _databaseService, toastrService);
     this.initiateFormControls();
-  }
-
-  get id(): FormControl {
-    return this.Form.get('id') as FormControl;
   }
   get name(): FormControl {
     return this.Form.get('name') as FormControl;
@@ -36,7 +32,7 @@ export class SupplierFormDialogComponent extends FormsDialogCommonFunctionality 
   }
 
   private initiateFormControls() {
-    this.Form = this.fb.group({
+    this.Form = this._fb.group({
       id: [null],
       name: ['', [Validators.required, Validators.maxLength(100)]],
       phoneNumber: ['', [Validators.required, Validators.pattern('01[0125][0-9]{8}')]],
@@ -44,14 +40,6 @@ export class SupplierFormDialogComponent extends FormsDialogCommonFunctionality 
   }
 
   ngOnInit(): void {
-    if (this.data) this.Form.patchValue(this.data);
-  }
-
-  handleSubmit() {
-    if (this.Form.valid) {
-      this.isSubmitting = true;
-      if (this.id.value) this.update(this.data.id, this.Form.value);
-      else this.add(this.Form.value);
-    }
+    if (this._data) this.Form.patchValue(this._data);
   }
 }

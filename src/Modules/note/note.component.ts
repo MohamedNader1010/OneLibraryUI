@@ -10,90 +10,84 @@ import { TableCommonFunctionality } from "../shared/classes/tableCommonFunctiona
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
-	selector: "app-note",
-	templateUrl: "./note.component.html",
-	styleUrls: ["./note.component.css"],
+  selector: 'app-note',
+  templateUrl: './note.component.html',
+  styleUrls: ['./note.component.css'],
 })
 export class NoteComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
-	loading!: boolean;
-	formName = FormDialogNames.NoteFormDialogComponent;
-	componentName = ComponentsName.note;
+  formName = FormDialogNames.NoteFormDialogComponent;
+  componentName = ComponentsName.note;
 
-	constructor(private translate: TranslateService, httpClient: HttpClient, toastr: ToastrService, public override database: NoteService, public dialog: MatDialog) {
-		super(httpClient, toastr, database);
-	}
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
-	}
+  constructor(private _translateService: TranslateService, httpClient: HttpClient, toastrService: ToastrService, override databaseService: NoteService, public dialog: MatDialog) {
+    super(httpClient, toastrService, databaseService);
+  }
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
+  }
 
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant("table.id"),
-				header: this.translate.instant("table.id.label"),
-				cell: (element: Note) => element.id,
-			},
-			{
-				columnDef: "name",
-				header: "الأسم",
-				cell: (element: Note) => element.name,
-			},
-			{
-				columnDef: "teacher",
-				header: "المدرس",
-				cell: (element: Note) => element.client,
-			},
-			{
-				columnDef: "stage",
-				header: "المرحلة",
-				cell: (element: Note) => element.stage ?? "-",
-			},
-			{
-				columnDef: "term",
-				header: "الترم",
-				cell: (element: Note) => element.term ?? "-",
-			},
-			{
-				columnDef: "actualPrice",
-				header: "السعر الفعلي",
-				cell: (element: Note) => element.actualPrice,
-			},
-			{
-				columnDef: "originalPrice",
-				header: "سعر التكلفة",
-				cell: (element: Note) => element.originalPrice,
-			},
-			{
-				columnDef: "earning",
-				header: "الربح",
-				cell: (element: Note) => element.earning,
-			},
-			{
-				columnDef: "teacherPrice",
-				header: "ربح المدرس",
-				cell: (element: Note) => element.teacherPrice,
-			},
-			{
-				columnDef: "finalPrice",
-				header: "السعر النهائي",
-				cell: (element: Note) => element.finalPrice,
-			},
-			{
-				columnDef: "quantity",
-				header: "الكمية",
-				cell: (element: Note) => element.quantity,
-			},
-			{
-				columnDef: "pdf",
-				header: "pdf",
-				cell: (element: Note) => element.fileName ?? "-",
-			},
-		];
-	}
-
-	public loadData() {
-		this.database.getAllNotes();
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
+        cell: (element: Note) => element.id,
+      },
+      {
+        columnDef: 'name',
+        header: 'الأسم',
+        cell: (element: Note) => element.name,
+      },
+      {
+        columnDef: 'teacher',
+        header: 'المدرس',
+        cell: (element: Note) => element.client,
+      },
+      {
+        columnDef: 'stage',
+        header: 'المرحلة',
+        cell: (element: Note) => element.stage ?? '-',
+      },
+      {
+        columnDef: 'term',
+        header: 'الترم',
+        cell: (element: Note) => element.term ?? '-',
+      },
+      {
+        columnDef: 'actualPrice',
+        header: 'السعر الفعلي',
+        cell: (element: Note) => element.actualPrice,
+      },
+      {
+        columnDef: 'originalPrice',
+        header: 'سعر التكلفة',
+        cell: (element: Note) => element.originalPrice,
+      },
+      {
+        columnDef: 'earning',
+        header: 'الربح',
+        cell: (element: Note) => element.earning,
+      },
+      {
+        columnDef: 'teacherPrice',
+        header: 'ربح المدرس',
+        cell: (element: Note) => element.teacherPrice,
+      },
+      {
+        columnDef: 'finalPrice',
+        header: 'السعر النهائي',
+        cell: (element: Note) => element.finalPrice,
+      },
+      {
+        columnDef: 'quantity',
+        header: 'الكمية',
+        cell: (element: Note) => element.quantity,
+      },
+      {
+        columnDef: 'pdf',
+        header: 'pdf',
+        cell: (element: Note) => element.fileName ?? '-',
+      },
+    ];
+  }
 }

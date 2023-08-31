@@ -11,28 +11,28 @@ import {
   selector: '[cdkDetailRow]',
 })
 export class CdkDetailRowDirective {
-  private row: any;
-  private tRef!: TemplateRef<any>;
-  private rowId: string = '';
+  private _row: any;
+  private _tRef!: TemplateRef<any>;
+  private _rowId: string = '';
   expandedRows: string[] = [];
 
   @HostBinding('class.expanded')
   get expanded(): boolean {
-    return this.isRowExpanded(this.rowId);
+    return this.isRowExpanded(this._rowId);
   }
 
   @Input()
   set cdkDetailRow(value: any) {
-    if (value !== this.row) {
-      this.row = value;
-      this.rowId = this.getRowId();
+    if (value !== this._row) {
+      this._row = value;
+      this._rowId = this.getRowId();
     }
   }
 
   @Input('cdkDetailRowTpl')
   set template(value: TemplateRef<any>) {
-    if (value !== this.tRef) {
-      this.tRef = value;
+    if (value !== this._tRef) {
+      this._tRef = value;
     }
   }
 
@@ -54,18 +54,18 @@ export class CdkDetailRowDirective {
     }
   }
   collapseAllRows() {
-      this.expandedRows = [];
-      this.vcRef.clear();
+    this.expandedRows = [];
+    this.vcRef.clear();
   }
   private render(): void {
     this.vcRef.clear();
-    if (this.tRef && this.row) {
-      this.vcRef.createEmbeddedView(this.tRef, { $implicit: this.row });
+    if (this._tRef && this._row) {
+      this.vcRef.createEmbeddedView(this._tRef, { $implicit: this._row });
     }
   }
 
   private getRowId(): string {
-    return this.row.id;
+    return this._row.id;
   }
 
   public isRowExpanded(rowId: string): boolean {

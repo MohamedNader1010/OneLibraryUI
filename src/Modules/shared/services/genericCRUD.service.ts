@@ -2,6 +2,7 @@ import { HttpClient, HttpEvent, HttpHeaders } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import { Response } from "../interfaces/Iresponse";
 import { BehaviorSubject, Observable } from "rxjs";
+import { ToastrService } from 'ngx-toastr';
 export abstract class GenericService<Tin> {
   loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -20,21 +21,36 @@ export abstract class GenericService<Tin> {
     return this.dataChange.value ?? this._emptyResponse;
   }
 
-  private dialogData: any;
+  private _dialogData: any;
 
   get DialogData() {
-    return this.dialogData;
+    return this._dialogData;
   }
   set DialogData(value: any) {
-    this.dialogData = value;
+    this._dialogData = value;
   }
 
-  constructor(public http: HttpClient, private controller: string) {}
+  constructor(public http: HttpClient, private _controller: string, public _toastrService: ToastrService) {}
 
-  uri: string = `${environment.apiUrl}${this.controller}`;
+  uri: string = `${environment.apiUrl}${this._controller}`;
   headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   getAll = () => this.http.get<Response>(`${this.uri}`, { headers: this.headers });
+
+  getAllDataForTable() {
+    this.loadingData.next(true);
+    this.http.get<Response>(this.uri).subscribe({
+      next: (data: Response) => {
+        this.dataChange.next(data);
+      },
+      error: (e) => {
+        this.loadingData.next(false);
+        let res: Response = e.error ?? e;
+        this._toastrService.error(res.message);
+      },
+      complete: () => this.loadingData.next(false),
+    });
+  }
 
   add = (model: Tin) => this.http.post<Response>(`${this.uri}`, model, { headers: this.headers });
 

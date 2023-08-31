@@ -1,99 +1,111 @@
 <div class="container w-100">
-	<h2 mat-dialog-title *ngIf="id.value; else update">{{ 'service.edit' | translate }}</h2>
-	<ng-template #update>
-		<h2 mat-dialog-title>{{ 'service.new' | translate }}</h2>
-	</ng-template>
-	<mat-dialog-content>
-		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
-			<div class="row">
-				<div class="col-6">
-					<mat-form-field class="w-100" color="warn">
-						<mat-label>الأسم</mat-label>
-						<input matInput formControlName="name" />
-						<mat-error *ngIf="name.errors?.['required']">يجب ادخال اسم الخدمة </mat-error>
-					</mat-form-field>
-				</div>
-				<autocomplete class="col-6" label="النوع" [dataSource]="ServiceTypeDataSource" (selectedId)="setServiceTypeId($event)" [selectedValue]="serviceTypeId.value"></autocomplete>
-			</div>
-			<!-- service materials -->
-			<div class="row my-2 align-items-center">
-				<div class="col-2">الخامات</div>
-				<div class="col-8">
-					<mat-divider></mat-divider>
-				</div>
-				<button class="col-1" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add service Material row" (click)="handleNewServiceMaterial()">
-					<mat-icon>add</mat-icon>
-				</button>
-			</div>
-			<div formArrayName="serviceMaterials" *ngIf="serviceMaterials.controls.length">
-				<div class="row" *ngFor="let component of serviceMaterials.controls; let i = index">
-					<ng-container [formGroupName]="i">
-						<autocomplete
-							class="col-5"
-							label="الخامة"
-							[dataSource]="MaterialDataSource"
-							(selectedId)="setServiceMaterialId(i, $event)"
-							[selectedValue]="getServiceMaterial(i).value"></autocomplete>
-						<mat-form-field class="w-100" class="col-5" color="warn">
-							<mat-label>الكمية</mat-label>
-							<input type="number" matInput formControlName="quantity" min="0" />
-							<mat-error *ngIf="getServiceMaterialQuantity(i)?.errors?.['required']">يجب ادخال الكمية </mat-error>
-						</mat-form-field>
-						<div class="col-1">
-							<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteServiceMaterial(i)">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</div>
-					</ng-container>
-				</div>
-			</div>
-			<!-- end service materials -->
-			<!-- service prices -->
-			<div class="row my-2 align-items-center" *ngIf="data">
-				<div class="col-3">سعر التكلفة</div>
-				<div class="col-7">
-					<mat-divider></mat-divider>
-				</div>
-				<div class="col-1">
-					{{ data.originalPrice | json }}
-				</div>
-			</div>
-			<div class="row my-2 align-items-center">
-				<div class="col-3">تسعير الخدمة</div>
-				<div class="col-7">
-					<mat-divider></mat-divider>
-				</div>
-				<button class="col-1" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add service price row" (click)="handleNewServicePrice()">
-					<mat-icon>add</mat-icon>
-				</button>
-			</div>
-			<div formArrayName="servicePricePerClientTypes" *ngIf="servicePricePerClientTypes.controls.length">
-				<div class="row" *ngFor="let component of servicePricePerClientTypes.controls; let i = index">
-					<ng-container [formGroupName]="i">
-						<autocomplete
-							class="col-5"
-							label="نوع العميل"
-							[dataSource]="clientsTypesDataSource"
-							(selectedId)="setServicePriceClientTypeId(i, $event)"
-							[selectedValue]="getServicePriceClientTypeId(i).value"></autocomplete>
-						<mat-form-field class="w-100" class="col-5" color="warn">
-							<mat-label>السعر</mat-label>
-							<input type="number" matInput formControlName="price" min="0" />
-							<mat-error *ngIf="getServicePrice(i)?.errors?.['required']">يجب اختيار ادخال السعر </mat-error>
-						</mat-form-field>
-						<div class="col-1">
-							<button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteServicePrice(i)">
-								<mat-icon>delete</mat-icon>
-							</button>
-						</div>
-					</ng-container>
-				</div>
-			</div>
-			<!-- end service prices -->
-			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button color="warn" class="mx-2 px-4" [disabled]="!Form.valid || isSubmitting">{{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()">{{ 'button.back' | translate }}</button>
-			</div>
-		</form>
-	</mat-dialog-content>
+  <h2 mat-dialog-title *ngIf="id.value; else update">{{ 'service.edit' | translate }}</h2>
+  <ng-template #update>
+    <h2 mat-dialog-title>{{ 'service.new' | translate }}</h2>
+  </ng-template>
+  <mat-dialog-content>
+    <form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field class="w-100" color="warn">
+            <mat-label>الأسم</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error *ngIf="name.errors?.['required']">يجب ادخال اسم الخدمة </mat-error>
+          </mat-form-field>
+        </div>
+        <autocomplete
+          class="col-6"
+          label="النوع"
+          [dataSource]="ServiceTypeDataSource"
+          (selectedId)="setServiceTypeId($event)"
+          [selectedValue]="serviceTypeId.value"
+          [loading]="serviceTypeLoading"
+        ></autocomplete>
+      </div>
+      <!-- service materials -->
+      <div class="row my-2 align-items-center">
+        <div class="col-2">الخامات</div>
+        <div class="col-8">
+          <mat-divider></mat-divider>
+        </div>
+        <button class="col-1" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add service Material row" (click)="handleNewServiceMaterial()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div formArrayName="serviceMaterials" *ngIf="serviceMaterials.controls.length">
+        <div class="row" *ngFor="let component of serviceMaterials.controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <autocomplete
+              class="col-5"
+              label="الخامة"
+              [dataSource]="MaterialDataSource"
+              (selectedId)="setServiceMaterialId(i, $event)"
+              [selectedValue]="getServiceMaterial(i).value"
+              [loading]="materialLoading"
+            ></autocomplete>
+            <mat-form-field class="w-100" class="col-5" color="warn">
+              <mat-label>الكمية</mat-label>
+              <input type="number" matInput formControlName="quantity" min="0" />
+              <mat-error *ngIf="getServiceMaterialQuantity(i)?.errors?.['required']">يجب ادخال الكمية </mat-error>
+            </mat-form-field>
+            <div class="col-1">
+              <button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteServiceMaterial(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <!-- end service materials -->
+      <!-- service prices -->
+      <div class="row my-2 align-items-center" *ngIf="data">
+        <div class="col-3">سعر التكلفة</div>
+        <div class="col-7">
+          <mat-divider></mat-divider>
+        </div>
+        <div class="col-1">
+          {{ data.originalPrice | json }}
+        </div>
+      </div>
+      <div class="row my-2 align-items-center">
+        <div class="col-3">تسعير الخدمة</div>
+        <div class="col-7">
+          <mat-divider></mat-divider>
+        </div>
+        <button class="col-1" type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add service price row" (click)="handleNewServicePrice()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <div formArrayName="servicePricePerClientTypes" *ngIf="servicePricePerClientTypes.controls.length">
+        <div class="row" *ngFor="let component of servicePricePerClientTypes.controls; let i = index">
+          <ng-container [formGroupName]="i">
+            <autocomplete
+              class="col-5"
+              label="نوع العميل"
+              [dataSource]="clientsTypesDataSource"
+              (selectedId)="setServicePriceClientTypeId(i, $event)"
+              [selectedValue]="getServicePriceClientTypeId(i).value"
+              [loading]="clientTypesLoading"
+            ></autocomplete>
+            <mat-form-field class="w-100" class="col-5" color="warn">
+              <mat-label>السعر</mat-label>
+              <input type="number" matInput formControlName="price" min="0" />
+              <mat-error *ngIf="getServicePrice(i)?.errors?.['required']">يجب اختيار ادخال السعر </mat-error>
+            </mat-form-field>
+            <div class="col-1">
+              <button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteServicePrice(i)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <div mat-dialog-actions class="d-flex justify-content-end">
+    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+    </button>
+  </div>
 </div>

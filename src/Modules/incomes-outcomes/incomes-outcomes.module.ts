@@ -10,10 +10,11 @@ import {FormDialogComponent} from './components/formDialog/form.dialog.component
 import { CloseStartShiftFormDialogComponent } from "./components/close-start-shift-form-dialog/close-start-shift-form-dialog.component"
 import { ShiftsComponent } from "./components/shifts/shifts.component";
 import { ShiftDetailsComponent } from './components/shift-details/shift-details.component'
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-	declarations: [IncomesOutcomesComponent, FormDialogComponent, ShiftsComponent, CloseStartShiftFormDialogComponent, ShiftDetailsComponent],
-	imports: [CommonModule, IncomesOutcomesRoutingModule, FormsModule, ReactiveFormsModule, CommonModule, SharedModule, MatComponentsModule],
-	providers: [LoginGuard, DatePipe],
+  declarations: [IncomesOutcomesComponent, FormDialogComponent, ShiftsComponent, CloseStartShiftFormDialogComponent, ShiftDetailsComponent],
+  imports: [TranslateModule, CommonModule, IncomesOutcomesRoutingModule, FormsModule, ReactiveFormsModule, CommonModule, SharedModule, MatComponentsModule],
+  providers: [LoginGuard, DatePipe],
 })
 export class IncomesOutcomesModule {}

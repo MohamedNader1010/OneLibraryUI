@@ -12,72 +12,65 @@ import { ShiftService } from "../../services/shift.service"
 @Component({
   selector: 'app-shifts',
   templateUrl: './shifts.component.html',
-  styleUrls: ['./shifts.component.css']
+  styleUrls: ['./shifts.component.css'],
 })
-export class ShiftsComponent  extends TableCommonFunctionality implements OnInit, OnDestroy {
-	formName = FormDialogNames.shiftFormDialogComponent;
-	componentName = ComponentsName.shift;
-	tableColumns!: any[];
-	loading!: boolean;
-	constructor(public override database: ShiftService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
-		super(httpClient, toastr, database);
-	}
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
-	}
+export class ShiftsComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+  formName = FormDialogNames.shiftFormDialogComponent;
+  componentName = ComponentsName.shift;
+  constructor(override databaseService: ShiftService, httpClient: HttpClient, toastrService: ToastrService, private _translateService: TranslateService) {
+    super(httpClient, toastrService, databaseService);
+  }
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
+  }
 
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: Shift) => `${element.id}`,
-			},
-			{
-				columnDef: this.translate.instant('table.startTime'),
-				header: this.translate.instant('table.startTime.label'),
-				cell: (element: Shift) => element.startTime,
-			},
-			{
-				columnDef: this.translate.instant('table.endTime'),
-				header: this.translate.instant('table.endTime.label'),
-				cell: (element: Shift) => element.endTime,
-			},
-			{
-				columnDef: this.translate.instant('table.startingBalance'),
-				header: this.translate.instant('table.startingBalance.label'),
-				cell: (element: Shift) => element.startingBalance,
-			},
-			{
-				columnDef: this.translate.instant('table.totalIncome'),
-				header: this.translate.instant('table.totalIncome.label'),
-				cell: (element: Shift) => element.totalIncome,
-			},
-			{
-				columnDef: this.translate.instant('table.totalOutcome'),
-				header: this.translate.instant('table.totalOutcome.label'),
-				cell: (element: Shift) => element.totalOutcome,
-			},
-			{
-				columnDef: this.translate.instant('table.closingBalance'),
-				header: this.translate.instant('table.closingBalance.label'),
-				cell: (element: Shift) => element.closingBalance,
-			},
-			{
-				columnDef: this.translate.instant('table.createdBy'),
-				header: this.translate.instant('table.createdBy.label'),
-				cell: (element: Shift) => element.createdBy,
-			},
-		];
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
+        cell: (element: Shift) => `${element.id}`,
+      },
+      {
+        columnDef: this._translateService.instant('table.startTime'),
+        header: this._translateService.instant('table.startTime.label'),
+        cell: (element: Shift) => element.startTime,
+      },
+      {
+        columnDef: this._translateService.instant('table.endTime'),
+        header: this._translateService.instant('table.endTime.label'),
+        cell: (element: Shift) => element.endTime,
+      },
+      {
+        columnDef: this._translateService.instant('table.startingBalance'),
+        header: this._translateService.instant('table.startingBalance.label'),
+        cell: (element: Shift) => element.startingBalance,
+      },
+      {
+        columnDef: this._translateService.instant('table.totalIncome'),
+        header: this._translateService.instant('table.totalIncome.label'),
+        cell: (element: Shift) => element.totalIncome,
+      },
+      {
+        columnDef: this._translateService.instant('table.totalOutcome'),
+        header: this._translateService.instant('table.totalOutcome.label'),
+        cell: (element: Shift) => element.totalOutcome,
+      },
+      {
+        columnDef: this._translateService.instant('table.closingBalance'),
+        header: this._translateService.instant('table.closingBalance.label'),
+        cell: (element: Shift) => element.closingBalance,
+      },
+      {
+        columnDef: this._translateService.instant('table.createdBy'),
+        header: this._translateService.instant('table.createdBy.label'),
+        cell: (element: Shift) => element.createdBy,
+      },
+    ];
+  }
 
-	loadData() {
-		this.loading = true;
-		this.database.getAllShifts();
-	}
-	
-	override handleNewRow = (message: string) => {
-		this.loadData();
-	};
+  override handleNewRow = (message: string) => {
+    this.loadData();
+  };
 }

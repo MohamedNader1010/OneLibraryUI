@@ -22,58 +22,58 @@ import { SupplierService } from '../../supplier/services/supplier.service';
 })
 export class ServiceFactory {
   constructor(
-    private materialService: MaterialService,
-    private attendnaceService: AttendanceService,
-    private clientService: ClientService,
-    private feedbackService: FeedbackService,
-    private incomeOutcomeService: IncomesOutcomesService,
-    private materialTrackingService: MaterialTrackingService,
-    private noteService: NoteService,
-    private orderService: OrderService,
-    private serviceService: ServicesService,
-    private clientTypeService: ClientTypeService,
-    private serviceTypeService: ServicesTypeService,
-    private servicePricePerClientTypeService: ServicePricePerClientTypeService,
-    private employeeService: EmployeeService,
-    private shiftService: ShiftService,
-    private bankService: BankService,
-    private supplierService: SupplierService,
+    private _materialService: MaterialService,
+    private _attendnaceService: AttendanceService,
+    private _clientService: ClientService,
+    private _feedbackService: FeedbackService,
+    private _incomeOutcomeService: IncomesOutcomesService,
+    private _materialTrackingService: MaterialTrackingService,
+    private _noteService: NoteService,
+    private _orderService: OrderService,
+    private _serviceService: ServicesService,
+    private _clientTypeService: ClientTypeService,
+    private _serviceTypeService: ServicesTypeService,
+    private _servicePricePerClientTypeService: ServicePricePerClientTypeService,
+    private _employeeService: EmployeeService,
+    private _shiftService: ShiftService,
+    private _bankService: BankService,
+    private _supplierService: SupplierService,
   ) {}
 
   getService(componentName: ComponentsName) {
     switch (componentName) {
       case ComponentsName.material:
-        return this.materialService;
+        return this._materialService;
       case ComponentsName.attendance:
-        return this.attendnaceService;
+        return this._attendnaceService;
       case ComponentsName.client:
-        return this.clientService;
+        return this._clientService;
       case ComponentsName.clientType:
-        return this.clientTypeService;
+        return this._clientTypeService;
       case ComponentsName.feedback:
-        return this.feedbackService;
+        return this._feedbackService;
       case ComponentsName.incomeOutcome:
-        return this.incomeOutcomeService;
+        return this._incomeOutcomeService;
       case ComponentsName.materialTracking:
-        return this.materialTrackingService;
+        return this._materialTrackingService;
       case ComponentsName.note:
-        return this.noteService;
+        return this._noteService;
       case ComponentsName.order:
-        return this.orderService;
+        return this._orderService;
       case ComponentsName.service:
-        return this.serviceService;
+        return this._serviceService;
       case ComponentsName.serviceType:
-        return this.serviceTypeService;
+        return this._serviceTypeService;
       case ComponentsName.servicePricePerClientType:
-        return this.servicePricePerClientTypeService;
+        return this._servicePricePerClientTypeService;
       case ComponentsName.employee:
-        return this.employeeService;
+        return this._employeeService;
       case ComponentsName.shift:
-        return this.shiftService;
+        return this._shiftService;
       case ComponentsName.Bank:
-        return this.bankService;
+        return this._bankService;
       case ComponentsName.supplier:
-        return this.supplierService;
+        return this._supplierService;
     }
   }
 }

@@ -14,8 +14,8 @@ import { Observable, catchError, finalize, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class OrderService extends GenericService<Order> {
-  constructor(http: HttpClient, private toastr: ToastrService) {
-    super(http, 'Order');
+  constructor(http: HttpClient, override _toastrService: ToastrService) {
+    super(http, 'Order', _toastrService);
   }
   getPagedOrders(pagingCriteria: PagingCriteria): Observable<any> {
     this.loadingData.next(true);
@@ -26,7 +26,7 @@ export class OrderService extends GenericService<Order> {
       catchError((e) => {
         this.loadingData.next(false);
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this._toastrService.error(res.message);
         return [];
       }),
       finalize(() => this.loadingData.next(false)),
@@ -41,7 +41,7 @@ export class OrderService extends GenericService<Order> {
       error: (e) => {
         this.loadingData.next(false);
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this._toastrService.error(res.message);
       },
       complete: () => this.loadingData.next(false),
     });
@@ -56,7 +56,7 @@ export class OrderService extends GenericService<Order> {
       error: (e) => {
         this.loadingData.next(false);
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this._toastrService.error(res.message);
       },
       complete: () => this.loadingData.next(false),
     });

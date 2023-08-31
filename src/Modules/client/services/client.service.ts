@@ -10,23 +10,8 @@ import { TeacherProfit } from '../interFaces/IteacherProfit'
   providedIn: 'root',
 })
 export class ClientService extends GenericService<Client> {
-  constructor(http: HttpClient, private toastr: ToastrService) {
-    super(http, 'Client');
-  }
-
-  getAllClients() {
-    this.loadingData.next(true);
-    this.http.get<Response>(this.uri).subscribe({
-      next: (data: Response) => {
-        this.dataChange.next(data);
-      },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
-      },
-      complete: () => this.loadingData.next(false),
-    });
+  constructor(http: HttpClient, toastrService: ToastrService) {
+    super(http, 'Client', toastrService);
   }
 
   getAllByType = (id: number) => this.http.get<Response>(`${this.uri}/getByClientTypeId?id=${id}`);
@@ -40,7 +25,7 @@ export class ClientService extends GenericService<Client> {
       error: (e) => {
         this.loadingData.next(false);
         let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
+        this._toastrService.error(res.message);
       },
       complete: () => this.loadingData.next(false),
     });

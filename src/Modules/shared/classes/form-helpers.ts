@@ -35,8 +35,8 @@ export class FormHelpers {
         module = await import('../../service-price-per-client-type/Components/service-type-per-client-form-dialog/service-type-per-client-form-dialog.component');
         return module.ServiceTypePerClientFormDialogComponent;
       case FormDialogNames.AttendanceFormDialogComponent:
-        module = await import('../../attendance/components/formDialog/form.dialog.component');
-        return module.FormDialogComponent;
+        module = await import('../../attendance/components/attendance-form-dialog/attendance-form-dialog.component');
+        return module.AttendanceFormDialogComponent;
       case FormDialogNames.feedbackFormDialogComponent:
         module = await import('../../feadback/components/formDialog/form.dialog.component');
         return module.FormDialogComponent;

@@ -15,13 +15,11 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./suppliers.component.css'],
 })
 export class SupplierComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-  tableColumns!: any[];
-  loading!: boolean;
   formName = FormDialogNames.supplierFormDialogComponent;
   dataSource!: TableDataSource;
   componentName = ComponentsName.supplier;
-  constructor(public override database: SupplierService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
-    super(httpClient, toastr, database);
+  constructor(databaseService: SupplierService, httpClient: HttpClient, toastrService: ToastrService, private _translateService: TranslateService) {
+    super(httpClient, toastrService, databaseService);
   }
 
   ngOnInit(): void {
@@ -32,39 +30,35 @@ export class SupplierComponent extends TableCommonFunctionality implements OnIni
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translate.instant('table.id'),
-        header: this.translate.instant('table.id.label'),
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
         cell: (element: Supplier) => element.id,
       },
       {
-        columnDef: this.translate.instant('form.name'),
-        header: this.translate.instant('form.name.label'),
+        columnDef: this._translateService.instant('form.name'),
+        header: this._translateService.instant('form.name.label'),
         cell: (element: Supplier) => element.name,
       },
       {
-        columnDef: this.translate.instant('form.phoneNumber'),
-        header: this.translate.instant('form.phoneNumber.label'),
+        columnDef: this._translateService.instant('form.phoneNumber'),
+        header: this._translateService.instant('form.phoneNumber.label'),
         cell: (element: Supplier) => element.phoneNumber,
       },
       {
-        columnDef: this.translate.instant('form.Supplier.totalDue'),
-        header: this.translate.instant('form.Supplier.totalDue.label'),
+        columnDef: this._translateService.instant('form.Supplier.totalDue'),
+        header: this._translateService.instant('form.Supplier.totalDue.label'),
         cell: (element: Supplier) => element.totalDue,
       },
       {
-        columnDef: this.translate.instant('form.Supplier.paid'),
-        header: this.translate.instant('form.Supplier.paid.label'),
+        columnDef: this._translateService.instant('form.Supplier.paid'),
+        header: this._translateService.instant('form.Supplier.paid.label'),
         cell: (element: Supplier) => element.paid,
       },
       {
-        columnDef: this.translate.instant('form.Supplier.rest'),
-        header: this.translate.instant('form.Supplier.rest.label'),
+        columnDef: this._translateService.instant('form.Supplier.rest'),
+        header: this._translateService.instant('form.Supplier.rest.label'),
         cell: (element: Supplier) => element.rest,
       },
     ];
-  }
-
-  public loadData() {
-    this.database.getAllSuppliers();
   }
 }

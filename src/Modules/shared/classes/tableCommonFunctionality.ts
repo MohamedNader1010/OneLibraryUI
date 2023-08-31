@@ -1,35 +1,43 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Response } from '../interfaces/Iresponse';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { GenericService } from '../services/genericCRUD.service';
 @Injectable()
 export class TableCommonFunctionality {
-  subscriptions: Subscription[] = [];
+  tableColumns!: any[];
+  destroy$ = new Subject<void>();
 
-  constructor(public httpClient: HttpClient, public toastr: ToastrService, public database: GenericService<any>) {}
+  constructor(public httpClient: HttpClient, public toastrService: ToastrService, public databaseService: GenericService<any>) {}
 
   handleNewRow = (message: string) => {
-    if (this.database.DialogData) (this.database.dataChange.value as Response).body.push(this.database.DialogData);
-    this.toastr.success(message);
+    if (this.databaseService.DialogData) (this.databaseService.dataChange.value as Response).body.push(this.databaseService.DialogData);
+    this.toastrService.success(message);
   };
 
   handleEditRow = (data: Response) => {
-    if (this.database.DialogData) {
-      const updatedElementIndex = (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
-      (this.database.dataChange.value as Response).body[updatedElementIndex] = this.database.DialogData;
-      this.database.DialogData = null;
+    if (this.databaseService.DialogData) {
+      const updatedElementIndex = (this.databaseService.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
+      (this.databaseService.dataChange.value as Response).body[updatedElementIndex] = this.databaseService.DialogData;
+      this.databaseService.DialogData = null;
     }
-    this.toastr.success(data.message);
+    this.toastrService.success(data.message);
   };
 
   handleDelete = (data: Response) => {
-    const deletedElementIndex = (this.database.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
-    ((this.database.dataChange.value as Response).body as []).splice(deletedElementIndex, 1);
-    this.toastr.success(data.message);
-    this.database.DialogData = null;
+    const deletedElementIndex = (this.databaseService.dataChange.value as Response).body.findIndex((x: any) => x.id === data.body.id);
+    ((this.databaseService.dataChange.value as Response).body as []).splice(deletedElementIndex, 1);
+    this.toastrService.success(data.message);
+    this.databaseService.DialogData = null;
   };
 
-  ngOnDestroy = () => this.subscriptions.forEach((s) => s.unsubscribe());
+  loadData() {
+    this.databaseService.getAllDataForTable();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }

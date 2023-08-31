@@ -11,23 +11,8 @@ import { CloseAndStartShift } from "../interfaces/IcloseAndStartShift"
   providedIn: 'root',
 })
 export class ShiftService extends GenericService<Shift> {
-  constructor(http: HttpClient, private toastr: ToastrService) {
-    super(http, 'Shift');
-  }
-
-  getAllShifts() {
-    this.loadingData.next(true);
-    this.http.get<Response>(this.uri).subscribe({
-      next: (data: Response) => {
-        this.dataChange.next(data);
-      },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
-      },
-      complete: () => this.loadingData.next(false),
-    });
+  constructor(http: HttpClient, toastrService: ToastrService) {
+    super(http, 'Shift', toastrService);
   }
 
   closeAndStartNewShift = (model: CloseAndStartShift) => this.http.post<Response>(`${this.uri}/EndShiftStartNewOne`, model, { headers: this.headers });

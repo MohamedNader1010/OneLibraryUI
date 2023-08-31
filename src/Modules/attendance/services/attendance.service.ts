@@ -10,26 +10,11 @@ import {Response} from './../../shared/interfaces/Iresponse';
   providedIn: 'root',
 })
 export class AttendanceService extends GenericService<Attendance> {
-  constructor(http: HttpClient, private toastr: ToastrService) {
-    super(http, 'Attendance');
+  constructor(http: HttpClient, toastrService: ToastrService) {
+    super(http, 'Attendance', toastrService);
   }
 
   checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-
-  getAllAttendance() {
-    this.loadingData.next(true);
-    this.http.get<Response>(this.uri).subscribe({
-      next: (data: Response) => {
-        this.dataChange.next(data);
-      },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: Response = e.error ?? e;
-        this.toastr.error(res.message);
-      },
-      complete: () => this.loadingData.next(false),
-    });
-  }
 
   getEmpAttendance = (id: string, from: Date, to: Date) =>
     this.http.get<Response>(`${this.uri}/GetEmpAttendance/${id}`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });

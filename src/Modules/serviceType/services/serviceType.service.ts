@@ -6,25 +6,10 @@ import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Response} from './../../shared/interfaces/Iresponse';
 
 @Injectable({
-	providedIn: 'root',
+  providedIn: 'root',
 })
 export class ServicesTypeService extends GenericService<ServiceType> {
-	constructor(http: HttpClient, private toastr: ToastrService) {
-		super(http, 'ServiceType');
-	}
-
-	getAllServices() {
-		this.loadingData.next(true);
-		this.http.get<Response>(this.uri).subscribe({
-			next: (data: Response) => {
-				this.dataChange.next(data);
-			},
-			error: (e) => {
-				this.loadingData.next(false);
-				let res: Response = e.error ?? e;
-				this.toastr.error(res.message);
-			},
-			complete: () => this.loadingData.next(false),
-		});
-	}
+  constructor(http: HttpClient, toastrService: ToastrService) {
+    super(http, 'ServiceType', toastrService);
+  }
 }

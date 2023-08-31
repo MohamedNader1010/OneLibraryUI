@@ -1,5 +1,4 @@
 <app-table
-	[loading]="loading"
 	[tableColumns]="tableColumns"
 	[formName]="formName"
 	[canDelete]="false"
@@ -7,4 +6,4 @@
 	(OnDelete)="handleDelete($event)"
 	(onNew)="handleNewRow($event)"
 	(onEdit)="handleEditRow($event)"
-	[database]="database"></app-table>
+	[database]="databaseService"></app-table>

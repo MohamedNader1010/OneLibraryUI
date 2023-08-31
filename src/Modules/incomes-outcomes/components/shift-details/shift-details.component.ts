@@ -24,18 +24,18 @@ export class ShiftDetailsComponent implements OnInit {
   inOutTableColumns!: any[];
   matInOutTableColumns!: any[];
   constructor(
-    private route: ActivatedRoute,
+    private _route: ActivatedRoute,
     public shiftService: ShiftService,
     public attendanceService: AttendanceService,
     public inOutService: IncomesOutcomesService,
     public matInOutService: MaterialTrackingService,
-    private translate: TranslateService,
-    private router: Router,
+    private _translateService: TranslateService,
+    private _router: Router,
   ) {}
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    let id = this.route.snapshot.paramMap.get('id');
+    let id = this._route.snapshot.paramMap.get('id');
     if (id) this.loadShiftData(+id);
   }
 
@@ -45,7 +45,7 @@ export class ShiftDetailsComponent implements OnInit {
         this.shift = res.body;
       },
       error: () => {
-        this.router.navigateByUrl(this.route.snapshot.url.toString());
+        this._router.navigateByUrl(this._route.snapshot.url.toString());
       },
       complete: () => {
         this.attendanceService.dataChange.next({ body: this.shift.attendances } as Response);
@@ -58,8 +58,8 @@ export class ShiftDetailsComponent implements OnInit {
   private initiateTableHeaders() {
     this.attendanceTableColumns = [
       {
-        columnDef: this.translate.instant('table.id'),
-        header: this.translate.instant('table.id.label'),
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
         cell: (element: Attendance) => element.id,
       },
       {
@@ -80,8 +80,8 @@ export class ShiftDetailsComponent implements OnInit {
     ];
     this.inOutTableColumns = [
       {
-        columnDef: this.translate.instant('table.id'),
-        header: this.translate.instant('table.id.label'),
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
         cell: (element: IncomeOutcome) => element.id,
       },
       {
@@ -117,8 +117,8 @@ export class ShiftDetailsComponent implements OnInit {
     ];
     this.matInOutTableColumns = [
       {
-        columnDef: this.translate.instant('table.id'),
-        header: this.translate.instant('table.id.label'),
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
         cell: (element: MaterialTracking) => element.id,
       },
       {

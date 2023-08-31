@@ -10,51 +10,45 @@ import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionali
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({
-	selector: 'app-material',
-	templateUrl: './material.component.html',
-	styleUrls: ['./material.component.css'],
+  selector: 'app-material',
+  templateUrl: './material.component.html',
+  styleUrls: ['./material.component.css'],
 })
 export class MaterialComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-	tableColumns!: any[];
-	loading!: boolean;
-	formName = FormDialogNames.MaterialFormDialogComponent;
-	dataSource!: TableDataSource;
-	componentName = ComponentsName.material;
-	constructor(public override database: MaterialService, public override httpClient: HttpClient, public override toastr: ToastrService, private translate: TranslateService) {
-		super(httpClient, toastr, database);
-	}
+  formName = FormDialogNames.MaterialFormDialogComponent;
+  dataSource!: TableDataSource;
+  componentName = ComponentsName.material;
+  constructor(override databaseService: MaterialService, httpClient: HttpClient, toastrService: ToastrService, private _translateService: TranslateService) {
+    super(httpClient, toastrService, databaseService);
+  }
 
-	ngOnInit(): void {
-		this.initiateTableHeaders();
-		this.loadData();
-	}
+  ngOnInit(): void {
+    this.initiateTableHeaders();
+    this.loadData();
+  }
 
-	private initiateTableHeaders() {
-		this.tableColumns = [
-			{
-				columnDef: this.translate.instant('table.id'),
-				header: this.translate.instant('table.id.label'),
-				cell: (element: Material) => element.id,
-			},
-			{
-				columnDef: this.translate.instant('form.name'),
-				header: this.translate.instant('form.name.label'),
-				cell: (element: Material) => element.name,
-			},
-			{
-				columnDef: 'price',
-				header: 'سعر الجملة',
-				cell: (element: Material) => element.price,
-			},
-			{
-				columnDef: 'CurrentQty',
-				header: 'الكمية الحالية',
-				cell: (element: Material) => element.quantity,
-			},
-		];
-	}
-
-	public loadData() {
-		this.database.getAllMaterials();
-	}
+  private initiateTableHeaders() {
+    this.tableColumns = [
+      {
+        columnDef: this._translateService.instant('table.id'),
+        header: this._translateService.instant('table.id.label'),
+        cell: (element: Material) => element.id,
+      },
+      {
+        columnDef: this._translateService.instant('form.name'),
+        header: this._translateService.instant('form.name.label'),
+        cell: (element: Material) => element.name,
+      },
+      {
+        columnDef: 'price',
+        header: 'سعر الجملة',
+        cell: (element: Material) => element.price,
+      },
+      {
+        columnDef: 'CurrentQty',
+        header: 'الكمية الحالية',
+        cell: (element: Material) => element.quantity,
+      },
+    ];
+  }
 }
