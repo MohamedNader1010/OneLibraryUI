@@ -112,7 +112,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   };
 
   ngOnInit(): void {
-    this.matDialogRef.disableClose = true;
+    this.matDialogRef.disableClose = this.formDataIsLoading = true;
     this.forkJoins();
   }
 
@@ -120,7 +120,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     let observables = [this._databaseService.getStages(), this._databaseService.getTerms(), this._clientTypeService.getAll()];
     return forkJoin(observables)
       .pipe(
-        tap(() => (this.clientTypeLoading = this.clientsLoading = this.serviceLoading = true)),
+        tap(() => (this.clientTypeLoading = this.clientsLoading = this.serviceLoading = this.formDataIsLoading = true)),
         catchError((err) => of(err)),
         map(([stagesResponse, termsResponse, clientTypeResponse]) => {
           return {
@@ -149,6 +149,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         complete: () => {
           this.clientTypeLoading = false;
           if (this.data) this.patchData();
+          else this.formDataIsLoading = false;
           this.subscribeClientTypeChange();
           this.subscribeFormMoneyChanges();
         },
@@ -245,7 +246,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           this.ServicePricesForClientTypesDataSource = servicesResponse.body;
           this.reloadServicesPrices();
           this.calculateTotalActualPrice();
-          this.serviceLoading = this.clientsLoading = false;
+          this.serviceLoading = this.clientsLoading = this.formDataIsLoading = false;
         },
         error: ([clientError, serviceError]) => {
           if (clientError) {

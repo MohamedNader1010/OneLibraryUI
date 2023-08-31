@@ -259,7 +259,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
         const finalPrice = +(totalPrice - +this.discount.value).toFixed(2);
         const paid = +(this.paid.value ?? 0).toFixed(2);
         const rest = +(finalPrice - paid).toFixed(2);
-        console.log(newDiscountPercent, finalPrice, rest);
         this.Form.patchValue({ discountPercent: newDiscountPercent, finalPrice: finalPrice, rest: rest }, { emitEvent: false });
       },
     });

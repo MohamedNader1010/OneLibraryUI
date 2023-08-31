@@ -11,9 +11,8 @@ export class FormsDialogCommonFunctionality {
   destroy$ = new Subject<void>();
   Form!: FormGroup;
   isSubmitting: boolean = false;
-  constructor(public matDialogRef: MatDialogRef<any>, public translateService: TranslateService, public databaseService: GenericService<any>, public toastrService: ToastrService) {
-    this.destroy$.subscribe((v) => console.log(v, 'des'));
-  }
+  formDataIsLoading = false;
+  constructor(public matDialogRef: MatDialogRef<any>, public translateService: TranslateService, public databaseService: GenericService<any>, public toastrService: ToastrService) {}
 
   get id(): FormControl {
     return this.Form.get('id') as FormControl;
