@@ -37,7 +37,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   NotesDataSource: NoteOnly[] = [];
   ClientsDataSource: ClientForForm[] = [];
   ClientTypesDataSource: ClientType[] = [];
-  clearAutocomplete: BehaviorSubject<number> = new BehaviorSubject(0);
   clientsLoading: boolean = false;
   serviceLoading: boolean = false;
   notesLoading: boolean = false;
@@ -338,7 +337,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             clientTypeId: -1,
           };
           this.ClientsDataSource = [newClient, ...clientsResponse.body];
-          this.clearAutocomplete.next(1);
+          this.clientId.setValue(null);
           this.ServicePricesForClientTypesDataSource = servicesResponse.body;
           this.serviceLoading = this.clientsLoading = false;
           this.reloadServicesPrices();
@@ -444,7 +443,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
         next: (result) => {
           if (result?.data) {
             let newClient: ClientForForm = result.data.body;
-            this.clearAutocomplete.next(1);
+            this.clientId.setValue(null);
             if (this.clientTypeId.value === newClient.clientTypeId) {
               this.ClientsDataSource.push(newClient);
               this.clientId.setValue(newClient.id);

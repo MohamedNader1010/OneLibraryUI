@@ -11,7 +11,6 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   destroy$ = new Subject<void>();
   @Input() label: string = '';
   @Input() desplayTextKey: string = 'name';
-  @Input() clear: BehaviorSubject<number> = new BehaviorSubject(0);
   @Input() loading: boolean = false;
   @Input() placeholder: string = '';
   @Input() dataSource: any[] = [];
@@ -42,14 +41,9 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
       }),
       takeUntil(this.destroy$),
     );
-    this.clear.pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.nameControl.reset();
-      },
-    });
   }
   ngOnChanges(changes: any) {
-    if (changes.dataSource) this.nameControl.reset();
+    if (changes.dataSource || this.selectedValue === null) this.nameControl.reset();
     if (this.dataSource.length && this.selectedValue) {
       let selectedItem = this.dataSource.find((option) => option.id === this.selectedValue);
       this.nameControl.setValue(selectedItem);
@@ -70,7 +64,6 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
     });
     return filteredData;
   };
-
   displayFn = (item: any): string => (item ? item[this.desplayTextKey] : '');
 
   emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);

@@ -1,8 +1,7 @@
 <div class="container w-100">
   <ng-container *ngIf="data; else update">
     <h2 class="w-100 text-center mt-3">{{ 'order.edit' | translate }}</h2>
-    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة
-      الخاصة بكل بند في الطلب فقط.</h4>
+    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.</h4>
     <ng-template #complete>
       <h4 class="w-100 text-center mt-1 text-secondary">هذا الطلب مكتمل غير مسموح بتعديل البيانات</h4>
     </ng-template>
@@ -13,8 +12,14 @@
   <mat-dialog-content>
     <form [formGroup]="Form" class="d-flex flex-column">
       <div class="row">
-        <autocomplete *ngIf="!data; else clientType" class="col-5" [label]="'shared.clientType' | translate"
-          [dataSource]="ClientTypesDataSource" (selectedId)="setClientTypeId($event)" [loading]="clientTypeLoading">
+        <autocomplete
+          *ngIf="!data; else clientType"
+          class="col-5"
+          [label]="'shared.clientType' | translate"
+          [dataSource]="ClientTypesDataSource"
+          (selectedId)="setClientTypeId($event)"
+          [loading]="clientTypeLoading"
+        >
         </autocomplete>
         <ng-template #clientType>
           <mat-form-field class="col-5" color="warn">
@@ -22,9 +27,16 @@
             <input matInput [value]="data.clientTypeName" [readonly]="true" />
           </mat-form-field>
         </ng-template>
-        <autocomplete *ngIf="!data; else client" class="col-6" [label]="'shared.client' | translate"
-          [dataSource]="ClientsDataSource" (selectedId)="setClientId($event)" [clear]="clearAutocomplete"
-          [selectedValue]="clientId.value" [loading]="clientsLoading" #clientAutocomplete>
+        <autocomplete
+          *ngIf="!data; else client"
+          class="col-6"
+          [label]="'shared.client' | translate"
+          [dataSource]="ClientsDataSource"
+          (selectedId)="setClientId($event)"
+          [selectedValue]="clientId.value"
+          [loading]="clientsLoading"
+          #clientAutocomplete
+        >
         </autocomplete>
         <ng-template #client>
           <mat-form-field class="col-6" color="warn">
@@ -33,8 +45,16 @@
           </mat-form-field>
         </ng-template>
         <div class="col-1">
-          <button *ngIf="!data" [disabled]="!clientId.value || clientId.invalid" type="button" mat-icon-button
-            matTooltip="اضافه" color="basic" aria-label="add order detail row" (click)="handleNewDetail()">
+          <button
+            *ngIf="!data"
+            [disabled]="!clientId.value || clientId.invalid"
+            type="button"
+            mat-icon-button
+            matTooltip="اضافه"
+            color="basic"
+            aria-label="add order detail row"
+            (click)="handleNewDetail()"
+          >
             <mat-icon>add</mat-icon>
           </button>
         </div>
@@ -45,8 +65,7 @@
           <div [formGroupName]="i">
             <div class="row" *ngIf="!data">
               <label id="service-note-raido-group-label">أختر خدمة او مذكرة</label>
-              <mat-radio-group formControlName="noteOrService" arialabelledby="service-note-raido-group-label"
-                color="warn">
+              <mat-radio-group formControlName="noteOrService" arialabelledby="service-note-raido-group-label" color="warn">
                 <mat-radio-button value="service">خدمات</mat-radio-button>
                 <mat-radio-button value="note">مذكرات</mat-radio-button>
               </mat-radio-group>
@@ -54,10 +73,16 @@
             <div class="row">
               <div class="col-3">
                 <ng-container *ngIf="getNoteOrService(i).value == 'service'">
-                  <autocomplete *ngIf="!data; else service" class="col-3" [label]="'shared.service' | translate"
-                    [dataSource]="ServicePricesForClientTypesDataSource" desplayTextKey="service"
-                    (selectedId)="setServiceIdFromServicePricePerClientType(i, $event)" [clear]="clearAutocomplete"
-                    [selectedValue]="getServicePriceForClientTypeId(i)" [loading]="serviceLoading"></autocomplete>
+                  <autocomplete
+                    *ngIf="!data; else service"
+                    class="col-3"
+                    [label]="'shared.service' | translate"
+                    [dataSource]="ServicePricesForClientTypesDataSource"
+                    desplayTextKey="service"
+                    (selectedId)="setServiceIdFromServicePricePerClientType(i, $event)"
+                    [selectedValue]="getServicePriceForClientTypeId(i)"
+                    [loading]="serviceLoading"
+                  ></autocomplete>
                   <ng-template #service>
                     <mat-form-field class="w-100" color="warn">
                       <mat-label>{{ 'service.name' | translate }}</mat-label>
@@ -66,9 +91,15 @@
                   </ng-template>
                 </ng-container>
                 <ng-container *ngIf="getNoteOrService(i).value == 'note'">
-                  <autocomplete *ngIf="!data; else note" class="col-4" [label]="'shared.note' | translate"
-                    [dataSource]="NotesDataSource" (selectedId)="setNoteId(i, $event)" [clear]="clearAutocomplete"
-                    [selectedValue]="getOrderDetailNoteId(i).value" [loading]="notesLoading">
+                  <autocomplete
+                    *ngIf="!data; else note"
+                    class="col-4"
+                    [label]="'shared.note' | translate"
+                    [dataSource]="NotesDataSource"
+                    (selectedId)="setNoteId(i, $event)"
+                    [selectedValue]="getOrderDetailNoteId(i).value"
+                    [loading]="notesLoading"
+                  >
                   </autocomplete>
 
                   <ng-template #note>
@@ -90,14 +121,10 @@
                   <input type="number" formControlName="copies" matInput min="0" />
                 </mat-form-field>
 
-                <mat-form-field appearance="fill" [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'"
-                  color="warn">
+                <mat-form-field appearance="fill" [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
                   <mat-label>{{ 'quantity.label' | translate }}</mat-label>
-                  <input type="number" matInput formControlName="quantity" [readonly]="isServiceSelected(i) || !!data"
-                    min="0" />
-                    <mat-error *ngIf="getOrderDetailQuantity(i).hasError('exceedQuantity')">
-                      الكمية الحالية {{getOrderDetailQuantity(i).errors?.['exceedQuantity'].availableQuantity}} فقط.
-                    </mat-error>
+                  <input type="number" matInput formControlName="quantity" [readonly]="isServiceSelected(i) || !!data" min="0" />
+                  <mat-error *ngIf="getOrderDetailQuantity(i).hasError('exceedQuantity')"> الكمية الحالية {{getOrderDetailQuantity(i).errors?.['exceedQuantity'].availableQuantity}} فقط. </mat-error>
                 </mat-form-field>
                 <mat-form-field [class]="isServiceSelected(i) && !data ? 'w-23' : 'w-48'" color="warn">
                   <mat-label>{{ 'shared.price' | translate }}</mat-label>
@@ -117,13 +144,18 @@
                 </mat-form-field>
               </div>
               <div [ngClass]="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i) ? 'col-2' : 'col-1'">
-                <button type="button" *ngIf="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i)"
-                  mat-icon-button matTooltip="open" color="basic" aria-label="view certificate"
-                  (click)="handleViewPdf(i, $event)">
+                <button
+                  type="button"
+                  *ngIf="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i)"
+                  mat-icon-button
+                  matTooltip="open"
+                  color="basic"
+                  aria-label="view certificate"
+                  (click)="handleViewPdf(i, $event)"
+                >
                   <mat-icon>open_in_new</mat-icon>
                 </button>
-                <button *ngIf="!data" type="button" mat-icon-button matTooltip="مسح" color="warn"
-                  aria-label="delete selected row" (click)="handleDeleteDetail(i)">
+                <button *ngIf="!data" type="button" mat-icon-button matTooltip="مسح" color="warn" aria-label="delete selected row" (click)="handleDeleteDetail(i)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -142,20 +174,16 @@
         <div class="col-4">
           <mat-form-field class="w-100" color="warn">
             <mat-label>{{ 'shared.discountValue' | translate }}</mat-label>
-            <input type="number" matInput formControlName="discount"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
-            <mat-error *ngIf="discount.invalid && (discount.dirty || discount.touched)"> يجب ان يكون المبلغ اكبر من او
-              يساوي 0 </mat-error>
+            <input type="number" matInput formControlName="discount" [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
+            <mat-error *ngIf="discount.invalid && (discount.dirty || discount.touched)"> يجب ان يكون المبلغ اكبر من او يساوي 0 </mat-error>
           </mat-form-field>
         </div>
         <div class="col-3">
           <mat-form-field class="w-100" color="warn">
             <mat-label>{{ 'shared.discountPercent' | translate }}</mat-label>
-            <input type="number" matInput formControlName="discountPercent"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
+            <input type="number" matInput formControlName="discountPercent" [readonly]="OrderDetails.controls.length <= 0 || !!data" min="0" />
             <span matTextPrefix>%</span>
-            <mat-error *ngIf="discountPercent.invalid && (discountPercent.dirty || discountPercent.touched)"> يجب ان
-              تكون النسبة اكبر من او يساوي 0 </mat-error>
+            <mat-error *ngIf="discountPercent.invalid && (discountPercent.dirty || discountPercent.touched)"> يجب ان تكون النسبة اكبر من او يساوي 0 </mat-error>
           </mat-form-field>
         </div>
       </div>
@@ -169,18 +197,15 @@
         <div class="col-4">
           <mat-form-field class="w-100" color="warn">
             <mat-label>{{ 'shared.paid' | translate }}</mat-label>
-            <input type="number" matInput formControlName="paid" min="0"
-              [readonly]="OrderDetails.controls.length <= 0 || !!data" />
-            <mat-error *ngIf="paid.invalid && (paid.dirty || paid.touched)"> يجب ان يكون المبلغ المدفوع اكبر من 0
-            </mat-error>
+            <input type="number" matInput formControlName="paid" min="0" [readonly]="OrderDetails.controls.length <= 0 || !!data" />
+            <mat-error *ngIf="paid.invalid && (paid.dirty || paid.touched)"> يجب ان يكون المبلغ المدفوع اكبر من 0 </mat-error>
           </mat-form-field>
         </div>
         <div class="col-3">
           <mat-form-field class="w-100" color="warn">
             <mat-label>{{ 'shared.rest' | translate }}</mat-label>
             <input type="number" matInput formControlName="rest" [readonly]="true" />
-            <mat-error *ngIf="rest.invalid && (rest.dirty || rest.touched)"> لا يمكن ان يكون المبلغ المتبقي اقل من 0
-            </mat-error>
+            <mat-error *ngIf="rest.invalid && (rest.dirty || rest.touched)"> لا يمكن ان يكون المبلغ المتبقي اقل من 0 </mat-error>
           </mat-form-field>
         </div>
       </div>
