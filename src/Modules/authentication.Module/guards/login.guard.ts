@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanLoad, Router, RouterStateSnapshot} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {AuthService} from '../services/auth.service';
 import {lastValueFrom} from 'rxjs';
@@ -7,7 +7,7 @@ import {lastValueFrom} from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class LoginGuard implements CanActivate, CanLoad, CanActivateChild {
+export class LoginGuard  {
   constructor(private _router: Router, private _authService: AuthService) {}
   jwtHelper = new JwtHelperService();
   async canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

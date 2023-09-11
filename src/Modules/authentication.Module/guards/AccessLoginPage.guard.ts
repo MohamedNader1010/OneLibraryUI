@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import { CanActivate, CanActivateChild, CanLoad, Router } from '@angular/router';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
-export class AccessLoginPageGuard implements CanActivate, CanLoad, CanActivateChild {
+export class AccessLoginPageGuard  {
   constructor(private _router: Router) {}
   canActivateChild() {
     return this.Auth();
