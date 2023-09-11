@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { tap, takeUntil } from 'rxjs';
 import { MaterialTracking } from '../../interfaces/materialTracking';
 import { MaterialTrackingService } from '../../services/materialTracking.service';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { MaterialService } from './../../../material/services/material.service';
 import { Material } from './../../../material/interfaces/Imaterial';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +62,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
           this.MaterialDataSource = data.body;
         },
         error: (e) => {
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this.toastrService.error(res.message);
         },
         complete: () => {

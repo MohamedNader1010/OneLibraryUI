@@ -1,21 +1,22 @@
 import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
-import {AttendanceService} from 'src/Modules/attendance/services/attendance.service';
-import {Injectable} from '@angular/core';
-import {MaterialService} from 'src/Modules/material/services/material.service';
-import {ClientService} from 'src/Modules/client/services/client.service';
-import {FeedbackService} from 'src/Modules/feadback/services/feedback.service';
-import {IncomesOutcomesService} from 'src/Modules/incomes-outcomes/services/Incomes-outcomes.service';
-import {MaterialTrackingService} from 'src/Modules/material-tracking/services/materialTracking.service';
-import {NoteService} from 'src/Modules/note/services/note.service';
-import {OrderService} from 'src/Modules/order/services/orders.service';
-import {ServicesService} from 'src/Modules/service/services/services.service';
-import {ServicesTypeService} from 'src/Modules/serviceType/services/serviceType.service';
-import {ServicePricePerClientTypeService} from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
-import {EmployeeService} from 'src/Modules/employee/services/employee.service';
-import { ShiftService } from "../../incomes-outcomes/services/shift.service"
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { AttendanceService } from 'src/Modules/attendance/services/attendance.service';
+import { Injectable } from '@angular/core';
+import { MaterialService } from 'src/Modules/material/services/material.service';
+import { ClientService } from 'src/Modules/client/services/client.service';
+import { FeedbackService } from 'src/Modules/feadback/services/feedback.service';
+import { IncomesOutcomesService } from 'src/Modules/incomes-outcomes/services/Incomes-outcomes.service';
+import { MaterialTrackingService } from 'src/Modules/material-tracking/services/materialTracking.service';
+import { NoteService } from 'src/Modules/note/services/note.service';
+import { OrderService } from 'src/Modules/order/services/orders.service';
+import { ServicesService } from 'src/Modules/service/services/services.service';
+import { ServicesTypeService } from 'src/Modules/serviceType/services/serviceType.service';
+import { ServicePricePerClientTypeService } from 'src/Modules/service-price-per-client-type/services/service-price-per-client-type.service';
+import { EmployeeService } from 'src/Modules/employee/services/employee.service';
+import { ShiftService } from '../../incomes-outcomes/services/shift.service';
 import { BankService } from './../../bank/services/bank.service';
 import { SupplierService } from '../../supplier/services/supplier.service';
+import { CommitmentAndDueService } from '../../commitment-and-due/services/commitment-and-due.service';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,7 @@ export class ServiceFactory {
     private _shiftService: ShiftService,
     private _bankService: BankService,
     private _supplierService: SupplierService,
+    private _commitmentAndDueService: CommitmentAndDueService,
   ) {}
 
   getService(componentName: ComponentsName) {
@@ -74,6 +76,8 @@ export class ServiceFactory {
         return this._bankService;
       case ComponentsName.supplier:
         return this._supplierService;
+      case ComponentsName.commitmentAndDue:
+        return this._commitmentAndDueService;
     }
   }
 }

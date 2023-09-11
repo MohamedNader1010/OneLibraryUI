@@ -4,7 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {BehaviorSubject} from 'rxjs';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Attendance} from '../interfaces/attendance';
-import {Response} from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../shared/interfaces/Iresponse';
 
 @Injectable({
   providedIn: 'root',
@@ -17,12 +17,12 @@ export class AttendanceService extends GenericService<Attendance> {
   checkedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   getEmpAttendance = (id: string, from: Date, to: Date) =>
-    this.http.get<Response>(`${this.uri}/GetEmpAttendance/${id}`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
+    this.http.get<ResponseDto>(`${this.uri}/GetEmpAttendance/${id}`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
 
-  getByDate = (from: Date, to: Date) => this.http.get<Response>(`${this.uri}/GetByDate`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
+  getByDate = (from: Date, to: Date) => this.http.get<ResponseDto>(`${this.uri}/GetByDate`, { headers: this.headers, params: { from: from.toDateString(), to: to.toDateString() } });
 
-  checkIn = () => this.http.post<Response>(`${this.uri}/CheckIn`, { headers: this.headers });
+  checkIn = () => this.http.post<ResponseDto>(`${this.uri}/CheckIn`, { headers: this.headers });
 
-  checkOut = () => this.http.post<Response>(`${this.uri}/CheckOut`, { headers: this.headers });
-  AttendanceState = (id: string) => this.http.get<Response>(`${this.uri}/AttendanceState/${id}`, { headers: this.headers });
+  checkOut = () => this.http.post<ResponseDto>(`${this.uri}/CheckOut`, { headers: this.headers });
+  AttendanceState = (id: string) => this.http.get<ResponseDto>(`${this.uri}/AttendanceState/${id}`, { headers: this.headers });
 }

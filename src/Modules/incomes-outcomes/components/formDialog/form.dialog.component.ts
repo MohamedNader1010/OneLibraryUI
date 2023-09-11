@@ -6,10 +6,10 @@ import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service'
 import { Material } from './../../../material/interfaces/Imaterial';
 import { TranslateService } from '@ngx-translate/core';
 import { IncomeOutcome } from '../../interfaces/Iincome-outcome';
-import { IncomeOutcomeSource } from '../../../../Persistents/enums/IncomeOutcomeSource.emun';
+import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
-import { IncomeOutcomeStatus } from '../../../../Persistents/enums/IncomeOutcome.enum';
-import { Response } from '../../../shared/interfaces/Iresponse';
+import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
+import { ResponseDto } from '../../../shared/interfaces/Iresponse';
 @Component({
   selector: 'app-form.dialog',
   templateUrl: './form.dialog.html',
@@ -28,12 +28,12 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   ) {
     super(dialogRef, translateService, _databaseService, toastrService);
     this.incomeOutcomeSources = [
-      { value: IncomeOutcomeSource.IcoumeOutcome, name: 'اليومية' },
-      { value: IncomeOutcomeSource.Bank, name: 'البنك' },
+      { value: TransactionSource.IcoumeOutcome, name: 'اليومية' },
+      { value: TransactionSource.Bank, name: 'البنك' },
     ];
     this.Form = this._fb.group({
       status: [null],
-      source: [IncomeOutcomeSource.IcoumeOutcome],
+      source: [TransactionSource.IcoumeOutcome],
       amount: [0],
       comment: [''],
     });
@@ -65,7 +65,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   }
 
   addIncomeOutcome() {
-    this.status.setValue(this.amount.value > 0 ? IncomeOutcomeStatus.وارد : IncomeOutcomeStatus.صادر);
+    this.status.setValue(this.amount.value > 0 ? TransactionStatus.وارد : TransactionStatus.صادر);
     this._databaseService.add(this.Form.value).subscribe({
       next: (res) => {
         // if(this.source.value == IncomeOutcomeSource.IcoumeOutcome){
@@ -75,7 +75,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
       },
       error: (e) => {
         this.isSubmitting = false;
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this.toastrService.error(res.message);
       },
       complete: () => {

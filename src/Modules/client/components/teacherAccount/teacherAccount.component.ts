@@ -11,7 +11,7 @@ import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommon
 import { TableDataSource } from 'src/Modules/shared/classes/tableDataSource';
 import { TeacherProfitResponse } from '../../interFaces/IteacherProfitResponse';
 import { PayTeacherProfitComponent } from '../payTeacherProfit/payTeacherProfit.component';
-import { takeUntil } from 'rxjs';
+import { fromEvent, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-teacherAccount',
   templateUrl: './teacherAccount.component.html',
@@ -29,6 +29,7 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
   columnsToDisplayWithExpand!: string[];
   dataSource!: TableDataSource;
   expandedElement: any;
+  filteredDataLength = 0;
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
@@ -41,6 +42,16 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
   ngOnInit(): void {
     this.initializeTableColumns();
     this.loadData();
+    this.dataSource.filteredDataLength$.pipe(takeUntil(this.destroy$)).subscribe((length) => {
+      this.filteredDataLength = length;
+    });
+    fromEvent(this.filter.nativeElement, 'keyup')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (!this.dataSource) return;
+        this.dataSource.filter = this.filter.nativeElement.value;
+        this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
+      });
   }
 
   override loadData() {

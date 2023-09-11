@@ -3,8 +3,8 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
 import {Attendance} from './interfaces/attendance';
 import {AttendanceService} from './services/attendance.service';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import {TranslateService} from '@ngx-translate/core';
 import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
 @Component({

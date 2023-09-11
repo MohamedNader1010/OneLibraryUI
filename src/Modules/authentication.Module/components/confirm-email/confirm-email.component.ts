@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { Auth } from '../../interfaces/IAuth';
-import { Response } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/Iresponse';
 
 @Component({
   selector: 'app-confirm-email',
@@ -21,7 +21,7 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
         .confirmEmail(res.userid, res.token)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (data: Response) => {
+          next: (data: ResponseDto) => {
             let auth: Auth = data.body;
             this._authService.setLocalStorage(auth);
             this._authService.username.next(auth.username);
@@ -32,7 +32,7 @@ export class ConfirmEmailComponent implements OnInit, OnDestroy {
             this._authService.isLogged = false;
             this._authService.username.next(null);
             this._authService.clearLocalStorage();
-            let res: Response = e.error ?? e;
+            let res: ResponseDto = e.error ?? e;
             this._toastrService.error(res.message, 'unauthorized');
           },
           complete: () => {

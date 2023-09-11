@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, E
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil, fromEvent, Subject } from 'rxjs';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FormHelpers } from '../../classes/form-helpers';
 import { TableDataSource } from '../../classes/tableDataSource';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { MatPaginator } from '@angular/material/paginator';
@@ -17,7 +17,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
-import { Response } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/Iresponse';
 import { NoteClient } from '../../../note/interfaces/InoteClient';
 
 const detailExpandAnimation = trigger('detailExpand', [
@@ -54,6 +54,8 @@ export class TableComponent implements OnInit, OnDestroy {
   @Output() onNew = new EventEmitter<any>();
   @Output() onEdit = new EventEmitter<any>();
   @Output() onTransaction = new EventEmitter<any>();
+  @Output() onNotePrint = new EventEmitter<any>();
+  @Output() onMarkAsReady = new EventEmitter<any>();
 
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
@@ -72,6 +74,8 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() canNavigateToDetails: boolean = false;
   @Input() canExpand: boolean = false;
   @Input() isPaginated: boolean = false;
+  @Input() canMarkOrderDetailAsReady: boolean = false;
+  @Input() canPrintNote: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
   constructor(public dialog: MatDialog, private _router: Router, private _activatedRoute: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
@@ -94,7 +98,7 @@ export class TableComponent implements OnInit, OnDestroy {
       .catch((err) => console.log(err));
 
     this.connection.on('add', (res: Order) => {
-      (this.database.dataChange.value as Response).body.push(res);
+      (this.database.dataChange.value as ResponseDto).body.push(res);
       this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
       this.refreshTable();
     });
@@ -179,8 +183,8 @@ export class TableComponent implements OnInit, OnDestroy {
         next: (result) => {
           if (result?.data) {
             if (this.componentName == ComponentsName.order) {
-              let newOrder: Order = (result.data as Response).body;
-              let lastOrder: Order = (this.database.dataChange.value as Response).body[(this.database.dataChange.value as Response).body.length - 1];
+              let newOrder: Order = (result.data as ResponseDto).body;
+              let lastOrder: Order = (this.database.dataChange.value as ResponseDto).body[(this.database.dataChange.value as ResponseDto).body.length - 1];
               if (lastOrder.id != newOrder.id) {
                 this.onNew.emit(result.data.message);
               }
@@ -226,7 +230,12 @@ export class TableComponent implements OnInit, OnDestroy {
 
   async handleTransaction(row: any, $event: any) {
     $event.stopPropagation();
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
+    let dialogComponent = null;
+    if (this.componentName == ComponentsName.commitmentAndDue) {
+      dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.commitmentAndDueComponentTransactionFormDialog);
+    } else {
+      dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
+    }
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
       minWidth: '30%',
@@ -266,6 +275,16 @@ export class TableComponent implements OnInit, OnDestroy {
     } else {
       alert('not found');
     }
+  };
+
+  MarkAsReady = (row: any, $event: any) => {
+    $event.stopPropagation();
+    this.onMarkAsReady.emit(row);
+  };
+
+  printNote = (row: any, $event: any) => {
+    $event.stopPropagation();
+    this.onNotePrint.emit(row);
   };
 
   onPageChange() {

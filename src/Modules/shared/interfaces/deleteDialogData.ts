@@ -1,6 +1,6 @@
-import { ComponentsName } from "src/Persistents/enums/components.name";
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 
 export interface DeleteDialogData {
-    row: any,
-    componentName: ComponentsName
+  row: any;
+  componentName: ComponentsName;
 }

@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import { CustomValidators } from '../../customeValidators/CustomValidators';
 import { AuthService } from '../../services/auth.service';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -63,7 +63,7 @@ export class ResetPasswordComponent {
           },
           error: (e) => {
             this.logging = false;
-            let res: Response = e.error ?? e;
+            let res: ResponseDto = e.error ?? e;
             this._toastrService.error(res.message);
           },
           complete: () => {

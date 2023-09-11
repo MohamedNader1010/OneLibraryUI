@@ -1,57 +1,74 @@
 <div class="d-flex h-100 flex-column">
   <div class="container-fluid my-3">
-    <div class="row">
-      <div class="col-3">
-        <mat-card class="mat-elevation-z8 main_card">
-          <mat-card-header>الرصيد الأفتتاحي</mat-card-header>
-          <mat-card-content>
-            <p>
-              {{bank?.startingBalance?? "-"}} جنية
-            </p>
-          </mat-card-content>
-        </mat-card>
+    <div class="row h-100">
+      <div class="col-6 d-flex flex-column justify-content-between">
+        <div class="row">
+          <div class="col-6">
+            <mat-card class="main_card">
+              <mat-card-header>الرصيد الأفتتاحي</mat-card-header>
+              <mat-card-content>
+                <p>{{ bank?.startingBalance ?? '-' }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="col-6">
+            <mat-card>
+              <mat-card-header>الرصيد النهائي</mat-card-header>
+              <mat-card-content>
+                <p>{{ bank?.balance ?? '-' }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-6">
+            <mat-card>
+              <mat-card-header>إجمالي الصادر</mat-card-header>
+              <mat-card-content>
+                <p>{{ bank?.totalOutcome ?? '-' }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="col-6">
+            <mat-card>
+              <mat-card-header>إجمالي الوارد</mat-card-header>
+              <mat-card-content>
+                <p>{{ bank?.totalIncome ?? '-' }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
       </div>
-      <div class="col-3">
-        <mat-card>
-          <mat-card-header>إجمالي الوارد</mat-card-header>
-          <mat-card-content>
-            <p>
-              {{bank?.totalIncome?? "-" }} جنية
-            </p>
-          </mat-card-content>
-        </mat-card>
-      </div>
-      <div class="col-3">
-        <mat-card>
-          <mat-card-header>إجمالي الصادر</mat-card-header>
-          <mat-card-content>
-            <p>
-              {{bank?.totalOutcome?? "-"}} جنية
-            </p>
-          </mat-card-content>
-        </mat-card>
-      </div>
-      <div class="col-3">
-        <mat-card>
-          <mat-card-header>الرصيد النهائي</mat-card-header>
-          <mat-card-content>
-            <p>
-              {{bank?.balance?? "-"}} جنية
-            </p>
-          </mat-card-content>
-        </mat-card>
+      <div class="col-6">
+        <div class="row h-100">
+          <div class="col-6">
+            <mat-card class="main_card h-100">
+              <mat-card-header>الالتزامات</mat-card-header>
+              <mat-card-content>
+                <br />
+                <p>الأجمالي: {{ commitments.amount }} جنية</p>
+                <p>تم الدفع: {{ commitments.paid }} جنية</p>
+                <p>المتبقي: {{ commitments.rest }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div class="col-6">
+            <mat-card class="h-100">
+              <mat-card-header>المستحقات</mat-card-header>
+              <mat-card-content>
+                <br />
+                <p>الأجمالي: {{ dues.amount }} جنية</p>
+                <p>تم التحصيل: {{ dues.paid }} جنية</p>
+                <p>المتبقي: {{ dues.rest }} جنية</p>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div style="height: 87%;">
-    <app-table
-    class="h-100"
-      [tableColumns]="tableColumns"
-      [formName]="formName"
-      [componentName]="componentName"
-      (onNew)="handleNewRow($event)"
-      [canEdit]="false"
-      [database]="databaseService">
+  <div style="height: 87%">
+    <app-table class="h-100" [tableColumns]="tableColumns" [formName]="formName" [componentName]="componentName" (onNew)="handleNewRow($event)" [canEdit]="false" [database]="databaseService">
     </app-table>
   </div>
 </div>

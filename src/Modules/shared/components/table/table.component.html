@@ -8,13 +8,21 @@
     </mat-form-field>
   </div>
   <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
-    <table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+    <table tabindex="0" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
       <ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="column.columnDef" [sticky]="first || last">
         <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="setActiveSortColumn(column.columnDef)">
           {{ column.header }}
         </th>
         <td mat-cell *matCellDef="let row">
-          {{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
+          <ng-container *ngIf="column.columnDef.indexOf('barcode') < 0; else barcode">
+            <!-- <div style="text-align: center"> -->
+              {{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
+            <!-- </div> -->
+          </ng-container>
+          <ng-template #barcode>
+            <!-- <ejs-barcodegenerator id="barcode" width="200px" height="150px" mode="Image" type="Codabar" [value]="column.cell(row) "></ejs-barcodegenerator> -->
+            <!-- <ngx-barcode [bc-value]="column.cell(row)" [bc-display-value]="true"></ngx-barcode> -->
+          </ng-template>
         </td>
       </ng-container>
       <ng-container matColumnDef="actions" stickyEnd>
@@ -28,7 +36,7 @@
           </button>
         </th>
         <td mat-cell *matCellDef="let row">
-          <button *ngIf="hasTransaction" mat-icon-button matTooltip="add transaction" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
+          <button *ngIf="hasTransaction" mat-icon-button matTooltip="تسجيل معاملة مالية" color="basic" aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
             <mat-icon>paid</mat-icon>
           </button>
           <button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row" (click)="handleView(row, $event)">
@@ -87,14 +95,14 @@
   <td [attr.colspan]="displayedColumns.length" *ngIf="row.noteClients && row.noteClients.length > 0">
     <table mat-table [dataSource]="row.noteClients" class="table table-striped shadow-sm">
       <ng-container matColumnDef="name" [sticky]="true">
-        <th mat-header-cell *matHeaderCellDef style="width: 800px;">الإسم</th>
-        <td mat-cell *matCellDef="let noteClient" style="width: 800px;">{{ noteClient?.name }}</td>
-        <td mat-footer-cell *matFooterCellDef style="width: 800px;">الأجمالي</td>
+        <th mat-header-cell *matHeaderCellDef style="width: 800px">الإسم</th>
+        <td mat-cell *matCellDef="let noteClient" style="width: 800px">{{ noteClient?.name }}</td>
+        <td mat-footer-cell *matFooterCellDef style="width: 800px">الأجمالي</td>
       </ng-container>
       <ng-container matColumnDef="quantity" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef>الكمية</th>
         <td mat-cell *matCellDef="let noteClient">{{ noteClient?.quantity }}</td>
-        <td mat-footer-cell *matFooterCellDef>{{getTotal(row.noteClients)}}</td>
+        <td mat-footer-cell *matFooterCellDef>{{ getTotal(row.noteClients) }}</td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="['name', 'quantity']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['name', 'quantity']"></tr>

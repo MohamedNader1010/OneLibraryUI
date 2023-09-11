@@ -3,8 +3,8 @@ import { HttpClient } from "@angular/common/http"
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core"
 import { ToastrService } from "ngx-toastr"
-import { ComponentsName } from "../../../../Persistents/enums/components.name"
-import { FormDialogNames } from "../../../../Persistents/enums/forms-name"
+import { ComponentsName } from '../../../shared/enums/components.name.enum';
+import { FormDialogNames } from '../../../shared/enums/forms-name.enum';
 import { TableCommonFunctionality } from "../../../shared/classes/tableCommonFunctionality"
 import { ShiftService } from "../../services/shift.service"
 

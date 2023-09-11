@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenericService } from '../services/genericCRUD.service';
 import { Observer, Subject, takeUntil } from 'rxjs';
-import { Response } from '../interfaces/Iresponse';
+import { ResponseDto } from '../interfaces/Iresponse';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
 @Injectable()
@@ -20,7 +20,7 @@ export class FormsDialogCommonFunctionality {
 
   onNoClick = () => this.matDialogRef.close();
 
-  addAndUpdateObserver(): Observer<Response> {
+  addAndUpdateObserver(): Observer<ResponseDto> {
     return {
       next: (res) => {
         this.databaseService.DialogData = res.body;
@@ -28,7 +28,7 @@ export class FormsDialogCommonFunctionality {
       },
       error: (e) => {
         this.isSubmitting = false;
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this.toastrService.error(res.message);
       },
       complete: () => {

@@ -4,11 +4,11 @@ import {Subscription} from 'rxjs';
 import {Client} from './interFaces/Iclient';
 import {ClientService} from './services/client.service';
 import {ToastrService} from 'ngx-toastr';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import {TranslateService} from '@ngx-translate/core';
-import {HttpClient} from '@angular/common/http';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 @Component({
   selector: 'app-all',
   templateUrl: './client.component.html',

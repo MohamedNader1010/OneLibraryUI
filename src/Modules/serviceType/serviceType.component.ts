@@ -2,8 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { ComponentsName } from 'src/Persistents/enums/components.name';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ServicesTypeService } from './services/serviceType.service';
 import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
 

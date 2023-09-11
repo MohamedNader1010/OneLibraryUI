@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
-import { FormDialogNames } from '../../Persistents/enums/forms-name';
-import { ComponentsName } from '../../Persistents/enums/components.name';
+import { FormDialogNames } from '../shared/enums/forms-name.enum';
+import { ComponentsName } from '../shared/enums/components.name.enum';
 import { SupplierService } from './services/supplier.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,8 +50,8 @@ export class SupplierComponent extends TableCommonFunctionality implements OnIni
         cell: (element: Supplier) => element.totalDue,
       },
       {
-        columnDef: this._translateService.instant('form.Supplier.paid'),
-        header: this._translateService.instant('form.Supplier.paid.label'),
+        columnDef: this._translateService.instant('form.Supplier.takeMoney'),
+        header: this._translateService.instant('form.Supplier.takeMoney.label'),
         cell: (element: Supplier) => element.paid,
       },
       {

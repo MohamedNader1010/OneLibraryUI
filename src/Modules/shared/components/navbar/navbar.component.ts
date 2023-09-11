@@ -9,7 +9,7 @@ import {
 import { AuthService } from 'src/Modules/authentication.Module/services/auth.service';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
-import { Response } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/Iresponse';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subject, takeUntil } from 'rxjs';
 @Component({
@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           this._toastrService.success(res.message);
         },
         error: (e) => {
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this._toastrService.error(res.message);
         },
       });
@@ -78,7 +78,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           this._toastrService.success(res.message);
         },
         error: (e) => {
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this._toastrService.error(res.message);
         },
       });

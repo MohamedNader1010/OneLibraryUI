@@ -1,23 +1,28 @@
-import { HttpClient, HttpEvent, HttpHeaders } from "@angular/common/http";
-import { environment } from "src/environments/environment";
-import { Response } from "../interfaces/Iresponse";
-import { BehaviorSubject, Observable } from "rxjs";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { ResponseDto } from '../interfaces/Iresponse';
+import { BehaviorSubject } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
 export abstract class GenericService<Tin> {
   loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   get isLoading(): boolean {
     return this.loadingData.value;
   }
-  _emptyResponse: Response = {
+  _emptyResponse: ResponseDto = {
     body: [],
     message: '',
     status: true,
     totalCount: 0,
   };
-  dataChange: BehaviorSubject<Response> = new BehaviorSubject<Response>(this._emptyResponse);
+  dataChange: BehaviorSubject<ResponseDto> = new BehaviorSubject<ResponseDto>(this._emptyResponse);
 
-  get data(): Response {
+  get data(): ResponseDto {
     return this.dataChange.value ?? this._emptyResponse;
   }
 
@@ -35,24 +40,24 @@ export abstract class GenericService<Tin> {
   uri: string = `${environment.apiUrl}${this._controller}`;
   headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  getAll = () => this.http.get<Response>(`${this.uri}`, { headers: this.headers });
+  getAll = () => this.http.get<ResponseDto>(`${this.uri}`, { headers: this.headers });
 
   getAllDataForTable() {
     this.loadingData.next(true);
-    this.http.get<Response>(this.uri).subscribe({
-      next: (data: Response) => {
+    this.http.get<ResponseDto>(this.uri).subscribe({
+      next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
       error: (e) => {
         this.loadingData.next(false);
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this._toastrService.error(res.message);
       },
       complete: () => this.loadingData.next(false),
     });
   }
 
-  add = (model: Tin) => this.http.post<Response>(`${this.uri}`, model, { headers: this.headers });
+  add = (model: Tin) => this.http.post<ResponseDto>(`${this.uri}`, model, { headers: this.headers });
 
   addFormData = (model: Tin, selectedFile?: File | null, formKey?: string) => {
     const formData = new FormData();
@@ -63,10 +68,10 @@ export abstract class GenericService<Tin> {
     return this.http.post(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
   };
 
-  // GetById = (id: string | number) => this.http.get<Response>(`${this.uri}/GetById`, { headers: this.headers, params: { id: id } });
-  GetById = (id: string | number) => this.http.get<Response>(`${this.uri}/${id}`, { headers: this.headers });
+  // GetById = (id: string | number) => this.http.get<ResponseDto>(`${this.uri}/GetById`, { headers: this.headers, params: { id: id } });
+  GetById = (id: string | number) => this.http.get<ResponseDto>(`${this.uri}/${id}`, { headers: this.headers });
 
-  update = (id: string | number, model: Tin) => this.http.put<Response>(`${this.uri}`, { ...model, id }, { headers: this.headers });
+  update = (id: string | number, model: Tin) => this.http.put<ResponseDto>(`${this.uri}`, { ...model, id }, { headers: this.headers });
 
   updateFormData = (model: Tin, selectedFile?: File | null, formKey?: string) => {
     const formData = new FormData();
@@ -77,7 +82,7 @@ export abstract class GenericService<Tin> {
     return this.http.put(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
   };
 
-  delete = (id: string | number) => this.http.delete<Response>(`${this.uri}`, { headers: this.headers, params: { id: id } });
+  delete = (id: string | number) => this.http.delete<ResponseDto>(`${this.uri}`, { headers: this.headers, params: { id: id } });
 
   appendNestedObjectToFormData(formData: FormData, object: any) {
     for (const key in object) {

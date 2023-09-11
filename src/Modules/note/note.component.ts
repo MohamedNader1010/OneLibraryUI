@@ -2,12 +2,12 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { ToastrService } from "ngx-toastr";
-import { ComponentsName } from "src/Persistents/enums/components.name";
-import { FormDialogNames } from "src/Persistents/enums/forms-name";
-import { NoteService } from "./services/note.service";
-import { Note } from "./interfaces/Inote";
-import { TableCommonFunctionality } from "../shared/classes/tableCommonFunctionality";
-import { TranslateService } from "@ngx-translate/core";
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { NoteService } from './services/note.service';
+import { Note } from './interfaces/Inote';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-note',
@@ -88,6 +88,11 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
         header: 'pdf',
         cell: (element: Note) => element.fileName ?? '-',
       },
+      // {
+      //   columnDef: 'barcode',
+      //   header: 'باركود',
+      //   cell: (element: Note) => element.id,
+      // },
     ];
   }
 }

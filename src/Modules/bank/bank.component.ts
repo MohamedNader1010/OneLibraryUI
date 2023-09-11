@@ -1,15 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ComponentsName } from "../../Persistents/enums/components.name";
-import { FormDialogNames } from "../../Persistents/enums/forms-name";
-import { TableCommonFunctionality } from "../shared/classes/tableCommonFunctionality";
-import { BankService } from "./services/bank.service";
-import { HttpClient } from "@angular/common/http";
-import { MatDialog } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { Bank } from "./interfaces/Ibank";
-import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
-import { IncomeOutcome } from "../incomes-outcomes/interfaces/Iincome-outcome";
+import { ComponentsName } from '../shared/enums/components.name.enum';
+import { FormDialogNames } from '../shared/enums/forms-name.enum';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { BankService } from './services/bank.service';
+import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { Bank } from './interfaces/Ibank';
+import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
+import { IncomeOutcome } from '../incomes-outcomes/interfaces/Iincome-outcome';
+import { CommitmentAndDueTotal } from '../commitment-and-due/interfaces/Icommitment-and-due-total.interface';
+import { CommitmentAndDueService } from '../commitment-and-due/services/commitment-and-due.service';
 
 @Component({
   selector: 'app-bank',
@@ -21,8 +23,17 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   componentName = ComponentsName.Bank;
   bank!: Bank | null;
   defualtBankId: number = 3;
+  commitments: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
+  dues: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
 
-  constructor(httpClient: HttpClient, toastrService: ToastrService, override databaseService: BankService, private _translateService: TranslateService, public dialog: MatDialog) {
+  constructor(
+    httpClient: HttpClient,
+    toastrService: ToastrService,
+    override databaseService: BankService,
+    private _translateService: TranslateService,
+    private _commitmentAndDueService: CommitmentAndDueService,
+    public dialog: MatDialog,
+  ) {
     super(httpClient, toastrService, databaseService);
   }
   isHovered = false;
@@ -39,6 +50,12 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
     this.initiateTableHeaders();
     this.loadData();
     this.getBankDtata();
+    this._commitmentAndDueService.TotalCommitments().subscribe({
+      next: (res) => (this.commitments = res.body),
+    });
+    this._commitmentAndDueService.TotalDues().subscribe({
+      next: (res) => (this.dues = res.body),
+    });
   }
 
   getBankDtata() {
@@ -64,7 +81,7 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: IncomeOutcome) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'comment',

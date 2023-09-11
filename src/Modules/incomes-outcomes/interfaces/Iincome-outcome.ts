@@ -1,12 +1,12 @@
-import {IncomeOutcomeStatus} from '../../../Persistents/enums/IncomeOutcome.enum';
-import { IncomeOutcomeSource } from "../../../Persistents/enums/IncomeOutcomeSource.emun";
+import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
+import { TransactionSource } from '../../shared/enums/TransactionSource.emun';
 
 export interface IncomeOutcome {
-	id: number;
-	status: IncomeOutcomeStatus;
-  source: IncomeOutcomeSource;
-	amount: number;
-	comment: string;
-	createdOn: Date;
-	createdBy: string;
+  id: number;
+  status: TransactionStatus;
+  source: TransactionSource;
+  amount: number;
+  comment: string;
+  createdOn: Date;
+  createdBy: string;
 }

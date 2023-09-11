@@ -35,6 +35,7 @@ const routes: Routes = [
       { path: 'feadback', loadChildren: () => import('../../feadback/feadback.module').then((m) => m.FeadbackModule), canActivate: [AuthGuard] },
       { path: 'materialTracking', loadChildren: () => import('../../material-tracking/materialTracking.module').then((m) => m.materialTrackingModule), canActivate: [AuthGuard] },
       { path: 'imcomesOutcomes', loadChildren: () => import('../../incomes-outcomes/incomes-outcomes.module').then((m) => m.IncomesOutcomesModule), canActivate: [AuthGuard] },
+      { path: 'commitmentAndDue', loadChildren: () => import('../../commitment-and-due/commitment-and-due.module').then((m) => m.CommitmentAndDueModule), canActivate: [AuthGuard] },
       { path: 'bank', loadChildren: () => import('../../bank/bank.module').then((m) => m.BankModule), canActivate: [AuthGuard] },
       { path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard] },
       { path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },

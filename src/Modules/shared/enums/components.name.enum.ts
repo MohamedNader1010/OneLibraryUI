@@ -15,4 +15,5 @@ export enum ComponentsName {
   shift = 'shift',
   Bank = 'bank',
   supplier = 'supplier',
+  commitmentAndDue = 'commitmentAndDue',
 }

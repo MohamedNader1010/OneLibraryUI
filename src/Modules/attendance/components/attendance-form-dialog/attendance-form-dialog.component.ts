@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { tap, takeUntil } from 'rxjs';
 import { Attendance } from '../../interfaces/attendance';
 import { AttendanceService } from '../../services/attendance.service';
-import { Response } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/Iresponse';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeService } from '../../../employee/services/employee.service';
 import { DatePipe } from '@angular/common';
@@ -68,7 +68,7 @@ export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionalit
         },
         error: (e) => {
           this.isSubmitting = false;
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this.toastrService.error(res.message);
         },
         complete: () => {

@@ -1,19 +1,22 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {HttpClient} from '@angular/common/http';
-import {MatDialog} from '@angular/material/dialog';
-import {TranslateService} from '@ngx-translate/core';
-import {ToastrService} from 'ngx-toastr';
-import {TableCommonFunctionality} from 'src/Modules/shared/classes/tableCommonFunctionality';
-import {ReservedOrderDetails} from '../../interfaces/IreservedOrderDetails';
-import {MatPaginator} from '@angular/material/paginator';
-import {MatSort} from '@angular/material/sort';
-import {TableDataSource} from 'src/Modules/shared/classes/tableDataSource';
-import {OrderDetail} from './../../interfaces/IorderDetail';
-import {OrderService} from './../../services/orders.service';
-import {Status} from '../../Enums/status';
-import {Response} from 'src/Modules/shared/interfaces/Iresponse';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { HttpClient } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommonFunctionality';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { TableDataSource } from 'src/Modules/shared/classes/tableDataSource';
+import { OrderService } from './../../services/orders.service';
+import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
+import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
 import { takeUntil } from 'rxjs';
+import { Reservation } from '../../interfaces/IReservation.interface';
+import { ReservedOrderDetail } from '../../interfaces/IReservedOrderDetail.interface';
+import { NoteService } from '../../../note/services/note.service';
+import { PrintNote } from '../../../note/interfaces/Iprint-note.interface';
+import { ReservedNote } from '../../interfaces/IReservedNote.interface';
 
 @Component({
   selector: 'app-reservations',
@@ -28,7 +31,7 @@ import { takeUntil } from 'rxjs';
   ],
 })
 export class ReservationsComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
-  reservedOrderDetails: ReservedOrderDetails[] = [];
+  reservations: Reservation[] = [];
   displayedColumns!: string[];
   columnsToDisplayWithExpand!: string[];
   dataSource!: TableDataSource;
@@ -41,10 +44,10 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
   constructor(
-    private _orderService: OrderService,
     private _translateService: TranslateService,
     public dialog: MatDialog,
     override databaseService: OrderService,
+    private _noteService: NoteService,
     toastrService: ToastrService,
     httpClient: HttpClient,
   ) {
@@ -67,47 +70,104 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
       {
         columnDef: this._translateService.instant('table.id'),
         header: this._translateService.instant('table.id.label'),
-        cell: (row: ReservedOrderDetails) => row.id,
+        cell: (row: Reservation) => row.id,
       },
       {
         columnDef: 'createdOn',
         header: 'تاريخ الحجز',
-        cell: (row: ReservedOrderDetails) => row.createdOn,
+        cell: (row: Reservation) => row.createdOn,
       },
     ];
   }
   clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 
-  handlePrint(reservedOrderDetails: ReservedOrderDetails, noteId: number, data: OrderDetail[]) {
-    if (data.length) {
-      data.map((od) => (od.orderStatus = Status.جاهز));
-      this._orderService
-        .markOrderDetailsAsReady(data)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => {
-            this._orderService.DialogData = res.body;
-            this.toastrService.success(res.message);
-          },
-          error: (e) => {
-            let res: Response = e.error ?? e;
-            this.toastrService.error(res.message);
-          },
-          complete: () => {
-            reservedOrderDetails.reservedNotes.splice(
-              reservedOrderDetails.reservedNotes.findIndex((r) => r.noteId === noteId),
-              1,
-            );
-            if (reservedOrderDetails.reservedNotes.length) this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.indexOf(reservedOrderDetails)] = reservedOrderDetails;
-            else
-              this.databaseService.dataChange.value.body.splice(
-                this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === reservedOrderDetails.id),
-                1,
-              );
-            this.refreshTable();
-          },
-        });
-    }
+  handleReadyOrderDetail = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
+    $event.stopPropagation();
+    console.log(data);
+    data.orderStatus = OrderDetailStatus.جاهز;
+    this.databaseService.MarkSingleOrderDetailAsReady(data).subscribe({
+      next: (res) => {
+        this.databaseService.DialogData = res.body;
+        this.toastrService.success(res.message);
+      },
+      error: (e) => {
+        let res: ResponseDto = e.error ?? e;
+        this.toastrService.error(res.message);
+      },
+      complete: () => {
+        const reservedNote = reservation.reservedNotes.find((note: ReservedNote) => note.noteId === data.noteId);
+        const reservedNoteIndex = reservation.reservedNotes.findIndex((note: ReservedNote) => note.noteId === data.noteId);
+        if (reservedNote) {
+          const detailIndex = reservedNote.orderDetails.findIndex((detail) => detail.id === data.id);
+          reservedNote.noteQuantity -= data.quantity;
+          reservedNote.orderDetails.splice(detailIndex, 1);
+          if (reservedNote.orderDetails.length) reservation.reservedNotes[reservedNoteIndex] = reservedNote;
+          else reservation.reservedNotes.splice(reservedNoteIndex, 1);
+          this.updateTableData(reservation);
+          return;
+        }
+      },
+    });
+  };
+
+  handleNotePrint = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
+    $event.stopPropagation();
+    console.log(data);
+    let model: PrintNote = {
+      id: data.noteId,
+      quantity: data.quantity,
+    };
+    this._noteService.printNote(model).subscribe({
+      next: (res) => {
+        this.toastrService.success(res.message);
+      },
+      error: (e) => {
+        let res: ResponseDto = e.error ?? e;
+        this.toastrService.error(res.message);
+      },
+      complete: () => {
+        const reservedNote = reservation.reservedNotes.find((note: ReservedNote) => note.noteId === data.noteId);
+        const reservedNoteIndex = reservation.reservedNotes.findIndex((note: ReservedNote) => note.noteId === data.noteId);
+        if (reservedNote) {
+          reservedNote.noteQuantity += data.quantity;
+          reservation.reservedNotes[reservedNoteIndex] = reservedNote;
+          this.updateTableData(reservation);
+          return;
+        }
+      },
+    });
+  };
+
+  // handlePrint(reservation: Reservation, noteId: number, data: ReservedOrderDetail[]) {
+  //   if (data.length) {
+  //     data.map((od) => (od.orderStatus = OrderDetailStatus.جاهز));
+  //     this.databaseService
+  //       .markOrderDetailsAsReady(data)
+  //       .pipe(takeUntil(this.destroy$))
+  //       .subscribe({
+  //         next: (res) => {
+  //           this.databaseService.DialogData = res.body;
+  //           this.toastrService.success(res.message);
+  //         },
+  //         error: (e) => {
+  //           let res: ResponseDto = e.error ?? e;
+  //           this.toastrService.error(res.message);
+  //         },
+  //         complete: () => {
+  //           const reservedNoteIndex = reservation.reservedNotes.findIndex((r) => r.noteId === noteId);
+  //           reservation.reservedNotes.splice(reservedNoteIndex, 1);
+  //           this.updateTableData(reservation);
+  //         },
+  //       });
+  //   }
+  // }
+
+  private updateTableData(reservation: Reservation) {
+    const reservationIndex = this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === reservation.id);
+    if (reservation.reservedNotes.length) this.databaseService.dataChange.value.body[reservationIndex] = reservation;
+    else this.databaseService.dataChange.value.body.splice(reservationIndex, 1);
+    this.refreshTable();
   }
+
   private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 }

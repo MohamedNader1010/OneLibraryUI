@@ -3,8 +3,8 @@ import {Injectable} from '@angular/core';
 import {Client} from '../interFaces/Iclient';
 import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import {Response} from './../../shared/interfaces/Iresponse';
-import { TeacherProfit } from '../interFaces/IteacherProfit'
+import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { TeacherProfit } from '../interFaces/IteacherProfit';
 
 @Injectable({
   providedIn: 'root',
@@ -14,24 +14,24 @@ export class ClientService extends GenericService<Client> {
     super(http, 'Client', toastrService);
   }
 
-  getAllByType = (id: number) => this.http.get<Response>(`${this.uri}/getByClientTypeId?id=${id}`);
+  getAllByType = (id: number) => this.http.get<ResponseDto>(`${this.uri}/getByClientTypeId?id=${id}`);
 
   getTeacherProfit() {
     this.loadingData.next(true);
-    this.http.get<Response>(`${this.uri}/GetTeacherProfit`).subscribe({
-      next: (data: Response) => {
+    this.http.get<ResponseDto>(`${this.uri}/GetTeacherProfit`).subscribe({
+      next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
       error: (e) => {
         this.loadingData.next(false);
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this._toastrService.error(res.message);
       },
       complete: () => this.loadingData.next(false),
     });
   }
 
-  addTeacherEarning = (model: TeacherProfit) => this.http.post<Response>(`${this.uri}/AddTeacheEarning`, model);
+  addTeacherEarning = (model: TeacherProfit) => this.http.post<ResponseDto>(`${this.uri}/AddTeacheEarning`, model);
 
-  deleteTeacherEarning = (id: number) => this.http.get<Response>(`${this.uri}/DeleteTeacheEarning?id=${id}`);
+  deleteTeacherEarning = (id: number) => this.http.get<ResponseDto>(`${this.uri}/DeleteTeacheEarning?id=${id}`);
 }

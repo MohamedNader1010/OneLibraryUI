@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { ShiftService } from "../../services/shift.service";
 import { Shift } from "../../interfaces/Ishift";
-import { IncomeOutcomeStatus } from "../../../../Persistents/enums/IncomeOutcome.enum";
-import { IncomeOutcomeSource } from "../../../../Persistents/enums/IncomeOutcomeSource.emun";
-import { IncomeOutcome } from "../../interfaces/Iincome-outcome";
-import { TranslateService } from "@ngx-translate/core";
-import { Attendance } from "../../../attendance/interfaces/attendance";
-import { MaterialTracking } from "../../../material-tracking/interfaces/materialTracking";
-import { AttendanceService } from "../../../attendance/services/attendance.service";
-import { IncomesOutcomesService } from "../../services/Incomes-outcomes.service";
-import { MaterialTrackingService } from "../../../material-tracking/services/materialTracking.service";
-import { Response } from 'src/Modules/shared/interfaces/Iresponse';
+import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
+import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
+import { IncomeOutcome } from '../../interfaces/Iincome-outcome';
+import { TranslateService } from '@ngx-translate/core';
+import { Attendance } from '../../../attendance/interfaces/attendance';
+import { MaterialTracking } from '../../../material-tracking/interfaces/materialTracking';
+import { AttendanceService } from '../../../attendance/services/attendance.service';
+import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service';
+import { MaterialTrackingService } from '../../../material-tracking/services/materialTracking.service';
+import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
 
 @Component({
   selector: 'app-shift-details',
@@ -48,9 +48,9 @@ export class ShiftDetailsComponent implements OnInit {
         this._router.navigateByUrl(this._route.snapshot.url.toString());
       },
       complete: () => {
-        this.attendanceService.dataChange.next({ body: this.shift.attendances } as Response);
-        this.inOutService.dataChange.next({ body: this.shift.incomeOutcomes } as Response);
-        this.matInOutService.dataChange.next({ body: this.shift.materialIncomeOutcomes } as Response);
+        this.attendanceService.dataChange.next({ body: this.shift.attendances } as ResponseDto);
+        this.inOutService.dataChange.next({ body: this.shift.incomeOutcomes } as ResponseDto);
+        this.matInOutService.dataChange.next({ body: this.shift.materialIncomeOutcomes } as ResponseDto);
       },
     });
   }
@@ -92,12 +92,12 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: IncomeOutcome) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'source',
         header: 'المصدر',
-        cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
       },
       {
         columnDef: 'comment',
@@ -134,7 +134,7 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: MaterialTracking) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'comment',

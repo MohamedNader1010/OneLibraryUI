@@ -2,9 +2,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {OrderDetail} from './../../interfaces/IorderDetail';
 import {OrderService} from './../../services/orders.service';
 import {Component, OnInit} from '@angular/core';
-import {Status} from '../../Enums/status';
-import {ToastrService} from 'ngx-toastr';
-import {HttpClient} from '@angular/common/http';
+import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
+import { ToastrService } from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
 import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommonFunctionality';
 
 @Component({
@@ -54,6 +54,6 @@ export class ReturnsComponent extends TableCommonFunctionality implements OnInit
 
   override loadData() {
     // this.databaseService = new OrderService(this.httpClient, this.toastrService);
-    this.databaseService.getOrdersByStatus(Status.مرتجع);
+    this.databaseService.getOrdersByStatus(OrderDetailStatus.مرتجع);
   }
 }

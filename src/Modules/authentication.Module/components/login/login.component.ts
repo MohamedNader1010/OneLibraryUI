@@ -5,7 +5,7 @@ import {ToastrService} from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { Auth } from '../../interfaces/IAuth';
 import { AuthService } from './../../services/auth.service';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -66,7 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this._loginService.isLogged = false;
             this._loginService.username.next(null);
             this._loginService.clearLocalStorage();
-            let res: Response = e.error ?? e;
+            let res: ResponseDto = e.error ?? e;
             this._toastrService.error(res.message, 'unauthorized');
           },
           complete: () => {

@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Service} from '../interfaces/Iservice';
 import { ToastrService } from 'ngx-toastr';
 import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
-import { Response } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../shared/interfaces/Iresponse';
 
 @Injectable({
   providedIn: 'root',
@@ -13,5 +13,5 @@ export class ServicesService extends GenericService<Service> {
     super(http, 'Service', toastrService);
   }
 
-  deleteServiceMaterials = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServiceMaterials`, { body: ids });
+  deleteServiceMaterials = (ids: number[]) => this.http.delete<ResponseDto>(`${this.uri}DeleteServiceMaterials`, { body: ids });
 }

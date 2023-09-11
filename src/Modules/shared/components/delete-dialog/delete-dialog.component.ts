@@ -1,11 +1,11 @@
 import {Component, Inject} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {Response} from './../../../shared/interfaces/Iresponse';
-import {GenericService} from '../../services/genericCRUD.service';
-import {TranslateService} from '@ngx-translate/core';
-import {DeleteDialogData} from '../../interfaces/deleteDialogData';
-import {ServiceFactory} from '../../classes/ServiceFactory';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { GenericService } from '../../services/genericCRUD.service';
+import { TranslateService } from '@ngx-translate/core';
+import { DeleteDialogData } from '../../interfaces/deleteDialogData';
+import { ServiceFactory } from '../../classes/ServiceFactory';
 
 @Component({
   selector: 'app-delete-dialog',
@@ -27,13 +27,13 @@ export class DeleteDialogComponent {
   confirmDelete(): void {
     const service: GenericService<any> = this._serviceFactoryService.getService(this.data.componentName);
     service.delete(this.data.row.id).subscribe({
-      next: (res: Response) => {
+      next: (res: ResponseDto) => {
         this.isSubmitting = true;
         this.dialogRef.close({ data: res });
       },
       error: (e: any) => {
         this.isSubmitting = false;
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this._toastrService.error(res.message);
       },
       complete: () => {

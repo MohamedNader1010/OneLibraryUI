@@ -7,9 +7,9 @@ import {Auth} from '../interfaces/IAuth';
 import {ResetPassword} from '../interfaces/IResetPassword';
 import {UpdatePassword} from '../interfaces/IUpdatePassword';
 import {User} from '../interfaces/IUser';
-import {Response} from './../../shared/interfaces/Iresponse';
-import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
+import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -22,28 +22,28 @@ export class AuthService {
   }
   uri: string = `${environment.apiUrl}Authorzation/`;
   login(login: Login) {
-    return this._http.post<Response>(`${this.uri}LogIn`, login).pipe(shareReplay());
+    return this._http.post<ResponseDto>(`${this.uri}LogIn`, login).pipe(shareReplay());
   }
   forgetPassword(email: string) {
-    return this._http.post<Response>(`${this.uri}ForgetPassword?email=${email}`, null);
+    return this._http.post<ResponseDto>(`${this.uri}ForgetPassword?email=${email}`, null);
   }
   resetPassword(model: ResetPassword) {
-    return this._http.post<Response>(`${this.uri}ResetPassword`, model);
+    return this._http.post<ResponseDto>(`${this.uri}ResetPassword`, model);
   }
   changePassword(id: string, model: UpdatePassword) {
-    return this._http.put<Response>(`${this.uri}changePassword?id=${id}`, model);
+    return this._http.put<ResponseDto>(`${this.uri}changePassword?id=${id}`, model);
   }
   confirmEmail(userId: string, token: string) {
-    return this._http.get<Response>(`${this.uri}confirmEmail`, { params: { userid: userId, token: token } });
+    return this._http.get<ResponseDto>(`${this.uri}confirmEmail`, { params: { userid: userId, token: token } });
   }
   getUserById(userId: string) {
-    return this._http.get<Response>(`${this.uri}Profile`, { params: { id: userId } });
+    return this._http.get<ResponseDto>(`${this.uri}Profile`, { params: { id: userId } });
   }
   UpdateUser(userId: string, model: User) {
-    return this._http.put<Response>(`${this.uri}?id=${userId}`, model);
+    return this._http.put<ResponseDto>(`${this.uri}?id=${userId}`, model);
   }
   refreshToken() {
-    return this._http.post<Response>(`${this.uri}refreshToken`, { token: localStorage.getItem('refreshToken') });
+    return this._http.post<ResponseDto>(`${this.uri}refreshToken`, { token: localStorage.getItem('refreshToken') });
   }
   public setLocalStorage(auth: Auth) {
     localStorage.setItem('token', auth.token);

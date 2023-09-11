@@ -9,7 +9,7 @@ import { ServicesTypeService } from 'src/Modules/serviceType/services/serviceTyp
 import { Service } from '../../interfaces/Iservice';
 import { ServicesService } from '../../services/services.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { ClientTypeService } from './../../../clientType/services/clientType.service';
 import { ClientType } from './../../../clientType/interFaces/IclientType';
 import { TranslateService } from '@ngx-translate/core';
@@ -129,7 +129,7 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
         },
         error: (e) => {
           this.isSubmitting = false;
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this.toastrService.error(res.message);
         },
         complete: () => {

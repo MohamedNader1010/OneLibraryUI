@@ -17,4 +17,6 @@ export enum FormDialogNames {
   shiftFormDialogComponent,
   bankFormDialogComponent,
   supplierFormDialogComponent,
+  commitmentAndDueComponent,
+  commitmentAndDueComponentTransactionFormDialog,
 }

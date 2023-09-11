@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {ServicePricePerClientType} from '../Interfaces/ServicePricePerClientType';
 import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import {Response} from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,11 @@ export class ServicePricePerClientTypeService extends GenericService<ServicePric
     super(http, 'ServicePricePerClientType', toastrService);
   }
 
-  GetAllPriced = (clientTypeId: number) => this.http.get<Response>(`${this.uri}/GetAllPriced`, { params: { clientTypeId } });
+  GetAllPriced = (clientTypeId: number) => this.http.get<ResponseDto>(`${this.uri}/GetAllPriced`, { params: { clientTypeId } });
 
-  GetAllPricedWithOriginalPrices = (clientTypeId: number) => this.http.get<Response>(`${this.uri}/GetAllPricedWithOriginalPrices`, { params: { clientTypeId } });
+  GetAllPricedWithOriginalPrices = (clientTypeId: number) => this.http.get<ResponseDto>(`${this.uri}/GetAllPricedWithOriginalPrices`, { params: { clientTypeId } });
 
-  getPrice = (clientTypeId: number, serviceId: number) => this.http.get<Response>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
+  getPrice = (clientTypeId: number, serviceId: number) => this.http.get<ResponseDto>(`${this.uri}/GetServicePricePerClientType?ClientTypeId=${clientTypeId}&ServiceId=${serviceId}`);
 
-  // deleteServicePrices = (ids: number[]) => this.http.delete<Response>(`${this.uri}DeleteServicePrices`, { body: ids });
+  // deleteServicePrices = (ids: number[]) => this.http.delete<ResponseDto>(`${this.uri}DeleteServicePrices`, { body: ids });
 }

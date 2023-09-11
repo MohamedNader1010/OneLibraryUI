@@ -1,14 +1,10 @@
 import { DashboardData } from './../../interfaces/dashboardData';
 
-import {
-  Component,
-  OnInit,
-} from "@angular/core";
-import {   ChartConfiguration, ChartOptions } from "chart.js";
-import { DashboardService } from "../../services/dashboard.service";
+import { Component, OnInit } from '@angular/core';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { DashboardService } from '../../services/dashboard.service';
 
-import { TranslateService } from "@ngx-translate/core";
-
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',

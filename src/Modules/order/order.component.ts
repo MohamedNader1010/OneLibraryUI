@@ -1,15 +1,15 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
-import {Status} from './Enums/status';
-import {Order} from './interfaces/Iorder';
-import {OrderService} from './services/orders.service';
-import {TranslateService} from '@ngx-translate/core';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
-import {ToastrService} from 'ngx-toastr';
-import {Response} from '../shared/interfaces/Iresponse';
+import { OrderDetailStatus } from '../shared/enums/OrderDetailStatus.enum';
+import { Order } from './interfaces/Iorder';
+import { OrderService } from './services/orders.service';
+import { TranslateService } from '@ngx-translate/core';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { ToastrService } from 'ngx-toastr';
+import { ResponseDto } from '../shared/interfaces/Iresponse';
 import { PagingCriteria } from '../shared/interfaces/pagingCriteria';
 
 @Component({
@@ -33,37 +33,37 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
       {
         columnDef: this._translateService.instant('table.id'),
         header: this._translateService.instant('table.id.label'),
-        cell: (element: Order) => `${element.id}`,
+        cell: (element: Order) => element.id,
       },
       {
         columnDef: this._translateService.instant('shared.totalPrice.label'),
         header: this._translateService.instant('shared.totalPrice'),
-        cell: (element: Order) => `${element.totalPrice}`,
+        cell: (element: Order) => element.totalPrice,
       },
       {
         columnDef: this._translateService.instant('shared.rest.label'),
         header: this._translateService.instant('shared.rest'),
-        cell: (element: Order) => `${element.rest}`,
+        cell: (element: Order) => element.rest,
       },
       {
         columnDef: this._translateService.instant('shared.paid.label'),
         header: this._translateService.instant('shared.paid'),
-        cell: (element: Order) => `${element.paid}`,
+        cell: (element: Order) => element.paid,
       },
       {
         columnDef: this._translateService.instant('order.status.label'),
         header: this._translateService.instant('order.status'),
-        cell: (element: Order) => Status[element.orderStatus],
+        cell: (element: Order) => OrderDetailStatus[element.orderStatus],
       },
       {
         columnDef: this._translateService.instant('shared.client.label'),
         header: this._translateService.instant('shared.client'),
-        cell: (element: Order) => `${element.clientName}`,
+        cell: (element: Order) => element.clientName,
       },
       {
         columnDef: this._translateService.instant('shared.clientPhoneNumber.label'),
         header: this._translateService.instant('shared.clientPhoneNumber'),
-        cell: (element: Order) => `${element.clientPhoneNumber}`,
+        cell: (element: Order) => element.clientPhoneNumber,
       },
       {
         columnDef: this._translateService.instant('shared.remarks.label'),
@@ -94,7 +94,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
     this.databaseService.getPagedOrders(pagingCriteria).subscribe();
   }
 
-  public handleOrderTransaction(row: Response) {
+  public handleOrderTransaction(row: ResponseDto) {
     this.handleEditRow(row);
   }
 }

@@ -9,7 +9,7 @@ import { Stage } from '../../interfaces/IStage';
 import { Term } from '../../interfaces/ITerm';
 import { NoteComponent } from '../../interfaces/noteComponent';
 import { Note } from '../../interfaces/Inote';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
@@ -143,7 +143,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         },
         error: (e) => {
           this.isSubmitting = false;
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this.toastrService.error(res.message);
         },
         complete: () => {
@@ -253,7 +253,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
             this.ClientsDataSource = [];
             this.clientId.reset();
             this.isSubmitting = false;
-            let res: Response = clientError.error ?? clientError;
+            let res: ResponseDto = clientError.error ?? clientError;
             this.toastrService.error(res.message);
           }
           if (serviceError) {
@@ -262,7 +262,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
               this.getNoteComponentServiceId(index).reset();
             });
             this.isSubmitting = false;
-            let res: Response = serviceError.error ?? serviceError;
+            let res: ResponseDto = serviceError.error ?? serviceError;
             this.toastrService.error(res.message);
           }
         },
@@ -349,7 +349,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           .subscribe({
             error: (e) => {
               this.isSubmitting = false;
-              let res: Response = e.error ?? e;
+              let res: ResponseDto = e.error ?? e;
               this.toastrService.error(res.message);
             },
             complete: () => {
@@ -368,13 +368,13 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
-          this.databaseService.DialogData = (res.body as Response).body;
-          this.matDialogRef.close({ data: res.body as Response });
+          this.databaseService.DialogData = (res.body as ResponseDto).body;
+          this.matDialogRef.close({ data: res.body as ResponseDto });
         }
       },
       error: (e) => {
         this.isSubmitting = false;
-        let res: Response = e.error ?? e;
+        let res: ResponseDto = e.error ?? e;
         this.toastrService.error(res.message);
       },
       complete: () => {

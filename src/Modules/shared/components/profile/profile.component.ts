@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from 'src/Modules/authentication.Module/customeValidators/CustomValidators';
 import { User } from 'src/Modules/authentication.Module/interfaces/IUser';
-import { Response } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/Iresponse';
 import { AuthService } from './../../../authentication.Module/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -116,13 +116,13 @@ export class ProfileComponent implements OnInit {
         .UpdateUser(this.profileId.value, this.form.value)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (data: Response) => {
+          next: (data: ResponseDto) => {
             this._toastrService.success(data.message);
             localStorage.setItem('uname', data.body.userName);
             this._authService.username.next(data.body.userName);
           },
           error: (e) => {
-            let res: Response = e.error ?? e;
+            let res: ResponseDto = e.error ?? e;
             this._toastrService.error(res.message);
             this.submitting = false;
           },
@@ -140,11 +140,11 @@ export class ProfileComponent implements OnInit {
         .changePassword(this.PasswordId.value, this.passwordForm.value)
         .pipe(takeUntil(this.destroy$))
         .subscribe({
-          next: (data: Response) => {
+          next: (data: ResponseDto) => {
             this._toastrService.success(data.message);
           },
           error: (e) => {
-            let res: Response = e.error ?? e;
+            let res: ResponseDto = e.error ?? e;
             this._toastrService.error(res.message);
             this.submittingPassword = false;
           },

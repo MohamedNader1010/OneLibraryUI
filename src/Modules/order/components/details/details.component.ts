@@ -1,10 +1,10 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 
 import { OrderService } from '../../services/orders.service';
 import { Order } from '../../interfaces/Iorder';
-import { Status } from '../../Enums/status';
+import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
 @Component({
   selector: 'app-details',
   templateUrl: './details.component.html',
@@ -14,6 +14,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   id!: number;
   order!: Order;
   destroy$ = new Subject<void>();
+  progress: number = 0;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _orderService: OrderService, public dialog: MatDialog) {}
   ngOnInit(): void {
@@ -23,23 +24,30 @@ export class DetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.order = res.body;
+          this.progress = this.orderTrackingProgress();
         },
       });
   }
 
-  orderTrackingProgress(status: Status): number {
-    switch (status) {
-      case Status.غير_مكتمل:
-        return 0;
-      case Status.جاهز:
-        return 33;
-      case Status.استلم:
-        return 66;
-      case Status.اكتمل:
-        return 100;
-      default:
-        return 0;
+  orderTrackingProgress(): number {
+    if (this.order.orderDetails?.length <= 0) return 0;
+    const progressValues: Record<string, number> = {
+      0: 25, //حجز
+      1: 50, //جاهز
+      2: 100, //استلم
+      5: 100, //اكتمل
+      6: 0, //غير_مكتمل
+    };
+
+    let totalProgress = 0;
+    for (const detail of this.order.orderDetails) {
+      const progress = progressValues[detail.orderStatus];
+      if (progress !== undefined) {
+        totalProgress += progress;
+      }
     }
+
+    return totalProgress / this.order.orderDetails.filter((d) => !(d.orderStatus == OrderDetailStatus.مرتجع || d.orderStatus == OrderDetailStatus.هالك)).length;
   }
 
   ngOnDestroy() {

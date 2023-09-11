@@ -8,15 +8,14 @@ import {SharedModule} from '../shared/shared.module';
 import {DetailsComponent} from './components/details/details.component';
 import {TransactionComponent} from './components/transaction/transaction.component';
 import {OrderComponent} from './order.component';
-import {OrderRoutingModule} from './routing/order-routing.module';
-import {OrderService} from './services/orders.service';
-import {ReturnsComponent} from './components/returns/returns.component';
-import {OrderFormDialogComponent} from './components/order-form-dialog/order-form-dialog.component';
-import {ReservationsComponent} from './components/reservations/reservations.component';
+import { OrderRoutingModule } from './routing/order-routing.module';
+import { ReturnsComponent } from './components/returns/returns.component';
+import { OrderFormDialogComponent } from './components/order-form-dialog/order-form-dialog.component';
+import { ReservationsComponent } from './components/reservations/reservations.component';
 
 @NgModule({
-	declarations: [OrderComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent, ReservationsComponent],
-	imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
-	providers: [LoginGuard, OrderService],
+  declarations: [OrderComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent, ReservationsComponent],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
+  providers: [LoginGuard],
 })
 export class OrderModule {}

@@ -49,6 +49,8 @@
 
   "note.name": "المذكرات",
 
+  "shared.amount": "المبلغ",
+  "shared.comments": "ملاحظات",
   "shared.price": "السعر",
   "shared.price.label": "Price",
   "shared.totalPrice": "السعر الكلي",
@@ -110,6 +112,8 @@
   "form.Supplier.paid.label": "قام بدفع",
   "form.Supplier.rest": "rest",
   "form.Supplier.rest.label": "المتبقي",
+  "form.Supplier.takeMoney": "takeMoney",
+  "form.Supplier.takeMoney.label": "أستلم",
 
   "keys.material.name": "إسم الخامه",
   "keys.material.price": "السعر",
@@ -147,5 +151,14 @@
   "prepared": "اعداد",
   "received": "استلم",
   "returned": "مرتجعات",
-  "ready": "جاهز"
+  "ready": "جاهز",
+
+  "transaction.type": "النوع",
+
+  "form.Employee.totalCommitment": "totalCommitment",
+  "form.Employee.totalCommitment.label": "اجمالي الالتزامات",
+  "form.Employee.paid": "paid",
+  "form.Employee.paid.label": "المدفوع",
+  "form.Employee.rest": "rest",
+  "form.Employee.rest.label": "المتبقي"
 }

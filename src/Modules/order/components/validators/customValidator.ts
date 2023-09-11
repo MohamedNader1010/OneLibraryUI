@@ -1,7 +1,7 @@
 import { map, Observable, of } from 'rxjs';
 import { AbstractControl, ValidationErrors, AsyncValidatorFn, ValidatorFn, FormGroup, FormArray } from '@angular/forms';
 import { OrderService } from '../../services/orders.service';
-import { Status } from '../../Enums/status';
+import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
 
 export function ValidatePaid(orderService: OrderService, id: number): AsyncValidatorFn | null {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
@@ -9,12 +9,12 @@ export function ValidatePaid(orderService: OrderService, id: number): AsyncValid
   };
 }
 
-export function validateQuantityAsync(previousStatus: Status | null): AsyncValidatorFn {
+export function validateQuantityAsync(previousStatus: OrderDetailStatus | null): AsyncValidatorFn {
   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-    if (previousStatus && (previousStatus === Status.استلم || previousStatus === Status.جاهز)) return of(null);
+    if (previousStatus && (previousStatus === OrderDetailStatus.استلم || previousStatus === OrderDetailStatus.جاهز)) return of(null);
     const formGroup = control.parent as FormGroup;
     if (!formGroup) return of(null);
-    const isReceivedStatus = formGroup.controls['orderStatus'].value === Status.استلم;
+    const isReceivedStatus = formGroup.controls['orderStatus'].value === OrderDetailStatus.استلم;
     const isNote = formGroup.controls['noteId'].value;
     const availableNoteQuantity = (+formGroup.get('availableNoteQuantity')?.value).toFixed(2);
     const exceedQuantityError = {

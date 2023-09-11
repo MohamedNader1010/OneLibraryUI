@@ -1,0 +1,11 @@
+<app-table
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	[componentName]="componentName"
+  [hasTransaction]="true"
+  [canDelete]="true"
+	(OnDelete)="handleDelete($event)"
+	(onNew)="handleNewRow($event)"
+	(onEdit)="handleEditRow($event)"
+	(onTransaction)="handleTransaction($event)"
+	[database]="databaseService"></app-table>

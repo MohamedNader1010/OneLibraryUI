@@ -8,15 +8,15 @@ import { OrderService } from '../../services/orders.service';
 import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
 import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
 import { ClientService } from 'src/Modules/client/services/client.service';
-import { Status } from '../../Enums/status';
+import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
 import { Order } from '../../interfaces/Iorder';
-import { Response } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from './../../../shared/interfaces/Iresponse';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { OrderDetail } from '../../interfaces/IorderDetail';
 import { FormHelpers } from 'src/Modules/shared/classes/form-helpers';
-import { FormDialogNames } from 'src/Persistents/enums/forms-name';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { validateArrayLingth, validateQuantityAsync } from '../validators/customValidator';
 import { environment } from '../../../../environments/environment';
 import { NoteOnly } from '../../../note/interfaces/Inote-only';
@@ -30,9 +30,9 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
 })
 export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
   //#region variables
-  availableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز, Status.مرتجع, Status.هالك];
-  newOrderAvailableStatus: Status[] = [Status.استلم, Status.حجز, Status.اعداد, Status.جاهز];
-  StatusInstance: any = Status;
+  availableStatus: OrderDetailStatus[] = [OrderDetailStatus.استلم, OrderDetailStatus.حجز, OrderDetailStatus.جاهز, OrderDetailStatus.مرتجع, OrderDetailStatus.هالك];
+  newOrderAvailableStatus: OrderDetailStatus[] = [OrderDetailStatus.استلم, OrderDetailStatus.حجز, OrderDetailStatus.جاهز];
+  StatusInstance: any = OrderDetailStatus;
   ServicePricesForClientTypesDataSource: PricedServices[] = [];
   NotesDataSource: NoteOnly[] = [];
   ClientsDataSource: ClientForForm[] = [];
@@ -116,9 +116,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     }
     return filePath;
   };
-  getAvailableStatus(index: number): Status[] {
+  getAvailableStatus(index: number): OrderDetailStatus[] {
     if (this.data) {
-      const oldStatus = this.data.orderDetails.find((od) => od.id === this.getOrderDetailId(index).value)?.orderStatus ?? Status.حجز;
+      const oldStatus = this.data.orderDetails.find((od) => od.id === this.getOrderDetailId(index).value)?.orderStatus ?? OrderDetailStatus.حجز;
       return this.data ? this.availableStatus.filter((s) => s >= oldStatus) : this.availableStatus;
     } else return this.newOrderAvailableStatus;
   }
@@ -189,7 +189,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 
   // #region form items
 
-  createFormItem(type: string, previousStatus: Status | null = null): FormGroup {
+  createFormItem(type: string, previousStatus: OrderDetailStatus | null = null): FormGroup {
     let formItem: FormGroup = this._fb.group({});
     switch (type) {
       case 'init':
@@ -257,7 +257,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
         const totalPrice = +(+value ?? 0).toFixed(2);
         const newDiscountPercent = totalPrice === 0 ? 0 : +((+this.discount.value / totalPrice) * 100).toFixed(2);
         const finalPrice = +(totalPrice - +this.discount.value).toFixed(2);
-        const paid = +(this.paid.value ?? 0).toFixed(2);
+        const paid = +this.paid.value;
         const rest = +(finalPrice - paid).toFixed(2);
         this.Form.patchValue({ discountPercent: newDiscountPercent, finalPrice: finalPrice, rest: rest }, { emitEvent: false });
       },
@@ -304,7 +304,12 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     this.getOrderDetailStatus(index)
       .valueChanges.pipe(startWith(this.getOrderDetailStatus(index).value))
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.getOrderDetailQuantity(index).updateValueAndValidity());
+      .subscribe(() => {
+        this.getOrderDetailQuantity(index).updateValueAndValidity();
+        console.log(this.Form.value);
+        console.log(this.Form.valid);
+        console.log(this.clientId.value);
+      });
   }
 
   subscribeNoteOrServiceChanges(index: number) {
@@ -336,7 +341,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             clientTypeId: -1,
           };
           this.ClientsDataSource = [newClient, ...clientsResponse.body];
-          this.clientId.setValue(null);
+          if (!this.data) this.clientId.setValue(null);
           this.ServicePricesForClientTypesDataSource = servicesResponse.body;
           this.serviceLoading = this.clientsLoading = false;
           this.reloadServicesPrices();
@@ -347,7 +352,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             this.ClientsDataSource = [];
             this.clientId.reset();
             this.isSubmitting = false;
-            let res: Response = clientError.error ?? clientError;
+            let res: ResponseDto = clientError.error ?? clientError;
             this.toastrService.error(res.message);
             this.clientsLoading = false;
           }
@@ -358,7 +363,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             });
             this.isSubmitting = false;
             this.serviceLoading = false;
-            let res: Response = serviceError.error ?? serviceError;
+            let res: ResponseDto = serviceError.error ?? serviceError;
             this.toastrService.error(res.message);
           }
         },
@@ -410,7 +415,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
         },
         error: (e) => {
           this.isSubmitting = false;
-          let res: Response = e.error ?? e;
+          let res: ResponseDto = e.error ?? e;
           this.toastrService.error(res.message);
           this.getOrderDetailPrice(index).setValue(0);
           this.getOrderDetailNoteAvailableQuantity(index).setValue(0);

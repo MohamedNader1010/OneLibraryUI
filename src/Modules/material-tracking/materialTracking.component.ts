@@ -2,13 +2,13 @@ import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {MaterialTracking} from './interfaces/materialTracking';
-import {MaterialTrackingService} from './services/materialTracking.service';
-import {TranslateService} from '@ngx-translate/core';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
-import { IncomeOutcomeStatus } from "../../Persistents/enums/IncomeOutcome.enum";
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { MaterialTracking } from './interfaces/materialTracking';
+import { MaterialTrackingService } from './services/materialTracking.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
 
 @Component({
   selector: 'app-materialTracking',
@@ -47,7 +47,7 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: MaterialTracking) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: MaterialTracking) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'comment',

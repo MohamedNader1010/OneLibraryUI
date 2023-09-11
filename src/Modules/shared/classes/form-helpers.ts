@@ -1,12 +1,12 @@
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 export class FormHelpers {
-	public static async getAppropriateDialogComponent(formName: FormDialogNames) {
-		const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
-		return appropriateComponent;
-	}
-	private static async getAppropriateComponent(formName: FormDialogNames) {
-		let module;
-		switch (formName) {
+  public static async getAppropriateDialogComponent(formName: FormDialogNames) {
+    const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
+    return appropriateComponent;
+  }
+  private static async getAppropriateComponent(formName: FormDialogNames) {
+    let module;
+    switch (formName) {
       case FormDialogNames.MaterialFormDialogComponent:
         module = await import('../../material/components/material-form-dialog/material-form-dialog.component');
         return module.MaterialFormDialogComponent;
@@ -61,16 +61,22 @@ export class FormHelpers {
       case FormDialogNames.supplierFormDialogComponent:
         module = await import('../../supplier/components/supplier-form-dialog/supplier-form-dialog.component');
         return module.SupplierFormDialogComponent;
+      case FormDialogNames.commitmentAndDueComponent:
+        module = await import('../../commitment-and-due/components/commitment-and-due-form-dialog/commitment-and-due-form-dialog.component');
+        return module.CommitmentAndDueFormDialogComponent;
+      case FormDialogNames.commitmentAndDueComponentTransactionFormDialog:
+        module = await import('../../commitment-and-due/components/commitment-and-due-transaction-form-dialog/commitment-and-due-transaction-form-dialog.component');
+        return module.CommitmentAndDueTransactionFormDialogComponent;
     }
-	}
+  }
 
-	public static async getDeleteDialogComponent() {
-		const deleteDialogComponent = await FormHelpers.importDialogComponent();
-		return deleteDialogComponent;
-	}
+  public static async getDeleteDialogComponent() {
+    const deleteDialogComponent = await FormHelpers.importDialogComponent();
+    return deleteDialogComponent;
+  }
 
-	private static async importDialogComponent() {
-		const module = await import('../components/delete-dialog/delete-dialog.component');
-		return module.DeleteDialogComponent;
-	}
+  private static async importDialogComponent() {
+    const module = await import('../components/delete-dialog/delete-dialog.component');
+    return module.DeleteDialogComponent;
+  }
 }

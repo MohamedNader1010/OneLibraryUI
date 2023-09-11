@@ -1,3 +1,7 @@
+table{
+  background-color: white;
+  /* height: 100%; */
+}
 .mat-column-id {
 	width: 100px;
 	text-align: left;
@@ -24,15 +28,15 @@
 .element-row {
 	position: relative;
   }
-  
+
   .element-row:not(.expanded) {
 	cursor: pointer;
   }
-  
+
   .element-row:not(.expanded):hover {
 	background: #f5f5f5;
   }
-  
+
   .element-row.expanded {
 	border-bottom-color: transparent;
   }
@@ -40,4 +44,3 @@
 	background-color:rgb(241, 236, 236);
   }
 
-  

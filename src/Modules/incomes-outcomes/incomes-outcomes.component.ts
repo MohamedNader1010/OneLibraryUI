@@ -3,16 +3,16 @@ import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import {ComponentsName} from 'src/Persistents/enums/components.name';
-import {FormDialogNames} from 'src/Persistents/enums/forms-name';
-import {IncomeOutcomeStatus} from '../../Persistents/enums/IncomeOutcome.enum';
-import {IncomesOutcomesService} from './services/Incomes-outcomes.service';
-import {TranslateService} from '@ngx-translate/core';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
+import { IncomesOutcomesService } from './services/Incomes-outcomes.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
 
-import { ShiftService } from "./services/shift.service"
+import { ShiftService } from './services/shift.service';
 
-import { IncomeOutcomeSource } from "../../Persistents/enums/IncomeOutcomeSource.emun";
+import { TransactionSource } from '../shared/enums/TransactionSource.emun';
 import { IncomeOutcome } from './interfaces/Iincome-outcome';
 
 @Component({
@@ -56,12 +56,12 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: IncomeOutcome) => (element.status == IncomeOutcomeStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: IncomeOutcome) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'source',
         header: 'المصدر',
-        cell: (element: IncomeOutcome) => (element.source == IncomeOutcomeSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
       },
       {
         columnDef: 'comment',

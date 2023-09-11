@@ -1,6 +1,6 @@
-export interface Response {
-	status: boolean;
-	message: string;
-	body: any;
-	totalCount: number;
+export interface ResponseDto {
+  status: boolean;
+  message: string;
+  body: any;
+  totalCount: number;
 }

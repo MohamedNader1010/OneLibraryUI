@@ -5,8 +5,8 @@ import { catchError, filter, switchMap, take } from "rxjs/operators";
 import { Auth } from "src/Modules/authentication.Module/interfaces/IAuth";
 import { AuthService } from "src/Modules/authentication.Module/services/auth.service";
 import { Router } from "@angular/router";
-import { Response } from "./../Modules/shared/interfaces/Iresponse";
-import { ToastrService } from "ngx-toastr";
+import { ResponseDto } from './../Modules/shared/interfaces/Iresponse';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -49,7 +49,7 @@ export class TokenInterceptor implements HttpInterceptor {
           });
           return throwError(() => error);
         }),
-        switchMap((res: Response) => {
+        switchMap((res: ResponseDto) => {
           this._isRefreshing = false;
           if (res) {
             const auth: Auth = res.body;
