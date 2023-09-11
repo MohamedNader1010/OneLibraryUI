@@ -83,7 +83,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 
   handleReadyOrderDetail = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
     $event.stopPropagation();
-    console.log(data);
     data.orderStatus = OrderDetailStatus.جاهز;
     this.databaseService.MarkSingleOrderDetailAsReady(data).subscribe({
       next: (res) => {
@@ -112,7 +111,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
 
   handleNotePrint = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
     $event.stopPropagation();
-    console.log(data);
     let model: PrintNote = {
       id: data.noteId,
       quantity: data.quantity,

@@ -15,13 +15,18 @@
         </th>
         <td mat-cell *matCellDef="let row">
           <ng-container *ngIf="column.columnDef.indexOf('barcode') < 0; else barcode">
-            <!-- <div style="text-align: center"> -->
-              {{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
-            <!-- </div> -->
+            {{ column.columnDef.indexOf('time') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
           </ng-container>
           <ng-template #barcode>
-            <!-- <ejs-barcodegenerator id="barcode" width="200px" height="150px" mode="Image" type="Codabar" [value]="column.cell(row) "></ejs-barcodegenerator> -->
-            <!-- <ngx-barcode [bc-value]="column.cell(row)" [bc-display-value]="true"></ngx-barcode> -->
+            <ngx-barcode6
+              [bc-value]="column.cell(row)"
+              [bc-display-value]="true"
+              [bc-element-type]="'img'"
+              [bc-width]="2"
+              [bc-height]="35"
+              [bc-font-size]="15"
+              [bc-margin]="5"
+            ></ngx-barcode6>
           </ng-template>
         </td>
       </ng-container>

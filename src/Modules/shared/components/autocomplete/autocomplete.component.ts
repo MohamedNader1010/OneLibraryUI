@@ -55,12 +55,18 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
 
   filter = (value: any): any[] => {
     let filteredData = this.dataSource.filter((item: any) => {
-      let searchStr = '';
-      for (var key in item) searchStr += item[key];
-      searchStr = searchStr.toLowerCase();
-
-      if (typeof value == 'string') return searchStr.indexOf(value.trim().trimEnd().toLowerCase()) !== -1;
-      else return searchStr.indexOf(value) !== -1;
+      const barPrefix = 'bar-';
+      const barcodeIndex = `${value}`.indexOf(barPrefix) ?? -1;
+      if (barcodeIndex < 0) {
+        let searchStr = '';
+        for (var key in item) searchStr += item[key];
+        searchStr = searchStr.toLowerCase();
+        if (typeof value == 'string') return searchStr.indexOf(value.trim().trimEnd().toLowerCase()) !== -1;
+        else return searchStr.indexOf(value) !== -1;
+      } else {
+        const id = +value.substring(barPrefix.length);
+        return item.id === id;
+      }
     });
     return filteredData;
   };

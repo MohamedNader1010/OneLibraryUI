@@ -296,10 +296,18 @@ export class TableComponent implements OnInit, OnDestroy {
 
   private setPagingCriteria() {
     this._pagingCriteria.direction = this.sort.direction ?? 'desc';
-    this._pagingCriteria.filter = this.filter.nativeElement.value ?? '';
+    this._pagingCriteria.filter = this.trimIfBarcode(this.filter.nativeElement.value) ?? '';
     this._pagingCriteria.orderBy = this.activeSortColumn;
     this._pagingCriteria.pageIndex = this.paginator.pageIndex;
     this._pagingCriteria.pageSize = this.paginator.pageSize;
+  }
+
+  trimIfBarcode(value: string) {
+    const barPrefix = 'bar-';
+    const barcodeIndex = value.indexOf(barPrefix) ?? -1;
+    if (barcodeIndex === -1) return value;
+    const id = value.substring(barPrefix.length);
+    return id;
   }
 
   private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);

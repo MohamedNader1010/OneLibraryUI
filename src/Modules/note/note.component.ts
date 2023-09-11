@@ -34,6 +34,11 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
         cell: (element: Note) => element.id,
       },
       {
+        columnDef: 'barcode',
+        header: 'باركود',
+        cell: (element: Note) => `bar-${element.id}`,
+      },
+      {
         columnDef: 'name',
         header: 'الأسم',
         cell: (element: Note) => element.name,
@@ -88,11 +93,6 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
         header: 'pdf',
         cell: (element: Note) => element.fileName ?? '-',
       },
-      // {
-      //   columnDef: 'barcode',
-      //   header: 'باركود',
-      //   cell: (element: Note) => element.id,
-      // },
     ];
   }
 }

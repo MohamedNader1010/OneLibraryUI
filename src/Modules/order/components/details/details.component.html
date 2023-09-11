@@ -7,7 +7,13 @@
   </div>
 </div>
 <mat-dialog-content *ngIf="order" class="print-dialog-content mt-0">
-  <hr>
+  <div class="print-only">
+    <hr />
+    <div class="text-center">
+      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2" [bc-height]="35" [bc-font-size]="15" [bc-margin]="5"></ngx-barcode6>
+    </div>
+  </div>
+  <hr />
   <div class="info">
     <div class="row">
       <div class="col-md-4 col-12">
@@ -39,7 +45,7 @@
       </div>
     </div>
   </div>
-  <hr>
+  <hr />
   <div class="pricing">
     <div class="row">
       <div class="col-6">
@@ -64,7 +70,7 @@
       </div>
     </div>
   </div>
-  <hr>
+  <hr />
   <div class="total">
     <div class="row">
       <div class="col-9">الأجمالي</div>
@@ -103,15 +109,15 @@
       </div>
     </div>
   </div>
-  <hr>
+  <hr *ngIf="order.remarks" />
   <div class="pricing" *ngIf="order.remarks">
     <h4><strong>الملاحظات</strong></h4>
     <div class="row">
-      <div class="col-12 mb-1">{{order.remarks}}</div>
+      <div class="col-12 mb-1">{{ order.remarks }}</div>
     </div>
   </div>
-  <hr>
   <div class="hide">
+    <hr />
     <h3><strong>تتبع الطلب</strong></h3>
     <div class="w-100 d-flex flex-column justify-content-center align-items-center flex-nowrap align-content-center">
       <mat-progress-bar class="row" mode="determinate" [value]="progress" color="warn"></mat-progress-bar>

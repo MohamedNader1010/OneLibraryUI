@@ -27,8 +27,16 @@ export class TableDataSource extends DataSource<any> {
     return merge(...displayDataChanges).pipe(
       map(() => {
         this.filteredData = this.database.data.body?.slice()?.filter((item: any) => {
-          const searchStr = this.generateSearchString(item);
-          return searchStr.includes(this.filter.toLowerCase());
+          const barPrefix = 'bar-';
+          const barcodeIndex = `${this.filter}`.indexOf(barPrefix) ?? -1;
+          if (barcodeIndex < 0) {
+            const searchStr = this.generateSearchString(item);
+            return searchStr.includes(this.filter.toLowerCase());
+          } else {
+            const id = +this.filter.substring(barPrefix.length);
+            return item.id === id;
+          }
+
         });
         const sortedData = this.sortData(this.filteredData?.slice());
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;

@@ -306,9 +306,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         this.getOrderDetailQuantity(index).updateValueAndValidity();
-        console.log(this.Form.value);
-        console.log(this.Form.valid);
-        console.log(this.clientId.value);
       });
   }
 

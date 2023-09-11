@@ -34,6 +34,11 @@ export class ServiceComponent extends TableCommonFunctionality implements OnInit
         cell: (element: Service) => element.id,
       },
       {
+        columnDef: 'barcode',
+        header: 'باركود',
+        cell: (element: Service) => `bar-${element.id}`,
+      },
+      {
         columnDef: 'Name',
         header: 'الأسم',
         cell: (element: Service) => element.name,
