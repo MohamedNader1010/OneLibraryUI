@@ -215,7 +215,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
           id: [null],
           noteOrService: ['service'],
           price: [0],
-          quantity: [0, [Validators.required], [validateQuantityAsync(previousStatus)]],
+          quantity: [0, [Validators.required, Validators.min(0.01)], [validateQuantityAsync(previousStatus)]],
           serviceId: [null],
           service: [''],
           noteId: [null],
@@ -305,6 +305,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       .valueChanges.pipe(startWith(this.getOrderDetailStatus(index).value))
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        if (this.getOrderDetailQuantity(index).value <= 0) this.getOrderDetailQuantity(index).setErrors({ required: true });
         this.getOrderDetailQuantity(index).updateValueAndValidity();
       });
   }
