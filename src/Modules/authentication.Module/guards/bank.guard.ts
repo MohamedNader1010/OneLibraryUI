@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthGuard  {
+export class BankGuard {
   constructor(private _jwtHelperService: JwtHelperService, private _router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
@@ -13,6 +13,9 @@ export class AuthGuard  {
     if (!role) return this._router.parseUrl('/login');
     if (role === 'User') {
       return this._router.parseUrl('/orders');
+    }
+    if (role === 'AdminWithoutBank') {
+      this._router.navigate(['']);
     }
     return true;
   }

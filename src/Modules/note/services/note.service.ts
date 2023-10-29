@@ -17,6 +17,8 @@ export class NoteService extends GenericService<Note> {
 
   getAllVisible = () => this.http.get<ResponseDto>(`${this.uri}/GetAllVisible`, { headers: this.headers });
 
+  getAllVisibleForClientTeacher = () => this.http.get<ResponseDto>(`${this.uri}/GetAllVisibleForClientTeacher`, { headers: this.headers });
+
   getTerms = () => this.http.get<ResponseDto>(`${environment.apiUrl}StageAndTerm/Term`);
 
   getStages = () => this.http.get<ResponseDto>(`${environment.apiUrl}StageAndTerm/Stage`);

@@ -10,6 +10,7 @@ import { MaterialService } from './../../../material/services/material.service';
 import { Material } from './../../../material/interfaces/Imaterial';
 import { TranslateService } from '@ngx-translate/core';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
+import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
 @Component({
   selector: 'app-form.dialog',
   templateUrl: './form.dialog.html',
@@ -48,9 +49,10 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
 
   ngOnInit() {
     this.getAllMaterial();
+    this.quantity.valueChanges.subscribe((value) => this.status.setValue(value > 0 ? TransactionStatus.وارد : TransactionStatus.صادر));
   }
 
-  getAllMaterial = () =>
+  getAllMaterial() {
     this._mat
       .getAll()
       .pipe(
@@ -72,6 +74,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
           }
         },
       });
+  }
 
   setMaterialId = (data: any) => this.materialId.setValue(data);
 }

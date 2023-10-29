@@ -17,9 +17,18 @@ table{
 	white-space: nowrap;
 }
 .mat-column-actions {
-	width: 150px;
+  width: 150px;
 	text-align: right;
 }
+.mat-mdc-cell {
+  max-width: 500px;
+  text-wrap: wrap;
+  word-wrap: break-word;
+}
+.min-w-200{
+  min-width: 180px;
+}
+
 .mat-mdc-row:hover .mat-mdc-cell {
 	border-color: orangered;
 	background-color: rgb(255, 219, 219);

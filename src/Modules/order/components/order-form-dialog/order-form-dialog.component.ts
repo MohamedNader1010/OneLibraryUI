@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
 import { OrderDetail } from '../../interfaces/IorderDetail';
 import { FormHelpers } from 'src/Modules/shared/classes/form-helpers';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
-import { validateArrayLingth, validateQuantityAsync } from '../validators/customValidator';
+import { validateArrayLingth, validateQuantityAsync } from '../../validators/customValidator';
 import { environment } from '../../../../environments/environment';
 import { NoteOnly } from '../../../note/interfaces/Inote-only';
 import { PricedServices } from '../../../service-price-per-client-type/Interfaces/IPricedServices';
@@ -123,6 +123,8 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     } else return this.newOrderAvailableStatus;
   }
   getNoteById = (id: number) => this.NotesDataSource.find((note) => note.id == id);
+  getReservationRequired = (index: number): FormControl => this.OrderDetails.at(index).get('reservationRequired') as FormControl;
+
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
   setServiceIdFromServicePricePerClientType = (index: number, data: any) => {
     let serviceId = this.ServicePricesForClientTypesDataSource.find((sp) => sp.id === data)?.serviceId;
@@ -224,6 +226,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
           orderStatus: [null, [Validators.required]],
           counts: [0],
           copies: [0],
+          reservationRequired: [true],
         });
         break;
     }
@@ -405,11 +408,16 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       .valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (id) => {
-          let notePrice = this.getNoteById(id)?.finalPrice ?? 0;
+          let note = this.getNoteById(id);
+          let notePrice;
+          if (note?.clientId == +this.clientId.value) notePrice = note?.finalPriceWithoutTeacherPrice;
+          else notePrice = note?.finalPrice;
+          notePrice = notePrice ?? 0;
           this.getOrderDetailNoteAvailableQuantity(index).setValue(this.getNoteById(id)?.quantity);
           this.getOrderDetailQuantity(index).updateValueAndValidity();
           this.getOrderDetailPrice(index).setValue(notePrice);
           this.calculateTotalPrice();
+          this.getReservationRequired(index).setValue(note?.reservationRequired);
         },
         error: (e) => {
           this.isSubmitting = false;

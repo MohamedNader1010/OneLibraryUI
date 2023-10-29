@@ -15,8 +15,8 @@ export class AccessLoginPageGuard  {
     return this.Auth();
   }
   Auth() {
-    let refreshToken = localStorage.getItem('refreshToken');
-    if (refreshToken) {
+    let token = localStorage.getItem('token');
+    if (token) {
       this._router.navigate(['']);
       return false;
     }

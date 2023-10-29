@@ -1,15 +1,14 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, catchError, of, shareReplay, tap} from 'rxjs';
-import {Login} from '../interfaces/Ilogin';
-import {environment} from 'src/environments/environment';
-import {Auth} from '../interfaces/IAuth';
-import {ResetPassword} from '../interfaces/IResetPassword';
-import {UpdatePassword} from '../interfaces/IUpdatePassword';
-import {User} from '../interfaces/IUser';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, shareReplay } from 'rxjs';
+import { Login } from '../interfaces/Ilogin';
+import { environment } from 'src/environments/environment';
+import { Auth } from '../interfaces/IAuth';
+import { ResetPassword } from '../interfaces/IResetPassword';
+import { UpdatePassword } from '../interfaces/IUpdatePassword';
+import { User } from '../interfaces/IUser';
 import { ResponseDto } from './../../shared/interfaces/Iresponse';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -42,23 +41,23 @@ export class AuthService {
   UpdateUser(userId: string, model: User) {
     return this._http.put<ResponseDto>(`${this.uri}?id=${userId}`, model);
   }
-  refreshToken() {
-    return this._http.post<ResponseDto>(`${this.uri}refreshToken`, { token: localStorage.getItem('refreshToken') });
-  }
+
   public setLocalStorage(auth: Auth) {
     localStorage.setItem('token', auth.token);
-    localStorage.setItem('refreshToken', auth.refreshToken);
-    localStorage.setItem('refreshTokenExp', auth.refreshTokenExpiration.toString());
     localStorage.setItem('uname', auth.username);
     localStorage.setItem('uid', auth.id);
     localStorage.setItem('iSCheckedIn', auth.isCheckedIn.toString());
   }
+
   public clearLocalStorage() {
     localStorage.clear();
   }
 
   public logout() {
     this.clearLocalStorage();
-    this._router.navigate(['/auth/login']);
+    this.username.next(null);
+    this._router.navigate(['/auth/login'], {
+      queryParams: { returnUrl: this._router.routerState.snapshot.url },
+    });
   }
 }

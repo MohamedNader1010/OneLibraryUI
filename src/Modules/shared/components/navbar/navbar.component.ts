@@ -41,6 +41,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   get isUser(): boolean {
     return this.extractRoleFromToken() === 'User' ? true : false;
   }
+  get isAdminWithoutBank(): boolean {
+    return this.extractRoleFromToken() === 'AdminWithoutBank' ? true : false;
+  }
   private extractRoleFromToken() {
     let token = localStorage.getItem('token')?.toString();
     if (token) {

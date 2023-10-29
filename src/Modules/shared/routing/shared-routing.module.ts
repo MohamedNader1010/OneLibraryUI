@@ -11,6 +11,7 @@ import { AuthGuard } from 'src/Modules/authentication.Module/guards/auth.guard';
 import { TeacherAccountComponent } from 'src/Modules/client/components/teacherAccount/teacherAccount.component'
 import { ShiftsComponent } from "../../incomes-outcomes/components/shifts/shifts.component"
 import { ShiftDetailsComponent } from "../../incomes-outcomes/components/shift-details/shift-details.component";
+import { BankGuard } from '../../authentication.Module/guards/bank.guard';
 
 const routes: Routes = [
   {
@@ -36,7 +37,7 @@ const routes: Routes = [
       { path: 'materialTracking', loadChildren: () => import('../../material-tracking/materialTracking.module').then((m) => m.materialTrackingModule), canActivate: [AuthGuard] },
       { path: 'imcomesOutcomes', loadChildren: () => import('../../incomes-outcomes/incomes-outcomes.module').then((m) => m.IncomesOutcomesModule), canActivate: [AuthGuard] },
       { path: 'commitmentAndDue', loadChildren: () => import('../../commitment-and-due/commitment-and-due.module').then((m) => m.CommitmentAndDueModule), canActivate: [AuthGuard] },
-      { path: 'bank', loadChildren: () => import('../../bank/bank.module').then((m) => m.BankModule), canActivate: [AuthGuard] },
+      { path: 'bank', loadChildren: () => import('../../bank/bank.module').then((m) => m.BankModule), canActivate: [BankGuard] },
       { path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard] },
       { path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },
       { path: 'notesReservations', component: ReservationsComponent, title: 'الحجوزات', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },

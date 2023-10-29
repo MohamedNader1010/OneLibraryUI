@@ -17,7 +17,7 @@ import { ClientType } from '../../../clientType/interFaces/IclientType';
 import { Client } from '../../../client/interFaces/Iclient';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
-import { validateArrayLingth } from '../../../order/components/validators/customValidator';
+import { validateArrayLingth } from '../../../order/validators/customValidator';
 import { PricedServicesWithOriginalPrices } from '../../../service-price-per-client-type/Interfaces/IPricedServicesWithOriginalPrices';
 @Component({
   selector: 'app-note-form-dialog',
@@ -81,9 +81,11 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   get fileName(): FormControl {
     return this.Form.get('fileName') as FormControl;
   }
-
   get isVisible(): FormControl {
     return this.Form.get('isVisible') as FormControl;
+  }
+  get reservationRequired(): FormControl {
+    return this.Form.get('reservationRequired') as FormControl;
   }
   getNoteComponentId = (index: number): FormControl => this.noteComponents.at(index).get('id') as FormControl;
   getNoteComponentServiceId = (index: number): FormControl => this.noteComponents.at(index).get('serviceId') as FormControl;
@@ -182,6 +184,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
             finalPrice: [0],
             fileName: [null],
             isVisible: [true],
+            reservationRequired: [true],
           },
           { validators: validateArrayLingth('noteComponents') },
         );

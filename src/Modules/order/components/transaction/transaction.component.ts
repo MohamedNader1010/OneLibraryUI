@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { OrderService } from '../../services/orders.service';
-import { ValidatePaid } from '../validators/customValidator';
+import { ValidatePaid } from '../../validators/customValidator';
 import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
 import { ToastrService } from 'ngx-toastr';
 import { Order } from '../../interfaces/Iorder';

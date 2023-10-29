@@ -27,6 +27,10 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
     this.loadData();
   }
 
+  override loadData() {
+    this.databaseService.getAllMaterialsForTable();
+  }
+
   private initiateTableHeaders() {
     this.tableColumns = [
       {
@@ -43,6 +47,16 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
         columnDef: 'price',
         header: 'سعر الجملة',
         cell: (element: Material) => element.price,
+      },
+      {
+        columnDef: 'totalOut',
+        header: 'اجمالي الوارد',
+        cell: (element: Material) => element.totalIn,
+      },
+      {
+        columnDef: 'totalIn',
+        header: 'اجمالي الصادر',
+        cell: (element: Material) => element.totalOut,
       },
       {
         columnDef: 'CurrentQty',

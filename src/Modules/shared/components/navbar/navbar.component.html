@@ -8,10 +8,10 @@
     </button>
     <div class="collapse navbar-collapse justify-content-between" style="margin-left: 3rem" id="navbarNav">
       <ul class="navbar-nav" *ngIf="authService.isLogged">
-        <li class="nav-item" *ngIf="isAdmin">
+        <li class="nav-item" *ngIf="!isUser">
           <a class="nav-link" aria-current="page" [routerLink]="['']" routerLinkActive="active link-danger" [routerLinkActiveOptions]="{ exact: true }">الرئيسية</a>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الخدمات</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
@@ -25,7 +25,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة العملاء</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
@@ -42,7 +42,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الموردين</span>
           <ul class="dropdown-menu" aria-labelledby="navbaarDropdown">
             <li class="dorpdown-item">
@@ -50,7 +50,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الموظفون</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
@@ -61,7 +61,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الخامات</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
@@ -72,24 +72,24 @@
             </li>
           </ul>
         </li>
-        <li class="nav-item" *ngIf="isAdmin">
+        <li class="nav-item" *ngIf="!isUser">
           <a class="nav-link" aria-current="page" [routerLink]="['notes']" routerLinkActive="active link-danger">المذكرات</a>
         </li>
         <li class="nav-item dropdown">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الطلبات</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li class="dropdown-item" *ngIf="isAdmin || isUser">
+            <li class="dropdown-item">
               <a class="nav-link" aria-current="page" [routerLink]="['orders']" routerLinkActive="active link-danger">جميع الطلبات</a>
             </li>
-            <li class="dropdown-item" *ngIf="isAdmin">
+            <li class="dropdown-item" *ngIf="!isUser">
               <a class="nav-link" aria-current="page" [routerLink]="['notesReservations']" routerLinkActive="active link-danger">الحجوزات</a>
             </li>
-            <li class="dropdown-item" *ngIf="isAdmin">
+            <li class="dropdown-item" *ngIf="!isUser">
               <a class="nav-link" aria-current="page" [routerLink]="['returns']" routerLinkActive="active link-danger">المرتجعات</a>
             </li>
           </ul>
         </li>
-        <li class="nav-item dropdown" *ngIf="isAdmin">
+        <li class="nav-item dropdown" *ngIf="!isUser">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">الماليات</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
@@ -108,7 +108,7 @@
         </li>
       </ul>
       <div class="navbar-nav align-items-center">
-        <li class="nav-item dropdown" *ngIf="isAdmin || isUser">
+        <li class="nav-item dropdown">
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">مرحبا {{ authService.username.getValue() }} !</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">

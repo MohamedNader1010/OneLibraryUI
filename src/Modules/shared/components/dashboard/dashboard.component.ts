@@ -56,7 +56,6 @@ export class DashboardComponent implements OnInit {
   private _setBarChartData(dashboardData: DashboardData) {
     this.barChartData.labels?.push(
       this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalGoneOrders.key),
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalPreparedOrders.key),
       this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReadyOrders.key),
       this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReceivedOrders.key),
       this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReservedOrders.key),
@@ -65,7 +64,6 @@ export class DashboardComponent implements OnInit {
 
     this.barChartData.datasets[0].data.push(
       dashboardData.totalOrderDetailsStatus.totalGoneOrders.value,
-      dashboardData.totalOrderDetailsStatus.totalPreparedOrders.value,
       dashboardData.totalOrderDetailsStatus.totalReadyOrders.value,
       dashboardData.totalOrderDetailsStatus.totalReceivedOrders.value,
       dashboardData.totalOrderDetailsStatus.totalReservedOrders.value,

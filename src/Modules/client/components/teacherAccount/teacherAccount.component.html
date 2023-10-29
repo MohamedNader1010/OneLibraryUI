@@ -1,62 +1,65 @@
 <section class="container-fluid d-flex flex-column py-2 h-100">
-	<div class="d-flex align-items-center justify-content-between mat-elevation-z2">
-		<mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
-			<input matInput #filter placeholder="Filter" />
-			<button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
-				<mat-icon>close</mat-icon>
-			</button>
-		</mat-form-field>
-	</div>
-	<div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
-		<table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort recycleRows>
-			<ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="column.columnDef" [sticky]="first && last">
-				<th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
-				<td mat-cell *matCellDef="let row">{{ column.columnDef.indexOf('createdOn') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy') : column.cell(row) }}</td>
-			</ng-container>
-			<ng-container matColumnDef="expand" [sticky]="true">
-					<th mat-header-cell *matHeaderCellDef>
-					</th>
-				<td mat-cell *matCellDef="let element">
-					<button mat-icon-button aria-label="expand row" (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()">
-						<mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
-						<mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
-					</button>
-					<button *ngIf="element.rest > 0" mat-icon-button color="basic" (click)="HandleTecherPay(element,$event)">
-						<mat-icon>paid</mat-icon>
-					</button>
-				</td>
-			</ng-container>
+  <div class="d-flex align-items-center justify-content-between mat-elevation-z2">
+    <mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
+      <input matInput #filter placeholder="Filter" />
+      <button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
+    <table tabindex="0" style="background-color: white" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort recycleRows>
+      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="column.columnDef" [sticky]="first && last">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
+        <td mat-cell *matCellDef="let row">{{ column.columnDef.indexOf('createdOn') >= 0 ? (column.cell(row) | date : 'dd/MM/yyyy') : column.cell(row) }}</td>
+      </ng-container>
+      <ng-container matColumnDef="expand" [sticky]="true">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button *ngIf="element.notes.length" mat-icon-button aria-label="expand row" (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          </button>
+          <button *ngIf="element.rest > 0" mat-icon-button color="basic" (click)="HandleTecherPay(element, $event)">
+            <mat-icon>paid</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-			<ng-container matColumnDef="expandedDetail">
-				<td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
-					<div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-						<mat-list *ngFor="let note of element.notes; let last = last">
-							<mat-list-item>أسم المذكرة: {{note.name}} - المبيعات: {{note.numberOfSellItem}} نسخ - هامش ربح المدرس: {{note.teacherPrice}} - أجمالي : {{note.totalEarning}}</mat-list-item>
-							<mat-divider *ngIf="!last"></mat-divider>
-						</mat-list>
-					</div>
-				</td>
-			</ng-container>
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+          <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <mat-list *ngFor="let note of element.notes; let last = last">
+              <mat-list-item
+                >أسم المذكرة: {{ note.name }} - المبيعات للعملاء الاخرين: {{ note.numberOfSellItem }} - المبيعات للمدرس: {{ note.numberOfSellItemFroTeacher }} - اجمالي المبيعات: {{ note.numberOfAllSellItem }} - هامش ربح المدرس:
+                {{ note.teacherPrice }} - أجمالي : {{ note.totalEarning }}</mat-list-item
+              >
+              <mat-divider *ngIf="!last"></mat-divider>
+            </mat-list>
+          </div>
+        </td>
+      </ng-container>
 
-			<tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand; sticky: true"></tr>
-			<tr
-				mat-row
-				*matRowDef="let element; columns: columnsToDisplayWithExpand"
-				class="example-element-row"
-				[class.example-expanded-row]="expandedElement === element"
-				(click)="expandedElement = expandedElement === element ? null : element"></tr>
-			<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-			<tr class="mat-row" *matNoDataRow>
-				<ng-container *ngIf="databaseService.isLoading">
-					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">
-						<mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
-					</td>
-				</ng-container>
-				<ng-container *ngIf="!databaseService.isLoading">
-					<td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
-				</ng-container>
-			</tr>
-		</table>
-	</div>
-	<mat-paginator class="d-flex" #paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" [length]="filteredDataLength" showFirstLastButtons color="warn"></mat-paginator>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand; sticky: true"></tr>
+      <tr
+        mat-row
+        *matRowDef="let element; columns: columnsToDisplayWithExpand"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element"
+      ></tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <ng-container *ngIf="databaseService.isLoading">
+          <td class="mat-cell text-center" [colSpan]="displayedColumns.length">
+            <mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
+          </td>
+        </ng-container>
+        <ng-container *ngIf="!databaseService.isLoading">
+          <td class="mat-cell text-center" [colSpan]="displayedColumns.length">No data found</td>
+        </ng-container>
+      </tr>
+    </table>
+  </div>
+  <mat-paginator class="d-flex" #paginator [pageSizeOptions]="[25, 50, 100]" [pageSize]="25" [length]="filteredDataLength" showFirstLastButtons color="warn"></mat-paginator>
 </section>

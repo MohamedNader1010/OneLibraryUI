@@ -10,4 +10,7 @@ export interface NoteOnly {
   fileName: string;
   filePath: string;
   isVisible: boolean;
+  reservationRequired: boolean;
+  teacherPrice: number;
+  finalPriceWithoutTeacherPrice: number;
 }
