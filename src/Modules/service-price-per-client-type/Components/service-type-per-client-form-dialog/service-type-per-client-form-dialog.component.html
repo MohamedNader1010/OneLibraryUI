@@ -1,27 +1,43 @@
 <div class="container w-100">
-	<h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل سعر الخدمة</h2>
-	<ng-template #update>
-		<h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
-	</ng-template>
-	<mat-dialog-content>
-		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
-			<div class="row">
-				<autocomplete class="col-6" label="الخدمات" [dataSource]="servicesDataSource" (selectedId)="setServiceId($event)" [selectedValue]="serviceId.value" [loading]="serviceLoading"></autocomplete>
-				<autocomplete class="col-6" label="نوع العميل" [dataSource]="clientsTypeDataSource" (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value" [loading]="clientTypeLoading"></autocomplete>
-			</div>
-			<div class="row">
-				<div class="col">
-					<mat-form-field class="w-100" color="warn">
-						<mat-label>السعر</mat-label>
-						<input type="number" matInput formControlName="price" min="0" />
-						<mat-error *ngIf="price.hasError('required') && (price.touched || price.dirty)"> يجب ادخال السعر </mat-error>
-					</mat-form-field>
-				</div>
-			</div>
-			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
-			</div>
-		</form>
-	</mat-dialog-content>
+  <h2 class="w-100 text-center mt-3" *ngIf="data; else update">تعديل سعر الخدمة</h2>
+  <ng-template #update>
+    <h2 class="w-100 text-center mt-3">أضافة سعر الخدمة</h2>
+  </ng-template>
+  <mat-dialog-content>
+    <form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
+      <div class="row">
+        <autocomplete
+          class="col-6"
+          label="الخدمات"
+          [dataSource]="servicesDataSource"
+          (selectedId)="setServiceId($event)"
+          [selectedValue]="serviceId.value"
+          [loading]="serviceLoading"
+          [disable]="serviceLoading"
+        ></autocomplete>
+        <autocomplete
+          class="col-6"
+          label="نوع العميل"
+          [dataSource]="clientsTypeDataSource"
+          (selectedId)="setClientTypeId($event)"
+          [selectedValue]="clientTypeId.value"
+          [loading]="clientTypeLoading"
+          [disable]="clientTypeLoading"
+        ></autocomplete>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field class="w-100" color="warn">
+            <mat-label>السعر</mat-label>
+            <input type="number" matInput formControlName="price" min="0" />
+            <mat-error *ngIf="price.hasError('required') && (price.touched || price.dirty)"> يجب ادخال السعر </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="my-2 d-flex flex-row-reverse">
+        <button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+        <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+      </div>
+    </form>
+  </mat-dialog-content>
 </div>

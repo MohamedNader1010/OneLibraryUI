@@ -1,7 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {ToastrService} from 'ngx-toastr';
-import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { GenericService } from '../../services/genericCRUD.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteDialogData } from '../../interfaces/deleteDialogData';
@@ -31,11 +31,7 @@ export class DeleteDialogComponent {
         this.isSubmitting = true;
         this.dialogRef.close({ data: res });
       },
-      error: (e: any) => {
-        this.isSubmitting = false;
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: () => (this.isSubmitting = false),
       complete: () => {
         this.isSubmitting = false;
       },

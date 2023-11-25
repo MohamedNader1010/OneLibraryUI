@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subject, debounceTime, map, startWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, map, of, startWith, switchMap, takeUntil, catchError } from 'rxjs';
+import { ClientService } from '../../../client/services/client.service';
+import { ClientForForm } from '../../../client/interFaces/IClientForForm';
 
 @Component({
   selector: 'autocomplete',
@@ -12,44 +14,88 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   @Input() label: string = '';
   @Input() desplayTextKey: string = 'name';
   @Input() loading: boolean = false;
+  @Input() disable: boolean = false;
+  @Input() backendSideFilter: boolean = false;
+  @Input() hasNewClient: boolean = false;
   @Input() placeholder: string = '';
+  @Input() id: any;
   @Input() dataSource: any[] = [];
   @Input() selectedValue!: any;
   @Output() selectedId = new EventEmitter<number>();
 
   nameControl = new FormControl();
+  newClient: ClientForForm = {
+    id: -1,
+    name: 'أضافة عميل جديد',
+    clientTypeId: -1,
+  };
   filteredData$!: Observable<any[]>;
+
+  constructor(private _clientService: ClientService) {}
   ngOnInit() {
     this.nameControl.addValidators([Validators.required]);
     this.filteredData$ = this.nameControl.valueChanges.pipe(
       startWith(this.nameControl.value),
       debounceTime(1000),
-      map((value) => {
+      switchMap((value) => {
         if (value) {
-          let filtered = this.filter(value);
-          if (filtered.length) {
-            this.nameControl.setErrors({ required: true });
-            this.selectedId.emit(undefined);
-            return filtered;
-          }
-          if (typeof value != 'object') {
-            this.nameControl.setErrors({ notFound: true });
-            this.selectedId.emit(undefined);
+          if (this.backendSideFilter) {
+            return this.backend(value);
+          } else {
+            return this.frontend(value);
           }
         }
-        return this.dataSource.slice();
+        if (this.backendSideFilter) {
+          return of([this.newClient]);
+        } else {
+          return of(this.dataSource.slice());
+        }
       }),
       takeUntil(this.destroy$),
     );
   }
+
+  backend = (value: any) => {
+    if (!this.id) return [];
+    return this._clientService.getAllByType(this.id, value).pipe(
+      map((response) => {
+        let filtered: any[] = response.body;
+        if (filtered.length) {
+          this.nameControl.setErrors({ required: true });
+          this.selectedId.emit(undefined);
+        }
+        if (typeof value != 'object') {
+          this.nameControl.setErrors({ notFound: true });
+          this.selectedId.emit(undefined);
+        }
+        if (this.hasNewClient) {
+          filtered = [this.newClient, ...filtered];
+        }
+        return filtered;
+      }),
+    );
+  };
+
+  frontend = (value: any) => {
+    const filtered: any[] = this.filter(value);
+    if (filtered.length) {
+      this.nameControl.setErrors({ required: true });
+      this.selectedId.emit(undefined);
+    }
+    if (typeof value != 'object') {
+      this.nameControl.setErrors({ notFound: true });
+      this.selectedId.emit(undefined);
+    }
+    return of(filtered);
+  };
   ngOnChanges(changes: any) {
     if (changes.dataSource || this.selectedValue === null) this.nameControl.reset();
     if (this.dataSource.length && this.selectedValue) {
       let selectedItem = this.dataSource.find((option) => option.id === this.selectedValue);
       this.nameControl.setValue(selectedItem);
     }
-    if (changes.loading) {
-      this.loading ? this.nameControl.disable() : this.nameControl.enable();
+    if (changes.disable) {
+      this.disable ? this.nameControl.disable() : this.nameControl.enable();
     }
   }
 
@@ -70,6 +116,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
     });
     return filteredData;
   };
+
   displayFn = (item: any): string => (item ? item[this.desplayTextKey] : '');
 
   emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);

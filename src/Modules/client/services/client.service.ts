@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Client} from '../interFaces/Iclient';
 import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { TeacherProfit } from '../interFaces/IteacherProfit';
 
 @Injectable({
@@ -14,7 +14,7 @@ export class ClientService extends GenericService<Client> {
     super(http, 'Client', toastrService);
   }
 
-  getAllByType = (id: number) => this.http.get<ResponseDto>(`${this.uri}/getByClientTypeId?id=${id}`);
+  getAllByType = (id: number, filter: string) => this.http.get<ResponseDto>(`${this.uri}/getByClientTypeId?id=${id}`, { params: { queryFilter: filter } });
 
   getTeacherProfit() {
     this.loadingData.next(true);
@@ -22,11 +22,7 @@ export class ClientService extends GenericService<Client> {
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: (e) => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }

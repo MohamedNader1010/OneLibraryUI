@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Note } from "../interfaces/Inote";
 import { environment } from "src/environments/environment";
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
 import { PrintNote } from '../interfaces/Iprint-note.interface';

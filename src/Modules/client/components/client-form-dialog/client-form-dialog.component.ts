@@ -55,9 +55,6 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
       .subscribe({
         next: (data) => {
           this.ClientTypeDataSource = data.body;
-        },
-        error: (e) => {
-          this.toastrService.error(e.message, this.translateService.instant('error.cantLoadData'));
-        },
+        }
       });
 }

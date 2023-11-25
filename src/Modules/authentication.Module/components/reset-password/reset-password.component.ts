@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastrService} from 'ngx-toastr';
 import { CustomValidators } from '../../customeValidators/CustomValidators';
 import { AuthService } from '../../services/auth.service';
-import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -61,11 +61,7 @@ export class ResetPasswordComponent {
             this._loginService.clearLocalStorage();
             this._toastrService.success(data.message, 'logged in sucessfully');
           },
-          error: (e) => {
-            this.logging = false;
-            let res: ResponseDto = e.error ?? e;
-            this._toastrService.error(res.message);
-          },
+          error: () => (this.logging = false),
           complete: () => {
             this.logging = false;
             this._router.navigate(['auth/login']);

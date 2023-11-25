@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {ServicePricePerClientType} from '../Interfaces/ServicePricePerClientType';
 import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 
 @Injectable({
   providedIn: 'root',

@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
-import { ResponseDto } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { CommitmentAndDue } from '../../interfaces/Icommitment-and-due.interface';
 import { CommitmentAndDueService } from '../../services/commitment-and-due.service';
 import { takeUntil } from 'rxjs';
@@ -101,11 +101,7 @@ export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogC
         this._databaseService.DialogData = res.body;
         this.dialogRef.close({ data: res });
       },
-      error: (e) => {
-        this.isSubmitting = false;
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
+      error: () => (this.isSubmitting = false),
       complete: () => {
         this.isSubmitting = false;
       },

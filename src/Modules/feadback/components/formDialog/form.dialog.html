@@ -1,32 +1,40 @@
 <div class="container w-100">
-	<h2 mat-dialog-title *ngIf="id.value; else update">تعديل تعليق العميل</h2>
-	<ng-template #update>
-		<h2 mat-dialog-title>تسجيل تعليق جديد</h2>
-	</ng-template>
-	<mat-dialog-content>
-		<form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
-			<div class="row">
-				<autocomplete class="col-6" label="العميل" [dataSource]="ClientsDataSource" (selectedId)="setCleintId($event)" [selectedValue]="cleintId.value" [loading]="clientLoading"></autocomplete>
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>التاريخ</mat-label>
-						<mat-hint>MM/DD/YYYY</mat-hint>
-						<input matInput [matDatepicker]="datepicker" formControlName="feedBackDate" />
-						<mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
-						<mat-datepicker #datepicker></mat-datepicker>
-					</mat-form-field>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>ملاحظات</mat-label>
-						<textarea matInput formControlName="feedBack"></textarea>
-					</mat-form-field>
-				</div>
-			</div>
-		</form>
-	</mat-dialog-content>
+  <h2 mat-dialog-title *ngIf="id.value; else update">تعديل تعليق العميل</h2>
+  <ng-template #update>
+    <h2 mat-dialog-title>تسجيل تعليق جديد</h2>
+  </ng-template>
+  <mat-dialog-content>
+    <form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
+      <div class="row">
+        <autocomplete
+          class="col-6"
+          label="العميل"
+          [dataSource]="ClientsDataSource"
+          (selectedId)="setCleintId($event)"
+          [selectedValue]="cleintId.value"
+          [loading]="clientLoading"
+          [disable]="clientLoading"
+        ></autocomplete>
+        <div class="col-6">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>التاريخ</mat-label>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <input matInput [matDatepicker]="datepicker" formControlName="feedBackDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+            <mat-datepicker #datepicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>ملاحظات</mat-label>
+            <textarea matInput formControlName="feedBack"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
   <div mat-dialog-actions class="d-flex justify-content-end">
     <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
     <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">

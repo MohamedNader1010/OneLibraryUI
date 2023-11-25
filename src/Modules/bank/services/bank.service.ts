@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
 import { GenericService } from "../../shared/services/genericCRUD.service";
-import { ResponseDto } from '../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { Bank } from '../interfaces/Ibank';
 
 @Injectable({
@@ -18,11 +18,7 @@ export class BankService extends GenericService<Bank> {
       next: (data: ResponseDto) => {
         this.dataChange.next({ body: (data.body as Bank)?.transactions } as ResponseDto);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: () => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }

@@ -20,6 +20,7 @@
           (selectedId)="setServiceTypeId($event)"
           [selectedValue]="serviceTypeId.value"
           [loading]="serviceTypeLoading"
+          [disable]="serviceTypeLoading"
         ></autocomplete>
       </div>
       <!-- service materials -->
@@ -42,6 +43,7 @@
               (selectedId)="setServiceMaterialId(i, $event)"
               [selectedValue]="getServiceMaterial(i).value"
               [loading]="materialLoading"
+              [disable]="materialLoading"
             ></autocomplete>
             <mat-form-field class="w-100" class="col-5" color="warn">
               <mat-label>الكمية</mat-label>
@@ -86,6 +88,7 @@
               (selectedId)="setServicePriceClientTypeId(i, $event)"
               [selectedValue]="getServicePriceClientTypeId(i).value"
               [loading]="clientTypesLoading"
+              [disable]="clientTypesLoading"
             ></autocomplete>
             <mat-form-field class="w-100" class="col-5" color="warn">
               <mat-label>السعر</mat-label>

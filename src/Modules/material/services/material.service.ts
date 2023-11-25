@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Material} from '../interfaces/Imaterial';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -19,11 +19,7 @@ export class MaterialService extends GenericService<Material> {
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: (e) => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }

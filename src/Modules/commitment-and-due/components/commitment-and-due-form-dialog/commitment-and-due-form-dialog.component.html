@@ -21,6 +21,7 @@
             (selectedId)="setEmployeeId($event)"
             [selectedValue]="employeeId.value"
             [loading]="employeeLoading"
+            [disable]="employeeLoading"
           ></autocomplete>
         </ng-container>
         <ng-container *ngIf="supplierOrEmployee.value == 'supplier'">
@@ -31,6 +32,7 @@
             (selectedId)="setSupplierId($event)"
             [selectedValue]="supplierId.value"
             [loading]="supplierLoading"
+            [disable]="supplierLoading"
           ></autocomplete>
         </ng-container>
         <div class="col-6">

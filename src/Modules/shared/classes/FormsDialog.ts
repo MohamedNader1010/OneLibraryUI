@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { GenericService } from '../services/genericCRUD.service';
 import { Observer, Subject, takeUntil } from 'rxjs';
-import { ResponseDto } from '../interfaces/Iresponse';
+import { ResponseDto } from '../interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
 @Injectable()
@@ -26,11 +26,7 @@ export class FormsDialogCommonFunctionality {
         this.databaseService.DialogData = res.body;
         this.matDialogRef.close({ data: res });
       },
-      error: (e) => {
-        this.isSubmitting = false;
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
+      error: () => (this.isSubmitting = false),
       complete: () => {
         this.isSubmitting = false;
       },

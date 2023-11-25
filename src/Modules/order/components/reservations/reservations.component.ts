@@ -10,7 +10,7 @@ import { MatSort } from '@angular/material/sort';
 import { TableDataSource } from 'src/Modules/shared/classes/tableDataSource';
 import { OrderService } from './../../services/orders.service';
 import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { takeUntil } from 'rxjs';
 import { Reservation } from '../../interfaces/IReservation.interface';
 import { ReservedOrderDetail } from '../../interfaces/IReservedOrderDetail.interface';
@@ -89,10 +89,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
         this.databaseService.DialogData = res.body;
         this.toastrService.success(res.message);
       },
-      error: (e) => {
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
       complete: () => {
         const reservedNote = reservation.reservedNotes.find((note: ReservedNote) => note.noteId === data.noteId);
         const reservedNoteIndex = reservation.reservedNotes.findIndex((note: ReservedNote) => note.noteId === data.noteId);
@@ -119,10 +115,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
       next: (res) => {
         this.toastrService.success(res.message);
       },
-      error: (e) => {
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
       complete: () => {
         const reservedNote = reservation.reservedNotes.find((note: ReservedNote) => note.noteId === data.noteId);
         const reservedNoteIndex = reservation.reservedNotes.findIndex((note: ReservedNote) => note.noteId === data.noteId);
@@ -146,10 +138,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
   //         next: (res) => {
   //           this.databaseService.DialogData = res.body;
   //           this.toastrService.success(res.message);
-  //         },
-  //         error: (e) => {
-  //           let res: ResponseDto = e.error ?? e;
-  //           this.toastrService.error(res.message);
   //         },
   //         complete: () => {
   //           const reservedNoteIndex = reservation.reservedNotes.findIndex((r) => r.noteId === noteId);

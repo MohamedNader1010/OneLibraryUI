@@ -3,7 +3,7 @@ import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
-import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 
 @Component({
   selector: 'app-forget-password',
@@ -32,11 +32,7 @@ export class ForgetPasswordComponent {
         next: (data) => {
           this._toastrService.success(data.message, 'check your email');
         },
-        error: (e) => {
-          this.logging = false;
-          let res: ResponseDto = e.error ?? e;
-          this._toastrService.error(res.message);
-        },
+        error: () => (this.logging = false),
         complete: () => {
           this.logging = false;
           this._router.navigate(['']);

@@ -3,7 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { tap, takeUntil, forkJoin, catchError, of, map } from 'rxjs';
-import { ResponseDto } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeService } from '../../../employee/services/employee.service';
 import { DatePipe } from '@angular/common';

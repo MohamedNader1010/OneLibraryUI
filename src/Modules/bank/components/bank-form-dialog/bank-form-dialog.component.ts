@@ -7,7 +7,7 @@ import { EmployeeFormDialogComponent } from "../../../employee/components/employ
 import { Employee } from "../../../employee/interFaces/Iemployee";
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { BankService } from '../../services/bank.service';
-import { ResponseDto } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { takeUntil } from 'rxjs';
 
 @Component({
@@ -54,11 +54,7 @@ export class BankFormDialogComponent extends FormsDialogCommonFunctionality impl
         next: (res) => {
           this.matDialogRef.close({ data: res });
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: (e) => (this.isSubmitting = false),
         complete: () => {
           this.isSubmitting = false;
         },

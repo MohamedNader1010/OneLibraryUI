@@ -9,7 +9,7 @@ import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../shared/interfaces/Iresponse';
+import { ResponseDto } from '../shared/interfaces/IResponse.dto';
 import { PagingCriteria } from '../shared/interfaces/pagingCriteria';
 
 @Component({
@@ -26,7 +26,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
 
   ngOnInit(): void {
     this.initiateTableHeader();
-    this.loadData();
+    this.loadPaginatedData();
   }
   private initiateTableHeader() {
     this.tableColumns = [
@@ -81,17 +81,6 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
         cell: (element: Order) => element.createdOn,
       },
     ];
-  }
-
-  override loadData() {
-    const pagingCriteria: PagingCriteria = {
-      direction: 'desc',
-      filter: '',
-      orderBy: 'Id',
-      pageIndex: 0,
-      pageSize: 25,
-    };
-    this.databaseService.getPagedOrders(pagingCriteria).subscribe();
   }
 
   public handleOrderTransaction(row: ResponseDto) {

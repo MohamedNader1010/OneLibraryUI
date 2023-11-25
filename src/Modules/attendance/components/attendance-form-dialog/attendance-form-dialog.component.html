@@ -1,33 +1,40 @@
 <div class="container w-100">
-	<h2 mat-dialog-title *ngIf="id.value; else update">تعديل حضور وانصراف</h2>
-	<ng-template #update>
-		<h2 mat-dialog-title>تسجيل حضور و انصراف</h2>
-	</ng-template>
-	<mat-dialog-content>
-		<h4 *ngIf="data"><strong>التاريخ :</strong> {{data.checkIn| date : 'dd/MM/yyyy'}}</h4>
-		<form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
-			<div class="row">
-				<autocomplete label="الموظف" [dataSource]="EmployeesDataSource" (selectedId)="setEmpId($event)" [selectedValue]="this?.data?.employeeId" [loading]="employeeLoading"></autocomplete>
-			</div>
-			<div class="row">
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>حضور</mat-label>
-						<mat-hint>HH:MM AM/PM</mat-hint>
-						<input matInput type="time" formControlName="checkIn" />
-						<mat-error *ngIf="checkIn.hasError('required') && (checkIn.touched || checkIn.dirty)"> يجب ادخال وقت الحضور </mat-error>
-					</mat-form-field>
-				</div>
-				<div class="col-6">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>انصراف</mat-label>
-						<mat-hint>HH:MM AM/PM</mat-hint>
-						<input matInput type="time" formControlName="checkOut" />
-					</mat-form-field>
-				</div>
-			</div>
-		</form>
-	</mat-dialog-content>
+  <h2 mat-dialog-title *ngIf="id.value; else update">تعديل حضور وانصراف</h2>
+  <ng-template #update>
+    <h2 mat-dialog-title>تسجيل حضور و انصراف</h2>
+  </ng-template>
+  <mat-dialog-content>
+    <h4 *ngIf="data"><strong>التاريخ :</strong> {{ data.checkIn | date : 'dd/MM/yyyy' }}</h4>
+    <form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
+      <div class="row">
+        <autocomplete
+          label="الموظف"
+          [dataSource]="EmployeesDataSource"
+          (selectedId)="setEmpId($event)"
+          [selectedValue]="this?.data?.employeeId"
+          [loading]="employeeLoading"
+          [disable]="employeeLoading"
+        ></autocomplete>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>حضور</mat-label>
+            <mat-hint>HH:MM AM/PM</mat-hint>
+            <input matInput type="time" formControlName="checkIn" />
+            <mat-error *ngIf="checkIn.hasError('required') && (checkIn.touched || checkIn.dirty)"> يجب ادخال وقت الحضور </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-6">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>انصراف</mat-label>
+            <mat-hint>HH:MM AM/PM</mat-hint>
+            <input matInput type="time" formControlName="checkOut" />
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
   <div mat-dialog-actions class="d-flex justify-content-end">
     <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
     <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">

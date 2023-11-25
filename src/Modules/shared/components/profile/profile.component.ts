@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from 'src/Modules/authentication.Module/customeValidators/CustomValidators';
 import { User } from 'src/Modules/authentication.Module/interfaces/IUser';
-import { ResponseDto } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { AuthService } from './../../../authentication.Module/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -121,11 +121,7 @@ export class ProfileComponent implements OnInit {
             localStorage.setItem('uname', data.body.userName);
             this._authService.username.next(data.body.userName);
           },
-          error: (e) => {
-            let res: ResponseDto = e.error ?? e;
-            this._toastrService.error(res.message);
-            this.submitting = false;
-          },
+          error: () => (this.submitting = false),
           complete: () => {
             this.submitting = false;
             this.IsEdit = false;
@@ -143,11 +139,7 @@ export class ProfileComponent implements OnInit {
           next: (data: ResponseDto) => {
             this._toastrService.success(data.message);
           },
-          error: (e) => {
-            let res: ResponseDto = e.error ?? e;
-            this._toastrService.error(res.message);
-            this.submittingPassword = false;
-          },
+          error: () => (this.submittingPassword = false),
           complete: () => {
             this.submittingPassword = false;
             this.updatePassword = false;

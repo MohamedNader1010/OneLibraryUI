@@ -2,7 +2,7 @@ import { Shift } from './../interfaces/Ishift';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 
 import { CloseAndStartShift } from '../interfaces/IcloseAndStartShift';

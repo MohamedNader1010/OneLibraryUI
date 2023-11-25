@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
 import { Service } from 'src/Modules/service/interfaces/Iservice';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -75,11 +75,7 @@ export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFu
           this.servicesDataSource = response.services.body;
           this.clientsTypeDataSource = response.clientsTypes.body;
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: () => (this.isSubmitting = false),
         complete: () => {
           this.clientTypeLoading = this.serviceLoading = false;
           if (this.data) this.Form.patchValue(this.data);

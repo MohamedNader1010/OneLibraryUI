@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { OrderService } from '../../services/orders.service';
 import { ValidatePaid } from '../../validators/customValidator';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { Order } from '../../interfaces/Iorder';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
@@ -69,11 +69,7 @@ export class TransactionComponent extends FormsDialogCommonFunctionality impleme
           this._databaseService.DialogData = res.body;
           this.dialogRef.close({ data: res });
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: () => (this.isSubmitting = false),
         complete: () => {
           this.isSubmitting = false;
         },

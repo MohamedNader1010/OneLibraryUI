@@ -7,11 +7,27 @@
     <mat-dialog-content>
       <form [formGroup]="Form" class="d-flex flex-column">
         <div class="row">
-          <autocomplete class="col-3" label="نوع العميل" [dataSource]="ClientTypesDataSource"
-            (selectedId)="setClientTypeId($event)" [selectedValue]="clientTypeId.value" [loading]="clientTypeLoading">
+          <autocomplete
+            class="col-3"
+            label="نوع العميل"
+            [dataSource]="ClientTypesDataSource"
+            (selectedId)="setClientTypeId($event)"
+            [selectedValue]="clientTypeId.value"
+            [loading]="clientTypeLoading"
+            [disable]="clientTypeLoading"
+          >
           </autocomplete>
-          <autocomplete class="col-3" label="أسم العميل" [dataSource]="ClientsDataSource"
-            (selectedId)="setClientId($event)" [selectedValue]="clientId.value" [loading]="clientsLoading">
+          <autocomplete
+            class="col-3"
+            label="أسم العميل"
+            [dataSource]="ClientsDataSource"
+            (selectedId)="setClientId($event)"
+            [selectedValue]="clientId.value"
+            [loading]="clientsLoading"
+            [disable]="clientsLoading"
+            [id]="clientTypeId.value"
+            [backendSideFilter]="true"
+          >
           </autocomplete>
           <mat-form-field color="warn" appearance="fill" class="col-3">
             <mat-label>المرحلة</mat-label>
@@ -46,8 +62,15 @@
             </mat-form-field>
           </div>
           <div class="col-1">
-            <button type="button" mat-icon-button matTooltip="add" color="basic" aria-label="add note component row"
-              (click)="handleNewNoteComponent()" [disabled]="!clientId.value || clientId.invalid">
+            <button
+              type="button"
+              mat-icon-button
+              matTooltip="add"
+              color="basic"
+              aria-label="add note component row"
+              (click)="handleNewNoteComponent()"
+              [disabled]="!clientId.value || clientId.invalid"
+            >
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -58,10 +81,17 @@
             <ng-container [formGroupName]="i">
               <div class="col-6">
                 <ng-container>
-                  <autocomplete *ngIf="!data || !getNoteComponentId(i).value; else service" class="col-3"
-                    label="الخدمات" [dataSource]="ServicePricesForClientTypesDataSource" desplayTextKey="service"
+                  <autocomplete
+                    *ngIf="!data || !getNoteComponentId(i).value; else service"
+                    class="col-3"
+                    label="الخدمات"
+                    [dataSource]="ServicePricesForClientTypesDataSource"
+                    desplayTextKey="service"
                     (selectedId)="setServicePriceForClientTypeId(i, $event)"
-                    [selectedValue]="getServicePriceForClientTypeId(i)" [loading]="serviceLoading"></autocomplete>
+                    [selectedValue]="getServicePriceForClientTypeId(i)"
+                    [loading]="serviceLoading"
+                    [disable]="serviceLoading"
+                  ></autocomplete>
                   <ng-template #service>
                     <mat-form-field class="w-100" color="warn">
                       <mat-label>الخدمات</mat-label>
@@ -83,8 +113,7 @@
                 </mat-form-field>
               </div>
               <div class="col-1">
-                <button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row"
-                  (click)="handleDeleteNoteComponent(i)">
+                <button type="button" mat-icon-button matTooltip="delete" color="warn" aria-label="delete selected row" (click)="handleDeleteNoteComponent(i)">
                   <mat-icon>delete</mat-icon>
                 </button>
               </div>
@@ -119,25 +148,17 @@
           </div>
         </div>
         <div class="row">
-          <app-drag-and-drop [fileName]="fileName.value" (selectedFile)="getSelectedFiles($event)"
-            [progress]="progress">
-          </app-drag-and-drop>
+          <app-drag-and-drop [fileName]="fileName.value" (selectedFile)="getSelectedFiles($event)" [progress]="progress"> </app-drag-and-drop>
         </div>
         <div class="row">
-          <mat-checkbox formControlName="isVisible" color="warn">
-            متاح للطلبات
-          </mat-checkbox>
-          <mat-checkbox formControlName="reservationRequired" color="warn">
-            يجب الحجز عند نفاذ الكمية
-          </mat-checkbox>
+          <mat-checkbox formControlName="isVisible" color="warn"> متاح للطلبات </mat-checkbox>
+          <mat-checkbox formControlName="reservationRequired" color="warn"> يجب الحجز عند نفاذ الكمية </mat-checkbox>
         </div>
       </form>
     </mat-dialog-content>
     <div mat-dialog-actions class="d-flex justify-content-end">
-      <button type="button" mat-stroked-button color="warn" (click)="onNoClick()"
-        tabindex="-1">{{ 'button.back' | translate }}</button>
-      <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()"
-        [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+      <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
         {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
       </button>
     </div>

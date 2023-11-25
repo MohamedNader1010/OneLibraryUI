@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../interfaces/Iresponse';
+import { ResponseDto } from '../interfaces/IResponse.dto';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { GenericService } from '../services/genericCRUD.service';
+import { PagingCriteria } from '../interfaces/pagingCriteria';
 @Injectable()
 export class TableCommonFunctionality {
   tableColumns!: any[];
@@ -35,6 +36,17 @@ export class TableCommonFunctionality {
   loadData() {
     this.databaseService.getAllDataForTable();
   }
+
+  loadPaginatedData = () => {
+    const pagingCriteria: PagingCriteria = {
+      direction: 'desc',
+      filter: '',
+      orderBy: 'Id',
+      pageIndex: 0,
+      pageSize: 25,
+    };
+    this.databaseService.getPagedData(pagingCriteria).subscribe();
+  };
 
   ngOnDestroy() {
     this.destroy$.next();

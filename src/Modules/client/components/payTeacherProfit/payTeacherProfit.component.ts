@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Material } from 'src/Modules/material/interfaces/Imaterial';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { ClientService } from '../../services/client.service';
 import { TeacherProfitResponse } from '../../interFaces/IteacherProfitResponse';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
@@ -61,11 +61,7 @@ export class PayTeacherProfitComponent extends FormsDialogCommonFunctionality im
           this.data.rest -= this.amount.value;
           this.dialogRef.close({ res: res, row: this.data });
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: () => (this.isSubmitting = false),
         complete: () => {
           this.isSubmitting = false;
         },

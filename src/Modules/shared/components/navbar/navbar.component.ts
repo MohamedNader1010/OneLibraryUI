@@ -9,7 +9,7 @@ import {
 import { AuthService } from 'src/Modules/authentication.Module/services/auth.service';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subject, takeUntil } from 'rxjs';
 @Component({
@@ -65,10 +65,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
           this.attendanceService.checkedIn.next(true);
           this._toastrService.success(res.message);
         },
-        error: (e) => {
-          let res: ResponseDto = e.error ?? e;
-          this._toastrService.error(res.message);
-        },
       });
   }
   handleCheckOut() {
@@ -79,10 +75,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         next: (res) => {
           this.attendanceService.checkedIn.next(false);
           this._toastrService.success(res.message);
-        },
-        error: (e) => {
-          let res: ResponseDto = e.error ?? e;
-          this._toastrService.error(res.message);
         },
       });
   }

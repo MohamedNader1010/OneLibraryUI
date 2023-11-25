@@ -23,7 +23,7 @@ export class ClientComponent extends TableCommonFunctionality implements OnInit,
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
+    this.loadPaginatedData();
   }
   private initiateTableHeaders() {
     this.tableColumns = [

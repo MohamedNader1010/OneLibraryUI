@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ErrorInterceptor } from './error-handling.interceptor';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -44,14 +45,7 @@ export function tokenGetter() {
     }),
   ],
   bootstrap: [AppComponent],
-  providers: [
-    LoginGuard,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: TokenInterceptor,
-      multi: true,
-    },
-  ],
+  providers: [LoginGuard, { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }, { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }],
 })
 export class AppModule {}
 

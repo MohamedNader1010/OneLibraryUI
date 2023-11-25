@@ -11,7 +11,7 @@ import { MaterialTracking } from '../../../material-tracking/interfaces/material
 import { AttendanceService } from '../../../attendance/services/attendance.service';
 import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service';
 import { MaterialTrackingService } from '../../../material-tracking/services/materialTracking.service';
-import { ResponseDto } from 'src/Modules/shared/interfaces/Iresponse';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 
 @Component({
   selector: 'app-shift-details',

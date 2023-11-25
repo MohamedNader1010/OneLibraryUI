@@ -5,7 +5,7 @@ import { Order } from '../interfaces/Iorder';
 import { OrderDetailStatus } from '../../shared/enums/OrderDetailStatus.enum';
 import { ToastrService } from 'ngx-toastr';
 import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
-import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { OrderDetail } from './../interfaces/IorderDetail';
 import { PagingCriteria } from 'src/Modules/shared/interfaces/pagingCriteria';
 import { Observable, catchError, finalize, tap } from 'rxjs';
@@ -19,33 +19,13 @@ export class OrderService extends GenericService<Order> {
     super(http, 'Order', _toastrService);
   }
 
-  getPagedOrders(pagingCriteria: PagingCriteria): Observable<any> {
-    this.loadingData.next(true);
-    return this.http.post<ResponseDto>(`${this.uri}/GetAllOrders`, pagingCriteria).pipe(
-      tap((data: ResponseDto) => {
-        this.dataChange.next(data);
-      }),
-      catchError((e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-        return [];
-      }),
-      finalize(() => this.loadingData.next(false)),
-    );
-  }
-
   getOrdersByStatus(status: OrderDetailStatus) {
     this.loadingData.next(true);
     this.http.get<ResponseDto>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: () => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }
@@ -56,11 +36,7 @@ export class OrderService extends GenericService<Order> {
         this.loadingData.next(true);
         this.dataChange.next(data);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: () => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }

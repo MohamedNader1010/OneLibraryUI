@@ -17,7 +17,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
-import { ResponseDto } from '../../interfaces/Iresponse';
+import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { NoteClient } from '../../../note/interfaces/InoteClient';
 
 const detailExpandAnimation = trigger('detailExpand', [
@@ -131,7 +131,7 @@ export class TableComponent implements OnInit, OnDestroy {
         distinctUntilChanged(), // Ensure that the API is called only when the filter value changes
         switchMap(() => {
           this.setPagingCriteria();
-          return this.database.getPagedOrders(this._pagingCriteria);
+          return this.database.getPagedData(this._pagingCriteria);
         }),
         takeUntil(this.destroy$),
       )
@@ -158,14 +158,14 @@ export class TableComponent implements OnInit, OnDestroy {
     if (this.isPaginated) {
       this.activeSortColumn = column;
       this.setPagingCriteria();
-      this.database.getPagedOrders(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
     }
   }
   clearFilter = () => {
     if (this.isPaginated) {
       this.dataSource.filter = this.filter.nativeElement.value = '';
       this.setPagingCriteria();
-      this.database.getPagedOrders(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
     } else {
       this.dataSource.filter = this.filter.nativeElement.value = '';
     }
@@ -290,7 +290,7 @@ export class TableComponent implements OnInit, OnDestroy {
   onPageChange() {
     if (this.isPaginated) {
       this.setPagingCriteria();
-      this.database.getPagedOrders(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
     }
   }
 

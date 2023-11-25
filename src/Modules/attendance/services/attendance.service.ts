@@ -4,7 +4,7 @@ import {ToastrService} from 'ngx-toastr';
 import {BehaviorSubject} from 'rxjs';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import {Attendance} from '../interfaces/attendance';
-import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 
 @Injectable({
   providedIn: 'root',

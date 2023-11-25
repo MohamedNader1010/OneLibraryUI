@@ -9,7 +9,7 @@ import { Stage } from '../../interfaces/IStage';
 import { Term } from '../../interfaces/ITerm';
 import { NoteComponent } from '../../interfaces/noteComponent';
 import { Note } from '../../interfaces/Inote';
-import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
@@ -143,11 +143,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           this.StagesDataSource.unshift(emptyStage);
           this.ClientTypesDataSource = response.clientsType.body;
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: () => (this.isSubmitting = false),
         complete: () => {
           this.clientTypeLoading = false;
           if (this.data) this.patchData();
@@ -236,15 +232,13 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         startWith(this.clientTypeId.value),
         filter((id: any) => !!id),
         switchMap((id) => {
-          const getAllByType$ = this._clientService.getAllByType(id);
           const getAllPriced$ = this._servicePricePerClientTypeService.GetAllPricedWithOriginalPrices(id);
-          return forkJoin([getAllByType$, getAllPriced$]);
+          return forkJoin([getAllPriced$]);
         }),
         takeUntil(this.destroy$),
       )
       .subscribe({
-        next: ([clientsResponse, servicesResponse]) => {
-          this.ClientsDataSource = clientsResponse.body;
+        next: ([servicesResponse]) => {
           this.clearAutocomplete.next(1);
           this.ServicePricesForClientTypesDataSource = servicesResponse.body;
           this.reloadServicesPrices();
@@ -256,8 +250,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
             this.ClientsDataSource = [];
             this.clientId.reset();
             this.isSubmitting = false;
-            let res: ResponseDto = clientError.error ?? clientError;
-            this.toastrService.error(res.message);
           }
           if (serviceError) {
             this.ServicePricesForClientTypesDataSource = [];
@@ -265,8 +257,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
               this.getNoteComponentServiceId(index).reset();
             });
             this.isSubmitting = false;
-            let res: ResponseDto = serviceError.error ?? serviceError;
-            this.toastrService.error(res.message);
           }
         },
       });
@@ -350,11 +340,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           .deleteNoteComponents(this.deletedComponents)
           .pipe(takeUntil(this.destroy$))
           .subscribe({
-            error: (e) => {
-              this.isSubmitting = false;
-              let res: ResponseDto = e.error ?? e;
-              this.toastrService.error(res.message);
-            },
+            error: () => (this.isSubmitting = false),
             complete: () => {
               this._databaseService.updateFormData(this.Form.value, this.selectedFile, 'pdf').pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateFormDataObserver());
             },
@@ -375,11 +361,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           this.matDialogRef.close({ data: res.body as ResponseDto });
         }
       },
-      error: (e) => {
-        this.isSubmitting = false;
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
+      error: () => (this.isSubmitting = false),
       complete: () => {
         this.isSubmitting = false;
       },

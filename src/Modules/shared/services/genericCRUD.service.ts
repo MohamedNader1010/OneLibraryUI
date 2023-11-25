@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { ResponseDto } from '../interfaces/Iresponse';
-import { BehaviorSubject } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { Injectable } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { BehaviorSubject, finalize, tap } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { ResponseDto } from '../interfaces/IResponse.dto';
+import { PagingCriteria } from '../interfaces/pagingCriteria';
 
 @Injectable({
   providedIn: 'root',
@@ -48,13 +49,19 @@ export abstract class GenericService<Tin> {
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
-      error: (e) => {
-        this.loadingData.next(false);
-        let res: ResponseDto = e.error ?? e;
-        this._toastrService.error(res.message);
-      },
+      error: () => (this.loadingData.next(false)),
       complete: () => this.loadingData.next(false),
     });
+  }
+
+  getPagedData(pagingCriteria: PagingCriteria) {
+    this.loadingData.next(true);
+    return this.http.post<ResponseDto>(`${this.uri}/GetAllPaginated`, pagingCriteria).pipe(
+      tap((data: ResponseDto) => {
+        this.dataChange.next(data);
+      }),
+      finalize(() => this.loadingData.next(false)),
+    );
   }
 
   add = (model: Tin) => this.http.post<ResponseDto>(`${this.uri}`, model, { headers: this.headers });

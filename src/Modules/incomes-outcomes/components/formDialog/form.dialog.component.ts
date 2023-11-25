@@ -9,7 +9,7 @@ import { IncomeOutcome } from '../../interfaces/Iincome-outcome';
 import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
-import { ResponseDto } from '../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 @Component({
   selector: 'app-form.dialog',
   templateUrl: './form.dialog.html',
@@ -73,11 +73,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
         // }
         this.dialogRef.close({ data: res });
       },
-      error: (e) => {
-        this.isSubmitting = false;
-        let res: ResponseDto = e.error ?? e;
-        this.toastrService.error(res.message);
-      },
+      error: () => (this.isSubmitting = false),
       complete: () => {
         this.isSubmitting = false;
       },

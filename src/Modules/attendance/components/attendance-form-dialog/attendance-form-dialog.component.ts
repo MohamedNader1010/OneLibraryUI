@@ -1,16 +1,15 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DatePipe } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { tap, takeUntil } from 'rxjs';
-import { Attendance } from '../../interfaces/attendance';
-import { AttendanceService } from '../../services/attendance.service';
-import { ResponseDto } from '../../../shared/interfaces/Iresponse';
+import { takeUntil, tap } from 'rxjs';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeService } from '../../../employee/services/employee.service';
-import { DatePipe } from '@angular/common';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
-import { TranslateService } from '@ngx-translate/core';
+import { Attendance } from '../../interfaces/attendance';
+import { AttendanceService } from '../../services/attendance.service';
 
 @Component({
   selector: 'app-form.dialog',
@@ -66,11 +65,7 @@ export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionalit
         next: (data) => {
           this.EmployeesDataSource = data.body;
         },
-        error: (e) => {
-          this.isSubmitting = false;
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
-        },
+        error: () => (this.isSubmitting = false),
         complete: () => {
           this.employeeLoading = false;
           if (this.data) {

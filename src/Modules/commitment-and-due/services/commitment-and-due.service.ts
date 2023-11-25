@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { GenericService } from '../../shared/services/genericCRUD.service';
 import { CommitmentAndDue } from './../interfaces/Icommitment-and-due.interface';
 import { CommitmentAndDueTransaction } from '../interfaces/Icommitment-and-due-transaction.interface';
-import { ResponseDto } from '../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 
 @Injectable({
   providedIn: 'root',

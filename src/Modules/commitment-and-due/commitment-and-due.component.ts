@@ -9,7 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { CommitmentAndDue } from './interfaces/Icommitment-and-due.interface';
 import { TransactionType } from '../shared/enums/TransactionType.enum';
-import { ResponseDto } from '../shared/interfaces/Iresponse';
+import { ResponseDto } from '../shared/interfaces/IResponse.dto';
 
 @Component({
   selector: 'app-commitmentAndDue',

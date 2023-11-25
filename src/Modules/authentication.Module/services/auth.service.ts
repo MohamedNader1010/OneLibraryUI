@@ -7,7 +7,7 @@ import { Auth } from '../interfaces/IAuth';
 import { ResetPassword } from '../interfaces/IResetPassword';
 import { UpdatePassword } from '../interfaces/IUpdatePassword';
 import { User } from '../interfaces/IUser';
-import { ResponseDto } from './../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { Router } from '@angular/router';
 
 @Injectable({

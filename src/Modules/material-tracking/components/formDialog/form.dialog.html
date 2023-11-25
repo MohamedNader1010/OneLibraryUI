@@ -1,31 +1,39 @@
 <div class="container w-100">
-	<h2 mat-dialog-title *ngIf="id.value; else update">تعديل الخامات الصادرة/الواردة</h2>
-	<ng-template #update>
-		<h2 mat-dialog-title>تسجيل الخامات الصادرة/الواردة</h2>
-	</ng-template>
-	<mat-dialog-content>
-		<form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
-			<div class="row">
-				<autocomplete class="col-9" label="الخامة" [dataSource]="MaterialDataSource" (selectedId)="setMaterialId($event)" [selectedValue]="materialId.value" [loading]="materialLoading"></autocomplete>
-				<div class="col-3">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>الكمية</mat-label>
-						<input type="number" matInput formControlName="quantity" />
-					</mat-form-field>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<mat-form-field appearance="fill" class="w-100" color="warn">
-						<mat-label>ملاحظات</mat-label>
-						<input type="text" matInput formControlName="comment" />
-					</mat-form-field>
-				</div>
-			</div>
-			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
-				<button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
-			</div>
-		</form>
-	</mat-dialog-content>
+  <h2 mat-dialog-title *ngIf="id.value; else update">تعديل الخامات الصادرة/الواردة</h2>
+  <ng-template #update>
+    <h2 mat-dialog-title>تسجيل الخامات الصادرة/الواردة</h2>
+  </ng-template>
+  <mat-dialog-content>
+    <form [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column mat-dialog-content">
+      <div class="row">
+        <autocomplete
+          class="col-9"
+          label="الخامة"
+          [dataSource]="MaterialDataSource"
+          (selectedId)="setMaterialId($event)"
+          [selectedValue]="materialId.value"
+          [loading]="materialLoading"
+          [disable]="materialLoading"
+        ></autocomplete>
+        <div class="col-3">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>الكمية</mat-label>
+            <input type="number" matInput formControlName="quantity" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <mat-form-field appearance="fill" class="w-100" color="warn">
+            <mat-label>ملاحظات</mat-label>
+            <input type="text" matInput formControlName="comment" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="my-2 d-flex flex-row-reverse">
+        <button mat-raised-button type="submit" color="warn" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">{{ isSubmitting ? 'انتظر من فضلك' : 'حفظ' }}</button>
+        <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">إلغاء</button>
+      </div>
+    </form>
+  </mat-dialog-content>
 </div>

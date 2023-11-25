@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ResponseDto } from '../interfaces/Iresponse';
+import { ResponseDto } from '../interfaces/IResponse.dto';
 
 @Injectable({
   providedIn: 'root',

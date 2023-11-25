@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from './../../../shared/interfaces/Iresponse';
+import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { FeedbackService } from '../../services/feedback.service';
 import { Feedback } from '../../interfaces/feedback';
 import { ClientService } from './../../../client/services/client.service';
@@ -59,10 +59,6 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
       .subscribe({
         next: (data) => {
           this.ClientsDataSource = data.body;
-        },
-        error: (e) => {
-          let res: ResponseDto = e.error ?? e;
-          this.toastrService.error(res.message);
         },
         complete: () => {
           this.clientLoading = false;
