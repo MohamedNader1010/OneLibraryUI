@@ -1,4 +1,4 @@
-import { LoginGuard } from './../Modules/authentication.Module/guards/login.guard';
+import { LoginGuard } from './core/authentication/guards/login.guard';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { TokenInterceptor } from './token.interceptor';
+import { TokenInterceptor } from './core/authentication/interceptors/token.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ErrorInterceptor } from './error-handling.interceptor';
+import { ErrorInterceptor } from './core/authentication/interceptors/error-handling.interceptor';
 
 export function tokenGetter() {
   return localStorage.getItem('token');

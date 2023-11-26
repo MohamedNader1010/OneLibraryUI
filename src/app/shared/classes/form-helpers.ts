@@ -1,0 +1,82 @@
+import { FormDialogNames } from 'src/app/shared/enums/forms-name.enum';
+export class FormHelpers {
+  public static async getAppropriateDialogComponent(formName: FormDialogNames) {
+    const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
+    return appropriateComponent;
+  }
+  private static async getAppropriateComponent(formName: FormDialogNames) {
+    let module;
+    switch (formName) {
+      case FormDialogNames.MaterialFormDialogComponent:
+        module = await import('../../core/modules/material/components/material-form-dialog/material-form-dialog.component');
+        return module.MaterialFormDialogComponent;
+      case FormDialogNames.OrderFormDialogComponent:
+        module = await import('../../core/modules/order/components/order-form-dialog/order-form-dialog.component');
+        return module.OrderFormDialogComponent;
+      case FormDialogNames.NoteFormDialogComponent:
+        module = await import('../../core/modules/note/components/note-form-dialog/note-form-dialog.component');
+        return module.NoteFormDialogComponent;
+      case FormDialogNames.EmployeeFormDialogComponent:
+        module = await import('../../core/modules/employee/components/employee-form-dialog/employee-form-dialog.component');
+        return module.EmployeeFormDialogComponent;
+      case FormDialogNames.ClientFormDialogComponent:
+        module = await import('../../core/modules/client/components/client-form-dialog/client-form-dialog.component');
+        return module.ClientFormDialogComponent;
+      case FormDialogNames.ClientTypeFormDialogComponent:
+        module = await import('../../core/modules/clientType/components/client-type-form-dialog/client-type-form-dialog.component');
+        return module.ClientTypeFormDialogComponent;
+      case FormDialogNames.ServiceFormDialogComponent:
+        module = await import('../../core/modules/service/components/service-form-dialog/service-form-dialog.component');
+        return module.ServiceFormDialogComponent;
+      case FormDialogNames.ServiceTypeFormDialogComponent:
+        module = await import('../../core/modules/serviceType/components/service-type-form-dialog/service-type-form-dialog.component');
+        return module.ServiceTypeFormDialogComponent;
+      case FormDialogNames.ServicePricePerClientFormDialogComponent:
+        module = await import('../../core/modules/service-price-per-client-type/Components/service-type-per-client-form-dialog/service-type-per-client-form-dialog.component');
+        return module.ServiceTypePerClientFormDialogComponent;
+      case FormDialogNames.AttendanceFormDialogComponent:
+        module = await import('../../core/modules/attendance/components/attendance-form-dialog/attendance-form-dialog.component');
+        return module.AttendanceFormDialogComponent;
+      case FormDialogNames.feedbackFormDialogComponent:
+        module = await import('../../core/modules/feadback/components/formDialog/form.dialog.component');
+        return module.FormDialogComponent;
+      case FormDialogNames.incomeOutcomeFormDialogComponent:
+        module = await import('../../core/modules/incomes-outcomes/components/formDialog/form.dialog.component');
+        return module.FormDialogComponent;
+      case FormDialogNames.materialTrackingFormDialogComponent:
+        module = await import('../../core/modules/material-tracking/components/formDialog/form.dialog.component');
+        return module.FormDialogComponent;
+      case FormDialogNames.orderTransactionFormDialogComponent:
+        module = await import('../../core/modules/order/components/transaction/transaction.component');
+        return module.TransactionComponent;
+      case FormDialogNames.orderDetailsDialogComponent:
+        module = await import('../../core/modules/order/components/details/details.component');
+        return module.DetailsComponent;
+      case FormDialogNames.shiftFormDialogComponent:
+        module = await import('../../core/modules/incomes-outcomes/components/close-start-shift-form-dialog/close-start-shift-form-dialog.component');
+        return module.CloseStartShiftFormDialogComponent;
+      case FormDialogNames.bankFormDialogComponent:
+        module = await import('../../core/modules/bank/components/bank-form-dialog/bank-form-dialog.component');
+        return module.BankFormDialogComponent;
+      case FormDialogNames.supplierFormDialogComponent:
+        module = await import('../../core/modules/supplier/components/supplier-form-dialog/supplier-form-dialog.component');
+        return module.SupplierFormDialogComponent;
+      case FormDialogNames.commitmentAndDueComponent:
+        module = await import('../../core/modules/commitment-and-due/components/commitment-and-due-form-dialog/commitment-and-due-form-dialog.component');
+        return module.CommitmentAndDueFormDialogComponent;
+      case FormDialogNames.commitmentAndDueComponentTransactionFormDialog:
+        module = await import('../../core/modules/commitment-and-due/components/commitment-and-due-transaction-form-dialog/commitment-and-due-transaction-form-dialog.component');
+        return module.CommitmentAndDueTransactionFormDialogComponent;
+    }
+  }
+
+  public static async getDeleteDialogComponent() {
+    const deleteDialogComponent = await FormHelpers.importDialogComponent();
+    return deleteDialogComponent;
+  }
+
+  private static async importDialogComponent() {
+    const module = await import('../components/delete-dialog/delete-dialog.component');
+    return module.DeleteDialogComponent;
+  }
+}
