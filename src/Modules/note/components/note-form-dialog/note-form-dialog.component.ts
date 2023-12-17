@@ -3,22 +3,23 @@ import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@ang
 import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject, pairwise, takeUntil } from 'rxjs';
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
-import { ClientService } from 'src/Modules/client/services/client.service';
 import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
 import { Stage } from '../../interfaces/IStage';
 import { Term } from '../../interfaces/ITerm';
 import { NoteComponent } from '../../interfaces/noteComponent';
 import { Note } from '../../interfaces/Inote';
 import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
 import { ClientType } from '../../../clientType/interFaces/IclientType';
-import { Client } from '../../../client/interFaces/Iclient';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
 import { validateArrayLingth } from '../../../order/validators/customValidator';
 import { PricedServicesWithOriginalPrices } from '../../../service-price-per-client-type/Interfaces/IPricedServicesWithOriginalPrices';
+import { ClientForForm } from '../../../client/interFaces/IClientForForm';
+import { FormHelpers } from '../../../shared/classes/form-helpers';
+import { FormDialogNames } from '../../../shared/enums/forms-name.enum';
 @Component({
   selector: 'app-note-form-dialog',
   templateUrl: './note-form-dialog.component.html',
@@ -28,27 +29,27 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   TermsDataSource: Term[] = [];
   StagesDataSource: Stage[] = [];
   ServicePricesForClientTypesDataSource: PricedServicesWithOriginalPrices[] = [];
-  ClientsDataSource: Client[] = [];
+  ClientsDataSource: ClientForForm[] = [];
   ClientTypesDataSource: ClientType[] = [];
   deletedComponents: number[] = [];
   clearAutocomplete: BehaviorSubject<number> = new BehaviorSubject(0);
   progress: number = 0;
   selectedFile!: File | null;
   formData: FormData = new FormData();
-  clientsLoading: boolean = false;
+  clientsDisable: boolean = false;
   serviceLoading: boolean = false;
   clientTypeLoading = false;
 
   constructor(
     private _databaseService: NoteService,
     private _fb: FormBuilder,
-    private _clientService: ClientService,
     private _clientTypeService: ClientTypeService,
     private _servicePricePerClientTypeService: ServicePricePerClientTypeService,
     toastrService: ToastrService,
     matDialogRef: MatDialogRef<NoteFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Note,
     translateService: TranslateService,
+    public dialog: MatDialog,
   ) {
     super(matDialogRef, translateService, _databaseService, toastrService);
     this.Form = this.createFormItem('init');
@@ -100,7 +101,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   getNoteComponentPrice = (index: number): FormControl => this.noteComponents.at(index).get('price') as FormControl;
 
   setClientTypeId = (data: any) => this.clientTypeId.setValue(data);
-  setClientId = (data: any) => this.clientId.setValue(data);
+  setClientId = async (data: any) => (data === -1 ? await this.HandleNewClient() : this.clientId.setValue(data));
 
   getServicePriceForClientTypeId = (index: number) => {
     let servicePricePerClientType = this.ServicePricesForClientTypesDataSource.find(
@@ -122,7 +123,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     let observables = [this._databaseService.getStages(), this._databaseService.getTerms(), this._clientTypeService.getAll()];
     return forkJoin(observables)
       .pipe(
-        tap(() => (this.clientTypeLoading = this.clientsLoading = this.serviceLoading = this.formDataIsLoading = true)),
+        tap(() => (this.clientTypeLoading = this.clientsDisable = this.serviceLoading = this.formDataIsLoading = true)),
         catchError((err) => of(err)),
         map(([stagesResponse, termsResponse, clientTypeResponse]) => {
           return {
@@ -203,8 +204,19 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   handleNewNoteComponent = () => {
     let index = this.noteComponents.length;
     this.noteComponents.push(this.createFormItem('noteComponent'));
-    this.subscribeServiceChanges(index);
-    this.subscribeQuantityChanges(index);
+
+    this.getNoteComponentServiceId(index)
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.setServicePriceForClientType(index),
+      });
+
+    this.getNoteComponentQuantity(index)
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.calculateTotalActualPrice();
+        this.calculateTotalOriginalPrice();
+      });
   };
 
   handleDeleteNoteComponent = (index: number) => {
@@ -212,7 +224,13 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     this.noteComponents.removeAt(index);
     if (this.noteComponents.length) {
       this.calculateTotalActualPrice();
-    } else this.resetFormMoney();
+    } else
+      this.Form.patchValue({
+        originalPrice: 0,
+        actualPrice: 0,
+        earning: 0,
+        finalPrice: 0,
+      });
   };
 
   subscribeFormMoneyChanges() {
@@ -222,13 +240,10 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
       this.finalPrice.setValue((+this.actualPrice.value + +this.teacherPrice.value).toFixed(2), { emitEvent: false });
     });
   }
-
   subscribeClientTypeChange() {
     this.clientTypeId.valueChanges
       .pipe(
-        tap(() => {
-          this.clientsLoading = this.serviceLoading = true;
-        }),
+        tap(() => (this.clientsDisable = this.serviceLoading = true)),
         startWith(this.clientTypeId.value),
         filter((id: any) => !!id),
         switchMap((id) => {
@@ -243,7 +258,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           this.ServicePricesForClientTypesDataSource = servicesResponse.body;
           this.reloadServicesPrices();
           this.calculateTotalActualPrice();
-          this.serviceLoading = this.clientsLoading = this.formDataIsLoading = false;
+          this.serviceLoading = this.clientsDisable = this.formDataIsLoading = false;
         },
         error: ([clientError, serviceError]) => {
           if (clientError) {
@@ -257,6 +272,28 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
               this.getNoteComponentServiceId(index).reset();
             });
             this.isSubmitting = false;
+          }
+        },
+      });
+  }
+
+  async HandleNewClient() {
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      minWidth: '30%',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          if (result?.data) {
+            let newClient: ClientForForm = result.data.body;
+            this.clientId.setValue(null);
+            if (this.clientTypeId.value === newClient.clientTypeId) {
+              this.ClientsDataSource.push(newClient);
+              this.clientId.setValue(newClient.id);
+            }
           }
         },
       });
@@ -293,30 +330,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
       this.calculateTotalActualPrice();
       this.calculateTotalOriginalPrice();
     }
-  }
-
-  subscribeServiceChanges(index: number) {
-    this.getNoteComponentServiceId(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.setServicePriceForClientType(index),
-      });
-  }
-
-  subscribeQuantityChanges(index: number) {
-    this.getNoteComponentQuantity(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.calculateTotalActualPrice();
-        this.calculateTotalOriginalPrice();
-      });
-  }
-
-  resetFormMoney() {
-    this.originalPrice.setValue(0, { emitEvent: false });
-    this.actualPrice.setValue(0, { emitEvent: false });
-    this.earning.setValue(0, { emitEvent: false });
-    this.finalPrice.setValue(0, { emitEvent: false });
   }
 
   getSelectedFiles = (file: File | null) => {

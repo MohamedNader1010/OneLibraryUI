@@ -18,17 +18,18 @@
           >
           </autocomplete>
           <autocomplete
-            class="col-3"
-            label="أسم العميل"
-            [dataSource]="ClientsDataSource"
-            (selectedId)="setClientId($event)"
-            [selectedValue]="clientId.value"
-            [loading]="clientsLoading"
-            [disable]="clientsLoading"
-            [id]="clientTypeId.value"
-            [backendSideFilter]="true"
-          >
-          </autocomplete>
+          class="col-3"
+          [label]="'shared.client' | translate"
+          [dataSource]="ClientsDataSource"
+          (selectedId)="setClientId($event)"
+          [selectedValue]="clientId.value"
+          [loading]="clientsDisable"
+          [disable]="clientsDisable"
+          [id]="clientTypeId.value"
+          [backendSideFilter]="true"
+          [hasNewClient]="true"
+        >
+        </autocomplete>
           <mat-form-field color="warn" appearance="fill" class="col-3">
             <mat-label>المرحلة</mat-label>
             <mat-select formControlName="stageId">
