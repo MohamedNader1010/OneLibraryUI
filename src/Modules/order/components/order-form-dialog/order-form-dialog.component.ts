@@ -186,7 +186,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             if (this.getNoteOrService(index).value === 'service') this.setServicePriceForClientType(index);
           });
         },
-        complete: () => this.calculateTotalPrice()+
+        complete: () => this.calculateTotalPrice()
       });
   }
 
