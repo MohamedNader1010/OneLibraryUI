@@ -43,7 +43,7 @@
 
 @media print {
 	@page {
-		size: 8cm auto;
+		size: 112mm auto;
 		margin: 0;
 	}
 	* {
@@ -80,6 +80,9 @@
 	.total strong {
 		font-weight: bold;
 	}
+  .info{
+    padding: 10px;
+  }
 	.print-only {
 		display: block;
 	}
