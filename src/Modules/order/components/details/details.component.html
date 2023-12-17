@@ -17,30 +17,25 @@
   <div class="info">
     <div class="row">
       <div class="col-md-4 col-12">
-        <span class="heading"><strong>التاريخ</strong></span>
-        <br />
+        <span class="heading"><strong>التاريخ</strong>: </span>
         <span>{{ order.createdOn | date : 'dd/MM/yyyy' }}</span>
       </div>
       <div class="col-md-4 col-12">
-        <span class="heading"><strong>تم بواسطة</strong></span>
-        <br />
+        <span class="heading"><strong>تم بواسطة</strong>: </span>
         <span>{{ order.createdBy }}</span>
       </div>
       <div class="col-md-4 col-12">
-        <span class="heading"><strong>كود الطلب</strong></span>
-        <br />
+        <span class="heading"><strong>كود الطلب</strong>: </span>
         <span>{{ order.id }}</span>
       </div>
     </div>
     <div class="row">
       <div class="col-md-4 col-12">
-        <span class="heading"><strong>العميل</strong></span>
-        <br />
+        <span class="heading"><strong>العميل</strong>: </span>
         <span>{{ order.clientName }}</span>
       </div>
       <div class="col-md-4 col-12">
-        <span class="heading"><strong>رقم التليفون</strong></span>
-        <br />
+        <span class="heading"><strong>رقم التليفون</strong>: </span>
         <span>{{ order.clientPhoneNumber }}</span>
       </div>
     </div>
@@ -60,13 +55,13 @@
     </div>
     <div class="row" *ngFor="let o of order.orderDetails">
       <div class="col-6">
-        <h5>{{ o.note ?? o.service }}</h5>
+        <span>{{ o.note ?? o.service }}</span>
       </div>
       <div class="col-3">
-        <h5>{{ o.quantity }}</h5>
+        <span>{{ o.quantity }}</span>
       </div>
       <div class="col-3">
-        <h5>&pound;{{ o.price | number : '1.2-2' }}</h5>
+        <span>&pound;{{ o.price | number : '1.2-2' }}</span>
       </div>
     </div>
   </div>
