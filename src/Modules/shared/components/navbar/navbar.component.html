@@ -54,7 +54,7 @@
           <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">إدارة الموظفون</span>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li class="dropdown-item">
-              <a class="nav-link" [routerLink]="['employees']" routerLinkActive="active link-danger">الموظفون</a>
+              <a class="nav-link" *ngIf="isAdmin" [routerLink]="['employees']" routerLinkActive="active link-danger">الموظفون</a>
             </li>
             <li class="dropdown-item">
               <a class="nav-link" [routerLink]="['attendance']" routerLinkActive="active link-danger">الحضور والانصراف</a>

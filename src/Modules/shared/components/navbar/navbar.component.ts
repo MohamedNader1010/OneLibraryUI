@@ -9,9 +9,9 @@ import {
 import { AuthService } from 'src/Modules/authentication.Module/services/auth.service';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subject, takeUntil } from 'rxjs';
+import { Roles } from '../../enums/roles.enum';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -36,13 +36,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   get isAdmin(): boolean {
-    return this.extractRoleFromToken() === 'Admin' ? true : false;
+    return this.extractRoleFromToken() === Roles.Admin ? true : false;
   }
   get isUser(): boolean {
-    return this.extractRoleFromToken() === 'User' ? true : false;
+    return this.extractRoleFromToken() === Roles.User ? true : false;
   }
   get isAdminWithoutBank(): boolean {
-    return this.extractRoleFromToken() === 'AdminWithoutBank' ? true : false;
+    return this.extractRoleFromToken() === Roles.AdminWithoutBank ? true : false;
   }
   private extractRoleFromToken() {
     let token = localStorage.getItem('token')?.toString();
