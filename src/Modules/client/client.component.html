@@ -4,6 +4,8 @@
 	[componentName]="componentName"
 	[database]="databaseService"
 	[isPaginated]="true"
+  [canPayBulk]="true"
 	(OnDelete)="handleDelete($event)"
 	(onNew)="handleNewRow($event)"
-	(onEdit)="handleEditRow($event)"></app-table>
+	(onEdit)="handleEditRow($event)"
+  ></app-table>

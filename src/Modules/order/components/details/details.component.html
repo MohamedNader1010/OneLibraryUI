@@ -1,16 +1,16 @@
 <div class="d-flex w-100">
-  <div class="row mr-0 w-100 justify-content-between print-pad">
+  <div class="row w-100 justify-content-between print-pad">
     <h4 mat-dialog-title class="title-print" style="width: fit-content">تفاصيل الطلب</h4>
     <div class="print-only" style="width: fit-content">
       <img src="/assets/Layer.png" style="width: 50px; height: 50px" alt="One Library" />
     </div>
   </div>
 </div>
-<mat-dialog-content *ngIf="order" class="print-dialog-content mt-0">
+<mat-dialog-content *ngIf="order" class="print-dialog-content">
   <div class="print-only">
-    <hr />
+    <!-- <hr /> -->
     <div class="text-center">
-      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2" [bc-height]="35" [bc-font-size]="15" [bc-margin]="5"></ngx-barcode6>
+      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2" [bc-height]="35" [bc-font-size]="15" [bc-margin]="0"></ngx-barcode6>
     </div>
   </div>
   <hr />
@@ -113,7 +113,7 @@
   <div class="pricing" *ngIf="order.remarks">
     <h4><strong>الملاحظات</strong></h4>
     <div class="row">
-      <div class="col-12 mb-1">{{ order.remarks }}</div>
+      <div class="col-12">{{ order.remarks }}</div>
     </div>
   </div>
   <div class="hide">

@@ -38,7 +38,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
       {
         columnDef: this._translateService.instant('shared.totalPrice.label'),
         header: this._translateService.instant('shared.totalPrice'),
-        cell: (element: Order) => element.totalPrice,
+        cell: (element: Order) => element.finalPrice,
       },
       {
         columnDef: this._translateService.instant('shared.rest.label'),

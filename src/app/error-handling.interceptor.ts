@@ -18,9 +18,10 @@ export class ErrorInterceptor implements HttpInterceptor {
           return this.handle401Error();
         } else if (error.error instanceof ErrorEvent) {
           errorMessage = `Error: ${error.error.message}`;
-        } else if (typeof error.error === 'object') {
+        }
+        else if (typeof error.error === 'object') {
           const responseDtoError = error.error as ResponseDto;
-          errorMessage = responseDtoError.message;
+          errorMessage = responseDtoError.message ?? errorMessage;
         } else if (typeof error.error === 'string') {
           errorMessage = error.error;
         } else {

@@ -109,6 +109,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     )?.id;
     return servicePricePerClientType;
   };
+
   setServicePriceForClientTypeId = (index: number, data: any) => {
     let serviceId = this.ServicePricesForClientTypesDataSource.find((sp) => sp.id === data)?.serviceId;
     this.getNoteComponentServiceId(index).setValue(serviceId);
@@ -240,6 +241,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
       this.finalPrice.setValue((+this.actualPrice.value + +this.teacherPrice.value).toFixed(2), { emitEvent: false });
     });
   }
+
   subscribeClientTypeChange() {
     this.clientTypeId.valueChanges
       .pipe(
@@ -320,13 +322,20 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     }
     this.originalPrice.setValue(total);
   }
-
   setServicePriceForClientType(index: number) {
     const serviceId = this.getNoteComponentServiceId(index).value;
+    const noteComponentId = this.getNoteComponentId(index).value;
+    const noteComponent = this.data?.noteComponents.find((nc) => nc.id === noteComponentId);
+
     if (serviceId) {
-      let service = this.ServicePricesForClientTypesDataSource.find((sp) => sp.serviceId === serviceId);
-      this.getNoteComponentPrice(index).setValue(service?.price);
-      this.getNoteComponentOriginalPrice(index).setValue(service?.originalPrice);
+      if (noteComponent && noteComponent.originalPrice && noteComponent.price && noteComponent.serviceId === serviceId) {
+        this.getNoteComponentPrice(index).setValue(noteComponent.price);
+        this.getNoteComponentOriginalPrice(index).setValue(noteComponent.originalPrice);
+      } else {
+        const service = this.ServicePricesForClientTypesDataSource.find((sp) => sp.serviceId === serviceId);
+        this.getNoteComponentPrice(index).setValue(service?.price);
+        this.getNoteComponentOriginalPrice(index).setValue(service?.originalPrice);
+      }
       this.calculateTotalActualPrice();
       this.calculateTotalOriginalPrice();
     }

@@ -50,38 +50,41 @@
 		color: black;
 	}
 	.print-dialog-content {
-		font-size: 10pt !important;
+		font-size: 14pt !important;
 		line-height: 1.2 !important;
 		margin: 0 !important;
-		padding: 10px !important;
+		padding-right: 5px !important;
 		width: 100% !important;
-		box-sizing: border-box !important;
 		box-shadow: none !important;
 	}
-	.title-print {
-		font-size: 10pt;
-	}
+
 	.heading {
 		font-weight: bold;
 	}
 	.pricing {
-		margin-top: 10px;
+		margin-top: 0px;
+    padding: 0;
 	}
 	.pricing h4 {
 		font-weight: bold;
-		margin-bottom: 5px;
+		margin-bottom: 0px;
 	}
+  hr{
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 	.pricing h5 {
-		margin-bottom: 5px;
+		margin-bottom: 0px;
 	}
 	.total {
-		margin-top: 10px;
+		margin-top: 0px;
+    padding: 0px;
 	}
 	.total strong {
 		font-weight: bold;
 	}
   .info{
-    padding: 10px;
+    padding: 0px;
   }
 	.print-only {
 		display: block;

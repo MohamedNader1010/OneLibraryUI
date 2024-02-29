@@ -9,6 +9,7 @@ import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctiona
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { IBulkPayment } from './interFaces/IbulkPayment';
 @Component({
   selector: 'app-all',
   templateUrl: './client.component.html',

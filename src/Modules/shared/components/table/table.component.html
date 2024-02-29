@@ -59,6 +59,9 @@
           <button *ngIf="row.filePath" mat-icon-button matTooltip="open" color="basic" aria-label="view certificate" (click)="handleViewPdf(row, $event)">
             <mat-icon>open_in_new</mat-icon>
           </button>
+          <button *ngIf="canPayBulk" mat-icon-button matTooltip="دفع طلبات العميل" color="basic" aria-label="bulk payment for client orders" (click)="handleBulkPayment(row, $event)">
+            <mat-icon>paid</mat-icon>
+          </button>
           <button mat-icon-button color="basic" *ngIf="row.noteClients && row.noteClients.length > 0" [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
             <mat-icon>{{ isRowExpanded(row.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
           </button>

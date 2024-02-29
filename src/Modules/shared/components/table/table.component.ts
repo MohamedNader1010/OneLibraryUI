@@ -76,6 +76,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() isPaginated: boolean = false;
   @Input() canMarkOrderDetailAsReady: boolean = false;
   @Input() canPrintNote: boolean = false;
+  @Input() canPayBulk: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
   constructor(public dialog: MatDialog, private _router: Router, private _activatedRoute: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
@@ -276,6 +277,21 @@ export class TableComponent implements OnInit, OnDestroy {
       alert('not found');
     }
   };
+
+  async handleBulkPayment(row: any, $event: any) {
+    $event.stopPropagation();
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      data: row,
+      minWidth: '30%',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        complete: () => this.refreshTable(),
+      });
+  }
 
   MarkAsReady = (row: any, $event: any) => {
     $event.stopPropagation();

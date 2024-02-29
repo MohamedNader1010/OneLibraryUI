@@ -19,4 +19,5 @@ export enum FormDialogNames {
   supplierFormDialogComponent,
   commitmentAndDueComponent,
   commitmentAndDueComponentTransactionFormDialog,
+  clientBulkPaymentFormDialog,
 }

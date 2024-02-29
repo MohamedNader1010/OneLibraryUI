@@ -5,6 +5,7 @@ import {ToastrService} from 'ngx-toastr';
 import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
 import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { TeacherProfit } from '../interFaces/IteacherProfit';
+import { IBulkPayment } from '../interFaces/IbulkPayment';
 
 @Injectable({
   providedIn: 'root',
@@ -30,4 +31,6 @@ export class ClientService extends GenericService<Client> {
   addTeacherEarning = (model: TeacherProfit) => this.http.post<ResponseDto>(`${this.uri}/AddTeacheEarning`, model);
 
   deleteTeacherEarning = (id: number) => this.http.get<ResponseDto>(`${this.uri}/DeleteTeacheEarning?id=${id}`);
+
+  bulkPayment = (model: IBulkPayment) => this.http.post<ResponseDto>(`${this.uri}/PayBulk`, model);
 }

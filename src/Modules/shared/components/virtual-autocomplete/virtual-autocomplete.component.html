@@ -1,0 +1,14 @@
+<mat-form-field color="warn" appearance="fill" class="w-100">
+  <mat-label>VS - {{ label }}</mat-label>
+  <input matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
+  <mat-autocomplete #auto="matAutocomplete">
+      <cdk-virtual-scroll-viewport itemSize="50" minBufferPx="200" maxBufferPx="400" class="example-viewport">
+      <mat-option *cdkVirtualFor="let item of ds; templateCacheSize: 50" [value]="item" class="example-item">
+        {{ item || 'Loading...' }}
+      </mat-option>
+    </cdk-virtual-scroll-viewport>
+  </mat-autocomplete>
+  <mat-error *ngIf="nameControl.hasError('notFound')">البيانات غير صحيحة</mat-error>
+  <mat-error *ngIf="nameControl.hasError('required') && (nameControl.touched || nameControl.dirty)"> يجب ادخال البيانات </mat-error>
+  <mat-progress-bar mode="indeterminate" color="warn" *ngIf="loading"></mat-progress-bar>
+</mat-form-field>
