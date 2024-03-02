@@ -24,7 +24,7 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
+    this.loadPaginatedData();
   }
 
   override loadData() {

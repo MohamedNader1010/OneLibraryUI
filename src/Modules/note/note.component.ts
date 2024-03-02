@@ -23,7 +23,7 @@ export class NoteComponent extends TableCommonFunctionality implements OnInit, O
   }
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
+    this.loadPaginatedData();
   }
 
   private initiateTableHeaders() {
