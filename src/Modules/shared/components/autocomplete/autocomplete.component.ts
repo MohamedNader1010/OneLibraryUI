@@ -18,7 +18,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   @Input() backendSideFilter: boolean = false;
   @Input() hasNewClient: boolean = false;
   @Input() placeholder: string = '';
-  @Input() id: any;
+  @Input() id: any = 0;
   @Input() dataSource: any[] = [];
   @Input() selectedValue!: any;
   @Output() selectedId = new EventEmitter<number>();
@@ -56,7 +56,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   backend = (value: any) => {
-    if (!this.id) return [];
+    if (this.id == null || this.id == undefined) return [];
     return this._clientService.getAllByType(this.id, value).pipe(
       map((response) => {
         let filtered: any[] = response.body;

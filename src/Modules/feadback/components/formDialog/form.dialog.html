@@ -8,12 +8,14 @@
       <div class="row">
         <autocomplete
           class="col-6"
-          label="العميل"
+          [label]="'shared.client' | translate"
           [dataSource]="ClientsDataSource"
-          (selectedId)="setCleintId($event)"
-          [selectedValue]="cleintId.value"
+          (selectedId)="setClientId($event)"
+          [selectedValue]="clientId.value"
           [loading]="clientLoading"
           [disable]="clientLoading"
+          [backendSideFilter]="true"
+          [hasNewClient]="true"
         ></autocomplete>
         <div class="col-6">
           <mat-form-field appearance="fill" class="w-100" color="warn">

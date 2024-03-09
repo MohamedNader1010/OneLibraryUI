@@ -35,7 +35,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
       feedBackDate: [null],
     });
   }
-  get cleintId(): FormControl {
+  get clientId(): FormControl {
     return this.Form.get('cleintId') as FormControl;
   }
   get feedBack(): FormControl {
@@ -46,7 +46,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   }
 
   ngOnInit() {
-    this.getAllClients();
+    // this.getAllClients();
   }
 
   getAllClients = () =>
@@ -68,5 +68,5 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
         },
       });
 
-  setCleintId = (data: any) => this.cleintId.setValue(data);
+  setClientId = (data: any) => this.clientId.setValue(data);
 }
