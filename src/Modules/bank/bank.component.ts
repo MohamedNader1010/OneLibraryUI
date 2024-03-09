@@ -22,7 +22,7 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   formName = FormDialogNames.bankFormDialogComponent;
   componentName = ComponentsName.Bank;
   bank!: Bank | null;
-  defualtBankId: number = 3;
+  defaultBankId: number = 3;
   commitments: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
   dues: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
 
@@ -49,7 +49,7 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   ngOnInit(): void {
     this.initiateTableHeaders();
     this.loadData();
-    this.getBankDtata();
+    this.getBankData();
     this._commitmentAndDueService.TotalCommitments().subscribe({
       next: (res) => (this.commitments = res.body),
     });
@@ -58,8 +58,8 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
     });
   }
 
-  getBankDtata() {
-    this.databaseService.GetById(this.defualtBankId).subscribe({
+  getBankData() {
+    this.databaseService.GetById(this.defaultBankId).subscribe({
       next: (response) => {
         this.bank = response.body;
       },
@@ -102,11 +102,11 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   }
 
   override loadData() {
-    this.databaseService.getAllBankTransactions(this.defualtBankId);
+    this.databaseService.getAllBankTransactions(this.defaultBankId);
   }
 
   override handleNewRow = (message: string) => {
-    this.getBankDtata();
+    this.getBankData();
     this.toastrService.success(message);
   };
 }
