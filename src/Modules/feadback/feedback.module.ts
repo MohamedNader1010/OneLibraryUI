@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { FeedbackRoutingModule } from './routing/feadback-routing.module';
-import { FeedbackComponent } from './feadback.component';
+import { FeedbackRoutingModule } from './routing/feedback-routing.module';
+import { FeedbackComponent } from './feedback.component';
 import { FormDialogComponent } from './components/formDialog/form.dialog.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginGuard } from '../authentication.Module/guards/login.guard';
@@ -15,4 +15,4 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [TranslateModule, CommonModule, FeedbackRoutingModule, FormsModule, ReactiveFormsModule, CommonModule, SharedModule, MatComponentsModule],
   providers: [LoginGuard],
 })
-export class FeadbackModule {}
+export class FeedbackModule {}

@@ -26,6 +26,7 @@ import { DragAndDropComponent } from './components/drag-and-drop/drag-and-drop.c
 import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
 import { NgxBarcode6Module } from 'ngx-barcode16';
 import { BankGuard } from '../authentication.Module/guards/bank.guard';
+import { VirtualAutocompleteComponent } from './components/virtual-autocomplete/virtual-autocomplete.component';
 @NgModule({
   declarations: [
     DragAndDropDirective,
@@ -41,8 +42,19 @@ import { BankGuard } from '../authentication.Module/guards/bank.guard';
     DragAndDropComponent,
     CdkDetailRowDirective,
   ],
-  imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule, NgxBarcode6Module],
-  exports: [TableComponent, AutocompleteComponent, DragAndDropDirective, DragAndDropComponent, NgxBarcode6Module],
+  imports: [
+    NgChartsModule,
+    LoadingBarRouterModule,
+    CommonModule,
+    SharedRoutingModule,
+    MatComponentsModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    NgxBarcode6Module,
+    VirtualAutocompleteComponent,
+  ],
+  exports: [TableComponent, AutocompleteComponent, DragAndDropDirective, DragAndDropComponent, NgxBarcode6Module, VirtualAutocompleteComponent],
   providers: [LoginGuard, AuthService, ToastrService, { provide: NgChartsConfiguration, useValue: { generateColors: false } }, ServiceFactory, AuthGuard, BankGuard, CdkDetailRowDirective],
 })
 export class SharedModule {}

@@ -1,7 +1,7 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FeedbackService } from './services/feedback.service';
@@ -10,9 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 
 @Component({
-  selector: 'app-feadback',
-  templateUrl: './feadback.component.html',
-  styleUrls: ['./feadback.component.css'],
+  selector: 'app-feedback',
+  templateUrl: './feedback.component.html',
 })
 export class FeedbackComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
   formName = FormDialogNames.feedbackFormDialogComponent;
@@ -36,7 +35,7 @@ export class FeedbackComponent extends TableCommonFunctionality implements OnIni
       {
         columnDef: 'cleint',
         header: 'أسم العميل',
-        cell: (element: Feedback) => element.cleint,
+        cell: (element: Feedback) => element.client,
       },
       {
         columnDef: 'feedBack',

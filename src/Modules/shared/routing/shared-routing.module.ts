@@ -33,7 +33,7 @@ const routes: Routes = [
       { path: 'notes', loadChildren: () => import('../../note/note.module').then((m) => m.NoteModule), canActivate: [AuthGuard] },
       { path: 'employees', loadChildren: () => import('../../employee/employee.module').then((m) => m.EmployeeModule), canActivate: [AuthGuard] },
       { path: 'attendance', loadChildren: () => import('../../attendance/attendance.module').then((m) => m.AttendanceModule) },
-      { path: 'feadback', loadChildren: () => import('../../feadback/feadback.module').then((m) => m.FeadbackModule), canActivate: [AuthGuard] },
+      { path: 'feadback', loadChildren: () => import('../../feadback/feedback.module').then((m) => m.FeedbackModule), canActivate: [AuthGuard] },
       { path: 'materialTracking', loadChildren: () => import('../../material-tracking/materialTracking.module').then((m) => m.materialTrackingModule), canActivate: [AuthGuard] },
       { path: 'imcomesOutcomes', loadChildren: () => import('../../incomes-outcomes/incomes-outcomes.module').then((m) => m.IncomesOutcomesModule), canActivate: [AuthGuard] },
       { path: 'commitmentAndDue', loadChildren: () => import('../../commitment-and-due/commitment-and-due.module').then((m) => m.CommitmentAndDueModule), canActivate: [AuthGuard] },

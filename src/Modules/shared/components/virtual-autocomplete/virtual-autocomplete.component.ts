@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { MyDataSource } from './virtualScrollDatasource';
@@ -15,21 +15,24 @@ import { MatComponentsModule } from '../../../mat-components.Module/mat-componen
   standalone: true,
   imports: [ScrollingModule, CommonModule, MatComponentsModule, ReactiveFormsModule, TranslateModule],
 })
-export class VirtualAutocompleteComponent {
+export class VirtualAutocompleteComponent implements OnInit {
+  ds!: MyDataSource;
   destroy$ = new Subject<void>();
   @Input() label: string = '';
-  @Input() desplayTextKey: string = 'name';
-  @Input() loading: boolean = false;
-  @Input() disable: boolean = false;
-  @Input() backendSideFilter: boolean = false;
-  @Input() hasNewClient: boolean = false;
   @Input() placeholder: string = '';
   @Input() id: any;
-  @Input() dataSource: any[] = [];
   @Input() selectedValue!: any;
+  @Input() database: any;
+  @Input() desplayTextKey: string = 'name';
+
   @Output() selectedId = new EventEmitter<number>();
 
   nameControl = new FormControl();
 
-  ds = new MyDataSource();
+  ngOnInit() {
+    this.ds = new MyDataSource(this.database);
+  }
+  displayFn = (item: any): string => (item ? item[this.desplayTextKey] : '');
+
+  emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);
 }
