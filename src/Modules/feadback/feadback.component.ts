@@ -7,14 +7,14 @@ import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FeedbackService } from './services/feedback.service';
 import { Feedback } from './interfaces/feedback';
 import { TranslateService } from '@ngx-translate/core';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 
 @Component({
   selector: 'app-feadback',
   templateUrl: './feadback.component.html',
   styleUrls: ['./feadback.component.css'],
 })
-export class FeadbackComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class FeedbackComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
   formName = FormDialogNames.feedbackFormDialogComponent;
   componentName = ComponentsName.feedback;
 

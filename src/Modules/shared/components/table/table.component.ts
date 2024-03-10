@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil, fromEvent, Subject } from 'rxjs';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FormHelpers } from '../../classes/form-helpers';
-import { TableDataSource } from '../../classes/tableDataSource';
+import { TableDataSource } from './tableDataSource';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
@@ -16,7 +16,7 @@ import { Order } from 'src/Modules/order/interfaces/Iorder';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
-import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
+import { PaginatedTableDatasource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { NoteClient } from '../../../note/interfaces/InoteClient';
 

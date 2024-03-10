@@ -2,11 +2,11 @@ import {HttpClient} from '@angular/common/http';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ToastrService} from 'ngx-toastr';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
-import { TableDataSource } from '../shared/classes/tableDataSource';
+import { TableDataSource } from '../shared/components/table/tableDataSource';
 import { Material } from './interfaces/Imaterial';
 import { MaterialService } from './services/material.service';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({

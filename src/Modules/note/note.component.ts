@@ -6,7 +6,7 @@ import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { NoteService } from './services/note.service';
 import { Note } from './interfaces/Inote';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

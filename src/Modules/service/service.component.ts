@@ -7,7 +7,7 @@ import {ServicesService} from './services/services.service';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import {TranslateService} from '@ngx-translate/core';
-import {TableCommonFunctionality} from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 
 @Component({
   selector: 'app-service',

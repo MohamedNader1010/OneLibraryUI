@@ -7,7 +7,7 @@ import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { MaterialTracking } from './interfaces/materialTracking';
 import { MaterialTrackingService } from './services/materialTracking.service';
 import { TranslateService } from '@ngx-translate/core';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
 
 @Component({

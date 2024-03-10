@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../interfaces/IResponse.dto';
+import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { GenericService } from '../services/genericCRUD.service';
-import { PagingCriteria } from '../interfaces/pagingCriteria';
+import { GenericService } from '../../services/genericCRUD.service';
+import { PagingCriteria } from '../../interfaces/pagingCriteria';
 @Injectable()
 export class TableCommonFunctionality {
   tableColumns!: any[];

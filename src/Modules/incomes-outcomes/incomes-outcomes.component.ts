@@ -8,7 +8,7 @@ import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
 import { IncomesOutcomesService } from './services/Incomes-outcomes.service';
 import { TranslateService } from '@ngx-translate/core';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 
 import { ShiftService } from './services/shift.service';
 

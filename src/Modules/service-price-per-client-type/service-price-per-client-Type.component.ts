@@ -5,7 +5,7 @@ import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ServicePricePerClientType } from './Interfaces/ServicePricePerClientType';
 import { ServicePricePerClientTypeService } from './services/service-price-per-client-type.service';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({

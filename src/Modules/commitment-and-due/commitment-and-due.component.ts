@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { FormDialogNames } from '../shared/enums/forms-name.enum';
-import { TableDataSource } from '../shared/classes/tableDataSource';
+import { TableDataSource } from '../shared/components/table/tableDataSource';
 import { ComponentsName } from '../shared/enums/components.name.enum';
 import { CommitmentAndDueService } from './services/commitment-and-due.service';
 import { HttpClient } from '@angular/common/http';
