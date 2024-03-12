@@ -35,7 +35,7 @@ export class FeedbackComponent extends TableCommonFunctionality implements OnIni
       {
         columnDef: 'cleint',
         header: 'أسم العميل',
-        cell: (element: Feedback) => element.client,
+        cell: (element: Feedback) => element.cleint,
       },
       {
         columnDef: 'feedBack',

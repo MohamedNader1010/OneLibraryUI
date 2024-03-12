@@ -97,7 +97,7 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'source',
         header: 'المصدر',
-        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IncomeOutcome ? 'اليومية' : 'البنك'),
       },
       {
         columnDef: 'comment',

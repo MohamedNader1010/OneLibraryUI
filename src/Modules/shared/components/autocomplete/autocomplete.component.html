@@ -3,7 +3,7 @@
 	<input matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="emitSelectedId($event.option.value)">
     <mat-option *ngFor="let item of filteredData$ | async" [value]="item">
-      {{ item[desplayTextKey] }}
+      {{ item[displayTextKey] }}
     </mat-option>
   </mat-autocomplete>
 	<mat-error *ngIf="nameControl.hasError('notFound')">البيانات غير صحيحة</mat-error>

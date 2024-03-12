@@ -7,7 +7,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { CommitmentAndDue } from '../../interfaces/Icommitment-and-due.interface';
 import { CommitmentAndDueService } from '../../services/commitment-and-due.service';
 import { takeUntil } from 'rxjs';
@@ -31,14 +30,14 @@ export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogC
   ) {
     super(dialogRef, translateService, _databaseService, toastrService);
     this.transactionSource = [
-      { value: TransactionSource.IcoumeOutcome, name: 'اليومية' },
+      { value: TransactionSource.IncomeOutcome, name: 'اليومية' },
       { value: TransactionSource.Bank, name: 'البنك' },
     ];
     this.Form = this._fb.group({
       commitmentAndDueId: [data.id],
       amount: [0],
       status: [null],
-      source: [TransactionSource.IcoumeOutcome],
+      source: [TransactionSource.IncomeOutcome],
       comment: ['', [Validators.required]],
       previousPaid: [data.paid],
       rest: [data.rest],

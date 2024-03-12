@@ -28,12 +28,12 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   ) {
     super(dialogRef, translateService, _databaseService, toastrService);
     this.incomeOutcomeSources = [
-      { value: TransactionSource.IcoumeOutcome, name: 'اليومية' },
+      { value: TransactionSource.IncomeOutcome, name: 'اليومية' },
       { value: TransactionSource.Bank, name: 'البنك' },
     ];
     this.Form = this._fb.group({
       status: [null],
-      source: [TransactionSource.IcoumeOutcome],
+      source: [TransactionSource.IncomeOutcome],
       amount: [0],
       comment: [''],
     });

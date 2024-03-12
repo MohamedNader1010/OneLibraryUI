@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subject, debounceTime, map, of, startWith, switchMap, takeUntil, catchError } from 'rxjs';
+import { Observable, Subject, debounceTime, map, of, startWith, switchMap, takeUntil } from 'rxjs';
 import { ClientService } from '../../../client/services/client.service';
 import { ClientForForm } from '../../../client/interFaces/IClientForForm';
 
@@ -12,7 +12,7 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
 export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   destroy$ = new Subject<void>();
   @Input() label: string = '';
-  @Input() desplayTextKey: string = 'name';
+  @Input() displayTextKey: string = 'name';
   @Input() loading: boolean = false;
   @Input() disable: boolean = false;
   @Input() backendSideFilter: boolean = false;
@@ -117,7 +117,7 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
     return filteredData;
   };
 
-  displayFn = (item: any): string => (item ? item[this.desplayTextKey] : '');
+  displayFn = (item: any): string => (item ? item[this.displayTextKey] : '');
 
   emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);
 

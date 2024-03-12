@@ -1,4 +1,4 @@
 export enum TransactionSource {
-  IcoumeOutcome,
+  IncomeOutcome,
   Bank,
 }

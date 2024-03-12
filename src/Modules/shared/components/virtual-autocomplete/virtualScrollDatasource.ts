@@ -1,14 +1,15 @@
 import { DataSource, CollectionViewer } from '@angular/cdk/collections';
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable, merge, Subject, startWith, debounceTime, takeUntil, switchMap } from 'rxjs';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 
-export class MyDataSource extends DataSource<any> {
+export class VirtualScrollDataSource extends DataSource<any> {
   private _cacheLength = 200;
   private _pageSize = 20;
   private _cachedData = Array.from<any>({ length: this._cacheLength });
   private _fetchedPages = new Set<number>();
   private readonly _dataStream = new BehaviorSubject(this._cachedData);
+  public filterSubject = new BehaviorSubject<string | null>(null);
   private readonly _subscription = new Subscription();
 
   constructor(public databaseService: any) {
@@ -16,15 +17,48 @@ export class MyDataSource extends DataSource<any> {
   }
 
   connect(collectionViewer: CollectionViewer): Observable<any> {
-    this._subscription.add(
-      collectionViewer.viewChange.subscribe((range) => {
-        const startPage = this._getPageForIndex(range.start);
-        const endPage = this._getPageForIndex(range.end - 1);
-        for (let i = startPage; i <= endPage; i++) {
-          this._fetchPage(i);
-        }
-      }),
-    );
+    console.log('Connect function called');
+    const collectionViewerSubscription = collectionViewer.viewChange.subscribe((changes) => {
+      const { start, end } = changes;
+      const pagesToFetch = this.calculatePagesToFetch(start, end);
+      const pagingCriteria: PagingCriteria = {
+        pageIndex: 0,
+        pageSize: this._pageSize,
+        filter: this.filterSubject.value,
+      } as PagingCriteria;
+      for (const page of pagesToFetch) {
+        pagingCriteria.pageIndex = page;
+        this._fetchPage(pagingCriteria);
+        this._fetchedPages.add(page);
+      }
+    });
+
+    // const filterSubscription =
+    this.filterSubject
+      .pipe(
+        startWith(this.filterSubject.value),
+        debounceTime(1000),
+        switchMap((filterValue) => {
+          console.log('_filter', filterValue);
+          // this._cachedData = Array.from<any>({ length: this._cacheLength });
+          // this._fetchedPages = new Set<number>();
+          const pagingCriteria: PagingCriteria = {
+            pageIndex: 0,
+            pageSize: this._pageSize,
+            filter: this.filterSubject.getValue(),
+          } as PagingCriteria;
+          return this.databaseService.getPagedData(pagingCriteria);
+        }),
+      )
+      .subscribe({
+        next: (data: any) => {
+          // this._cachedData = [...data.body];
+          // this._dataStream.next(this._cachedData);
+          console.log('data', data);
+        },
+      });
+    this._subscription.add(collectionViewerSubscription);
+    // this._subscription.add(filterSubscription);
     return this._dataStream;
   }
 
@@ -32,31 +66,24 @@ export class MyDataSource extends DataSource<any> {
     this._subscription.unsubscribe();
   }
 
-  private _getPageForIndex(index: number): number {
-    return Math.floor(index / this._pageSize);
+  private calculatePagesToFetch(start: number, end: number): Set<number> {
+    const pagesToFetch = new Set<number>();
+    for (let page = this._getPageForIndex(start); page <= this._getPageForIndex(end - 1); page++) {
+      if (!this._fetchedPages.has(page)) {
+        pagesToFetch.add(page);
+      }
+    }
+    return pagesToFetch;
   }
 
-  private _fetchPage(page: number) {
-    if (this._fetchedPages.has(page)) {
-      return;
-    }
-    this._fetchedPages.add(page);
+  private _getPageForIndex = (index: number): number => Math.floor(index / this._pageSize);
 
-    const pagingCriteria: PagingCriteria = {
-      pageIndex: page,
-      pageSize: this._pageSize,
-    } as PagingCriteria;
-
-    debugger;
-    if (!this.databaseService) return;
-
+  private _fetchPage(pagingCriteria: PagingCriteria) {
     this.databaseService.getPagedData(pagingCriteria).subscribe({
       next: (data: ResponseDto) => {
-        this._cachedData.splice(page * this._pageSize, this._pageSize, ...data.body);
+        console.log('data', data);
+        this._cachedData.splice(pagingCriteria.pageIndex * this._pageSize, this._pageSize, ...data.body);
         this._dataStream.next(this._cachedData);
-      },
-      error: (error: any) => {
-        console.error(`Error fetching data for page ${page}:`, error);
       },
     });
   }

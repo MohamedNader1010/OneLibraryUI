@@ -61,7 +61,7 @@ export class IncomesOutcomesComponent extends TableCommonFunctionality implement
       {
         columnDef: 'source',
         header: 'المصدر',
-        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IcoumeOutcome ? 'اليومية' : 'البنك'),
+        cell: (element: IncomeOutcome) => (element.source == TransactionSource.IncomeOutcome ? 'اليومية' : 'البنك'),
       },
       {
         columnDef: 'comment',

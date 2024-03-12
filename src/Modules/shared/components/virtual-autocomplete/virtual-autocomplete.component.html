@@ -2,9 +2,9 @@
   <mat-label>{{ label }}</mat-label>
   <input matInput [formControl]="nameControl" [matAutocomplete]="auto" [placeholder]="placeholder" />
   <mat-autocomplete #auto="matAutocomplete"[displayWith]="displayFn" (optionSelected)="emitSelectedId($event.option.value)">
-      <cdk-virtual-scroll-viewport itemSize="50" minBufferPx="50" maxBufferPx="200" class="example-viewport">
-      <mat-option *cdkVirtualFor="let item of ds; templateCacheSize: 50" [value]="item" class="example-item">
-        {{ item?.name || 'Loading...' }}
+      <cdk-virtual-scroll-viewport itemSize="50" class="example-viewport">
+      <mat-option *cdkVirtualFor="let item of ds; templateCacheSize: 50" [value]="item">
+        {{ item?.[displayTextKey] || 'جاري التحميل...' }}
       </mat-option>
     </cdk-virtual-scroll-viewport>
   </mat-autocomplete>
