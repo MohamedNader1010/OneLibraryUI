@@ -6,13 +6,15 @@
   <mat-dialog-content>
     <form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
       <div class="row">
-        <app-virtual-autocomplete
+        <autocomplete
           class="col-6"
           [label]="'shared.client' | translate"
+          [dataSource]="ClientsDataSource"
           (selectedId)="setClientId($event)"
           [selectedValue]="clientId.value"
-          [database]="client">
-        </app-virtual-autocomplete>
+          [backendSideFilter]="true"
+          [hasNewClient]="true"
+        ></autocomplete>
         <div class="col-6">
           <mat-form-field appearance="fill" class="w-100" color="warn">
             <mat-label>التاريخ</mat-label>
