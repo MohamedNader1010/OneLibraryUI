@@ -82,7 +82,7 @@
                     class="col-3"
                     [label]="'shared.service' | translate"
                     [dataSource]="ServicePricesForClientTypesDataSource"
-                    desplayTextKey="service"
+                    displayTextKey="service"
                     (selectedId)="setServiceIdFromServicePricePerClientType(i, $event)"
                     [selectedValue]="getServicePriceForClientTypeId(i)"
                     [loading]="serviceLoading"
