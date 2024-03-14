@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service';
@@ -18,6 +18,7 @@ import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
   MaterialDataSource: Material[] = [];
   incomeOutcomeSources: any[] = [];
+  transactionStatuses: any[] = [];
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomeOutcome,
@@ -31,10 +32,14 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
       { value: TransactionSource.IncomeOutcome, name: 'اليومية' },
       { value: TransactionSource.Bank, name: 'البنك' },
     ];
+    this.transactionStatuses = [
+      { value: TransactionStatus.صادر, name: 'صادر' },
+      { value: TransactionStatus.وارد, name: 'وارد' },
+    ];
     this.Form = this._fb.group({
-      status: [null],
+      status: [TransactionStatus.وارد],
       source: [TransactionSource.IncomeOutcome],
-      amount: [0],
+      amount: [0, [Validators.min(0.00001)]],
       comment: [''],
     });
   }
@@ -65,12 +70,9 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   }
 
   addIncomeOutcome() {
-    this.status.setValue(this.amount.value > 0 ? TransactionStatus.وارد : TransactionStatus.صادر);
     this._databaseService.add(this.Form.value).subscribe({
       next: (res) => {
-        // if(this.source.value == IncomeOutcomeSource.IcoumeOutcome){
         this._databaseService.DialogData = res.body;
-        // }
         this.dialogRef.close({ data: res });
       },
       error: () => (this.isSubmitting = false),

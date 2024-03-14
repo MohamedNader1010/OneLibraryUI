@@ -24,7 +24,7 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
   }
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
+    this.loadPaginatedData();
   }
 
   private initiateTableHeaders() {
@@ -35,9 +35,9 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
         cell: (element: MaterialTracking) => element.id,
       },
       {
-        columnDef: 'material',
+        columnDef: 'name',
         header: 'أسم الخامة',
-        cell: (element: MaterialTracking) => element.material,
+        cell: (element: MaterialTracking) => element.name,
       },
       {
         columnDef: 'quantity',

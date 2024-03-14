@@ -124,7 +124,7 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'material',
         header: 'أسم الخامة',
-        cell: (element: MaterialTracking) => element.material,
+        cell: (element: MaterialTracking) => element.name,
       },
       {
         columnDef: 'quantity',
