@@ -10,10 +10,11 @@ import { ClientRoutingModule } from './routing/client-routing.module';
 import { ClientService } from './services/client.service';
 import { ClientFormDialogComponent } from './components/client-form-dialog/client-form-dialog.component';
 import { TeacherAccountComponent } from './components/teacherAccount/teacherAccount.component'
-import { PayTeacherProfitComponent } from './components/payTeacherProfit/payTeacherProfit.component'
+import { PayTeacherProfitComponent } from './components/payTeacherProfit/payTeacherProfit.component';
+import { ClientBulkPaymentFormComponent } from './components/client-bulk-payment-form/client-bulk-payment-form.component'
 
 @NgModule({
-	declarations: [ClientComponent, TeacherAccountComponent, ClientFormDialogComponent,PayTeacherProfitComponent],
+	declarations: [ClientComponent, TeacherAccountComponent, ClientFormDialogComponent,PayTeacherProfitComponent, ClientBulkPaymentFormComponent],
 	imports: [
 		FormsModule,
 		ReactiveFormsModule,

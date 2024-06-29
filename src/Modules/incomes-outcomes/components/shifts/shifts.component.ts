@@ -5,7 +5,7 @@ import { TranslateService } from "@ngx-translate/core"
 import { ToastrService } from "ngx-toastr"
 import { ComponentsName } from '../../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../../shared/enums/forms-name.enum';
-import { TableCommonFunctionality } from "../../../shared/classes/tableCommonFunctionality"
+import { TableCommonFunctionality } from '../../../shared/components/table/tableCommonFunctionality';
 import { ShiftService } from "../../services/shift.service"
 
 

@@ -5,7 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ServicesTypeService } from './services/serviceType.service';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 
 @Component({
   selector: 'app-serviceType',

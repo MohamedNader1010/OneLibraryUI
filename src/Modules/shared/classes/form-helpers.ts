@@ -67,6 +67,9 @@ export class FormHelpers {
       case FormDialogNames.commitmentAndDueComponentTransactionFormDialog:
         module = await import('../../commitment-and-due/components/commitment-and-due-transaction-form-dialog/commitment-and-due-transaction-form-dialog.component');
         return module.CommitmentAndDueTransactionFormDialogComponent;
+      case FormDialogNames.clientBulkPaymentFormDialog:
+        module = await import('../../client/components/client-bulk-payment-form/client-bulk-payment-form.component');
+        return module.ClientBulkPaymentFormComponent;
       case FormDialogNames.UnFinishedOrdersComponent:
         module = await import('../../order/components/unfinished-orders/unfinished-orders.component');
         return module.UnfinishedOrdersComponent;

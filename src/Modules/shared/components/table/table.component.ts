@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil, fromEvent, Subject } from 'rxjs';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FormHelpers } from '../../classes/form-helpers';
-import { TableDataSource } from '../../classes/tableDataSource';
+import { TableDataSource } from './tableDataSource';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
@@ -16,7 +16,7 @@ import { Order } from 'src/Modules/order/interfaces/Iorder';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
-import { PaginatedTableDatasource } from '../../classes/paginatedTableDatasource';
+import { PaginatedTableDatasource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { NoteClient } from '../../../note/interfaces/InoteClient';
 
@@ -76,6 +76,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() isPaginated: boolean = false;
   @Input() canMarkOrderDetailAsReady: boolean = false;
   @Input() canPrintNote: boolean = false;
+  @Input() canPayBulk: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
   constructor(public dialog: MatDialog, private _router: Router, private _activatedRoute: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
@@ -276,6 +277,21 @@ export class TableComponent implements OnInit, OnDestroy {
       alert('not found');
     }
   };
+
+  async handleBulkPayment(row: any, $event: any) {
+    $event.stopPropagation();
+    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
+    const dialogRef = this.dialog.open<any>(dialogComponent, {
+      data: row,
+      minWidth: '30%',
+    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        complete: () => this.refreshTable(),
+      });
+  }
 
   MarkAsReady = (row: any, $event: any) => {
     $event.stopPropagation();

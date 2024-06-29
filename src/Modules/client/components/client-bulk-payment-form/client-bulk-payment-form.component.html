@@ -1,0 +1,21 @@
+<div class="container w-100">
+	<h2 mat-dialog-title>دفع طلبات العميل</h2>
+	<mat-dialog-content>
+		<form [formGroup]="Form" class="d-flex flex-column mat-dialog-content">
+			<div class="row">
+				<div class="col">
+					<mat-form-field appearance="fill" class="w-100" color="warn">
+						<mat-label>المبلغ</mat-label>
+						<input type="number" matInput formControlName="amount" min="0"/>
+					</mat-form-field>
+				</div>
+			</div>
+		</form>
+	</mat-dialog-content>
+  <div mat-dialog-actions class="d-flex justify-content-end">
+    <button type="button" mat-stroked-button color="warn" (click)="onNoClick()" tabindex="-1">{{ 'button.back' | translate }}</button>
+    <button mat-raised-button type="submit" color="warn" (click)="handleSubmit()" [disabled]="!Form.valid || isSubmitting" class="mx-2 px-4">
+      {{ isSubmitting ? ('button.wait' | translate) : ('button.save' | translate) }}
+    </button>
+  </div>
+</div>

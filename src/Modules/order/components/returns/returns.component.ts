@@ -5,7 +5,7 @@ import {Component, OnInit} from '@angular/core';
 import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
-import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from 'src/Modules/shared/components/table/tableCommonFunctionality';
 
 @Component({
   selector: 'app-returns',

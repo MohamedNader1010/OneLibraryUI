@@ -7,7 +7,7 @@ import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { MaterialTracking } from './interfaces/materialTracking';
 import { MaterialTrackingService } from './services/materialTracking.service';
 import { TranslateService } from '@ngx-translate/core';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
 
 @Component({
@@ -24,7 +24,7 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
   }
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
+    this.loadPaginatedData();
   }
 
   private initiateTableHeaders() {
@@ -35,9 +35,9 @@ export class materialTrackingComponent extends TableCommonFunctionality implemen
         cell: (element: MaterialTracking) => element.id,
       },
       {
-        columnDef: 'material',
+        columnDef: 'name',
         header: 'أسم الخامة',
-        cell: (element: MaterialTracking) => element.material,
+        cell: (element: MaterialTracking) => element.name,
       },
       {
         columnDef: 'quantity',

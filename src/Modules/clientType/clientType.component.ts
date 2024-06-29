@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { ClientType } from './interFaces/IclientType';
 import { ClientTypeService } from './services/clientType.service';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';

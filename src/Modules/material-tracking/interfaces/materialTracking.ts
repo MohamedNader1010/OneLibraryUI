@@ -2,7 +2,7 @@ import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
 
 export interface MaterialTracking {
   id: number;
-  material: string;
+  name: string;
   materialId: number;
   status: TransactionStatus;
   quantity: number;

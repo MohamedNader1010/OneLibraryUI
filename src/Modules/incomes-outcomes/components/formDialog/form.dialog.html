@@ -6,7 +6,7 @@
 				<div class="col">
 					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>المبلغ</mat-label>
-						<input type="number" matInput formControlName="amount" />
+						<input type="number" matInput formControlName="amount" min="0" />
 					</mat-form-field>
 				</div>
         <div class="col">
@@ -14,6 +14,14 @@
 					<mat-label>المصدر</mat-label>
 					<mat-select formControlName="source">
 						<mat-option *ngFor="let source of incomeOutcomeSources" [value]="source.value">{{ source.name }}</mat-option>
+					</mat-select>
+				</mat-form-field>
+      </div>
+      <div class="col">
+				<mat-form-field appearance="fill" class="w-100" color="warn" >
+					<mat-label>صادر/وارد</mat-label>
+					<mat-select formControlName="status">
+						<mat-option *ngFor="let transactionStatus of transactionStatuses" [value]="transactionStatus.value">{{ transactionStatus.name }}</mat-option>
 					</mat-select>
 				</mat-form-field>
         </div>

@@ -6,7 +6,7 @@ import { Order } from './interfaces/Iorder';
 import { OrderService } from './services/orders.service';
 import { TranslateService } from '@ngx-translate/core';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
+import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { ToastrService } from 'ngx-toastr';
 import { ResponseDto } from '../shared/interfaces/IResponse.dto';
@@ -37,7 +37,7 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
       {
         columnDef: this._translateService.instant('shared.totalPrice.label'),
         header: this._translateService.instant('shared.totalPrice'),
-        cell: (element: Order) => element.totalPrice,
+        cell: (element: Order) => element.finalPrice,
       },
       {
         columnDef: this._translateService.instant('shared.rest.label'),
