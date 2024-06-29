@@ -26,6 +26,7 @@ import { DragAndDropComponent } from './components/drag-and-drop/drag-and-drop.c
 import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';
 import { NgxBarcode6Module } from 'ngx-barcode16';
 import { BankGuard } from '../authentication.Module/guards/bank.guard';
+import { FiscalYearComponent } from './components/fiscal-year/fiscal-year.component';
 @NgModule({
   declarations: [
     DragAndDropDirective,
@@ -40,6 +41,7 @@ import { BankGuard } from '../authentication.Module/guards/bank.guard';
     DeleteDialogComponent,
     DragAndDropComponent,
     CdkDetailRowDirective,
+    FiscalYearComponent,
   ],
   imports: [NgChartsModule, LoadingBarRouterModule, CommonModule, SharedRoutingModule, MatComponentsModule, ReactiveFormsModule, FormsModule, TranslateModule, NgxBarcode6Module],
   exports: [TableComponent, AutocompleteComponent, DragAndDropDirective, DragAndDropComponent, NgxBarcode6Module],

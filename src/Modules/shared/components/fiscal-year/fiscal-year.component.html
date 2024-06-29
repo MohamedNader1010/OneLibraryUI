@@ -1,0 +1,5 @@
+<mat-form-field color="warn" class="w-100" style="background-color: white; margin-left: 10px">
+  <mat-select placeholder="إختر السنه الماليه" (selectionChange)="applyFiscalYearFilter($event)">
+    <mat-option *ngFor="let fiscalYear of fiscalYears" [value]="fiscalYear.id">{{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} - {{ fiscalYear.endDate | date : 'dd-MM-yyyy' }}</mat-option>
+  </mat-select>
+</mat-form-field>
