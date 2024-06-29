@@ -6,13 +6,16 @@ import { Observer, Subject, takeUntil } from 'rxjs';
 import { ResponseDto } from '../interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 @Injectable()
 export class FormsDialogCommonFunctionality {
   destroy$ = new Subject<void>();
   Form!: FormGroup;
   isSubmitting: boolean = false;
   formDataIsLoading = false;
-  constructor(public matDialogRef: MatDialogRef<any>, public translateService: TranslateService, public databaseService: GenericService<any>, public toastrService: ToastrService) {}
+  constructor(public matDialogRef: MatDialogRef<any>, public translateService: TranslateService, public databaseService: GenericService<any>, public toastrService: ToastrService) {
+    
+  }
 
   get id(): FormControl {
     return this.Form.get('id') as FormControl;
@@ -37,15 +40,22 @@ export class FormsDialogCommonFunctionality {
 
   public update = (id: number | string, values: any) => this.databaseService.update(id, values).pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateObserver());
 
-  handleSubmit() {
+  handleSubmit(flag: boolean = false) {
     if (this.Form.valid) {
+      if(flag) {
+        this.Form.controls['checkOut'].setValue(this.formatDate(this.Form.controls['checkOut'].value));
+        this.Form.controls['checkIn'].setValue(this.formatDate(this.Form.controls['checkIn'].value));
+      }
       const id = this.id?.value;
       this.isSubmitting = true;
       if (id) this.update(id, this.Form.value);
       else this.add(this.Form.value);
     }
   }
-
+  private formatDate(dateString: string): string {
+    const datePipe = new DatePipe('en'); 
+    return datePipe.transform(dateString, 'yyyy-MM-dd HH:mm:ss') || '';
+  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
