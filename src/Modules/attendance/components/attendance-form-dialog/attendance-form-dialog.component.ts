@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -23,7 +22,6 @@ export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionalit
   constructor(
     private _fb: FormBuilder,
     private _employeeService: EmployeeService,
-    private _datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: Attendance,
     dialogRef: MatDialogRef<AttendanceFormDialogComponent>,
     databaseService: AttendanceService,
@@ -73,9 +71,10 @@ export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionalit
               id: this.data.id,
               employeeId: this.data.employeeId,
               employee: this.data.employee,
-              checkIn: this._datePipe.transform(this.data.checkIn, 'HH:mm'),
-              checkOut: this._datePipe.transform(this.data.checkOut, 'HH:mm'),
+              checkIn: this.data.checkIn, 
+              checkOut: this.data.checkOut
             });
+
           }
         },
       });
