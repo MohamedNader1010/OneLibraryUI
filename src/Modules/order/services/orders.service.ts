@@ -52,4 +52,5 @@ export class OrderService extends GenericService<Order> {
   markOrderDetailsAsReady = (orderDetails: ReservedOrderDetail[]) => this.http.put<ResponseDto>(`${this.uri}/MarkOrderDetailsAsReady`, orderDetails);
 
   MarkSingleOrderDetailAsReady = (orderDetail: ReservedOrderDetail) => this.http.put<ResponseDto>(`${this.uri}/MarkSingleOrderDetailAsReady`, orderDetail);
+  getAllUnfinishedOrders = (pagingCriteria: PagingCriteria) => this.http.post<ResponseDto>(`${this.uri}/GetAllUnFinishedPaginated`, pagingCriteria);
 }

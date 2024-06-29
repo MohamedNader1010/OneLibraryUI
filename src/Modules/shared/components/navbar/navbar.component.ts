@@ -1,17 +1,12 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnInit,
-  OnDestroy,
-} from "@angular/core";
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from 'src/Modules/authentication.Module/services/auth.service';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Subject, takeUntil } from 'rxjs';
 import { Roles } from '../../enums/roles.enum';
+import { OrderService } from 'src/Modules/order/services/orders.service';
+import { PagingCriteria } from '../../interfaces/pagingCriteria';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -19,11 +14,19 @@ import { Roles } from '../../enums/roles.enum';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
-  constructor(private _jwtHelperService: JwtHelperService, public authService: AuthService, public attendanceService: AttendanceService, private _toastrService: ToastrService) {}
+  constructor(
+    private _jwtHelperService: JwtHelperService,
+    public authService: AuthService,
+    public attendanceService: AttendanceService,
+    private _toastrService: ToastrService,
+    private _orderService: OrderService,
+  ) {}
 
   @Input() opened: boolean | undefined;
   @Output() toggleSidenav = new EventEmitter<boolean>();
+  private _hasUnFinishedOrders: boolean = false;
   ngOnInit(): void {
+    this.checkUnfinishedOrders();
     this.authService.username.next(localStorage.getItem('uname'));
     this.attendanceService
       .AttendanceState(localStorage.getItem('uid') ?? '')
@@ -43,6 +46,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
   get isAdminWithoutBank(): boolean {
     return this.extractRoleFromToken() === Roles.AdminWithoutBank ? true : false;
+  }
+  get hasUnFinishedOrders(): boolean {
+    return this._hasUnFinishedOrders;
+  }
+  private checkUnfinishedOrders(): void {
+    const pagingCriteria: PagingCriteria = {
+      direction: 'desc',
+      filter: '',
+      orderBy: 'Id',
+      pageIndex: 0,
+      pageSize: 25,
+    };
+
+    this._orderService.getAllUnfinishedOrders(pagingCriteria).subscribe({
+      next: (res) => {
+        this._hasUnFinishedOrders = Array.isArray(res.body) && res.body.length > 0;
+      },
+      error: (err) => {
+        console.error('An error occurred:', err);
+      }
+    });
   }
   private extractRoleFromToken() {
     let token = localStorage.getItem('token')?.toString();

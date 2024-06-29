@@ -12,9 +12,10 @@ import { OrderRoutingModule } from './routing/order-routing.module';
 import { ReturnsComponent } from './components/returns/returns.component';
 import { OrderFormDialogComponent } from './components/order-form-dialog/order-form-dialog.component';
 import { ReservationsComponent } from './components/reservations/reservations.component';
+import { UnfinishedOrdersComponent } from './components/unfinished-orders/unfinished-orders.component';
 
 @NgModule({
-  declarations: [OrderComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent, ReservationsComponent],
+  declarations: [OrderComponent, TransactionComponent, DetailsComponent, ReturnsComponent, OrderFormDialogComponent, ReservationsComponent, UnfinishedOrdersComponent],
   imports: [FormsModule, ReactiveFormsModule, CommonModule, OrderRoutingModule, SharedModule, MatComponentsModule, TranslateModule],
   providers: [LoginGuard],
 })

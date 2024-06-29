@@ -1,4 +1,4 @@
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { AttendanceService } from 'src/Modules/attendance/services/attendance.service';
 import { Injectable } from '@angular/core';
@@ -78,6 +78,8 @@ export class ServiceFactory {
         return this._supplierService;
       case ComponentsName.commitmentAndDue:
         return this._commitmentAndDueService;
+      case ComponentsName.unFinishedOrders:
+        return this._orderService;
     }
   }
 }

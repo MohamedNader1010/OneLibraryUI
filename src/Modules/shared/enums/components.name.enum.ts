@@ -16,4 +16,5 @@ export enum ComponentsName {
   Bank = 'bank',
   supplier = 'supplier',
   commitmentAndDue = 'commitmentAndDue',
+  unFinishedOrders = 'unfinishedOrders'
 }

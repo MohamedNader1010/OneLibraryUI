@@ -12,6 +12,7 @@ import { TeacherAccountComponent } from 'src/Modules/client/components/teacherAc
 import { ShiftsComponent } from "../../incomes-outcomes/components/shifts/shifts.component"
 import { ShiftDetailsComponent } from "../../incomes-outcomes/components/shift-details/shift-details.component";
 import { BankGuard } from '../../authentication.Module/guards/bank.guard';
+import { UnfinishedOrdersComponent } from 'src/Modules/order/components/unfinished-orders/unfinished-orders.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
       { path: 'bank', loadChildren: () => import('../../bank/bank.module').then((m) => m.BankModule), canActivate: [BankGuard] },
       { path: 'profile', component: ProfileComponent, title: 'حسابي الشخصي', canActivate: [LoginGuard] },
       { path: 'returns', component: ReturnsComponent, title: 'المرتجعات', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },
+      { path: 'unfinished-orders', component: UnfinishedOrdersComponent, title: 'الطلبات الغير مكتلمله', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },
       { path: 'notesReservations', component: ReservationsComponent, title: 'الحجوزات', loadChildren: () => import('../../order/order.module').then((m) => m.OrderModule), canActivate: [AuthGuard] },
       {
         path: 'teacherAccount',

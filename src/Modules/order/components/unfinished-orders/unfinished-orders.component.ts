@@ -1,22 +1,25 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { OrderDetailStatus } from '../shared/enums/OrderDetailStatus.enum';
-import { Order } from './interfaces/Iorder';
-import { OrderService } from './services/orders.service';
+
 import { TranslateService } from '@ngx-translate/core';
-import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
-import { TableCommonFunctionality } from '../shared/classes/tableCommonFunctionality';
-import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../shared/interfaces/IResponse.dto';
+import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommonFunctionality';
+import { OrderDetailStatus } from 'src/Modules/shared/enums/OrderDetailStatus.enum';
+import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
+import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
+import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
+import { Order } from '../../interfaces/Iorder';
+import { OrderService } from '../../services/orders.service';
+import { HttpClient } from '@angular/common/http';
+import { PagingCriteria } from 'src/Modules/shared/interfaces/pagingCriteria';
+import { finalize, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-order',
-  templateUrl: './order.component.html',
-  styleUrls: ['./order.component.css'],
+  selector: 'app-unfinished-orders',
+  templateUrl: './unfinished-orders.component.html',
+  styleUrls: ['./unfinished-orders.component.css'],
 })
-export class OrderComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class UnfinishedOrdersComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
   formName = FormDialogNames.OrderFormDialogComponent;
   componentName = ComponentsName.order;
   constructor(private _translateService: TranslateService, public dialog: MatDialog, override databaseService: OrderService, toastrService: ToastrService, httpClient: HttpClient) {
@@ -24,8 +27,24 @@ export class OrderComponent extends TableCommonFunctionality implements OnInit, 
   }
 
   ngOnInit(): void {
+    this.databaseService.loadingData.next(true);
     this.initiateTableHeader();
-    this.loadPaginatedData();
+    const pagingCriteria: PagingCriteria = {
+      direction: 'desc',
+      filter: '',
+      orderBy: 'Id',
+      pageIndex: 0,
+      pageSize: 25,
+    };
+    this.databaseService
+      .getAllUnfinishedOrders(pagingCriteria)
+      .pipe(
+        tap((data: ResponseDto) => {
+          this.databaseService.dataChange.next(data);
+        }),
+        finalize(() => this.databaseService.loadingData.next(false)),
+      )
+      .subscribe();
   }
   private initiateTableHeader() {
     this.tableColumns = [

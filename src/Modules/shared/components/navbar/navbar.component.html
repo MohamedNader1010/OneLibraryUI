@@ -87,6 +87,9 @@
             <li class="dropdown-item" *ngIf="!isUser">
               <a class="nav-link" aria-current="page" [routerLink]="['returns']" routerLinkActive="active link-danger">المرتجعات</a>
             </li>
+            <li class="dropdown-item" *ngIf="!isUser && hasUnFinishedOrders">
+              <a class="nav-link" aria-current="page" [routerLink]="['unfinished-orders']" routerLinkActive="active link-danger">الطلبات الغير مكتمله</a>
+            </li>
           </ul>
         </li>
         <li class="nav-item dropdown" *ngIf="!isUser">
