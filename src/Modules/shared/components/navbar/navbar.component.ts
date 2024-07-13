@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { AuthService } from 'src/Modules/authentication.Module/services/auth.service';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { ToastrService } from 'ngx-toastr';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Roles } from '../../enums/roles.enum';
 import { OrderService } from 'src/Modules/order/services/orders.service';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
@@ -12,7 +12,7 @@ import { PagingCriteria } from '../../interfaces/pagingCriteria';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent implements OnInit, OnDestroy {
+export class NavbarComponent implements OnInit {
   destroy$ = new Subject<void>();
   constructor(
     private _jwtHelperService: JwtHelperService,
@@ -24,18 +24,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   @Input() opened: boolean | undefined;
   @Output() toggleSidenav = new EventEmitter<boolean>();
-  private _hasUnFinishedOrders: boolean = false;
+  private _hasUnFinishedOrders: boolean = true;
   ngOnInit(): void {
-    this.checkUnfinishedOrders();
     this.authService.username.next(localStorage.getItem('uname'));
-    this.attendanceService
-      .AttendanceState(localStorage.getItem('uid') ?? '')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.attendanceService.checkedIn.next(res.body);
-        },
-      });
+    this.attendanceService.AttendanceState(localStorage.getItem('uid') ?? '').subscribe({
+      next: (res) => {
+        this.attendanceService.checkedIn.next(res.body);
+      },
+    });
   }
 
   get isAdmin(): boolean {
@@ -63,11 +59,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
       next: (res) => {
         this._hasUnFinishedOrders = Array.isArray(res.body) && res.body.length > 0;
       },
-      error: (err) => {
-        console.error('An error occurred:', err);
-      }
     });
   }
+
   private extractRoleFromToken() {
     let token = localStorage.getItem('token')?.toString();
     if (token) {
@@ -81,31 +75,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
   handleCheckIn() {
-    this.attendanceService
-      .checkIn()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.attendanceService.checkedIn.next(true);
-          this._toastrService.success(res.message);
-        },
-      });
+    this.attendanceService.checkIn().subscribe({
+      next: (res) => {
+        this.attendanceService.checkedIn.next(true);
+        this._toastrService.success(res.message);
+      },
+    });
   }
   handleCheckOut() {
-    this.attendanceService
-      .checkOut()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.attendanceService.checkedIn.next(false);
-          this._toastrService.success(res.message);
-        },
-      });
+    this.attendanceService.checkOut().subscribe({
+      next: (res) => {
+        this.attendanceService.checkedIn.next(false);
+        this._toastrService.success(res.message);
+      },
+    });
   }
   toggleParentSidenave = () => this.toggleSidenav.emit(this.opened);
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 }

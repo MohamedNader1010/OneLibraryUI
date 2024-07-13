@@ -1,11 +1,10 @@
-import {Component} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
+import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from '../../customeValidators/CustomValidators';
 import { AuthService } from '../../services/auth.service';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-reset-password',
@@ -42,7 +41,7 @@ export class ResetPasswordComponent {
     return this.form.get('token') as FormControl;
   }
   ngOnInit(): void {
-    this._route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+    this._route.queryParams.subscribe((res: any) => {
       this.email.setValue(res.email);
       this.token.setValue(res.token);
     });
@@ -53,25 +52,17 @@ export class ResetPasswordComponent {
   handleSubmit() {
     if (this.form.valid) {
       this.logging = true;
-      this._loginService
-        .resetPassword(this.form.value)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (data) => {
-            this._loginService.clearLocalStorage();
-            this._toastrService.success(data.message, 'logged in sucessfully');
-          },
-          error: () => (this.logging = false),
-          complete: () => {
-            this.logging = false;
-            this._router.navigate(['auth/login']);
-          },
-        });
+      this._loginService.resetPassword(this.form.value).subscribe({
+        next: (data) => {
+          this._loginService.clearLocalStorage();
+          this._toastrService.success(data.message, 'logged in sucessfully');
+        },
+        error: () => (this.logging = false),
+        complete: () => {
+          this.logging = false;
+          this._router.navigate(['auth/login']);
+        },
+      });
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

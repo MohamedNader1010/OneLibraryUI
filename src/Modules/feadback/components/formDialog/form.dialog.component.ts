@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -14,7 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './form.dialog.html',
   styleUrls: ['./form.dialog.css'],
 })
-export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnDestroy {
+export class FormDialogComponent extends FormsDialogCommonFunctionality {
   ClientsDataSource: Client[] = [];
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,

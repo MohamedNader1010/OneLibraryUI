@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, finalize, tap } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { ResponseDto } from '../interfaces/IResponse.dto';
 import { PagingCriteria } from '../interfaces/pagingCriteria';
 
@@ -10,7 +9,12 @@ import { PagingCriteria } from '../interfaces/pagingCriteria';
   providedIn: 'root',
 })
 export abstract class GenericService<Tin> {
+  httpClient = inject(HttpClient);
+  controller!: string;
+  uri!: string;
+  toastrService = inject(ToastrService);
   loadingData: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   get isLoading(): boolean {
     return this.loadingData.value;
@@ -27,36 +31,22 @@ export abstract class GenericService<Tin> {
     return this.dataChange.value ?? this._emptyResponse;
   }
 
-  private _dialogData: any;
-
-  get DialogData() {
-    return this._dialogData;
-  }
-  set DialogData(value: any) {
-    this._dialogData = value;
-  }
-
-  constructor(public http: HttpClient, private _controller: string, public _toastrService: ToastrService) {}
-
-  uri: string = `${environment.apiUrl}${this._controller}`;
-  headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  getAll = () => this.http.get<ResponseDto>(`${this.uri}`, { headers: this.headers });
+  getAll = () => this.httpClient.get<ResponseDto>(`${this.uri}`, { headers: this.headers });
 
   getAllDataForTable() {
     this.loadingData.next(true);
-    this.http.get<ResponseDto>(this.uri).subscribe({
+    this.httpClient.get<ResponseDto>(this.uri).subscribe({
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
-      error: () => (this.loadingData.next(false)),
+      error: () => this.loadingData.next(false),
       complete: () => this.loadingData.next(false),
     });
   }
 
   getPagedData(pagingCriteria: PagingCriteria) {
     this.loadingData.next(true);
-    return this.http.post<ResponseDto>(`${this.uri}/GetAllPaginated`, pagingCriteria).pipe(
+    return this.httpClient.post<ResponseDto>(`${this.uri}/GetAllPaginated`, pagingCriteria).pipe(
       tap((data: ResponseDto) => {
         this.dataChange.next(data);
       }),
@@ -64,7 +54,7 @@ export abstract class GenericService<Tin> {
     );
   }
 
-  add = (model: Tin) => this.http.post<ResponseDto>(`${this.uri}`, model, { headers: this.headers });
+  add = (model: Tin) => this.httpClient.post<ResponseDto>(`${this.uri}`, model, { headers: this.headers });
 
   addFormData = (model: Tin, selectedFile?: File | null, formKey?: string) => {
     const formData = new FormData();
@@ -72,13 +62,12 @@ export abstract class GenericService<Tin> {
     headers.append('Content-Type', 'multipart/form-data');
     this.appendNestedObjectToFormData(formData, model);
     if (selectedFile && formKey) formData.append(formKey, selectedFile);
-    return this.http.post(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
+    return this.httpClient.post(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
   };
 
-  // GetById = (id: string | number) => this.http.get<ResponseDto>(`${this.uri}/GetById`, { headers: this.headers, params: { id: id } });
-  GetById = (id: string | number) => this.http.get<ResponseDto>(`${this.uri}/${id}`, { headers: this.headers });
+  GetById = (id: string | number) => this.httpClient.get<ResponseDto>(`${this.uri}/${id}`, { headers: this.headers });
 
-  update = (id: string | number, model: Tin) => this.http.put<ResponseDto>(`${this.uri}`, { ...model, id }, { headers: this.headers });
+  update = (id: string | number, model: Tin) => this.httpClient.put<ResponseDto>(`${this.uri}`, { ...model, id }, { headers: this.headers });
 
   updateFormData = (model: Tin, selectedFile?: File | null, formKey?: string) => {
     const formData = new FormData();
@@ -86,10 +75,10 @@ export abstract class GenericService<Tin> {
     headers.append('Content-Type', 'multipart/form-data');
     this.appendNestedObjectToFormData(formData, model);
     if (selectedFile && formKey) formData.append(formKey, selectedFile);
-    return this.http.put(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
+    return this.httpClient.put(`${this.uri}/FromForm`, formData, { headers, reportProgress: true, observe: 'events' });
   };
 
-  delete = (id: string | number) => this.http.delete<ResponseDto>(`${this.uri}`, { headers: this.headers, params: { id: id } });
+  delete = (id: string | number) => this.httpClient.delete<ResponseDto>(`${this.uri}`, { headers: this.headers, params: { id: id } });
 
   appendNestedObjectToFormData(formData: FormData, object: any) {
     for (const key in object) {

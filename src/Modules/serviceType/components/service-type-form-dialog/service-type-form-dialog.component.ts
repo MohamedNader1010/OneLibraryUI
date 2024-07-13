@@ -1,4 +1,4 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -12,7 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './service-type-form-dialog.component.html',
   styleUrls: ['./service-type-form-dialog.component.css'],
 })
-export class ServiceTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ServiceTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   constructor(
     matDialogRef: MatDialogRef<ServiceTypeFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ServiceType,

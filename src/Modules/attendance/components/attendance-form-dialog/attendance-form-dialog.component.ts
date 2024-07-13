@@ -1,9 +1,8 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { takeUntil, tap } from 'rxjs';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeService } from '../../../employee/services/employee.service';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
@@ -15,7 +14,7 @@ import { AttendanceService } from '../../services/attendance.service';
   templateUrl: './attendance-form-dialog.component.html',
   styleUrls: ['./attendance-form-dialog.component.css'],
 })
-export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   EmployeesDataSource: Employee[] = [];
   employeeLoading = false;
 
@@ -52,32 +51,27 @@ export class AttendanceFormDialogComponent extends FormsDialogCommonFunctionalit
     this.getAllEmployees();
   }
 
-  getAllEmployees = () =>
-    this._employeeService
-      .getAll()
-      .pipe(
-        tap(() => (this.employeeLoading = true)),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: (data) => {
-          this.EmployeesDataSource = data.body;
-        },
-        error: () => (this.isSubmitting = false),
-        complete: () => {
-          this.employeeLoading = false;
-          if (this.data) {
-            this.Form.patchValue({
-              id: this.data.id,
-              employeeId: this.data.employeeId,
-              employee: this.data.employee,
-              checkIn: this.data.checkIn, 
-              checkOut: this.data.checkOut
-            });
-
-          }
-        },
-      });
+  getAllEmployees = () => {
+    this.employeeLoading = true;
+    this._employeeService.getAll().subscribe({
+      next: (data) => {
+        this.EmployeesDataSource = data.body;
+      },
+      error: () => (this.isSubmitting = false),
+      complete: () => {
+        this.employeeLoading = false;
+        if (this.data) {
+          this.Form.patchValue({
+            id: this.data.id,
+            employeeId: this.data.employeeId,
+            employee: this.data.employee,
+            checkIn: this.data.checkIn,
+            checkOut: this.data.checkOut,
+          });
+        }
+      },
+    });
+  };
 
   setEmpId = (data: any) => this.employeeId.setValue(data);
 }

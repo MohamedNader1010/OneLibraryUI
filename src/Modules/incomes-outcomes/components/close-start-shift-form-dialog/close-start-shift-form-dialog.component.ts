@@ -1,20 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from "@angular/forms"
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog"
-import { TranslateService } from "@ngx-translate/core"
-import { ToastrService } from "ngx-toastr"
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeFormDialogComponent } from '../../../employee/components/employee-form-dialog/employee-form-dialog.component';
 import { ShiftService } from '../../services/shift.service';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-close-start-shift-form-dialog',
   templateUrl: './close-start-shift-form-dialog.component.html',
   styleUrls: ['./close-start-shift-form-dialog.component.css'],
 })
-export class CloseStartShiftFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class CloseStartShiftFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   constructor(
     private _databaseService: ShiftService,
     private _fb: FormBuilder,
@@ -44,7 +43,7 @@ export class CloseStartShiftFormDialogComponent extends FormsDialogCommonFunctio
 
   override handleSubmit() {
     if (this.Form.valid) {
-      this._databaseService.closeAndStartNewShift(this.Form.value).pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateObserver());
+      this._databaseService.closeAndStartNewShift(this.Form.value).subscribe(this.addAndUpdateObserver());
     }
   }
 }

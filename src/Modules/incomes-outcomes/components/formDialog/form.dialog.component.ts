@@ -1,28 +1,27 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service';
+import { MoneyTransactionService } from '../../services/Incomes-outcomes.service';
 import { Material } from './../../../material/interfaces/Imaterial';
 import { TranslateService } from '@ngx-translate/core';
 import { IncomeOutcome } from '../../interfaces/Iincome-outcome';
 import { TransactionSource } from '../../../shared/enums/TransactionSource.emun';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 @Component({
   selector: 'app-form.dialog',
   templateUrl: './form.dialog.html',
   styleUrls: ['./form.dialog.css'],
 })
-export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   MaterialDataSource: Material[] = [];
   incomeOutcomeSources: any[] = [];
   transactionStatuses: any[] = [];
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: IncomeOutcome,
-    private _databaseService: IncomesOutcomesService,
+    private _databaseService: MoneyTransactionService,
     private _fb: FormBuilder,
     toastrService: ToastrService,
     translateService: TranslateService,
@@ -72,8 +71,8 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   addIncomeOutcome() {
     this._databaseService.add(this.Form.value).subscribe({
       next: (res) => {
-        this._databaseService.DialogData = res.body;
         this.dialogRef.close({ data: res });
+        this.tableCommunicationService.reloadTable$.next();
       },
       error: () => (this.isSubmitting = false),
       complete: () => {

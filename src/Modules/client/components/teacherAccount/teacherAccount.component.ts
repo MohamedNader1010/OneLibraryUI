@@ -1,17 +1,13 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
 import { ClientService } from '../../services/client.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { HttpClient } from '@angular/common/http';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
 import { TableCommonFunctionality } from 'src/Modules/shared/components/table/tableCommonFunctionality';
 import { TableDataSource } from 'src/Modules/shared/components/table/tableDataSource';
 import { TeacherProfitResponse } from '../../interFaces/IteacherProfitResponse';
 import { PayTeacherProfitComponent } from '../payTeacherProfit/payTeacherProfit.component';
-import { fromEvent, takeUntil } from 'rxjs';
+import { fromEvent } from 'rxjs';
 @Component({
   selector: 'app-teacherAccount',
   templateUrl: './teacherAccount.component.html',
@@ -24,7 +20,7 @@ import { fromEvent, takeUntil } from 'rxjs';
     ]),
   ],
 })
-export class TeacherAccountComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class TeacherAccountComponent extends TableCommonFunctionality implements OnInit {
   displayedColumns!: string[];
   columnsToDisplayWithExpand!: string[];
   dataSource!: TableDataSource;
@@ -34,24 +30,19 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
-
-  constructor(private _translateService: TranslateService, public dialog: MatDialog, override databaseService: ClientService, toastrService: ToastrService, httpClient: HttpClient) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(ClientService);
 
   ngOnInit(): void {
     this.initializeTableColumns();
     this.loadData();
-    this.dataSource.filteredDataLength$.pipe(takeUntil(this.destroy$)).subscribe((length) => {
+    this.dataSource.filteredDataLength$.subscribe((length) => {
       this.filteredDataLength = length;
     });
-    fromEvent(this.filter.nativeElement, 'keyup')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (!this.dataSource) return;
-        this.dataSource.filter = this.filter.nativeElement.value;
-        this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
-      });
+    fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+      if (!this.dataSource) return;
+      this.dataSource.filter = this.filter.nativeElement.value;
+      this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
+    });
   }
 
   override loadData() {
@@ -64,8 +55,8 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
   private initializeTableColumns() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (row: TeacherProfitResponse) => this.databaseService.data.body.indexOf(row) + 1,
       },
       {
@@ -96,21 +87,18 @@ export class TeacherAccountComponent extends TableCommonFunctionality implements
     ];
   }
 
-  async HandleTecherPay(row: TeacherProfitResponse, $event: any) {
+  async HandleTeacherPay(row: TeacherProfitResponse, $event: any) {
     $event.stopPropagation();
     const dialogRef = this.dialog.open<any>(PayTeacherProfitComponent, {
       minWidth: '30%',
       data: row,
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)] = result.row;
-          this.toastrService.success(result.res.message);
-        },
-      });
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)] = result.row;
+        this.toastrService.success(result.res.message);
+      },
+    });
   }
 
   clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');

@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnInit, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, debounceTime, startWith, takeUntil } from 'rxjs';
+import { Subject, debounceTime, startWith } from 'rxjs';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatComponentsModule } from '../../../mat-components.Module/mat-components.module';
-import { VirtualScrollDataSource } from './virtualScrollDataSource';
 import { ClientForForm } from '../../../client/interFaces/IClientForForm';
+import { VirtualScrollDataSource } from './virtualScrollDatasource';
 
 @Component({
   selector: 'app-virtual-autocomplete',
@@ -16,7 +16,7 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
   standalone: true,
   imports: [ScrollingModule, CommonModule, MatComponentsModule, ReactiveFormsModule, TranslateModule],
 })
-export class VirtualAutocompleteComponent implements OnInit, OnDestroy {
+export class VirtualAutocompleteComponent implements OnInit {
   destroy$ = new Subject<void>();
   @Input() label: string = '';
   @Input() displayTextKey: string = 'name';
@@ -41,16 +41,11 @@ export class VirtualAutocompleteComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.nameControl.addValidators([Validators.required]);
     this.ds = new VirtualScrollDataSource(this.database);
-    this.nameControl.valueChanges.pipe(startWith(this.nameControl.value), debounceTime(1000), takeUntil(this.destroy$)).subscribe((value) => {
+    this.nameControl.valueChanges.pipe(startWith(this.nameControl.value), debounceTime(1000)).subscribe((value) => {
       this.ds.filterSubject.next(value);
     });
   }
   displayFn = (item: any): string => (item ? item[this.displayTextKey] : '');
 
   emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 }

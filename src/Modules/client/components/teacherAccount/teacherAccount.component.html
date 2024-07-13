@@ -20,7 +20,7 @@
             <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
             <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
           </button>
-          <button *ngIf="element.rest > 0" mat-icon-button color="basic" (click)="HandleTecherPay(element, $event)">
+          <button *ngIf="element.rest > 0" mat-icon-button color="basic" (click)="HandleTeacherPay(element, $event)">
             <mat-icon>paid</mat-icon>
           </button>
         </td>

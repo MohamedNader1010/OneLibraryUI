@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from 'src/Modules/authentication.Module/customeValidators/CustomValidators';
 import { User } from 'src/Modules/authentication.Module/interfaces/IUser';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { AuthService } from './../../../authentication.Module/services/auth.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -50,15 +50,12 @@ export class ProfileComponent implements OnInit {
     this.PasswordId.setValue(localStorage.getItem('uid'));
     if (this.profileId.value) {
       this.form;
-      this._authService
-        .getUserById(this.profileId.value)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => {
-            this.userData = res.body;
-            this.form.patchValue(this.userData);
-          },
-        });
+      this._authService.getUserById(this.profileId.value).subscribe({
+        next: (res) => {
+          this.userData = res.body;
+          this.form.patchValue(this.userData);
+        },
+      });
     }
   }
   get profileId(): FormControl {
@@ -112,44 +109,33 @@ export class ProfileComponent implements OnInit {
   handleSubmit() {
     if (this.form.valid) {
       this.submitting = true;
-      this._authService
-        .UpdateUser(this.profileId.value, this.form.value)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (data: ResponseDto) => {
-            this._toastrService.success(data.message);
-            localStorage.setItem('uname', data.body.userName);
-            this._authService.username.next(data.body.userName);
-          },
-          error: () => (this.submitting = false),
-          complete: () => {
-            this.submitting = false;
-            this.IsEdit = false;
-          },
-        });
+      this._authService.UpdateUser(this.profileId.value, this.form.value).subscribe({
+        next: (data: ResponseDto) => {
+          this._toastrService.success(data.message);
+          localStorage.setItem('uname', data.body.userName);
+          this._authService.username.next(data.body.userName);
+        },
+        error: () => (this.submitting = false),
+        complete: () => {
+          this.submitting = false;
+          this.IsEdit = false;
+        },
+      });
     }
   }
   handleSubmitNewPassword() {
     if (this.passwordForm.valid) {
       this.submittingPassword = true;
-      this._authService
-        .changePassword(this.PasswordId.value, this.passwordForm.value)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (data: ResponseDto) => {
-            this._toastrService.success(data.message);
-          },
-          error: () => (this.submittingPassword = false),
-          complete: () => {
-            this.submittingPassword = false;
-            this.updatePassword = false;
-          },
-        });
+      this._authService.changePassword(this.PasswordId.value, this.passwordForm.value).subscribe({
+        next: (data: ResponseDto) => {
+          this._toastrService.success(data.message);
+        },
+        error: () => (this.submittingPassword = false),
+        complete: () => {
+          this.submittingPassword = false;
+          this.updatePassword = false;
+        },
+      });
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

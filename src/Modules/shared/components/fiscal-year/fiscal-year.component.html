@@ -1,5 +1,12 @@
-<mat-form-field color="warn" class="w-100" style="background-color: white; margin-left: 10px">
-  <mat-select placeholder="إختر السنه الماليه" (selectionChange)="applyFiscalYearFilter($event)">
-    <mat-option *ngFor="let fiscalYear of fiscalYears" [value]="fiscalYear.id">{{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} - {{ fiscalYear.endDate | date : 'dd-MM-yyyy' }}</mat-option>
-  </mat-select>
-</mat-form-field>
+<li class="nav-item dropdown">
+  <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+    aria-expanded="false">السنة المالية</span>
+  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <li class="dropdown-item" *ngFor="let fiscalYear of fiscalYears">
+      <a class="nav-link" aria-current="page" (click)="handleFiscalYearChange(fiscalYear, $event)"
+        routerLinkActive="active link-danger">
+        {{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} - {{ fiscalYear.endDate | date : 'dd-MM-yyyy' }}
+      </a>
+    </li>
+  </ul>
+</li>

@@ -1,20 +1,18 @@
-import { Component, Inject, OnDestroy } from "@angular/core";
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { OrderService } from '../../services/orders.service';
 import { ValidatePaid } from '../../validators/customValidator';
-import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { Order } from '../../interfaces/Iorder';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs';
 @Component({
   selector: 'app-transaction',
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css'],
 })
-export class TransactionComponent extends FormsDialogCommonFunctionality implements OnDestroy {
+export class TransactionComponent extends FormsDialogCommonFunctionality {
   constructor(
     public dialogRef: MatDialogRef<TransactionComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Order,
@@ -49,7 +47,7 @@ export class TransactionComponent extends FormsDialogCommonFunctionality impleme
   }
 
   onPaidControlChange() {
-    this.paid.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((paidValue) => {
+    this.paid.valueChanges.subscribe((paidValue) => {
       this.rest.setValue(+this.data.rest - paidValue);
     });
   }
@@ -61,18 +59,15 @@ export class TransactionComponent extends FormsDialogCommonFunctionality impleme
   }
 
   addTransaction() {
-    this._databaseService
-      .addOrderTransaction(this.Form.value)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this._databaseService.DialogData = res.body;
-          this.dialogRef.close({ data: res });
-        },
-        error: () => (this.isSubmitting = false),
-        complete: () => {
-          this.isSubmitting = false;
-        },
-      });
+    this._databaseService.addOrderTransaction(this.Form.value).subscribe({
+      next: (res) => {
+        this.dialogRef.close({ data: res });
+        this.tableCommunicationService.reloadTable$.next();
+      },
+      error: () => (this.isSubmitting = false),
+      complete: () => {
+        this.isSubmitting = false;
+      },
+    });
   }
 }

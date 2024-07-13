@@ -1,8 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { ServicePricePerClientTypeService } from '../../../service-price-per-client-type/services/service-price-per-client-type.service';
-import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { forkJoin, startWith, filter, switchMap, tap, takeUntil, combineLatest } from 'rxjs';
+import { forkJoin, startWith, filter, switchMap, tap, combineLatest } from 'rxjs';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { OrderService } from '../../services/orders.service';
 import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
@@ -25,8 +25,7 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
   templateUrl: './order-form-dialog.component.html',
   styleUrls: ['./order-form-dialog.component.css'],
 })
-export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
-  //#region variables
+export class OrderFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   availableStatus: OrderDetailStatus[] = [OrderDetailStatus.استلم, OrderDetailStatus.حجز, OrderDetailStatus.جاهز, OrderDetailStatus.مرتجع, OrderDetailStatus.هالك];
   newOrderAvailableStatus: OrderDetailStatus[] = [OrderDetailStatus.استلم, OrderDetailStatus.حجز, OrderDetailStatus.جاهز];
   StatusInstance: any = OrderDetailStatus;
@@ -38,7 +37,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   serviceLoading: boolean = false;
   notesLoading: boolean = false;
   clientTypeLoading = false;
-  // #endregion
 
   constructor(
     matDialogRef: MatDialogRef<OrderFormDialogComponent>,
@@ -56,7 +54,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     this.Form = this.createFormItem('init');
   }
 
-  //#region getters and setters
   get clientId(): FormControl {
     return this.Form.get('clientId') as FormControl;
   }
@@ -97,7 +94,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   getOrderDetailServiceCount = (index: number): FormControl => this.OrderDetails.at(index).get('counts') as FormControl;
   getOrderDetailServiceCopies = (index: number): FormControl => this.OrderDetails.at(index).get('copies') as FormControl;
   getServicePriceForClientTypeId = (index: number) => {
-    let servicePricePerClientType = this.ServicePricesForClientTypesDataSource.find((sp) => sp.serviceId === this.getOrderDetailServiceId(index).value && sp.clientTypeId === this.clientTypeId.value)?.id;
+    let servicePricePerClientType = this.ServicePricesForClientTypesDataSource.find(
+      (sp) => sp.serviceId === this.getOrderDetailServiceId(index).value && sp.clientTypeId === this.clientTypeId.value,
+    )?.id;
     return servicePricePerClientType;
   };
   getOrderDetailFilePath = (index: number) => {
@@ -126,7 +125,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   };
   setNoteId = (index: number, data: any) => this.OrderDetails.at(index).get('noteId')?.setValue(data);
   setClientId = async (data: any) => (data === -1 ? await this.HandleNewClient() : this.clientId.setValue(data));
-  //#endregion
 
   ngOnInit(): void {
     this.matDialogRef.disableClose = true;
@@ -135,7 +133,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       .getAll()
       .pipe(
         tap(() => (this.clientsDisable = this.clientTypeLoading = this.serviceLoading = true)),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {
@@ -153,7 +150,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   patchData = () => {
     this._databaseService
       .GetById(this.data.id)
-      .pipe(takeUntil(this.destroy$))
       .subscribe((order) => {
         this.data = order.body;
         this.data.orderDetails.forEach((orderDetail: OrderDetail, index: number) => {
@@ -175,7 +171,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
         tap(() => (this.clientsDisable = this.serviceLoading = this.notesLoading = true)),
         startWith(this.clientTypeId.value),
         filter((id) => !!id),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: () => {
@@ -186,7 +181,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
             if (this.getNoteOrService(index).value === 'service') this.setServicePriceForClientType(index);
           });
         },
-        complete: () => this.calculateTotalPrice()
+        complete: () => this.calculateTotalPrice(),
       });
   }
 
@@ -196,22 +191,23 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     const discountPercent$ = this.discountPercent.valueChanges;
     const paid$ = this.paid.valueChanges;
 
-    discount$.pipe(takeUntil(this.destroy$)).subscribe((discount) => {
-      const totalPriceValue = +(+this.totalPrice.value ?? 0).toFixed(2);
-      const newDiscountPercent = totalPriceValue === 0 ? 0 : +((+discount / totalPriceValue) * 100).toFixed(2);
-      this.discountPercent.setValue(newDiscountPercent, { emitEvent: false, onlySelf: true });
-      this.updateFinalPriceAndRest();
-    });
+    discount$
+      .subscribe((discount) => {
+        const totalPriceValue = +(+this.totalPrice.value ?? 0).toFixed(2);
+        const newDiscountPercent = totalPriceValue === 0 ? 0 : +((+discount / totalPriceValue) * 100).toFixed(2);
+        this.discountPercent.setValue(newDiscountPercent.toString(), { emitEvent: false, onlySelf: true });
+        this.updateFinalPriceAndRest();
+      });
 
-    discountPercent$.pipe(takeUntil(this.destroy$)).subscribe((discountPercent) => {
-      const totalPriceValue = +(+this.totalPrice.value ?? 0).toFixed(2);
-      const newDiscount = discountPercent === 0 ? +this.discount.value : +((+discountPercent / 100) * totalPriceValue).toFixed(2);
-      this.discount.setValue(newDiscount, { emitEvent: false, onlySelf: true });
-      this.updateFinalPriceAndRest();
-    });
+    discountPercent$
+      .subscribe((discountPercent) => {
+        const totalPriceValue = +(+this.totalPrice.value ?? 0).toFixed(2);
+        const newDiscount = discountPercent === 0 ? +this.discount.value : +((+discountPercent / 100) * totalPriceValue).toFixed(2);
+        this.discount.setValue(newDiscount.toString(), { emitEvent: false, onlySelf: true });
+        this.updateFinalPriceAndRest();
+      });
 
     combineLatest([totalPrice$, paid$])
-      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateFinalPriceAndRest());
   }
 
@@ -221,8 +217,9 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 
     this.Form.patchValue(
       {
-        finalPrice: finalPrice,
-        rest: rest,
+        finalPrice: `${finalPrice}`,
+        rest: rest.toString(),
+        paid: this.paid.value.toString(),
       },
       { emitEvent: false, onlySelf: true },
     );
@@ -275,11 +272,11 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     this.OrderDetails.push(this.createFormItem('detail'));
 
     this.getOrderDetailQuantity(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
+      .valueChanges
       .subscribe(() => this.calculateTotalPrice());
 
     this.getOrderDetailServiceId(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
+      .valueChanges
       .subscribe(() => this.setServicePriceForClientType(index));
 
     this.subscribeOrderDetailNoteChanges(index);
@@ -292,7 +289,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 
   subscribeOrderDetailNoteChanges(index: number) {
     this.getOrderDetailNoteId(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
+      .valueChanges
       .subscribe({
         next: (id) => {
           let note = this.getNoteById(id);
@@ -320,14 +317,14 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     const countChanges$ = this.getOrderDetailServiceCount(index).valueChanges;
     const copiesChanges$ = this.getOrderDetailServiceCopies(index).valueChanges;
     combineLatest([countChanges$, copiesChanges$])
-      .pipe(takeUntil(this.destroy$))
+
       .subscribe(([countValue, copiesValue]) => this.getOrderDetailQuantity(index).setValue(+countValue * copiesValue));
   }
 
   subscribeOrderDetailStatusChanges(index: number) {
     this.getOrderDetailStatus(index)
       .valueChanges.pipe(startWith(this.getOrderDetailStatus(index).value))
-      .pipe(takeUntil(this.destroy$))
+
       .subscribe(() => {
         if (this.getOrderDetailQuantity(index).value <= 0) this.getOrderDetailQuantity(index).setErrors({ required: true });
         this.getOrderDetailQuantity(index).updateValueAndValidity();
@@ -336,7 +333,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
 
   subscribeNoteOrServiceChanges(index: number) {
     this.getNoteOrService(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
+      .valueChanges
       .subscribe(() =>
         this.OrderDetails.at(index).patchValue({
           counts: 0,
@@ -359,7 +356,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
               .pipe(
                 startWith(this.clientTypeId.value),
                 filter((id) => !!id),
-                takeUntil(this.destroy$),
                 switchMap((id) => forkJoin([this._servicePricePerClientTypeService.GetAllPriced(id)])),
               )
               .subscribe({
@@ -378,7 +374,6 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
               .getAllVisible()
               .pipe(
                 tap(() => (this.notesLoading = true)),
-                takeUntil(this.destroy$),
               )
               .subscribe({
                 next: (response) => {
@@ -420,7 +415,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
     });
     dialogRef
       .afterClosed()
-      .pipe(takeUntil(this.destroy$))
+
       .subscribe({
         next: (result) => {
           if (result?.data) {
@@ -444,7 +439,7 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
       const quantity = +this.getOrderDetailQuantity(index).value;
       total += +(price * quantity).toFixed(2);
     }
-    this.totalPrice.setValue(total);
+    this.totalPrice.setValue(`${total}`);
     if (total === 0) {
       this.discount.setValue(0);
       this.discount.disable();
@@ -471,7 +466,11 @@ export class OrderFormDialogComponent extends FormsDialogCommonFunctionality imp
   override handleSubmit() {
     if (this.Form.valid) {
       this.isSubmitting = true;
-      if (this.data) this._databaseService.updateOrderDetailsStatus(this.Form.value).pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateObserver());
+      if (this.data)
+        this._databaseService
+          .updateOrderDetailsStatus(this.Form.value)
+
+          .subscribe(this.addAndUpdateObserver());
       else this.add(this.Form.value);
     }
   }

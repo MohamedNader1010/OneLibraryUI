@@ -1,7 +1,7 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { map, forkJoin, tap, takeUntil } from 'rxjs';
+import { map, forkJoin } from 'rxjs';
 import { Material } from 'src/Modules/material/interfaces/Imaterial';
 import { MaterialService } from 'src/Modules/material/services/material.service';
 import { ServiceType } from 'src/Modules/serviceType/interFaces/IserviceType';
@@ -9,7 +9,6 @@ import { ServicesTypeService } from 'src/Modules/serviceType/services/serviceTyp
 import { Service } from '../../interfaces/Iservice';
 import { ServicesService } from '../../services/services.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { ClientTypeService } from './../../../clientType/services/clientType.service';
 import { ClientType } from './../../../clientType/interFaces/IclientType';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +18,7 @@ import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDia
   templateUrl: './service-form-dialog.component.html',
   styleUrls: ['./service-form-dialog.component.css'],
 })
-export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   MaterialDataSource: Material[] = [];
   ServiceTypeDataSource: ServiceType[] = [];
   clientsTypesDataSource: ClientType[] = [];
@@ -111,7 +110,6 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
     let observalbles = [this._materialService.getAll(), this._serviceTypeService.getAll(), this._clientTypeService.getAll()];
     return forkJoin(observalbles)
       .pipe(
-        // tap(() => (this.clientTypesLoading = this.materialLoading = this.serviceTypeLoading = true)),
         map(([materialResponse, serviceTypeResponse, clientTypeResponse]) => {
           return {
             materials: materialResponse,
@@ -119,7 +117,6 @@ export class ServiceFormDialogComponent extends FormsDialogCommonFunctionality i
             clientsTypes: clientTypeResponse,
           };
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {

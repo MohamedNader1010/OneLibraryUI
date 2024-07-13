@@ -1,36 +1,31 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { MatDialog } from "@angular/material/dialog";
-import { ToastrService } from "ngx-toastr";
+import { Component, inject, OnInit } from '@angular/core';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { NoteService } from './services/note.service';
 import { Note } from './interfaces/Inote';
 import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-note',
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.css'],
 })
-export class NoteComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class NoteComponent extends TableCommonFunctionality implements OnInit {
   formName = FormDialogNames.NoteFormDialogComponent;
   componentName = ComponentsName.note;
+  override databaseService = inject(NoteService);
 
-  constructor(private _translateService: TranslateService, httpClient: HttpClient, toastrService: ToastrService, override databaseService: NoteService, public dialog: MatDialog) {
-    super(httpClient, toastrService, databaseService);
-  }
   ngOnInit(): void {
     this.initiateTableHeaders();
     this.loadPaginatedData();
+    this.tableCommunicationService.reloadTable$.subscribe(() => this.loadPaginatedData());
   }
 
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (element: Note) => element.id,
       },
       {

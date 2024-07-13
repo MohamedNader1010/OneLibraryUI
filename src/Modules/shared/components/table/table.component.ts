@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output, ViewChild, ElementRef, QueryList, ViewChildren, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
-import { debounceTime, distinctUntilChanged, switchMap, takeUntil, fromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, fromEvent, Subject } from 'rxjs';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { FormHelpers } from '../../classes/form-helpers';
 import { TableDataSource } from './tableDataSource';
@@ -9,16 +9,16 @@ import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { MatPaginator } from '@angular/material/paginator';
-
 import { Router, ActivatedRoute } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { Order } from 'src/Modules/order/interfaces/Iorder';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
-import { PaginatedTableDatasource } from './paginatedTableDatasource';
+import { PaginatedTableDatasource as PaginatedTableDataSource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { NoteClient } from '../../../note/interfaces/InoteClient';
+import { ToastrService } from 'ngx-toastr';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -31,10 +31,10 @@ const detailExpandAnimation = trigger('detailExpand', [
   styleUrls: ['./table.component.css'],
   animations: [detailExpandAnimation],
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit {
   destroy$ = new Subject<void>();
   displayedColumns!: string[];
-  dataSource!: TableDataSource | PaginatedTableDatasource;
+  dataSource!: TableDataSource | PaginatedTableDataSource;
   activeSortColumn: string = 'Id';
   connection!: signalR.HubConnection;
 
@@ -48,11 +48,8 @@ export class TableComponent implements OnInit, OnDestroy {
     pageSize: 25,
   };
 
-  @Output() OnDelete = new EventEmitter<any>();
   @Output() OnView = new EventEmitter<any>();
   @Output() onClose = new EventEmitter();
-  @Output() onNew = new EventEmitter<any>();
-  @Output() onEdit = new EventEmitter<any>();
   @Output() onTransaction = new EventEmitter<any>();
   @Output() onNotePrint = new EventEmitter<any>();
   @Output() onMarkAsReady = new EventEmitter<any>();
@@ -79,6 +76,9 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input() canPayBulk: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
+
+  toastrService = inject(ToastrService);
+
   constructor(public dialog: MatDialog, private _router: Router, private _activatedRoute: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -86,7 +86,6 @@ export class TableComponent implements OnInit, OnDestroy {
     this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
     this.loadData();
 
-    // Trigger change detection manually
     this.cdRef.detectChanges();
     if (this.componentName == ComponentsName.order) this.connectToOrderHub();
   }
@@ -100,7 +99,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     this.connection.on('add', (res: Order) => {
       (this.database.dataChange.value as ResponseDto).body.push(res);
-      this.onNew.emit(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+      this.toastrService.success(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
       this.refreshTable();
     });
   }
@@ -125,48 +124,45 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
   private setPaginatedTableDatasource() {
-    this.dataSource = new PaginatedTableDatasource(this.database);
+    this.dataSource = new PaginatedTableDataSource(this.database);
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
-        debounceTime(1000), // Add a debounce time to avoid frequent API calls on every keyup
-        distinctUntilChanged(), // Ensure that the API is called only when the filter value changes
+        debounceTime(1000),
+        distinctUntilChanged(),
         switchMap(() => {
           this.setPagingCriteria();
           return this.database.getPagedData(this._pagingCriteria);
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe();
-    this.dataSource.filteredDataLength$.pipe(takeUntil(this.destroy$)).subscribe((length) => {
+    this.dataSource.filteredDataLength$.subscribe((length) => {
       this.filteredDataLength = length;
     });
   }
   private setTableDataSource() {
     this.dataSource = new TableDataSource(this.database, this.paginator, this.sort);
-    this.dataSource.filteredDataLength$.pipe(takeUntil(this.destroy$)).subscribe((length) => {
+    this.dataSource.filteredDataLength$.subscribe((length) => {
       this.filteredDataLength = length;
     });
-    fromEvent(this.filter.nativeElement, 'keyup')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (!this.dataSource) return;
-        this.dataSource.filter = this.filter.nativeElement.value;
-        this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
-      });
+    fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+      if (!this.dataSource) return;
+      this.dataSource.filter = this.filter.nativeElement.value;
+      this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
+    });
   }
 
   setActiveSortColumn(column: string): void {
     if (this.isPaginated) {
       this.activeSortColumn = column;
       this.setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).subscribe();
     }
   }
   clearFilter = () => {
     if (this.isPaginated) {
       this.dataSource.filter = this.filter.nativeElement.value = '';
       this.setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).subscribe();
     } else {
       this.dataSource.filter = this.filter.nativeElement.value = '';
     }
@@ -177,56 +173,40 @@ export class TableComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          if (result?.data) {
-            if (this.componentName == ComponentsName.order) {
-              let newOrder: Order = (result.data as ResponseDto).body;
-              let lastOrder: Order = (this.database.dataChange.value as ResponseDto).body[(this.database.dataChange.value as ResponseDto).body.length - 1];
-              if (lastOrder.id != newOrder.id) {
-                this.onNew.emit(result.data.message);
-              }
-            } else {
-              this.onNew.emit(result.data.message);
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result?.data) {
+          if (this.componentName == ComponentsName.order) {
+            let newOrder: Order = (result.data as ResponseDto).body;
+            let lastOrder: Order = (this.database.dataChange.value as ResponseDto).body[(this.database.dataChange.value as ResponseDto).body.length - 1];
+            if (lastOrder.id != newOrder.id) {
             }
           }
-        },
-        complete: () => this.refreshTable(),
-      });
+        }
+      },
+      complete: () => this.refreshTable(),
+    });
   }
   async handleEdit(row: any, $event: any) {
     $event.stopPropagation();
     const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
     const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%', data: row });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          if (result?.data) this.onEdit.emit(result.data);
-        },
-        complete: () => this.refreshTable(),
-      });
+    dialogRef.afterClosed().subscribe({
+      complete: () => this.refreshTable(),
+    });
   }
 
   async handleDelete(row: any, $event: any) {
     $event.stopPropagation();
     const deleteDialogComponent = await FormHelpers.getDeleteDialogComponent();
     const dialogRef = this.dialog.open<DeleteDialogComponent>(deleteDialogComponent, { minWidth: '30%', data: { row: row, componentName: this.componentName } });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          if (result?.data) {
-            this.OnDelete.emit(result.data);
-            this.refreshTable();
-          }
-        },
-      });
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result?.data) {
+          this.refreshTable();
+        }
+      },
+    });
   }
 
   async handleTransaction(row: any, $event: any) {
@@ -241,15 +221,12 @@ export class TableComponent implements OnInit, OnDestroy {
       data: row,
       minWidth: '30%',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          if (result?.data) this.onTransaction.emit(result.data);
-        },
-        complete: () => this.refreshTable(),
-      });
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result?.data) this.onTransaction.emit(result.data);
+      },
+      complete: () => this.refreshTable(),
+    });
   }
 
   async handleView(row: any, $event: any) {
@@ -285,12 +262,9 @@ export class TableComponent implements OnInit, OnDestroy {
       data: row,
       minWidth: '30%',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        complete: () => this.refreshTable(),
-      });
+    dialogRef.afterClosed().subscribe({
+      complete: () => this.refreshTable(),
+    });
   }
 
   MarkAsReady = (row: any, $event: any) => {
@@ -306,7 +280,7 @@ export class TableComponent implements OnInit, OnDestroy {
   onPageChange() {
     if (this.isPaginated) {
       this.setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).pipe(takeUntil(this.destroy$)).subscribe();
+      this.database.getPagedData(this._pagingCriteria).subscribe();
     }
   }
 
@@ -328,13 +302,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
-  /** Gets the total quantities of all noteclients. */
   getTotal(noteClients: NoteClient[]): number {
     return noteClients.map((t) => t.quantity).reduce((acc, value) => acc + value, 0);
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

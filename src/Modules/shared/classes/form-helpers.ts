@@ -77,12 +77,6 @@ export class FormHelpers {
   }
 
   public static async getDeleteDialogComponent() {
-    const deleteDialogComponent = await FormHelpers.importDialogComponent();
-    return deleteDialogComponent;
-  }
-
-  private static async importDialogComponent() {
-    const module = await import('../components/delete-dialog/delete-dialog.component');
-    return module.DeleteDialogComponent;
+    return (await import('../components/delete-dialog/delete-dialog.component')).DeleteDialogComponent;
   }
 }

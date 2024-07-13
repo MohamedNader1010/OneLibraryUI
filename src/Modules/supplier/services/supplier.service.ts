@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Supplier } from '../interfaces/ISupplier';
-import { ToastrService } from 'ngx-toastr';
 import { GenericService } from '../../shared/services/genericCRUD.service';
-import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SupplierService extends GenericService<Supplier> {
-  constructor(http: HttpClient, toastrService: ToastrService) {
-    super(http, 'Supplier', toastrService);
-  }
+  override controller = 'Supplier';
+  override uri: string = `${environment.apiUrl}${this.controller}`;
 }

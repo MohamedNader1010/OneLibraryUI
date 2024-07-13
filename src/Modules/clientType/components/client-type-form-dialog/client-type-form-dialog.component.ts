@@ -1,6 +1,6 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
-import {ClientTypeService} from '../../services/clientType.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { ClientTypeService } from '../../services/clientType.service';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './client-type-form-dialog.component.html',
   styleUrls: ['./client-type-form-dialog.component.css'],
 })
-export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ClientTypeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   controllerName: string = 'clientTypes';
   constructor(
     _databaseService: ClientTypeService,

@@ -1,30 +1,24 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, inject, OnInit } from '@angular/core';
 
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
-import { TableCommonFunctionality } from 'src/Modules/shared/classes/tableCommonFunctionality';
 import { OrderDetailStatus } from 'src/Modules/shared/enums/OrderDetailStatus.enum';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { Order } from '../../interfaces/Iorder';
 import { OrderService } from '../../services/orders.service';
-import { HttpClient } from '@angular/common/http';
 import { PagingCriteria } from 'src/Modules/shared/interfaces/pagingCriteria';
 import { finalize, tap } from 'rxjs';
+import { TableCommonFunctionality } from '../../../shared/components/table/tableCommonFunctionality';
 
 @Component({
   selector: 'app-unfinished-orders',
   templateUrl: './unfinished-orders.component.html',
   styleUrls: ['./unfinished-orders.component.css'],
 })
-export class UnfinishedOrdersComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class UnfinishedOrdersComponent extends TableCommonFunctionality implements OnInit {
   formName = FormDialogNames.OrderFormDialogComponent;
   componentName = ComponentsName.order;
-  constructor(private _translateService: TranslateService, public dialog: MatDialog, override databaseService: OrderService, toastrService: ToastrService, httpClient: HttpClient) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(OrderService);
 
   ngOnInit(): void {
     this.databaseService.loadingData.next(true);
@@ -49,59 +43,59 @@ export class UnfinishedOrdersComponent extends TableCommonFunctionality implemen
   private initiateTableHeader() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (element: Order) => element.id,
       },
       {
-        columnDef: this._translateService.instant('shared.totalPrice.label'),
-        header: this._translateService.instant('shared.totalPrice'),
+        columnDef: this.translateService.instant('shared.totalPrice.label'),
+        header: this.translateService.instant('shared.totalPrice'),
         cell: (element: Order) => element.totalPrice,
       },
       {
-        columnDef: this._translateService.instant('shared.rest.label'),
-        header: this._translateService.instant('shared.rest'),
+        columnDef: this.translateService.instant('shared.rest.label'),
+        header: this.translateService.instant('shared.rest'),
         cell: (element: Order) => element.rest,
       },
       {
-        columnDef: this._translateService.instant('shared.paid.label'),
-        header: this._translateService.instant('shared.paid'),
+        columnDef: this.translateService.instant('shared.paid.label'),
+        header: this.translateService.instant('shared.paid'),
         cell: (element: Order) => element.paid,
       },
       {
-        columnDef: this._translateService.instant('order.status.label'),
-        header: this._translateService.instant('order.status'),
+        columnDef: this.translateService.instant('order.status.label'),
+        header: this.translateService.instant('order.status'),
         cell: (element: Order) => OrderDetailStatus[element.orderStatus],
       },
       {
-        columnDef: this._translateService.instant('shared.client.label'),
-        header: this._translateService.instant('shared.client'),
+        columnDef: this.translateService.instant('shared.client.label'),
+        header: this.translateService.instant('shared.client'),
         cell: (element: Order) => element.clientName,
       },
       {
-        columnDef: this._translateService.instant('shared.clientPhoneNumber.label'),
-        header: this._translateService.instant('shared.clientPhoneNumber'),
+        columnDef: this.translateService.instant('shared.clientPhoneNumber.label'),
+        header: this.translateService.instant('shared.clientPhoneNumber'),
         cell: (element: Order) => element.clientPhoneNumber,
       },
       {
-        columnDef: this._translateService.instant('shared.remarks.label'),
-        header: this._translateService.instant('shared.remarks'),
+        columnDef: this.translateService.instant('shared.remarks.label'),
+        header: this.translateService.instant('shared.remarks'),
         cell: (element: Order) => element.remarks,
       },
       {
-        columnDef: this._translateService.instant('table.createdBy'),
-        header: this._translateService.instant('table.createdBy.label'),
+        columnDef: this.translateService.instant('table.createdBy'),
+        header: this.translateService.instant('table.createdBy.label'),
         cell: (element: Order) => element.createdBy,
       },
       {
-        columnDef: this._translateService.instant('table.createdAt'),
-        header: this._translateService.instant('table.createdAt.label'),
+        columnDef: this.translateService.instant('table.createdAt'),
+        header: this.translateService.instant('table.createdAt.label'),
         cell: (element: Order) => element.createdOn,
       },
     ];
   }
 
   public handleOrderTransaction(row: ResponseDto) {
-    this.handleEditRow(row);
+    // this.handleEditRow(row);
   }
 }

@@ -1,12 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ComponentsName } from '../shared/enums/components.name.enum';
 import { FormDialogNames } from '../shared/enums/forms-name.enum';
 import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
 import { BankService } from './services/bank.service';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
 import { Bank } from './interfaces/Ibank';
 import { TransactionStatus } from '../shared/enums/TransactionStatus.enum';
 import { IncomeOutcome } from '../incomes-outcomes/interfaces/Iincome-outcome';
@@ -18,24 +14,15 @@ import { CommitmentAndDueService } from '../commitment-and-due/services/commitme
   templateUrl: './bank.component.html',
   styleUrls: ['./bank.component.css'],
 })
-export class BankComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class BankComponent extends TableCommonFunctionality implements OnInit {
   formName = FormDialogNames.bankFormDialogComponent;
   componentName = ComponentsName.Bank;
   bank!: Bank | null;
   defaultBankId: number = 3;
   commitments: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
   dues: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
-
-  constructor(
-    httpClient: HttpClient,
-    toastrService: ToastrService,
-    override databaseService: BankService,
-    private _translateService: TranslateService,
-    private _commitmentAndDueService: CommitmentAndDueService,
-    public dialog: MatDialog,
-  ) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(BankService);
+  _commitmentAndDueService = inject(CommitmentAndDueService);
   isHovered = false;
 
   onMouseEnter() {
@@ -56,6 +43,12 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
     this._commitmentAndDueService.TotalDues().subscribe({
       next: (res) => (this.dues = res.body),
     });
+
+    this.tableCommunicationService.reloadTable$.subscribe(() => {
+      console.log('reloading table');
+      this.loadData();
+      this.getBankData();
+    });
   }
 
   getBankData() {
@@ -69,8 +62,8 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (element: IncomeOutcome) => element.id,
       },
       {
@@ -104,9 +97,4 @@ export class BankComponent extends TableCommonFunctionality implements OnInit, O
   override loadData() {
     this.databaseService.getAllBankTransactions(this.defaultBankId);
   }
-
-  override handleNewRow = (message: string) => {
-    this.getBankData();
-    this.toastrService.success(message);
-  };
 }

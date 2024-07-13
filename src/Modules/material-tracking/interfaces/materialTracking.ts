@@ -9,6 +9,4 @@ export interface MaterialTracking {
   comment: string;
   createdOn: Date;
   createdBy: string;
-  // modifiedBy: string;
-  // modifiedOn: Date;
 }

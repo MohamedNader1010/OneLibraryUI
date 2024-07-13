@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Attendance } from '../../../attendance/interfaces/attendance';
 import { MaterialTracking } from '../../../material-tracking/interfaces/materialTracking';
 import { AttendanceService } from '../../../attendance/services/attendance.service';
-import { IncomesOutcomesService } from '../../services/Incomes-outcomes.service';
+import { MoneyTransactionService } from '../../services/Incomes-outcomes.service';
 import { MaterialTrackingService } from '../../../material-tracking/services/materialTracking.service';
 import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 
@@ -27,7 +27,7 @@ export class ShiftDetailsComponent implements OnInit {
     private _route: ActivatedRoute,
     public shiftService: ShiftService,
     public attendanceService: AttendanceService,
-    public inOutService: IncomesOutcomesService,
+    public inOutService: MoneyTransactionService,
     public matInOutService: MaterialTrackingService,
     private _translateService: TranslateService,
     private _router: Router,
@@ -49,8 +49,8 @@ export class ShiftDetailsComponent implements OnInit {
       },
       complete: () => {
         this.attendanceService.dataChange.next({ body: this.shift.attendances } as ResponseDto);
-        this.inOutService.dataChange.next({ body: this.shift.incomeOutcomes } as ResponseDto);
-        this.matInOutService.dataChange.next({ body: this.shift.materialIncomeOutcomes } as ResponseDto);
+        this.inOutService.dataChange.next({ body: this.shift.transactions } as ResponseDto);
+        this.matInOutService.dataChange.next({ body: this.shift.materialTransactions } as ResponseDto);
       },
     });
   }

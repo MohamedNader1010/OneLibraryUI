@@ -1,21 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Material } from 'src/Modules/material/interfaces/Imaterial';
-import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { ClientService } from '../../services/client.service';
 import { TeacherProfitResponse } from '../../interFaces/IteacherProfitResponse';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-payTeacherProfit',
   templateUrl: './payTeacherProfit.component.html',
   styleUrls: ['./payTeacherProfit.component.css'],
 })
-export class PayTeacherProfitComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class PayTeacherProfitComponent extends FormsDialogCommonFunctionality implements OnInit {
   MaterialDataSource: Material[] = [];
   constructor(
     public dialogRef: MatDialogRef<PayTeacherProfitComponent>,
@@ -52,19 +50,17 @@ export class PayTeacherProfitComponent extends FormsDialogCommonFunctionality im
   }
 
   pay() {
-    this._databaseService
-      .addTeacherEarning(this.Form.value)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.data.paidToTeacher += this.amount.value;
-          this.data.rest -= this.amount.value;
-          this.dialogRef.close({ res: res, row: this.data });
-        },
-        error: () => (this.isSubmitting = false),
-        complete: () => {
-          this.isSubmitting = false;
-        },
-      });
+    this._databaseService.addTeacherEarning(this.Form.value).subscribe({
+      next: (res) => {
+        this.data.paidToTeacher += this.amount.value;
+        this.data.rest -= this.amount.value;
+        this.dialogRef.close({ res: res, row: this.data });
+        this.tableCommunicationService.reloadTable$.next();
+      },
+      error: () => (this.isSubmitting = false),
+      complete: () => {
+        this.isSubmitting = false;
+      },
+    });
   }
 }

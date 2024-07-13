@@ -1,11 +1,12 @@
-import {Component, Inject} from '@angular/core';
-import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {ToastrService} from 'ngx-toastr';
+import { Component, inject, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { GenericService } from '../../services/genericCRUD.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteDialogData } from '../../interfaces/deleteDialogData';
 import { ServiceFactory } from '../../classes/ServiceFactory';
+import { TableCommunicationService } from '../table/table-communication.service';
 
 @Component({
   selector: 'app-delete-dialog',
@@ -14,6 +15,8 @@ import { ServiceFactory } from '../../classes/ServiceFactory';
 })
 export class DeleteDialogComponent {
   isSubmitting: boolean = false;
+  tableCommunicationService = inject(TableCommunicationService);
+
   constructor(
     public dialogRef: MatDialogRef<DeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DeleteDialogData,
@@ -30,6 +33,8 @@ export class DeleteDialogComponent {
       next: (res: ResponseDto) => {
         this.isSubmitting = true;
         this.dialogRef.close({ data: res });
+        this.tableCommunicationService.reloadTable$.next();
+        this._toastrService.success(res.message);
       },
       error: () => (this.isSubmitting = false),
       complete: () => {

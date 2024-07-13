@@ -1,15 +1,14 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ServicePricePerClientTypeService } from '../../services/service-price-per-client-type.service';
 import { ServicesService } from 'src/Modules/service/services/services.service';
 import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
-import { forkJoin, map, takeUntil } from 'rxjs';
+import { forkJoin, map } from 'rxjs';
 import { ServicePricePerClientType } from '../../Interfaces/ServicePricePerClientType';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
 import { Service } from 'src/Modules/service/interfaces/Iservice';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -18,7 +17,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './service-type-per-client-form-dialog.component.html',
   styleUrls: ['./service-type-per-client-form-dialog.component.css'],
 })
-export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   public servicesDataSource: Service[] = [];
   public clientsTypeDataSource: ClientType[] = [];
   clientTypeLoading = false;
@@ -61,14 +60,12 @@ export class ServiceTypePerClientFormDialogComponent extends FormsDialogCommonFu
     let observalbles = [this._serviceService.getAll(), this._clientTypeService.getAll()];
     return forkJoin(observalbles)
       .pipe(
-        // tap(() => (this.clientTypeLoading  = this.serviceLoading = true)),
         map(([serviceResponse, clientTypeResponse]) => {
           return {
             services: serviceResponse,
             clientsTypes: clientTypeResponse,
           };
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {

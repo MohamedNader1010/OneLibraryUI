@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FiscalYearsService } from '../../services/fiscal-years.service';
 import { FiscalYear } from '../../interfaces/fiscalYear';
 
@@ -11,19 +11,21 @@ export class FiscalYearComponent implements OnInit {
   fiscalYears: FiscalYear[] = [];
   selectedStartYear: string | null = '';
   selectedEndYear: string | null = '';
+  _fiscalYearService = inject(FiscalYearsService);
 
-  constructor(private _fiscalYearService: FiscalYearsService) {}
   ngOnInit() {
     this._fiscalYearService.getAllFiscalYears().subscribe({
       next: (res) => {
-        console.log(res);
         this.fiscalYears = res.body;
       },
     });
   }
 
+  handleFiscalYearChange(fiscalYear: any, event: any) {
+    console.log(fiscalYear, event);
+  }
+
   applyFiscalYearFilter(event: any) {
     // will be implemented...
-    console.log('Selected fiscal year:', event.value);
   }
 }

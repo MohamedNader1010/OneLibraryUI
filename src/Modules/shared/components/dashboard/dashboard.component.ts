@@ -12,7 +12,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class DashboardComponent implements OnInit {
   public dashboardData!: DashboardData;
-  //pie chart
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
   };
@@ -30,7 +29,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this._getDashboardData();
   }
-  //bar chart
   public barChartLegend = true;
   public barChartPlugins = [];
   public barChartData: ChartConfiguration<'bar'>['data'] = {
@@ -54,28 +52,19 @@ export class DashboardComponent implements OnInit {
   }
 
   private _setBarChartData(dashboardData: DashboardData) {
-    this.barChartData.labels?.push(
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalGoneOrders.key),
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReadyOrders.key),
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReceivedOrders.key),
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReservedOrders.key),
-      this.tranlateWord(dashboardData.totalOrderDetailsStatus.totalReturnedOrders.key),
-    );
+    this.barChartData.labels?.push(this.tranlateWord('هالك'), this.tranlateWord('جاهز'), this.tranlateWord('استلم'), this.tranlateWord('حجز'), this.tranlateWord('مرتجع'));
 
     this.barChartData.datasets[0].data.push(
-      dashboardData.totalOrderDetailsStatus.totalGoneOrders.value,
-      dashboardData.totalOrderDetailsStatus.totalReadyOrders.value,
-      dashboardData.totalOrderDetailsStatus.totalReceivedOrders.value,
-      dashboardData.totalOrderDetailsStatus.totalReservedOrders.value,
-      dashboardData.totalOrderDetailsStatus.totalReturnedOrders.value,
+      dashboardData.totalOrderDetailsStatus.totalGoneOrders,
+      dashboardData.totalOrderDetailsStatus.totalReadyOrders,
+      dashboardData.totalOrderDetailsStatus.totalReceivedOrders,
+      dashboardData.totalOrderDetailsStatus.totalReservedOrders,
+      dashboardData.totalOrderDetailsStatus.totalReturnedOrders,
     );
   }
   private _setPieChartData(dashboardData: DashboardData) {
-    this.pieChartLabels = [
-      this.tranlateWord(dashboardData.completedAndInCompletedOrders.totalCompletedOrders.key),
-      this.tranlateWord(dashboardData.completedAndInCompletedOrders.totalInCompletedOrders.key),
-    ];
-    this.pieChartDatasets[0].data = [dashboardData.completedAndInCompletedOrders.totalCompletedOrders.value, dashboardData.completedAndInCompletedOrders.totalInCompletedOrders.value];
+    this.pieChartLabels = [this.tranlateWord('completed'), this.tranlateWord('incompleted')];
+    this.pieChartDatasets[0].data = [dashboardData.completedAndInCompletedOrders.totalCompletedOrders, dashboardData.completedAndInCompletedOrders.totalInCompletedOrders];
   }
 
   private tranlateWord(word: string): string {

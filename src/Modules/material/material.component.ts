@@ -1,30 +1,26 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ToastrService} from 'ngx-toastr';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { TableDataSource } from '../shared/components/table/tableDataSource';
 import { Material } from './interfaces/Imaterial';
 import { MaterialService } from './services/material.service';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
-import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-material',
   templateUrl: './material.component.html',
   styleUrls: ['./material.component.css'],
 })
-export class MaterialComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class MaterialComponent extends TableCommonFunctionality implements OnInit {
   formName = FormDialogNames.MaterialFormDialogComponent;
   dataSource!: TableDataSource;
   componentName = ComponentsName.material;
-  constructor(override databaseService: MaterialService, httpClient: HttpClient, toastrService: ToastrService, private _translateService: TranslateService) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(MaterialService);
 
   ngOnInit(): void {
     this.initiateTableHeaders();
     this.loadPaginatedData();
+    this.tableCommunicationService.reloadTable$.subscribe(() => this.loadPaginatedData());
   }
 
   override loadData() {
@@ -34,13 +30,13 @@ export class MaterialComponent extends TableCommonFunctionality implements OnIni
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (element: Material) => element.id,
       },
       {
-        columnDef: this._translateService.instant('form.name'),
-        header: this._translateService.instant('form.name.label'),
+        columnDef: this.translateService.instant('form.name'),
+        header: this.translateService.instant('form.name.label'),
         cell: (element: Material) => element.name,
       },
       {

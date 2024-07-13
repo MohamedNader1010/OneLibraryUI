@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -9,7 +9,6 @@ import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDia
 import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum';
 import { CommitmentAndDue } from '../../interfaces/Icommitment-and-due.interface';
 import { CommitmentAndDueService } from '../../services/commitment-and-due.service';
-import { takeUntil } from 'rxjs';
 import { TransactionType } from '../../../shared/enums/TransactionType.enum';
 
 @Component({
@@ -17,7 +16,7 @@ import { TransactionType } from '../../../shared/enums/TransactionType.enum';
   templateUrl: './commitment-and-due-transaction-form-dialog.html',
   styleUrls: ['./commitment-and-due-transaction-form-dialog.css'],
 })
-export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   MaterialDataSource: Material[] = [];
   transactionSource: any[] = [];
   constructor(
@@ -77,7 +76,7 @@ export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogC
   }
 
   onPaidControlChange() {
-    this.amount.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((paidValue) => {
+    this.amount.valueChanges.subscribe((paidValue) => {
       if (this.data.type === TransactionType.استحقاق) {
         this.rest.setValue(+this.data.rest + paidValue);
       } else {
@@ -97,8 +96,8 @@ export class CommitmentAndDueTransactionFormDialogComponent extends FormsDialogC
     this.status.setValue(this.data.type === TransactionType.استحقاق ? TransactionStatus.وارد : TransactionStatus.صادر);
     this._databaseService.AddTransaction(this.Form.value).subscribe({
       next: (res) => {
-        this._databaseService.DialogData = res.body;
         this.dialogRef.close({ data: res });
+        this.tableCommunicationService.reloadTable$.next();
       },
       error: () => (this.isSubmitting = false),
       complete: () => {

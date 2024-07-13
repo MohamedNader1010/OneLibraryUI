@@ -1,4 +1,4 @@
 export enum TransactionStatus {
-  وارد,
   صادر,
+  وارد,
 }

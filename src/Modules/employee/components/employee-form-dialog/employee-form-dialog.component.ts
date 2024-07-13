@@ -1,4 +1,4 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { EmployeeService } from '../../services/employee.service';
 import { ToastrService } from 'ngx-toastr';
@@ -12,7 +12,7 @@ import { Employee } from '../../interFaces/Iemployee';
   templateUrl: './employee-form-dialog.component.html',
   styleUrls: ['./employee-form-dialog.component.css'],
 })
-export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class EmployeeFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   controllerName: string = 'employees';
   isLoading = false;
   constructor(

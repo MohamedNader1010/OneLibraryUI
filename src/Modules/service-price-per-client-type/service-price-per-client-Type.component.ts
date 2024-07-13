@@ -1,35 +1,30 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ToastrService} from 'ngx-toastr';
+import { Component, inject, OnInit } from '@angular/core';
 import { ComponentsName } from 'src/Modules/shared/enums/components.name.enum';
 import { FormDialogNames } from 'src/Modules/shared/enums/forms-name.enum';
 import { ServicePricePerClientType } from './Interfaces/ServicePricePerClientType';
 import { ServicePricePerClientTypeService } from './services/service-price-per-client-type.service';
 import { TableCommonFunctionality } from '../shared/components/table/tableCommonFunctionality';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-service-price-per-client-Type',
   templateUrl: './service-price-per-client-Type.component.html',
   styleUrls: ['./service-price-per-client-Type.component.css'],
 })
-export class ServicePricePerClientTypeComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class ServicePricePerClientTypeComponent extends TableCommonFunctionality implements OnInit {
   formName = FormDialogNames.ServicePricePerClientFormDialogComponent;
   componentName = ComponentsName.servicePricePerClientType;
-
-  constructor(private _translateService: TranslateService, httpClient: HttpClient, override databaseService: ServicePricePerClientTypeService, toastrService: ToastrService) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(ServicePricePerClientTypeService);
 
   ngOnInit(): void {
     this.initiateTableHeaders();
     this.loadData();
+    this.tableCommunicationService.reloadTable$.subscribe(() => this.loadData());
   }
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (element: ServicePricePerClientType) => `${element.id}`,
       },
       {

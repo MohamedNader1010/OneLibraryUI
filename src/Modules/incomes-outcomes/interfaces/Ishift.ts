@@ -1,18 +1,18 @@
 import { Attendance } from "../../attendance/interfaces/attendance";
-import { MaterialIncomeOutcome } from "./Imaterial-income-outcome";
-import { IncomeOutcome } from "./Iincome-outcome";
+import { MaterialIncomeOutcome as MaterialTransactions } from './Imaterial-income-outcome';
+import { IncomeOutcome as transactions } from './Iincome-outcome';
 
 export interface Shift {
-	id: number;
+  id: number;
   startTime: Date;
-  endTime: Date|null;
-  startingBalance: string|null;
+  endTime: Date | null;
+  startingBalance: string | null;
   closingBalance: string;
-  totalIncome: string;
-  totalOutcome: string;
+  totalDebit: string;
+  totalCredit: string;
   createdOn: Date;
-  createdBy: string|null;
-  incomeOutcomes: IncomeOutcome[];
-  materialIncomeOutcomes: MaterialIncomeOutcome[];
+  createdBy: string | null;
+  transactions: transactions[];
+  materialTransactions: MaterialTransactions[];
   attendances: Attendance[];
 }

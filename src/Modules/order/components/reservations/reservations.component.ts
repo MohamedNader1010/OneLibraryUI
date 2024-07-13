@@ -1,22 +1,16 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { HttpClient } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastrService } from 'ngx-toastr';
 import { TableCommonFunctionality } from 'src/Modules/shared/components/table/tableCommonFunctionality';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { TableDataSource } from 'src/Modules/shared/components/table/tableDataSource';
 import { OrderService } from './../../services/orders.service';
 import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
-import { ResponseDto } from 'src/Modules/shared/interfaces/IResponse.dto';
-import { takeUntil } from 'rxjs';
 import { Reservation } from '../../interfaces/IReservation.interface';
 import { ReservedOrderDetail } from '../../interfaces/IReservedOrderDetail.interface';
-import { NoteService } from '../../../note/services/note.service';
 import { PrintNote } from '../../../note/interfaces/Iprint-note.interface';
 import { ReservedNote } from '../../interfaces/IReservedNote.interface';
+import { NoteService } from '../../../note/services/note.service';
 
 @Component({
   selector: 'app-reservations',
@@ -30,7 +24,7 @@ import { ReservedNote } from '../../interfaces/IReservedNote.interface';
     ]),
   ],
 })
-export class ReservationsComponent extends TableCommonFunctionality implements OnInit, OnDestroy {
+export class ReservationsComponent extends TableCommonFunctionality implements OnInit {
   reservations: Reservation[] = [];
   displayedColumns!: string[];
   columnsToDisplayWithExpand!: string[];
@@ -43,16 +37,8 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
-  constructor(
-    private _translateService: TranslateService,
-    public dialog: MatDialog,
-    override databaseService: OrderService,
-    private _noteService: NoteService,
-    toastrService: ToastrService,
-    httpClient: HttpClient,
-  ) {
-    super(httpClient, toastrService, databaseService);
-  }
+  override databaseService = inject(OrderService);
+  _noteService = inject(NoteService);
 
   ngOnInit(): void {
     this.initializeTableColumns();
@@ -68,8 +54,8 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
   private initializeTableColumns() {
     this.tableColumns = [
       {
-        columnDef: this._translateService.instant('table.id'),
-        header: this._translateService.instant('table.id.label'),
+        columnDef: this.translateService.instant('table.id'),
+        header: this.translateService.instant('table.id.label'),
         cell: (row: Reservation) => row.id,
       },
       {
@@ -86,7 +72,6 @@ export class ReservationsComponent extends TableCommonFunctionality implements O
     data.orderStatus = OrderDetailStatus.جاهز;
     this.databaseService.MarkSingleOrderDetailAsReady(data).subscribe({
       next: (res) => {
-        this.databaseService.DialogData = res.body;
         this.toastrService.success(res.message);
       },
       complete: () => {

@@ -1,11 +1,9 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ToastrService} from 'ngx-toastr';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Auth } from '../../interfaces/IAuth';
 import { AuthService } from './../../services/auth.service';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { AttendanceService } from './../../../attendance/services/attendance.service';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -14,8 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  destroy$ = new Subject<void>();
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   hide = true;
   logging: boolean = false;
@@ -50,34 +47,26 @@ export class LoginComponent implements OnInit, OnDestroy {
   handleSubmit() {
     if (this.loginForm.valid) {
       this.logging = true;
-      this._loginService
-        .login(this.loginForm.value)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (data) => {
-            let auth: Auth = data.body;
-            this._loginService.setLocalStorage(auth);
-            this._loginService.username.next(auth.username);
-            this._attendanceService.checkedIn.next(auth.isCheckedIn);
-            this._loginService.isLogged = true;
-          },
-          error: (e) => {
-            this.logging = false;
-            this._loginService.isLogged = false;
-            this._loginService.username.next(null);
-            this._loginService.clearLocalStorage();
-          },
-          complete: () => {
-            this.logging = false;
-            this._toastrService.success('loged in sucessfully', 'logged in');
-            this._router.navigate([this.returnUrl]);
-          },
-        });
+      this._loginService.login(this.loginForm.value).subscribe({
+        next: (data) => {
+          let auth: Auth = data.body;
+          this._loginService.setLocalStorage(auth);
+          this._loginService.username.next(auth.username);
+          this._attendanceService.checkedIn.next(auth.isCheckedIn);
+          this._loginService.isLogged = true;
+        },
+        error: (e) => {
+          this.logging = false;
+          this._loginService.isLogged = false;
+          this._loginService.username.next(null);
+          this._loginService.clearLocalStorage();
+        },
+        complete: () => {
+          this.logging = false;
+          this._toastrService.success('loged in sucessfully', 'logged in');
+          this._router.navigate([this.returnUrl]);
+        },
+      });
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

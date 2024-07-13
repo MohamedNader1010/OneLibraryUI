@@ -1,12 +1,10 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { tap, takeUntil, forkJoin, catchError, of, map } from 'rxjs';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { forkJoin, catchError, of, map } from 'rxjs';
 import { Employee } from '../../../employee/interFaces/Iemployee';
 import { EmployeeService } from '../../../employee/services/employee.service';
-import { DatePipe } from '@angular/common';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Supplier } from '../../../supplier/interfaces/ISupplier';
@@ -20,7 +18,7 @@ import { TransactionType } from '../../../shared/enums/TransactionType.enum';
   templateUrl: './commitment-and-due-form-dialog.component.html',
   styleUrls: ['./commitment-and-due-form-dialog.component.css'],
 })
-export class CommitmentAndDueFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class CommitmentAndDueFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   EmployeesDataSource: Employee[] = [];
   SuppliersDataSource: Supplier[] = [];
   TransactionTypeInstance: any = TransactionType;
@@ -101,7 +99,6 @@ export class CommitmentAndDueFormDialogComponent extends FormsDialogCommonFuncti
             employees: employeesResponse,
           };
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {

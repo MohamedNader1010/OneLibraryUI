@@ -1,27 +1,24 @@
 import { OrderTransaction } from './../interfaces/IorderTransaction';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Order } from '../interfaces/Iorder';
 import { OrderDetailStatus } from '../../shared/enums/OrderDetailStatus.enum';
-import { ToastrService } from 'ngx-toastr';
 import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
 import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { OrderDetail } from './../interfaces/IorderDetail';
 import { PagingCriteria } from 'src/Modules/shared/interfaces/pagingCriteria';
-import { Observable, catchError, finalize, tap } from 'rxjs';
 import { ReservedOrderDetail } from '../interfaces/IReservedOrderDetail.interface';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService extends GenericService<Order> {
-  constructor(http: HttpClient, override _toastrService: ToastrService) {
-    super(http, 'Order', _toastrService);
-  }
+  override controller = 'Order';
+  override uri: string = `${environment.apiUrl}${this.controller}`;
 
   getOrdersByStatus(status: OrderDetailStatus) {
     this.loadingData.next(true);
-    this.http.get<ResponseDto>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
+    this.httpClient.get<ResponseDto>(`${this.uri}/GetByStatus?status=${status}`).subscribe({
       next: (data: ResponseDto) => {
         this.dataChange.next(data);
       },
@@ -31,7 +28,7 @@ export class OrderService extends GenericService<Order> {
   }
 
   GetReservedOrderDetails() {
-    this.http.get<ResponseDto>(`${this.uri}/GetReservedOrderDetails`).subscribe({
+    this.httpClient.get<ResponseDto>(`${this.uri}/GetReservedOrderDetails`).subscribe({
       next: (data: ResponseDto) => {
         this.loadingData.next(true);
         this.dataChange.next(data);
@@ -41,16 +38,16 @@ export class OrderService extends GenericService<Order> {
     });
   }
 
-  addOrderTransaction = (order: OrderTransaction) => this.http.post<ResponseDto>(`${this.uri}/AddOrderTransaction`, order);
+  addOrderTransaction = (order: OrderTransaction) => this.httpClient.post<ResponseDto>(`${this.uri}/AddOrderTransaction`, order);
 
-  getOrderDetails = (id: number) => this.http.get<ResponseDto>(`${this.uri}/GetOrderDetails?Id=${id}`);
+  getOrderDetails = (id: number) => this.httpClient.get<ResponseDto>(`${this.uri}/GetOrderDetails?Id=${id}`);
 
-  updateOrderDetailsStatus = (order: Order) => this.http.put<ResponseDto>(`${this.uri}/UpdateOrderDetailsStatus`, order);
+  updateOrderDetailsStatus = (order: Order) => this.httpClient.put<ResponseDto>(`${this.uri}/UpdateOrderDetailsStatus`, order);
 
-  updateOrderDetailStatus = (orderDetail: OrderDetail) => this.http.put<ResponseDto>(`${this.uri}/UpdateOrderDetailStatus`, orderDetail);
+  updateOrderDetailStatus = (orderDetail: OrderDetail) => this.httpClient.put<ResponseDto>(`${this.uri}/UpdateOrderDetailStatus`, orderDetail);
 
-  markOrderDetailsAsReady = (orderDetails: ReservedOrderDetail[]) => this.http.put<ResponseDto>(`${this.uri}/MarkOrderDetailsAsReady`, orderDetails);
+  markOrderDetailsAsReady = (orderDetails: ReservedOrderDetail[]) => this.httpClient.put<ResponseDto>(`${this.uri}/MarkOrderDetailsAsReady`, orderDetails);
 
-  MarkSingleOrderDetailAsReady = (orderDetail: ReservedOrderDetail) => this.http.put<ResponseDto>(`${this.uri}/MarkSingleOrderDetailAsReady`, orderDetail);
-  getAllUnfinishedOrders = (pagingCriteria: PagingCriteria) => this.http.post<ResponseDto>(`${this.uri}/GetAllUnFinishedPaginated`, pagingCriteria);
+  MarkSingleOrderDetailAsReady = (orderDetail: ReservedOrderDetail) => this.httpClient.put<ResponseDto>(`${this.uri}/MarkSingleOrderDetailAsReady`, orderDetail);
+  getAllUnfinishedOrders = (pagingCriteria: PagingCriteria) => this.httpClient.post<ResponseDto>(`${this.uri}/GetAllUnFinishedPaginated`, pagingCriteria);
 }

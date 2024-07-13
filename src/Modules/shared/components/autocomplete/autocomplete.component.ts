@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Observable, Subject, debounceTime, map, of, startWith, switchMap, takeUntil } from 'rxjs';
+import { Observable, Subject, debounceTime, map, of, startWith, switchMap } from 'rxjs';
 import { ClientService } from '../../../client/services/client.service';
 import { ClientForForm } from '../../../client/interFaces/IClientForForm';
 
@@ -9,7 +9,7 @@ import { ClientForForm } from '../../../client/interFaces/IClientForForm';
   templateUrl: './autocomplete.component.html',
   styleUrls: ['./autocomplete.component.css'],
 })
-export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
+export class AutocompleteComponent implements OnInit, OnChanges {
   destroy$ = new Subject<void>();
   @Input() label: string = '';
   @Input() displayTextKey: string = 'name';
@@ -51,7 +51,6 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
           return of(this.dataSource.slice());
         }
       }),
-      takeUntil(this.destroy$),
     );
   }
 
@@ -120,9 +119,4 @@ export class AutocompleteComponent implements OnInit, OnChanges, OnDestroy {
   displayFn = (item: any): string => (item ? item[this.displayTextKey] : '');
 
   emitSelectedId = (item: any) => this.selectedId.emit(item ? item.id : null);
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
 }

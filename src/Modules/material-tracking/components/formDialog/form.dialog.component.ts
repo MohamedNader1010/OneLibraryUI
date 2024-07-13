@@ -1,11 +1,10 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { tap, takeUntil } from 'rxjs';
+import { tap } from 'rxjs';
 import { MaterialTracking } from '../../interfaces/materialTracking';
 import { MaterialTrackingService } from '../../services/materialTracking.service';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
 import { MaterialService } from './../../../material/services/material.service';
 import { Material } from './../../../material/interfaces/Imaterial';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,7 +15,7 @@ import { TransactionStatus } from '../../../shared/enums/TransactionStatus.enum'
   templateUrl: './form.dialog.html',
   styleUrls: ['./form.dialog.css'],
 })
-export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class FormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   MaterialDataSource: Material[] = [];
   materialLoading = false;
   constructor(
@@ -55,10 +54,7 @@ export class FormDialogComponent extends FormsDialogCommonFunctionality implemen
   getAllMaterial() {
     this._mat
       .getAll()
-      .pipe(
-        tap(() => (this.materialLoading = true)),
-        takeUntil(this.destroy$),
-      )
+      .pipe(tap(() => (this.materialLoading = true)))
       .subscribe({
         next: (data) => {
           this.MaterialDataSource = data.body;

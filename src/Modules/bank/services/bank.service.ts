@@ -1,17 +1,16 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from '@angular/core';
-import { ToastrService } from "ngx-toastr";
-import { GenericService } from "../../shared/services/genericCRUD.service";
+import { GenericService } from '../../shared/services/genericCRUD.service';
 import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
 import { Bank } from '../interfaces/Ibank';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BankService extends GenericService<Bank> {
-  constructor(http: HttpClient, override _toastrService: ToastrService) {
-    super(http, 'Bank', _toastrService);
-  }
+  override controller = 'Bank';
+  override uri: string = `${environment.apiUrl}${this.controller}`;
+
   getAllBankTransactions(id: number) {
     this.loadingData.next(true);
     this.GetById(id).subscribe({
@@ -23,5 +22,5 @@ export class BankService extends GenericService<Bank> {
     });
   }
 
-  SetStartingPalance = (model: Bank) => this.http.post<ResponseDto>(`${this.uri}/SetStartingPalance`, model, { headers: this.headers });
+  SetStartingPalance = (model: Bank) => this.httpClient.post<ResponseDto>(`${this.uri}/SetStartingPalance`, model, { headers: this.headers });
 }

@@ -1,9 +1,10 @@
 export interface Attendance {
-	id: number;
-	checkIn: Date;
-	checkOut: Date;
-	employeeId: string;
-	employee: string;
-  duration: string;
+  id: number;
+  checkIn: Date;
+  checkOut: Date;
+  employeeId: string;
+  employee: string;
+  formattedWorkingHours: string;
+  formattedOverTime: string;
   formattedDuration: string;
 }

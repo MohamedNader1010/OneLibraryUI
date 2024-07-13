@@ -1,6 +1,6 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject, pairwise, takeUntil } from 'rxjs';
+import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject } from 'rxjs';
 import { NoteService } from '../../services/note.service';
 import { ToastrService } from 'ngx-toastr';
 import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
@@ -25,7 +25,7 @@ import { FormDialogNames } from '../../../shared/enums/forms-name.enum';
   templateUrl: './note-form-dialog.component.html',
   styleUrls: ['./note-form-dialog.component.css'],
 })
-export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class NoteFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   TermsDataSource: Term[] = [];
   StagesDataSource: Stage[] = [];
   ServicePricesForClientTypesDataSource: PricedServicesWithOriginalPrices[] = [];
@@ -133,7 +133,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
             clientsType: clientTypeResponse,
           };
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: (response) => {
@@ -206,18 +205,14 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     let index = this.noteComponents.length;
     this.noteComponents.push(this.createFormItem('noteComponent'));
 
-    this.getNoteComponentServiceId(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => this.setServicePriceForClientType(index),
-      });
+    this.getNoteComponentServiceId(index).valueChanges.subscribe({
+      next: () => this.setServicePriceForClientType(index),
+    });
 
-    this.getNoteComponentQuantity(index)
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.calculateTotalActualPrice();
-        this.calculateTotalOriginalPrice();
-      });
+    this.getNoteComponentQuantity(index).valueChanges.subscribe(() => {
+      this.calculateTotalActualPrice();
+      this.calculateTotalOriginalPrice();
+    });
   };
 
   handleDeleteNoteComponent = (index: number) => {
@@ -235,7 +230,7 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
   };
 
   subscribeFormMoneyChanges() {
-    this.Form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    this.Form.valueChanges.subscribe(() => {
       let finalPrice = (+this.actualPrice.value - +this.originalPrice.value).toFixed(2);
       this.earning.setValue(finalPrice, { emitEvent: false });
       this.finalPrice.setValue((+this.actualPrice.value + +this.teacherPrice.value).toFixed(2), { emitEvent: false });
@@ -252,7 +247,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
           const getAllPriced$ = this._servicePricePerClientTypeService.GetAllPricedWithOriginalPrices(id);
           return forkJoin([getAllPriced$]);
         }),
-        takeUntil(this.destroy$),
       )
       .subscribe({
         next: ([servicesResponse]) => {
@@ -284,21 +278,18 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          if (result?.data) {
-            let newClient: ClientForForm = result.data.body;
-            this.clientId.setValue(null);
-            if (this.clientTypeId.value === newClient.clientTypeId) {
-              this.ClientsDataSource.push(newClient);
-              this.clientId.setValue(newClient.id);
-            }
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result?.data) {
+          let newClient: ClientForForm = result.data.body;
+          this.clientId.setValue(null);
+          if (this.clientTypeId.value === newClient.clientTypeId) {
+            this.ClientsDataSource.push(newClient);
+            this.clientId.setValue(newClient.id);
           }
-        },
-      });
+        }
+      },
+    });
   }
 
   reloadServicesPrices() {
@@ -358,17 +349,14 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
     if (this.Form.valid) {
       this.isSubmitting = true;
       if (this.id.value) {
-        this._databaseService
-          .deleteNoteComponents(this.deletedComponents)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            error: () => (this.isSubmitting = false),
-            complete: () => {
-              this._databaseService.updateFormData(this.Form.value, this.selectedFile, 'pdf').pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateFormDataObserver());
-            },
-          });
+        this._databaseService.deleteNoteComponents(this.deletedComponents).subscribe({
+          error: () => (this.isSubmitting = false),
+          complete: () => {
+            this._databaseService.updateFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver());
+          },
+        });
       } else {
-        this._databaseService.addFormData(this.Form.value, this.selectedFile, 'pdf').pipe(takeUntil(this.destroy$)).subscribe(this.addAndUpdateFormDataObserver());
+        this._databaseService.addFormData(this.Form.value, this.selectedFile, 'pdf').subscribe(this.addAndUpdateFormDataObserver());
       }
     }
   }
@@ -379,7 +367,6 @@ export class NoteFormDialogComponent extends FormsDialogCommonFunctionality impl
         if (res.type === HttpEventType.UploadProgress) {
           this.progress = Math.round((res.loaded / (res.total ?? 1)) * 100);
         } else if (res.type === HttpEventType.Response) {
-          this.databaseService.DialogData = (res.body as ResponseDto).body;
           this.matDialogRef.close({ data: res.body as ResponseDto });
         }
       },

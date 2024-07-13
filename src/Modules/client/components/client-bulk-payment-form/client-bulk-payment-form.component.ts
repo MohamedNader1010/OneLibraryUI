@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import { Client } from '../../interFaces/Iclient';
   templateUrl: './client-bulk-payment-form.component.html',
   styleUrls: ['./client-bulk-payment-form.component.css'],
 })
-export class ClientBulkPaymentFormComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ClientBulkPaymentFormComponent extends FormsDialogCommonFunctionality implements OnInit {
   constructor(
     private _fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: Client,

@@ -1,21 +1,19 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { EmployeeFormDialogComponent } from "../../../employee/components/employee-form-dialog/employee-form-dialog.component";
-import { Employee } from "../../../employee/interFaces/Iemployee";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
+import { EmployeeFormDialogComponent } from '../../../employee/components/employee-form-dialog/employee-form-dialog.component';
+import { Employee } from '../../../employee/interFaces/Iemployee';
 import { FormsDialogCommonFunctionality } from '../../../shared/classes/FormsDialog';
 import { BankService } from '../../services/bank.service';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-bank-form-dialog',
   templateUrl: './bank-form-dialog.component.html',
   styleUrls: ['./bank-form-dialog.component.css'],
 })
-export class BankFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class BankFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   constructor(
     private _databaseService: BankService,
     private _fb: FormBuilder,
@@ -47,16 +45,13 @@ export class BankFormDialogComponent extends FormsDialogCommonFunctionality impl
   }
 
   setStartingPalance = (values: any) =>
-    this._databaseService
-      .SetStartingPalance(values)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.matDialogRef.close({ data: res });
-        },
-        error: (e) => (this.isSubmitting = false),
-        complete: () => {
-          this.isSubmitting = false;
-        },
-      });
+    this._databaseService.SetStartingPalance(values).subscribe({
+      next: (res) => {
+        this.matDialogRef.close({ data: res });
+      },
+      error: (e) => (this.isSubmitting = false),
+      complete: () => {
+        this.isSubmitting = false;
+      },
+    });
 }

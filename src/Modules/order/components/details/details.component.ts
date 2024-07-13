@@ -1,6 +1,6 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { OrderService } from '../../services/orders.service';
 import { Order } from '../../interfaces/Iorder';
@@ -10,7 +10,7 @@ import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum'
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css'],
 })
-export class DetailsComponent implements OnInit, OnDestroy {
+export class DetailsComponent implements OnInit {
   id!: number;
   order!: Order;
   destroy$ = new Subject<void>();
@@ -18,15 +18,12 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _orderService: OrderService, public dialog: MatDialog) {}
   ngOnInit(): void {
-    this._orderService
-      .GetById(this.data.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.order = res.body;
-          this.progress = this.orderTrackingProgress();
-        },
-      });
+    this._orderService.GetById(this.data.id).subscribe({
+      next: (res) => {
+        this.order = res.body;
+        this.progress = this.orderTrackingProgress();
+      },
+    });
   }
 
   orderTrackingProgress(): number {
@@ -48,10 +45,5 @@ export class DetailsComponent implements OnInit, OnDestroy {
     }
 
     return totalProgress / this.order.orderDetails.filter((d) => !(d.orderStatus == OrderDetailStatus.مرتجع || d.orderStatus == OrderDetailStatus.هالك)).length;
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

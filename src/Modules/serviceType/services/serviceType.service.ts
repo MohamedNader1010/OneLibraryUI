@@ -1,15 +1,12 @@
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
-import {ServiceType} from '../interFaces/IserviceType';
-import {ToastrService} from 'ngx-toastr';
-import {GenericService} from 'src/Modules/shared/services/genericCRUD.service';
-import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
+import { Injectable } from '@angular/core';
+import { ServiceType } from '../interFaces/IserviceType';
+import { GenericService } from 'src/Modules/shared/services/genericCRUD.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServicesTypeService extends GenericService<ServiceType> {
-  constructor(http: HttpClient, toastrService: ToastrService) {
-    super(http, 'ServiceType', toastrService);
-  }
+  override controller = 'ServiceType';
+  override uri: string = `${environment.apiUrl}${this.controller}`;
 }

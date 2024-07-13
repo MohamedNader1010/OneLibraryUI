@@ -1,21 +1,20 @@
-import {Component, OnInit, OnDestroy, Inject} from '@angular/core';
-import {FormBuilder, Validators, FormControl} from '@angular/forms';
-import {ClientType} from 'src/Modules/clientType/interFaces/IclientType';
-import {ClientTypeService} from 'src/Modules/clientType/services/clientType.service';
-import {ClientService} from '../../services/client.service';
-import {ToastrService} from 'ngx-toastr';
+import { Component, OnInit, Inject } from '@angular/core';
+import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ClientType } from 'src/Modules/clientType/interFaces/IclientType';
+import { ClientTypeService } from 'src/Modules/clientType/services/clientType.service';
+import { ClientService } from '../../services/client.service';
+import { ToastrService } from 'ngx-toastr';
 import { FormsDialogCommonFunctionality } from 'src/Modules/shared/classes/FormsDialog';
 import { TranslateService } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Client } from '../../interFaces/Iclient';
-import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-client-form-dialog',
   templateUrl: './client-form-dialog.component.html',
   styleUrls: ['./client-form-dialog.component.css'],
 })
-export class ClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit, OnDestroy {
+export class ClientFormDialogComponent extends FormsDialogCommonFunctionality implements OnInit {
   ClientTypeDataSource: ClientType[] = [];
   isLoading = false;
   constructor(
@@ -49,12 +48,9 @@ export class ClientFormDialogComponent extends FormsDialogCommonFunctionality im
     if (this.data) this.Form.patchValue(this.data);
   }
   getAllClientTypes = () =>
-    this._clientType
-      .getAll()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.ClientTypeDataSource = data.body;
-        }
-      });
+    this._clientType.getAll().subscribe({
+      next: (data) => {
+        this.ClientTypeDataSource = data.body;
+      },
+    });
 }

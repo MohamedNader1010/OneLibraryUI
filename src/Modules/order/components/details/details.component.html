@@ -8,9 +8,9 @@
 </div>
 <mat-dialog-content *ngIf="order" class="print-dialog-content">
   <div class="print-only">
-    <!-- <hr /> -->
     <div class="text-center">
-      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2" [bc-height]="35" [bc-font-size]="15" [bc-margin]="0"></ngx-barcode6>
+      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2"
+        [bc-height]="35" [bc-font-size]="15" [bc-margin]="0"></ngx-barcode6>
     </div>
   </div>
   <hr />
@@ -55,7 +55,7 @@
     </div>
     <div class="row" *ngFor="let o of order.orderDetails" style="padding-bottom:10px ;">
       <div class="col-6">
-         <span>- {{ o.note ?? o.service }}</span>
+        <span>- {{ o.note ?? o.service }}</span>
       </div>
       <div class="col-3">
         <span>{{ o.quantity }}</span>
@@ -118,8 +118,6 @@
       <mat-progress-bar class="row" mode="determinate" [value]="progress" color="warn"></mat-progress-bar>
       <ul class="tracklist row w-100 justify-content-between">
         <li class="col-nader text-nowrap me-0">غير مكتمل</li>
-        <!-- <li class="col-nader text-nowrap me-0">جاهز</li>
-        <li class="col-nader text-nowrap me-0">تم التسليم</li> -->
         <li class="col-nader text-nowrap me-0">اكتمل</li>
       </ul>
     </div>

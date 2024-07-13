@@ -1,18 +1,72 @@
-<div class="container flex-column">
+<div class="container">
+  <div class="row my-2">
+    <div class="col">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image">
+            <mat-icon aria-label="العملاء">groups</mat-icon>
+          </div>
+          <mat-card-title>
+            العملاء
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>555</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image">
+            <mat-icon aria-label="الموظفون">badge</mat-icon>
+          </div>
+          <mat-card-title>
+            الموظفون
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>555</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image">
+            <mat-icon aria-label="الطلبات">shopping_cart</mat-icon>
+          </div>
+          <mat-card-title>
+            الطلبات
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>555</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="col">
+      <mat-card>
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image">
+            <mat-icon aria-label="المذكرات">menu_book</mat-icon>
+          </div>
+          <mat-card-title>
+            المذكرات
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>555</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
   <div class="row my-2">
     <div class="col-6">
       <mat-card>
         <mat-card-content>
-          <canvas
-            class="w-100 h-100"
-            baseChart
-            [type]="'pie'"
-            [datasets]="pieChartDatasets"
-            [labels]="pieChartLabels"
-            [options]="pieChartOptions"
-            [plugins]="pieChartPlugins"
-            [legend]="pieChartLegend"
-          >
+          <canvas class="w-100 h-100" baseChart [type]="'pie'" [datasets]="pieChartDatasets" [labels]="pieChartLabels"
+            [options]="pieChartOptions" [plugins]="pieChartPlugins" [legend]="pieChartLegend">
           </canvas>
         </mat-card-content>
       </mat-card>
@@ -20,16 +74,8 @@
     <div class="col-6">
       <mat-card class="h-100 d-flex justify-content-center">
         <mat-card-content class="row">
-          <canvas
-            *ngIf="dashboardData"
-            class="w-100 h-100"
-            baseChart
-            [data]="barChartData"
-            [options]="barChartOptions"
-            [plugins]="barChartPlugins"
-            [legend]="barChartLegend"
-            [type]="'bar'"
-          >
+          <canvas *ngIf="dashboardData" class="w-100 h-100" baseChart [data]="barChartData" [options]="barChartOptions"
+            [plugins]="barChartPlugins" [legend]="barChartLegend" [type]="'bar'">
           </canvas>
         </mat-card-content>
       </mat-card>

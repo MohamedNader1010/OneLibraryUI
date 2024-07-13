@@ -50,10 +50,11 @@
 		color: black;
 	}
 	.print-dialog-content {
-		font-size: 14pt !important;
-		line-height: 1.2 !important;
+		font-size: 13pt !important;
+		line-height: 1 !important;
+    font-weight: normal;
 		margin: 0 !important;
-		padding-right: 5px !important;
+		/* padding-right: 5px !important; */
 		width: 100% !important;
 		box-shadow: none !important;
 	}
@@ -81,7 +82,7 @@
     padding: 0px;
 	}
 	.total strong {
-		font-weight: bold;
+		font-weight: normal;
 	}
   .info{
     padding: 0px;

@@ -1,5 +1,5 @@
 import { DataSource, CollectionViewer } from '@angular/cdk/collections';
-import { BehaviorSubject, Subscription, Observable, merge, Subject, startWith, debounceTime, takeUntil, switchMap } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable, startWith, debounceTime, switchMap } from 'rxjs';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 
@@ -33,15 +33,12 @@ export class VirtualScrollDataSource extends DataSource<any> {
       }
     });
 
-    // const filterSubscription =
     this.filterSubject
       .pipe(
         startWith(this.filterSubject.value),
         debounceTime(1000),
         switchMap((filterValue) => {
           console.log('_filter', filterValue);
-          // this._cachedData = Array.from<any>({ length: this._cacheLength });
-          // this._fetchedPages = new Set<number>();
           const pagingCriteria: PagingCriteria = {
             pageIndex: 0,
             pageSize: this._pageSize,
@@ -52,13 +49,10 @@ export class VirtualScrollDataSource extends DataSource<any> {
       )
       .subscribe({
         next: (data: any) => {
-          // this._cachedData = [...data.body];
-          // this._dataStream.next(this._cachedData);
           console.log('data', data);
         },
       });
     this._subscription.add(collectionViewerSubscription);
-    // this._subscription.add(filterSubscription);
     return this._dataStream;
   }
 

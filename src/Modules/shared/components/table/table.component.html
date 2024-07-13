@@ -1,12 +1,11 @@
 <section class="container-fluid d-flex flex-column py-2 h-100">
   <div class="d-flex align-items-center justify-content-between mat-elevation-z2">
-    <mat-form-field floatPlaceholder="never" color="warn" class="w-50" style="background-color: white">
+    <mat-form-field floatPlaceholder="never" color="warn" class="w-100" style="background-color: white">
       <input matInput #filter placeholder="Filter" />
       <button *ngIf="filter.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter()">
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
-    <app-fiscal-year class="w-50"></app-fiscal-year>
   </div>
   <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
     <table tabindex="0" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>

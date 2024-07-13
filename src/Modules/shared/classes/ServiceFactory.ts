@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import { MaterialService } from 'src/Modules/material/services/material.service';
 import { ClientService } from 'src/Modules/client/services/client.service';
 import { FeedbackService } from 'src/Modules/feadback/services/feedback.service';
-import { IncomesOutcomesService } from 'src/Modules/incomes-outcomes/services/Incomes-outcomes.service';
+import { MoneyTransactionService } from 'src/Modules/incomes-outcomes/services/Incomes-outcomes.service';
 import { MaterialTrackingService } from 'src/Modules/material-tracking/services/materialTracking.service';
 import { NoteService } from 'src/Modules/note/services/note.service';
 import { OrderService } from 'src/Modules/order/services/orders.service';
@@ -27,7 +27,7 @@ export class ServiceFactory {
     private _attendnaceService: AttendanceService,
     private _clientService: ClientService,
     private _feedbackService: FeedbackService,
-    private _incomeOutcomeService: IncomesOutcomesService,
+    private _incomeOutcomeService: MoneyTransactionService,
     private _materialTrackingService: MaterialTrackingService,
     private _noteService: NoteService,
     private _orderService: OrderService,

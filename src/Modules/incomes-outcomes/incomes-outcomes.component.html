@@ -16,7 +16,7 @@
           <mat-card-header>إجمالي الوارد</mat-card-header>
           <mat-card-content>
             <p>
-              {{currentShift?.totalIncome?? "-" }} جنية
+              {{currentShift?.totalDebit?? "-" }} جنية
             </p>
           </mat-card-content>
         </mat-card>
@@ -26,7 +26,7 @@
           <mat-card-header>إجمالي الصادر</mat-card-header>
           <mat-card-content>
             <p>
-              {{currentShift?.totalOutcome?? "-"}} جنية
+              {{currentShift?.totalCredit?? "-"}} جنية
             </p>
           </mat-card-content>
         </mat-card>
@@ -44,16 +44,7 @@
     </div>
   </div>
   <div style="height: 87%;">
-    <app-table
-    class="h-100"
-    [tableColumns]="tableColumns"
-    [formName]="formName"
-    [componentName]="componentName"
-    (OnDelete)="handleDelete($event)"
-    (onNew)="handleNewRow($event)"
-    (onEdit)="handleEditRow($event)"
-    [canEdit]="false"
-    [canDelete]="false"
-    [database]="databaseService"></app-table>
-</div>
+    <app-table class="h-100" [tableColumns]="tableColumns" [formName]="formName" [componentName]="componentName"
+      [canEdit]="false" [canDelete]="false" [database]="databaseService"></app-table>
+    </div>
 </div>
