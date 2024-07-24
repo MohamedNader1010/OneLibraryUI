@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClientTypeComponent } from '../clientType.component';
-import { LoginGuard } from 'src/Modules/authentication.Module/guards/login.guard';
+import { LoginGuard } from 'src/app/core/authentication/guards/login.guard';
+import { ClientTypeComponent } from './client-type.component';
 
 const routes: Routes = [
   {
