@@ -7,12 +7,13 @@ import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, tap, finalize } from 'rxjs';
 import { PagingCriteria } from '../../../shared/interfaces/pagingCriteria';
 import { Note } from '../models/note/Inote';
+import { IGenericResponseDto } from '../../../shared/interfaces/IGenericResponse.dto';
+import { IPaginatedResponse } from '../../../shared/interfaces/paginationResponse.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NoteService extends BaseHttpClient {
-  //todo: need fix
   getPagedData(pagingCriteria: PagingCriteria) {
     this.loadingData.next(true);
     const params = new HttpParams({
@@ -24,13 +25,13 @@ export class NoteService extends BaseHttpClient {
         pageIndex: pagingCriteria.pageIndex,
       },
     });
-    return this.httpClient.get<ResponseDto>(BACKEND_APIs.note, { headers: this.headers, params }).pipe(
+    return this.httpClient.get<IGenericResponseDto<IPaginatedResponse<Note>>>(BACKEND_APIs.note, { headers: this.headers, params }).pipe(
       map((data) => {
         return {
           status: data.status,
           message: data.message,
-          body: data.body,
-          totalCount: data.totalCount,
+          body: data.body.results,
+          totalCount: data.body.totalCount,
         };
       }),
       tap((data: ResponseDto) => {
