@@ -1,0 +1,10 @@
+<app-table
+	[canView]="true"
+	[hasTransaction]="true"
+	[tableColumns]="tableColumns"
+	[formName]="formName"
+	[componentName]="componentName"
+	[isPaginated]="true"
+	(onTransaction)="handleOrderTransaction($event)"
+	[database]="databaseService">
+</app-table>

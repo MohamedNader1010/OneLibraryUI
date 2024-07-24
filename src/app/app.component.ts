@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {SessionTimeoutService} from './session-timeout.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { SessionTimeoutService } from './shared/services/session-timeout.service';
 
 @Component({
   selector: 'app-root',

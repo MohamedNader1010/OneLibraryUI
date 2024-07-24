@@ -1,0 +1,12 @@
+import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
+
+export interface MaterialTracking {
+  id: number;
+  name: string;
+  materialId: number;
+  status: TransactionStatus;
+  quantity: number;
+  comment: string;
+  createdOn: Date;
+  createdBy: string;
+}

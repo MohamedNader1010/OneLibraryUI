@@ -1,0 +1,9 @@
+<ngx-loading-bar color="red" height="2px" [includeSpinner]="false"></ngx-loading-bar>
+<div class="d-flex flex-column vh-100">
+  <app-navbar></app-navbar>
+  <mat-sidenav-container class="w-100 h-100" autosize>
+    <mat-sidenav-content class="h-100">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
