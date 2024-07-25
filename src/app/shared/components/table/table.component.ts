@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ElementRef, 
 import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { debounceTime, distinctUntilChanged, switchMap, fromEvent, Subject } from 'rxjs';
-import { FormHelpers } from '../../classes/form-helpers';
+import { FormFactory } from '../../classes/form.factory';
 import { TableDataSource } from './tableDataSource';
 import { environment } from '../../../../environments/environment';
 import { MatPaginator } from '@angular/material/paginator';
@@ -11,7 +11,7 @@ import * as signalR from '@microsoft/signalr';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { PagingCriteria } from '../../interfaces/pagingCriteria';
-import { PaginatedTableDatasource as PaginatedTableDataSource } from './paginatedTableDatasource';
+import { PaginatedTableDataSource as PaginatedTableDataSource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/IResponse.dto';
 import { ToastrService } from 'ngx-toastr';
 import { NoteClient } from '../../../core/data/models/note/InoteClient';
@@ -168,7 +168,7 @@ export class TableComponent implements OnInit {
   };
 
   async HandleNew() {
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });
@@ -188,7 +188,7 @@ export class TableComponent implements OnInit {
   }
   async handleEdit(row: any, $event: any) {
     $event.stopPropagation();
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(this.formName);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
     const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%', data: row });
     dialogRef.afterClosed().subscribe({
       complete: () => this.refreshTable(),
@@ -199,9 +199,9 @@ export class TableComponent implements OnInit {
     $event.stopPropagation();
     let dialogComponent = null;
     if (this.componentName == ComponentsName.commitmentAndDue) {
-      dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.commitmentAndDueComponentTransactionFormDialog);
+      dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.commitmentAndDueComponentTransactionFormDialog);
     } else {
-      dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
+      dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
     }
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
@@ -217,7 +217,7 @@ export class TableComponent implements OnInit {
 
   async handleView(row: any, $event: any) {
     $event.stopPropagation();
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
       minWidth: '30%',
@@ -243,7 +243,7 @@ export class TableComponent implements OnInit {
 
   async handleBulkPayment(row: any, $event: any) {
     $event.stopPropagation();
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
       minWidth: '30%',

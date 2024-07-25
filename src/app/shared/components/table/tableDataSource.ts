@@ -5,32 +5,37 @@ import { BehaviorSubject, Observable, merge, map } from 'rxjs';
 import { OrderDetailStatus } from '../../enums/OrderDetailStatus.enum';
 export class TableDataSource extends DataSource<any> {
   _filterChange = new BehaviorSubject('');
+
   get filter(): string {
     return this._filterChange.value;
   }
+
   set filter(filter: string) {
     this._filterChange.next(filter);
   }
+
   filteredData: any[] = [];
   renderedData: any[] = [];
-  private _filteredDataLengthSubject = new BehaviorSubject<number>(0);
-  filteredDataLength$ = this._filteredDataLengthSubject.asObservable();
+
+  #filteredDataLengthSubject = new BehaviorSubject<number>(0);
+
+  filteredDataLength$ = this.#filteredDataLengthSubject.asObservable();
 
   constructor(public database: any, public _paginator: MatPaginator, public _sort: MatSort) {
     super();
     this._filterChange.subscribe(() => (this._paginator.pageIndex = 0));
-    this._filteredDataLengthSubject.next(this.database.data.length);
+    this.#filteredDataLengthSubject.next(this.database.data.length);
   }
+
   connect(): Observable<any[]> {
     const displayDataChanges = [this.database.dataChange, this._sort.sortChange, this._filterChange, this._paginator.page];
-
     return merge(...displayDataChanges).pipe(
       map(() => {
         this.filteredData = this.database.data.body?.slice()?.filter((item: any) => {
           const barPrefix = 'bar-';
           const barcodeIndex = `${this.filter}`.indexOf(barPrefix) ?? -1;
           if (barcodeIndex < 0) {
-            const searchStr = this.generateSearchString(item);
+            const searchStr = this.#generateSearchString(item);
             return searchStr.includes(this.filter.toLowerCase());
           } else {
             const id = +this.filter.substring(barPrefix.length);
@@ -41,7 +46,7 @@ export class TableDataSource extends DataSource<any> {
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
         this.renderedData = sortedData?.splice(startIndex, this._paginator.pageSize);
         setTimeout(() => {
-          this._filteredDataLengthSubject.next(this.filteredData?.length ?? 0);
+          this.#filteredDataLengthSubject.next(this.filteredData?.length ?? 0);
         });
         return this.renderedData;
       }),
@@ -49,6 +54,7 @@ export class TableDataSource extends DataSource<any> {
   }
 
   disconnect() {}
+
   sortData(data: any[]): any[] {
     if (!data) return data;
     if (!this._sort.active || this._sort.direction === '') return data;
@@ -61,15 +67,16 @@ export class TableDataSource extends DataSource<any> {
     });
   }
 
-  private generateSearchString(item: any): string {
+  #generateSearchString(item: any): string {
     let searchStr = '';
     for (const key in item) {
-      if (key === 'orderStatus') searchStr += this.extractOrderStatusString(item[key]);
+      if (key === 'orderStatus') searchStr += this.#extractOrderStatusString(item[key]);
       else searchStr += item[key];
     }
     return searchStr.toLowerCase();
   }
-  private extractOrderStatusString(status: OrderDetailStatus): string {
+
+  #extractOrderStatusString(status: OrderDetailStatus): string {
     switch (status) {
       case OrderDetailStatus.غير_مكتمل:
         return 'غير_مكتمل';

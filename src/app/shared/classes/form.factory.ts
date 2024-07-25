@@ -1,8 +1,8 @@
 import { FormDialogNames } from '../enums/forms-name.enum';
 
-export class FormHelpers {
+export class FormFactory {
   public static async getAppropriateDialogComponent(formName: FormDialogNames) {
-    const appropriateComponent = await FormHelpers.getAppropriateComponent(formName);
+    const appropriateComponent = await FormFactory.getAppropriateComponent(formName);
     return appropriateComponent;
   }
   private static async getAppropriateComponent(formName: FormDialogNames) {

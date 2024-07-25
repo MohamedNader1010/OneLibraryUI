@@ -24,7 +24,7 @@ import { ComponentsName } from '../enums/components.name.enum';
 export class ServiceFactory {
   constructor(
     private _materialService: MaterialService,
-    private _attendnaceService: AttendanceService,
+    private _attendanceService: AttendanceService,
     private _clientService: ClientService,
     private _feedbackService: FeedbackService,
     private _incomeOutcomeService: MoneyTransactionService,
@@ -47,7 +47,7 @@ export class ServiceFactory {
       case ComponentsName.material:
         return this._materialService;
       case ComponentsName.attendance:
-        return this._attendnaceService;
+        return this._attendanceService;
       case ComponentsName.client:
         return this._clientService;
       case ComponentsName.clientType:

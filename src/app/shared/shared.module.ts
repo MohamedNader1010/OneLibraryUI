@@ -13,7 +13,7 @@ import { NgChartsModule, NgChartsConfiguration } from 'ng2-charts';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AutocompleteComponent } from './components/autocomplete/autocomplete.component';
-import { ServiceFactory } from './classes/ServiceFactory';
+import { ServiceFactory } from './classes/Service.factory';
 import { DragAndDropDirective } from './directives/dragAndDrop.directive';
 import { DragAndDropComponent } from './components/drag-and-drop/drag-and-drop.component';
 import { CdkDetailRowDirective } from './directives/cdk-detail-row.directive';

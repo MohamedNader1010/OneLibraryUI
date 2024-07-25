@@ -14,7 +14,7 @@ import { ClientTypeService } from '../../../../core/data/services/client-type.se
 import { NoteService } from '../../../../core/data/services/note.service';
 import { OrderService } from '../../../../core/data/services/orders.service';
 import { ServicePricePerClientTypeService } from '../../../../core/data/services/service-price-per-client-type.service';
-import { FormHelpers } from '../../../../shared/classes/form-helpers';
+import { FormFactory } from '../../../../shared/classes/form.factory';
 import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
 import { OrderDetailStatus } from '../../../../shared/enums/OrderDetailStatus.enum';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
@@ -385,7 +385,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
   }
 
   async HandleNewClient() {
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });

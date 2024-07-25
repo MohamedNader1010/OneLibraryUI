@@ -4,7 +4,6 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../core/authentication/services/auth.service';
-import { ResponseDto } from '../interfaces/IResponse.dto';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -18,8 +17,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         } else if (error.error instanceof ErrorEvent) {
           errorMessage = `Error: ${error.error.message}`;
         } else if (typeof error.error === 'object') {
-          const responseDtoError = error.error as ResponseDto;
-          errorMessage = responseDtoError.message ?? errorMessage;
+          errorMessage = error.error.Message ?? errorMessage;
         } else if (typeof error.error === 'string') {
           errorMessage = error.error;
         } else {

@@ -13,7 +13,7 @@ import { Stage } from '../../../../core/data/models/stage/IStage';
 import { Term } from '../../../../core/data/models/term/ITerm';
 import { NoteService } from '../../../../core/data/services/note.service';
 import { ServicePricePerClientTypeService } from '../../../../core/data/services/service-price-per-client-type.service';
-import { FormHelpers } from '../../../../shared/classes/form-helpers';
+import { FormFactory } from '../../../../shared/classes/form.factory';
 import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
 import { ResponseDto } from '../../../../shared/interfaces/IResponse.dto';
 import { NoteComponent } from '../../note.component';
@@ -272,7 +272,7 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
   }
 
   async HandleNewClient() {
-    const dialogComponent = await FormHelpers.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
+    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.ClientFormDialogComponent);
     const dialogRef = this.matDialog.open<any>(dialogComponent, {
       minWidth: '30%',
     });
