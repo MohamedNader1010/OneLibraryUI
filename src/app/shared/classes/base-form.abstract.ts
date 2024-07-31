@@ -5,7 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Observer } from 'rxjs';
-import { ResponseDto } from '../interfaces/IResponse.dto';
+import { ResponseDto } from '../interfaces/response.dto';
 
 export abstract class BaseForm {
   public Form!: FormGroup;

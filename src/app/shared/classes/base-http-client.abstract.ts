@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject } from 'rxjs';
-import { ResponseDto } from '../interfaces/IResponse.dto';
+import { ResponseDto } from '../interfaces/response.dto';
 
 export abstract class BaseHttpClient {
   httpClient = inject(HttpClient);
@@ -15,6 +15,10 @@ export abstract class BaseHttpClient {
 
   get isLoading(): boolean {
     return this.loadingData.value;
+  }
+
+  set isLoading(value: boolean) {
+    this.loadingData.next(value);
   }
 
   _emptyResponse: ResponseDto = {

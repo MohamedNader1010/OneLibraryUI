@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { IBulkPayment } from '../models/client/IbulkPayment';
 import { TeacherProfit } from '../models/client/IteacherProfit';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { Client } from '../models/client/Iclient';
-import { PagingCriteria } from '../../../shared/interfaces/pagingCriteria';
+import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
 import { HttpParams } from '@angular/common/http';
 import { map, tap, finalize } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { map, tap, finalize } from 'rxjs';
   providedIn: 'root',
 })
 export class ClientService extends BaseHttpClient {
-  getPagedData(pagingCriteria: PagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria) {
     this.loadingData.next(true);
     const params = new HttpParams({
       fromObject: {

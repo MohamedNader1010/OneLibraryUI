@@ -1,23 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ElementRef, QueryList, ViewChildren, ChangeDetectorRef, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Input, OnInit, ViewChild, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
-import { debounceTime, distinctUntilChanged, switchMap, fromEvent, Subject } from 'rxjs';
-import { FormFactory } from '../../classes/form.factory';
+import { debounceTime, distinctUntilChanged, switchMap, Subject, fromEvent } from 'rxjs';
 import { TableDataSource } from './tableDataSource';
 import { environment } from '../../../../environments/environment';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router, ActivatedRoute } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
-import { PagingCriteria } from '../../interfaces/pagingCriteria';
+import { IPagingCriteria } from '../../../core/data/interfaces/paging-criteria.interface';
 import { PaginatedTableDataSource as PaginatedTableDataSource } from './paginatedTableDatasource';
-import { ResponseDto } from '../../interfaces/IResponse.dto';
+import { ResponseDto } from '../../interfaces/response.dto';
 import { ToastrService } from 'ngx-toastr';
 import { NoteClient } from '../../../core/data/models/note/InoteClient';
 import { Order } from '../../../core/data/models/order/Iorder';
 import { ComponentsName } from '../../enums/components.name.enum';
-import { FormDialogNames } from '../../enums/forms-name.enum';
+import { BaseTableActions } from './base-table-actions.class';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -30,7 +26,7 @@ const detailExpandAnimation = trigger('detailExpand', [
   styleUrls: ['./table.component.css'],
   animations: [detailExpandAnimation],
 })
-export class TableComponent implements OnInit {
+export class TableComponent extends BaseTableActions implements OnInit {
   destroy$ = new Subject<void>();
   displayedColumns!: string[];
   dataSource!: TableDataSource | PaginatedTableDataSource;
@@ -39,7 +35,8 @@ export class TableComponent implements OnInit {
 
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
-  _pagingCriteria: PagingCriteria = {
+
+  _pagingCriteria: IPagingCriteria = {
     direction: 'desc',
     filter: '',
     orderBy: 'Id',
@@ -47,37 +44,15 @@ export class TableComponent implements OnInit {
     pageSize: 25,
   };
 
-  @Output() OnView = new EventEmitter<any>();
-  @Output() onClose = new EventEmitter();
-  @Output() onTransaction = new EventEmitter<any>();
-  @Output() onNotePrint = new EventEmitter<any>();
-  @Output() onMarkAsReady = new EventEmitter<any>();
-
-  @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild('filter', { static: true }) filter!: ElementRef;
 
-  @Input() database: any;
   @Input() tableColumns: any;
-  @Input() canAdd: boolean = true;
-  @Input() toggleShift: boolean = false;
-  @Input() canEdit: boolean = true;
-  @Input() canView: boolean = false;
-  @Input() hasTransaction: boolean = false;
-  @Input() formName!: FormDialogNames;
-  @Input() componentName!: ComponentsName;
-  @Input() canNavigateToDetails: boolean = false;
-  @Input() canExpand: boolean = false;
   @Input() isPaginated: boolean = false;
-  @Input() canMarkOrderDetailAsReady: boolean = false;
-  @Input() canPrintNote: boolean = false;
-  @Input() canPayBulk: boolean = false;
   @ViewChildren(CdkDetailRowDirective)
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
 
   toastrService = inject(ToastrService);
-
-  constructor(public dialog: MatDialog, private _router: Router, private _activatedRoute: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.setPagingCriteria();
@@ -96,9 +71,12 @@ export class TableComponent implements OnInit {
       .catch((err) => console.log(err));
 
     this.connection.on('add', (res: Order) => {
-      (this.database.dataChange.value as ResponseDto).body.push(res);
-      this.toastrService.success(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
-      this.refreshTable();
+      var currentData = (this.database.dataChange.value as ResponseDto).body as Order[];
+      if (!currentData.filter((d) => d.id === res.id)) {
+        currentData.push(res);
+        this.toastrService.success(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+        this.refreshTable();
+      }
     });
   }
 
@@ -116,12 +94,12 @@ export class TableComponent implements OnInit {
 
   public loadData() {
     if (this.isPaginated) {
-      this.setPaginatedTableDatasource();
+      this.setPaginatedTableDataSource();
     } else {
       this.setTableDataSource();
     }
   }
-  private setPaginatedTableDatasource() {
+  private setPaginatedTableDataSource() {
     this.dataSource = new PaginatedTableDataSource(this.database);
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
@@ -157,6 +135,7 @@ export class TableComponent implements OnInit {
       this.database.getPagedData(this._pagingCriteria).subscribe();
     }
   }
+
   clearFilter = () => {
     if (this.isPaginated) {
       this.dataSource.filter = this.filter.nativeElement.value = '';
@@ -167,106 +146,15 @@ export class TableComponent implements OnInit {
     }
   };
 
-  async HandleNew() {
-    const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
-    const dialogRef = this.dialog.open<any>(dialogComponent, {
-      minWidth: '30%',
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (result) => {
-        if (result?.data) {
-          if (this.componentName == ComponentsName.order) {
-            let newOrder: Order = (result.data as ResponseDto).body;
-            let lastOrder: Order = (this.database.dataChange.value as ResponseDto).body[(this.database.dataChange.value as ResponseDto).body.length - 1];
-            if (lastOrder.id != newOrder.id) {
-            }
-          }
-        }
-      },
-      complete: () => this.refreshTable(),
-    });
-  }
-  async handleEdit(row: any, $event: any) {
-    $event.stopPropagation();
-    const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
-    const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%', data: row });
-    dialogRef.afterClosed().subscribe({
-      complete: () => this.refreshTable(),
-    });
-  }
-
-  async handleTransaction(row: any, $event: any) {
-    $event.stopPropagation();
-    let dialogComponent = null;
-    if (this.componentName == ComponentsName.commitmentAndDue) {
-      dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.commitmentAndDueComponentTransactionFormDialog);
-    } else {
-      dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.orderTransactionFormDialogComponent);
-    }
-    const dialogRef = this.dialog.open<any>(dialogComponent, {
-      data: row,
-      minWidth: '30%',
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (result) => {
-        if (result?.data) this.onTransaction.emit(result.data);
-      },
-      complete: () => this.refreshTable(),
-    });
-  }
-
-  async handleView(row: any, $event: any) {
-    $event.stopPropagation();
-    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
-    const dialogRef = this.dialog.open<any>(dialogComponent, {
-      data: row,
-      minWidth: '30%',
-    });
-  }
-
-  navigate(row: any, $event: any) {
-    $event.stopPropagation();
-    this._router.navigate(['details', row.id], { relativeTo: this._activatedRoute });
-  }
-
-  handleViewPdf = (row: any, $event: any) => {
-    $event.stopPropagation();
-    const filePath = row.filePath;
-    const uploadsIndex = filePath.indexOf('uploads');
-    if (uploadsIndex !== -1) {
-      const trimmedPath = filePath.substring(uploadsIndex);
-      window.open(`${environment.host}${trimmedPath}`, '_blank');
-    } else {
-      alert('not found');
-    }
-  };
-
-  async handleBulkPayment(row: any, $event: any) {
-    $event.stopPropagation();
-    const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
-    const dialogRef = this.dialog.open<any>(dialogComponent, {
-      data: row,
-      minWidth: '30%',
-    });
-    dialogRef.afterClosed().subscribe({
-      complete: () => this.refreshTable(),
-    });
-  }
-
-  MarkAsReady = (row: any, $event: any) => {
-    $event.stopPropagation();
-    this.onMarkAsReady.emit(row);
-  };
-
-  printNote = (row: any, $event: any) => {
-    $event.stopPropagation();
-    this.onNotePrint.emit(row);
-  };
-
   onPageChange() {
     if (this.isPaginated) {
       this.setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).subscribe();
+
+      this.database.loadingData.next(true);
+
+      this.database.getPagedData(this._pagingCriteria).subscribe({
+        complete: () => (this.database.isLoading = false),
+      });
     }
   }
 
@@ -280,13 +168,8 @@ export class TableComponent implements OnInit {
 
   trimIfBarcode(value: string) {
     const barPrefix = 'bar-';
-    const barcodeIndex = value.indexOf(barPrefix) ?? -1;
-    if (barcodeIndex === -1) return value;
-    const id = value.substring(barPrefix.length);
-    return id;
+    return (value.indexOf(barPrefix) ?? -1) === -1 ? value : value.substring(barPrefix.length);
   }
-
-  private refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
   getTotal(noteClients: NoteClient[]): number {
     return noteClients.map((t) => t.quantity).reduce((acc, value) => acc + value, 0);

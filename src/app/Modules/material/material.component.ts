@@ -6,7 +6,7 @@ import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
-import { PagingCriteria } from '../../shared/interfaces/pagingCriteria';
+import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 
 @Component({
   selector: 'app-material',
@@ -28,7 +28,7 @@ export class MaterialComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: PagingCriteria = {
+    const pagingCriteria: IPagingCriteria = {
       direction: 'desc',
       filter: '',
       orderBy: 'Id',

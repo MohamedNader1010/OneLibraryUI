@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { PrintNote } from '../models/note/Iprint-note.interface';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, tap, finalize } from 'rxjs';
-import { PagingCriteria } from '../../../shared/interfaces/pagingCriteria';
+import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
 import { Note } from '../models/note/Inote';
-import { IGenericResponseDto } from '../../../shared/interfaces/IGenericResponse.dto';
-import { IPaginatedResponse } from '../../../shared/interfaces/paginationResponse.interface';
+import { IGenericResponseDto } from '../../../shared/interfaces/generic-response.interface';
+import { IPaginatedResponse } from '../../../shared/interfaces/pagination-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NoteService extends BaseHttpClient {
-  getPagedData(pagingCriteria: PagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria) {
     this.loadingData.next(true);
     const params = new HttpParams({
       fromObject: {

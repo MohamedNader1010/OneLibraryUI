@@ -5,7 +5,7 @@ import { TableDataSource } from '../../shared/components/table/tableDataSource';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TransactionType } from '../../shared/enums/TransactionType.enum';
-import { ResponseDto } from '../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../shared/interfaces/response.dto';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
 

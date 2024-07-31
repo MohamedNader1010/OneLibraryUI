@@ -15,7 +15,7 @@ import { NoteService } from '../../../../core/data/services/note.service';
 import { ServicePricePerClientTypeService } from '../../../../core/data/services/service-price-per-client-type.service';
 import { FormFactory } from '../../../../shared/classes/form.factory';
 import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
-import { ResponseDto } from '../../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../../shared/interfaces/response.dto';
 import { NoteComponent } from '../../note.component';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
 import { TermService } from '../../../../core/data/services/term.service';

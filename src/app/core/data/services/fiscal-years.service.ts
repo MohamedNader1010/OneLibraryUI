@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
 
 @Injectable({
   providedIn: 'root',

@@ -1,17 +1,20 @@
-import { DashboardData } from './../../interfaces/dashboardData';
+import { IDashboard } from '../../../core/data/models/dashboard/dashboard.interface';
 
 import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { DashboardService } from '../../../core/data/services/dashboard.service';
 
 import { TranslateService } from '@ngx-translate/core';
+import { forkJoin } from 'rxjs';
+import { IDashboardStatistics } from '../../../core/data/models/dashboard/dashboard-statistics.interface';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
-  public dashboardData!: DashboardData;
+  public dashboardData!: IDashboard;
+  public dashboardStatistics!: IDashboardStatistics | null;
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
   };
@@ -36,7 +39,7 @@ export class DashboardComponent implements OnInit {
     datasets: [
       {
         data: [],
-        label: this.tranlateWord('totalOrderStatus'),
+        label: this.translateWord('totalOrderStatus'),
       },
     ],
   };
@@ -44,15 +47,16 @@ export class DashboardComponent implements OnInit {
     responsive: true,
   };
   private _getDashboardData() {
-    this._dashboardService.getDashboardData().subscribe((data) => {
+    forkJoin([this._dashboardService.getDashboardData(), this._dashboardService.getStatistics()]).subscribe(([data, statisticsResponse]) => {
       this.dashboardData = data.body;
+      this.dashboardStatistics = statisticsResponse.body;
       this._setBarChartData(data.body);
       this._setPieChartData(data.body);
     });
   }
 
-  private _setBarChartData(dashboardData: DashboardData) {
-    this.barChartData.labels?.push(this.tranlateWord('هالك'), this.tranlateWord('جاهز'), this.tranlateWord('استلم'), this.tranlateWord('حجز'), this.tranlateWord('مرتجع'));
+  private _setBarChartData(dashboardData: IDashboard) {
+    this.barChartData.labels?.push(this.translateWord('هالك'), this.translateWord('جاهز'), this.translateWord('استلم'), this.translateWord('حجز'), this.translateWord('مرتجع'));
 
     this.barChartData.datasets[0].data.push(
       dashboardData.totalOrderDetailsStatus.totalGoneOrders,
@@ -62,12 +66,12 @@ export class DashboardComponent implements OnInit {
       dashboardData.totalOrderDetailsStatus.totalReturnedOrders,
     );
   }
-  private _setPieChartData(dashboardData: DashboardData) {
-    this.pieChartLabels = [this.tranlateWord('completed'), this.tranlateWord('incompleted')];
+  private _setPieChartData(dashboardData: IDashboard) {
+    this.pieChartLabels = [this.translateWord('completed'), this.translateWord('incompleted')];
     this.pieChartDatasets[0].data = [dashboardData.completedAndInCompletedOrders.totalCompletedOrders, dashboardData.completedAndInCompletedOrders.totalInCompletedOrders];
   }
 
-  private tranlateWord(word: string): string {
+  private translateWord(word: string): string {
     return this._translateService.instant(word);
   }
 }

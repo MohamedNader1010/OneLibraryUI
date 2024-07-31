@@ -11,7 +11,7 @@ import { MaterialTrackingService } from '../../../../core/data/services/material
 import { ShiftService } from '../../../../core/data/services/shift.service';
 import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
-import { ResponseDto } from '../../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../../shared/interfaces/response.dto';
 
 @Component({
   selector: 'app-shift-details',

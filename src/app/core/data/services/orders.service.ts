@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
-import { PagingCriteria } from '../../../shared/interfaces/pagingCriteria';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
+import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
 import { Order } from '../models/order/Iorder';
 import { OrderTransaction } from '../models/order/IorderTransaction';
 import { ReservedOrderDetail } from '../models/order/IReservedOrderDetail.interface';
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { map, tap, finalize } from 'rxjs';
-import { IPaginatedResponse } from '../../../shared/interfaces/paginationResponse.interface';
-import { IGenericResponseDto } from '../../../shared/interfaces/IGenericResponse.dto';
+import { IPaginatedResponse } from '../../../shared/interfaces/pagination-response.interface';
+import { IGenericResponseDto } from '../../../shared/interfaces/generic-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService extends BaseHttpClient {
-  getPagedData(pagingCriteria: PagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria) {
     this.loadingData.next(true);
     const params = new HttpParams({
       fromObject: {
@@ -75,7 +75,7 @@ export class OrderService extends BaseHttpClient {
 
   MarkSingleOrderDetailAsReady = (orderDetail: ReservedOrderDetail) => this.httpClient.put<ResponseDto>(BACKEND_APIs.orderDetailsReadySingle, orderDetail);
 
-  getAllUnfinishedOrders = (pagingCriteria: PagingCriteria) => {
+  getAllUnfinishedOrders = (pagingCriteria: IPagingCriteria) => {
     const params = new HttpParams({
       fromObject: {
         direction: pagingCriteria.direction,

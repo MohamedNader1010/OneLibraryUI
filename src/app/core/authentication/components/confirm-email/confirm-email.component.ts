@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
 import { Auth } from '../../interfaces/IAuth';
-import { ResponseDto } from '../../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../../shared/interfaces/response.dto';
 
 @Component({
   selector: 'app-confirm-email',

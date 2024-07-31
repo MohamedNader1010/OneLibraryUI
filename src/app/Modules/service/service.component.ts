@@ -3,7 +3,7 @@ import { Service } from '../../core/data/models/service/Iservice';
 import { ServicesService } from '../../core/data/services/services.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
-import { PagingCriteria } from '../../shared/interfaces/pagingCriteria';
+import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
 
@@ -27,7 +27,7 @@ export class ServiceComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: PagingCriteria = {
+    const pagingCriteria: IPagingCriteria = {
       direction: 'desc',
       filter: '',
       orderBy: 'Id',

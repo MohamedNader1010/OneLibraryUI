@@ -1,7 +1,7 @@
 import { DataSource, CollectionViewer } from '@angular/cdk/collections';
 import { BehaviorSubject, Subscription, Observable, startWith, debounceTime, switchMap } from 'rxjs';
-import { PagingCriteria } from '../../interfaces/pagingCriteria';
-import { ResponseDto } from '../../interfaces/IResponse.dto';
+import { IPagingCriteria } from '../../../core/data/interfaces/paging-criteria.interface';
+import { ResponseDto } from '../../interfaces/response.dto';
 
 export class VirtualScrollDataSource extends DataSource<any> {
   private _cacheLength = 200;
@@ -21,11 +21,11 @@ export class VirtualScrollDataSource extends DataSource<any> {
     const collectionViewerSubscription = collectionViewer.viewChange.subscribe((changes) => {
       const { start, end } = changes;
       const pagesToFetch = this.calculatePagesToFetch(start, end);
-      const pagingCriteria: PagingCriteria = {
+      const pagingCriteria: IPagingCriteria = {
         pageIndex: 0,
         pageSize: this._pageSize,
         filter: this.filterSubject.value,
-      } as PagingCriteria;
+      } as IPagingCriteria;
       for (const page of pagesToFetch) {
         pagingCriteria.pageIndex = page;
         this._fetchPage(pagingCriteria);
@@ -39,11 +39,11 @@ export class VirtualScrollDataSource extends DataSource<any> {
         debounceTime(1000),
         switchMap((filterValue) => {
           console.log('_filter', filterValue);
-          const pagingCriteria: PagingCriteria = {
+          const pagingCriteria: IPagingCriteria = {
             pageIndex: 0,
             pageSize: this._pageSize,
             filter: this.filterSubject.getValue(),
-          } as PagingCriteria;
+          } as IPagingCriteria;
           return this.databaseService.getPagedData(pagingCriteria);
         }),
       )
@@ -72,7 +72,7 @@ export class VirtualScrollDataSource extends DataSource<any> {
 
   private _getPageForIndex = (index: number): number => Math.floor(index / this._pageSize);
 
-  private _fetchPage(pagingCriteria: PagingCriteria) {
+  private _fetchPage(pagingCriteria: IPagingCriteria) {
     this.databaseService.getPagedData(pagingCriteria).subscribe({
       next: (data: ResponseDto) => {
         console.log('data', data);

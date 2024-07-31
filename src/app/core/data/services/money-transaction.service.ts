@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { Transaction } from '../models/money-transaction/Iincome-outcome';
 

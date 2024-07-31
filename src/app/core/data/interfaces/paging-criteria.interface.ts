@@ -1,4 +1,4 @@
-export interface PagingCriteria {
+export interface IPagingCriteria {
   pageIndex: number;
   pageSize: number;
   direction: string;

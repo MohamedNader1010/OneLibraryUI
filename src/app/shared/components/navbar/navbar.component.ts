@@ -6,7 +6,7 @@ import { AuthService } from '../../../core/authentication/services/auth.service'
 import { AttendanceService } from '../../../core/data/services/attendance.service';
 import { OrderService } from '../../../core/data/services/orders.service';
 import { Roles } from '../../enums/roles.enum';
-import { PagingCriteria } from '../../interfaces/pagingCriteria';
+import { IPagingCriteria } from '../../../core/data/interfaces/paging-criteria.interface';
 
 @Component({
   selector: 'app-navbar',
@@ -46,7 +46,7 @@ export class NavbarComponent implements OnInit {
     return this._hasUnFinishedOrders;
   }
   private checkUnfinishedOrders(): void {
-    const pagingCriteria: PagingCriteria = {
+    const pagingCriteria: IPagingCriteria = {
       direction: 'desc',
       filter: '',
       orderBy: 'Id',

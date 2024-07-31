@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ResponseDto } from '../../../shared/interfaces/IResponse.dto';
+import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { ServicePricePerClientType } from '../models/service-price-per-client-type/ServicePricePerClientType';

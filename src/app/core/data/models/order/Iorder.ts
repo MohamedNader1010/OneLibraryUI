@@ -17,6 +17,6 @@ export interface Order {
   clientTypeName: string;
   clientTypeId: number;
   orderDetails: OrderDetail[];
-  ordertransaction: OrderTransaction[];
+  transactions: OrderTransaction[];
   clientPhoneNumber: string;
 }

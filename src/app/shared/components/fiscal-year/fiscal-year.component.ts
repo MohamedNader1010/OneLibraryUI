@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FiscalYear } from '../../interfaces/fiscalYear';
+import { IFiscalYear } from '../../../core/data/models/fiscalYear/fiscalYear.interface';
 import { FiscalYearsService } from '../../../core/data/services/fiscal-years.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { FiscalYearsService } from '../../../core/data/services/fiscal-years.ser
   templateUrl: './fiscal-year.component.html',
 })
 export class FiscalYearComponent implements OnInit {
-  fiscalYears: FiscalYear[] = [];
+  fiscalYears: IFiscalYear[] = [];
   selectedStartYear: string | null = '';
   selectedEndYear: string | null = '';
   _fiscalYearService = inject(FiscalYearsService);

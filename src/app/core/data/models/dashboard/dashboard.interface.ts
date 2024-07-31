@@ -1,4 +1,4 @@
-export interface DashboardData {
+export interface IDashboard {
   completedAndInCompletedOrders: OrderTotal;
   totalOrderDetailsStatus: OrderDetailsTotal;
 }
@@ -15,8 +15,4 @@ interface OrderDetailsTotal {
   totalReservedOrders: number;
   totalReceivedOrders: number;
   totalGoneOrders: number;
-}
-interface KeyValuePairs<TKey, TValue> {
-  key: TKey;
-  value: TValue;
 }

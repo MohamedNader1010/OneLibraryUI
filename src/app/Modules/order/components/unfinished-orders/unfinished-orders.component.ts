@@ -5,8 +5,8 @@ import { OrderService } from '../../../../core/data/services/orders.service';
 import { ComponentsName } from '../../../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
 import { OrderDetailStatus } from '../../../../shared/enums/OrderDetailStatus.enum';
-import { ResponseDto } from '../../../../shared/interfaces/IResponse.dto';
-import { PagingCriteria } from '../../../../shared/interfaces/pagingCriteria';
+import { ResponseDto } from '../../../../shared/interfaces/response.dto';
+import { IPagingCriteria } from '../../../../core/data/interfaces/paging-criteria.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
 
@@ -25,7 +25,7 @@ export class UnfinishedOrdersComponent implements OnInit {
   ngOnInit(): void {
     this.databaseService.loadingData.next(true);
     this.initiateTableHeader();
-    const pagingCriteria: PagingCriteria = {
+    const pagingCriteria: IPagingCriteria = {
       direction: 'desc',
       filter: '',
       orderBy: 'Id',

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { CustomValidators } from '../../../core/authentication/customeValidators/CustomValidators';
 import { User } from '../../../core/authentication/interfaces/IUser';
 import { AuthService } from '../../../core/authentication/services/auth.service';
-import { ResponseDto } from '../../interfaces/IResponse.dto';
+import { ResponseDto } from '../../interfaces/response.dto';
 
 @Component({
   selector: 'app-profile',
