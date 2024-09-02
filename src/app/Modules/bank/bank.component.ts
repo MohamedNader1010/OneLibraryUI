@@ -39,8 +39,6 @@ export class BankComponent implements OnInit {
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this.loadData();
-    this.getBankData();
     this._commitmentAndDueService.TotalCommitments().subscribe({
       next: (res) => (this.commitments = res.body),
     });
@@ -49,10 +47,10 @@ export class BankComponent implements OnInit {
     });
 
     this.tableCommunicationService.reloadTable$.subscribe(() => {
-      console.log('reloading table');
       this.loadData();
       this.getBankData();
     });
+    this.tableCommunicationService.reloadTable$.next();
   }
 
   getBankData() {
@@ -66,32 +64,32 @@ export class BankComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: 'Id',
         header: this.translateService.instant('table.id.label'),
         cell: (element: Transaction) => element.id,
       },
       {
-        columnDef: 'amount',
+        columnDef: 'Amount',
         header: 'المبلغ',
         cell: (element: Transaction) => element.amount,
       },
       {
-        columnDef: 'status',
+        columnDef: 'Status',
         header: 'الحالة',
         cell: (element: Transaction) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
-        columnDef: 'comment',
+        columnDef: 'Comment',
         header: 'ملاحظات',
         cell: (element: Transaction) => element.comment,
       },
       {
-        columnDef: 'createdBy',
+        columnDef: 'CreatedBy',
         header: 'التسجيل بواسطة',
         cell: (element: Transaction) => element.createdBy,
       },
       {
-        columnDef: 'time-createdOn',
+        columnDef: 'CreatedOn',
         header: 'وقت التسجيل',
         cell: (element: Transaction) => element.createdOn,
       },

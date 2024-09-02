@@ -48,7 +48,7 @@ export class TeacherAccountComponent implements OnInit {
     });
     fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
       if (!this.dataSource) return;
-      this.dataSource.filter = this.filter.nativeElement.value;
+      // this.dataSource.filter = this.filter.nativeElement.value;
       this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
     });
   }
@@ -109,5 +109,5 @@ export class TeacherAccountComponent implements OnInit {
     });
   }
 
-  clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
+  // clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 }

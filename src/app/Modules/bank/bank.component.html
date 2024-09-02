@@ -25,7 +25,7 @@
             <mat-card>
               <mat-card-header>إجمالي الصادر</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.totalCredit ?? '-' }} جنية</p>
+                <p>{{ bank?.totalDebit ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>
@@ -33,7 +33,7 @@
             <mat-card>
               <mat-card-header>إجمالي الوارد</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.totalDebit ?? '-' }} جنية</p>
+                <p>{{ bank?.totalCredit ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>

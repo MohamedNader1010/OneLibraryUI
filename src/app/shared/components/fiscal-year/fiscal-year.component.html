@@ -3,9 +3,10 @@
     aria-expanded="false">السنة المالية</span>
   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
     <li class="dropdown-item" *ngFor="let fiscalYear of fiscalYears">
-      <a class="nav-link" aria-current="page" (click)="handleFiscalYearChange(fiscalYear, $event)"
+      <a class="nav-link disabled" aria-current="page" (click)="handleFiscalYearChange(fiscalYear, $event)"
         routerLinkActive="active link-danger">
-        {{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} - {{ fiscalYear.endDate | date : 'dd-MM-yyyy' }}
+        {{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} -
+        {{ fiscalYear.endDate ? (fiscalYear.endDate | date : 'dd-MM-yyyy'): 'حتى الآن' }}
       </a>
     </li>
   </ul>

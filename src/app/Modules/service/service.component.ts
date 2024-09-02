@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Service } from '../../core/data/models/service/Iservice';
+import { Service } from '../../core/data/models/service/IService';
 import { ServicesService } from '../../core/data/services/services.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
-import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
 
@@ -27,14 +26,7 @@ export class ServiceComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: IPagingCriteria = {
-      direction: 'desc',
-      filter: '',
-      orderBy: 'Id',
-      pageIndex: 0,
-      pageSize: 25,
-    };
-    this.databaseService.getPagedData(pagingCriteria).subscribe();
+    this.databaseService.getPagedData().subscribe();
   };
 
   private initiateTableHeaders() {
@@ -55,21 +47,22 @@ export class ServiceComponent implements OnInit {
         cell: (element: Service) => element.name,
       },
       {
-        columnDef: 'Material',
+        columnDef: 'ServiceMaterials.Material.Name',
         header: 'الخامات',
         cell: (element: Service) => {
           let materials = '';
           element.serviceMaterials?.forEach((m) => (materials += `عدد (${m.quantity}) من ${m.material}, `));
           return materials.slice(0, -2);
         },
+        disableFilter: true,
       },
       {
-        columnDef: 'Originalprice',
+        columnDef: 'OriginalPrice',
         header: 'سعر التكلفة',
         cell: (element: Service) => element.originalPrice,
       },
       {
-        columnDef: 'Type',
+        columnDef: 'ServiceType.Name',
         header: 'النوع',
         cell: (element: Service) => element.serviceType,
       },

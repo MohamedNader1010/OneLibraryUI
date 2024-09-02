@@ -1,7 +1,8 @@
 <div class="container w-100">
   <ng-container *ngIf="data; else update">
     <h2 class="w-100 text-center mt-3">{{ 'order.edit' | translate }}</h2>
-    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.orderStatus != 6; else complete">يمكنك تعديل الحالة الخاصة بكل بند في الطلب فقط.</h4>
+    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.status != 6; else complete">يمكنك تعديل الحالة الخاصة بكل
+      بند في الطلب فقط.</h4>
     <ng-template #complete>
       <h4 class="w-100 text-center mt-1 text-secondary">هذا الطلب مكتمل غير مسموح بتعديل البيانات</h4>
     </ng-template>

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
 import { OrderDetailStatus } from '../../../shared/enums/OrderDetailStatus.enum';
 import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
@@ -16,17 +15,9 @@ import { IGenericResponseDto } from '../../../shared/interfaces/generic-response
   providedIn: 'root',
 })
 export class OrderService extends BaseHttpClient {
-  getPagedData(pagingCriteria: IPagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria = this._pagingCriteria) {
     this.loadingData.next(true);
-    const params = new HttpParams({
-      fromObject: {
-        direction: pagingCriteria.direction,
-        pageSize: pagingCriteria.pageSize,
-        filter: pagingCriteria.filter,
-        orderBy: pagingCriteria.orderBy,
-        pageIndex: pagingCriteria.pageIndex,
-      },
-    });
+    const params = this.convertToHttpParams(pagingCriteria);
     return this.httpClient.get<IGenericResponseDto<IPaginatedResponse<Order>>>(BACKEND_APIs.order, { headers: this.headers, params }).pipe(
       map((data) => {
         return {
@@ -75,17 +66,8 @@ export class OrderService extends BaseHttpClient {
 
   MarkSingleOrderDetailAsReady = (orderDetail: ReservedOrderDetail) => this.httpClient.put<ResponseDto>(BACKEND_APIs.orderDetailsReadySingle, orderDetail);
 
-  getAllUnfinishedOrders = (pagingCriteria: IPagingCriteria) => {
-    const params = new HttpParams({
-      fromObject: {
-        direction: pagingCriteria.direction,
-        pageSize: pagingCriteria.pageSize,
-        filter: pagingCriteria.filter,
-        orderBy: pagingCriteria.orderBy,
-        pageIndex: pagingCriteria.pageIndex,
-      },
-    });
-
+  getAllUnfinishedOrders = (pagingCriteria: IPagingCriteria = this._pagingCriteria) => {
+    const params = this.convertToHttpParams(pagingCriteria);
     return this.httpClient.get<IGenericResponseDto<IPaginatedResponse<Order>>>(BACKEND_APIs.orderUnFinished, { headers: this.headers, params }).pipe(
       map((data) => {
         return {

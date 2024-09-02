@@ -24,7 +24,6 @@ export class VirtualScrollDataSource extends DataSource<any> {
       const pagingCriteria: IPagingCriteria = {
         pageIndex: 0,
         pageSize: this._pageSize,
-        filter: this.filterSubject.value,
       } as IPagingCriteria;
       for (const page of pagesToFetch) {
         pagingCriteria.pageIndex = page;
@@ -42,7 +41,6 @@ export class VirtualScrollDataSource extends DataSource<any> {
           const pagingCriteria: IPagingCriteria = {
             pageIndex: 0,
             pageSize: this._pageSize,
-            filter: this.filterSubject.getValue(),
           } as IPagingCriteria;
           return this.databaseService.getPagedData(pagingCriteria);
         }),

@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClientType } from '../../../../core/data/models/client-type/IclientType';
 import { Material } from '../../../../core/data/models/material/Imaterial';
 import { ServiceType } from '../../../../core/data/models/service-type/IserviceType';
-import { Service } from '../../../../core/data/models/service/Iservice';
+import { Service } from '../../../../core/data/models/service/IService';
 import { ClientTypeService } from '../../../../core/data/services/client-type.service';
 import { MaterialService } from '../../../../core/data/services/material.service';
 import { ServicesService } from '../../../../core/data/services/services.service';

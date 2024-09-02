@@ -11,7 +11,7 @@ export interface Order {
   discountPercent: string;
   discount: string;
   remarks: string;
-  orderStatus: number;
+  status: number;
   clientId: number;
   clientName: string;
   clientTypeName: string;

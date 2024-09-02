@@ -5,7 +5,6 @@ import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
-import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 
 @Component({
   selector: 'app-note',
@@ -27,14 +26,7 @@ export class NoteComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: IPagingCriteria = {
-      direction: 'desc',
-      filter: '',
-      orderBy: 'Id',
-      pageIndex: 0,
-      pageSize: 25,
-    };
-    this.databaseService.getPagedData(pagingCriteria).subscribe();
+    this.databaseService.getPagedData().subscribe();
   };
 
   private initiateTableHeaders() {

@@ -53,3 +53,6 @@ table{
 	background-color:rgb(241, 236, 236);
   }
 
+  ::ng-deep .filter_input .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }

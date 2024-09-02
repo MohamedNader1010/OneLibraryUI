@@ -3,6 +3,6 @@ export interface Material {
   name: string;
   quantity: number;
   price: number;
-  totalIn: number;
-  totalOut: number;
+  totalCredit: number;
+  totalDebit: number;
 }

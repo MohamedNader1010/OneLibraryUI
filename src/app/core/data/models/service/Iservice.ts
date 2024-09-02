@@ -1,5 +1,5 @@
 import { ServicePricePerClientType } from '../service-price-per-client-type/ServicePricePerClientType';
-import { ServiceMaterial } from './IserviceMaterial';
+import { ServiceMaterial } from './IServiceMaterial';
 
 export interface Service {
   id: number;

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
-import { HttpParams } from '@angular/common/http';
 import { map, tap, finalize } from 'rxjs';
 import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
@@ -11,17 +10,9 @@ import { MaterialTracking } from '../models/material-transaction/materialTrackin
   providedIn: 'root',
 })
 export class MaterialTrackingService extends BaseHttpClient {
-  getPagedData(pagingCriteria: IPagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria = this._pagingCriteria) {
     this.loadingData.next(true);
-    const params = new HttpParams({
-      fromObject: {
-        direction: pagingCriteria.direction,
-        pageSize: pagingCriteria.pageSize,
-        filter: pagingCriteria.filter,
-        orderBy: pagingCriteria.orderBy,
-        pageIndex: pagingCriteria.pageIndex,
-      },
-    });
+    const params = this.convertToHttpParams(pagingCriteria);
     return this.httpClient.get<ResponseDto>(BACKEND_APIs.materialTransaction, { headers: this.headers, params }).pipe(
       map((data) => {
         return {

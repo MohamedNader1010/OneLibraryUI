@@ -71,7 +71,6 @@ export class ReservationsComponent implements OnInit {
       },
     ];
   }
-  clearFilter = () => (this.dataSource.filter = this.filter.nativeElement.value = '');
 
   handleReadyOrderDetail = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
     $event.stopPropagation();

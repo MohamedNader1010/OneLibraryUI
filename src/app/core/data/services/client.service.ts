@@ -6,24 +6,15 @@ import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstrac
 import { BACKEND_APIs } from '../apis/backend-apis';
 import { Client } from '../models/client/Iclient';
 import { IPagingCriteria } from '../interfaces/paging-criteria.interface';
-import { HttpParams } from '@angular/common/http';
 import { map, tap, finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClientService extends BaseHttpClient {
-  getPagedData(pagingCriteria: IPagingCriteria) {
+  getPagedData(pagingCriteria: IPagingCriteria = this._pagingCriteria) {
     this.loadingData.next(true);
-    const params = new HttpParams({
-      fromObject: {
-        direction: pagingCriteria.direction,
-        pageSize: pagingCriteria.pageSize,
-        filter: pagingCriteria.filter,
-        orderBy: pagingCriteria.orderBy,
-        pageIndex: pagingCriteria.pageIndex,
-      },
-    });
+    const params = this.convertToHttpParams(pagingCriteria);
     return this.httpClient.get<ResponseDto>(BACKEND_APIs.client, { headers: this.headers, params }).pipe(
       map((data) => {
         return {

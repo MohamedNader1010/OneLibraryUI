@@ -6,7 +6,6 @@ import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
-import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 
 @Component({
   selector: 'app-material',
@@ -28,14 +27,7 @@ export class MaterialComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: IPagingCriteria = {
-      direction: 'desc',
-      filter: '',
-      orderBy: 'Id',
-      pageIndex: 0,
-      pageSize: 25,
-    };
-    this.databaseService.getPagedData(pagingCriteria).subscribe();
+    this.databaseService.getPagedData().subscribe();
   };
 
   private initiateTableHeaders() {
@@ -58,12 +50,12 @@ export class MaterialComponent implements OnInit {
       {
         columnDef: 'TotalIn',
         header: 'اجمالي الوارد',
-        cell: (element: Material) => element.totalIn,
+        cell: (element: Material) => element.totalCredit,
       },
       {
         columnDef: 'TotalOut',
         header: 'اجمالي الصادر',
-        cell: (element: Material) => element.totalOut,
+        cell: (element: Material) => element.totalDebit,
       },
       {
         columnDef: 'Quantity',

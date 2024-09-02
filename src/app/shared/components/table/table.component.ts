@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, QueryList, ViewChildren, inject } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
-import { debounceTime, distinctUntilChanged, switchMap, Subject, fromEvent } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
 import { TableDataSource } from './tableDataSource';
 import { environment } from '../../../../environments/environment';
 import * as signalR from '@microsoft/signalr';
@@ -38,14 +38,13 @@ export class TableComponent extends BaseTableActions implements OnInit {
 
   _pagingCriteria: IPagingCriteria = {
     direction: 'desc',
-    filter: '',
+    filters: {},
     orderBy: 'Id',
     pageIndex: 0,
     pageSize: 25,
   };
-
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild('filter', { static: true }) filter!: ElementRef;
+  filterColumns!: string[];
 
   @Input() tableColumns: any;
   @Input() isPaginated: boolean = false;
@@ -53,10 +52,14 @@ export class TableComponent extends BaseTableActions implements OnInit {
   detailRowDirectives!: QueryList<CdkDetailRowDirective>;
 
   toastrService = inject(ToastrService);
+  filters: { [key: string]: string } = {};
+  #filterSubject = new Subject<any>();
 
   ngOnInit(): void {
-    this.setPagingCriteria();
-    this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
+    this.#setPagingCriteria();
+    this.displayedColumns = [...this.tableColumns.map((c: any) => 'header_' + c.columnDef), 'header_actions'];
+    this.filterColumns = [...this.tableColumns.map((c: any) => c.columnDef), 'actions'];
+    this.tableColumns = this.tableColumns.map((c: any) => ({ ...c, filterValue: '' }));
     this.loadData();
 
     this.cdRef.detectChanges();
@@ -74,7 +77,7 @@ export class TableComponent extends BaseTableActions implements OnInit {
       var currentData = (this.database.dataChange.value as ResponseDto).body as Order[];
       if (!currentData.filter((d) => d.id === res.id)) {
         currentData.push(res);
-        this.toastrService.success(`تم تسجيل اوردر جديد بواسطة ${res.createdBy}`);
+        this.toastrService.success(`تم تسجيل طلب جديد بواسطة ${res.createdBy}`);
         this.refreshTable();
       }
     });
@@ -88,9 +91,7 @@ export class TableComponent extends BaseTableActions implements OnInit {
     return false;
   }
 
-  collapseAllRows() {
-    this.detailRowDirectives.forEach((x) => x.collapseAllRows());
-  }
+  collapseAllRows = () => this.detailRowDirectives.forEach((x) => x.collapseAllRows());
 
   public loadData() {
     if (this.isPaginated) {
@@ -101,13 +102,14 @@ export class TableComponent extends BaseTableActions implements OnInit {
   }
   private setPaginatedTableDataSource() {
     this.dataSource = new PaginatedTableDataSource(this.database);
-    fromEvent(this.filter.nativeElement, 'keyup')
+    this.#filterSubject
       .pipe(
-        debounceTime(1000),
+        debounceTime(700),
         distinctUntilChanged(),
         switchMap(() => {
-          this.setPagingCriteria();
+          this.#setPagingCriteria();
           this.database.loadingData.next(true);
+          this._pagingCriteria.pageIndex = 0;
           return this.database.getPagedData(this._pagingCriteria);
         }),
       )
@@ -121,46 +123,42 @@ export class TableComponent extends BaseTableActions implements OnInit {
     this.dataSource.filteredDataLength$.subscribe((length) => {
       this.filteredDataLength = length;
     });
-    fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
-      if (!this.dataSource) return;
-      this.dataSource.filter = this.filter.nativeElement.value;
-      this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
-    });
+    this.#filterSubject
+      .pipe(
+        debounceTime(700),
+        distinctUntilChanged(),
+        tap(() => {
+          this.database.loadingData.next(true);
+          if (!this.dataSource) return;
+          (this.dataSource as TableDataSource).filters = this.filters;
+          this.database.loadingData.next(false);
+        }),
+        switchMap(() => this.dataSource.filteredDataLength$),
+      )
+      .subscribe((length) => (this.filteredDataLength = length));
   }
 
   setActiveSortColumn(column: string): void {
     if (this.isPaginated) {
       this.activeSortColumn = column;
-      this.setPagingCriteria();
+      this.#setPagingCriteria();
       this.database.getPagedData(this._pagingCriteria).subscribe();
     }
   }
 
-  clearFilter = () => {
-    if (this.isPaginated) {
-      this.dataSource.filter = this.filter.nativeElement.value = '';
-      this.setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).subscribe();
-    } else {
-      this.dataSource.filter = this.filter.nativeElement.value = '';
-    }
-  };
-
   onPageChange() {
     if (this.isPaginated) {
-      this.setPagingCriteria();
-
+      this.#setPagingCriteria();
       this.database.loadingData.next(true);
-
       this.database.getPagedData(this._pagingCriteria).subscribe({
         complete: () => (this.database.isLoading = false),
       });
     }
   }
 
-  private setPagingCriteria() {
+  #setPagingCriteria() {
     this._pagingCriteria.direction = this.sort.direction ?? 'desc';
-    this._pagingCriteria.filter = this.trimIfBarcode(this.filter.nativeElement.value) ?? '';
+    this._pagingCriteria.filters = this.filters;
     this._pagingCriteria.orderBy = this.activeSortColumn;
     this._pagingCriteria.pageIndex = this.paginator.pageIndex;
     this._pagingCriteria.pageSize = this.paginator.pageSize;
@@ -173,5 +171,21 @@ export class TableComponent extends BaseTableActions implements OnInit {
 
   getTotal(noteClients: NoteClient[]): number {
     return noteClients.map((t) => t.quantity).reduce((acc, value) => acc + value, 0);
+  }
+
+  handleColumnFilter(event: Event, columnDef: string) {
+    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    const column = this.tableColumns.find((col: any) => col.columnDef === columnDef);
+    if (column) {
+      column.filterValue = filterValue;
+      column.filterValue ? (this.filters[column.columnDef] = this.trimIfBarcode(column.filterValue)) : delete this.filters[column.columnDef];
+      this.#filterSubject.next(column.filterValue);
+    }
+  }
+
+  clearAllFilters() {
+    this.tableColumns.forEach((column: any) => (column.filterValue = ''));
+    this.filters = {};
+    this.#filterSubject.next(null);
   }
 }

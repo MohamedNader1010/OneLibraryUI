@@ -2,16 +2,15 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { BehaviorSubject, Observable, merge, map } from 'rxjs';
-import { OrderDetailStatus } from '../../enums/OrderDetailStatus.enum';
 export class TableDataSource extends DataSource<any> {
-  _filterChange = new BehaviorSubject('');
+  #filterSubject = new BehaviorSubject<{ [key: string]: string }>({});
 
-  get filter(): string {
-    return this._filterChange.value;
+  get filters(): { [key: string]: string } {
+    return this.#filterSubject.value;
   }
 
-  set filter(filter: string) {
-    this._filterChange.next(filter);
+  set filters(filters: { [key: string]: string }) {
+    this.#filterSubject.next(filters);
   }
 
   filteredData: any[] = [];
@@ -23,24 +22,16 @@ export class TableDataSource extends DataSource<any> {
 
   constructor(public database: any, public _paginator: MatPaginator, public _sort: MatSort) {
     super();
-    this._filterChange.subscribe(() => (this._paginator.pageIndex = 0));
+    this.#filterSubject.subscribe(() => (this._paginator.pageIndex = 0));
     this.#filteredDataLengthSubject.next(this.database.data.length);
   }
 
   connect(): Observable<any[]> {
-    const displayDataChanges = [this.database.dataChange, this._sort.sortChange, this._filterChange, this._paginator.page];
+    const displayDataChanges = [this.database.dataChange, this._sort.sortChange, this.#filterSubject, this._paginator.page];
     return merge(...displayDataChanges).pipe(
       map(() => {
         this.filteredData = this.database.data.body?.slice()?.filter((item: any) => {
-          const barPrefix = 'bar-';
-          const barcodeIndex = `${this.filter}`.indexOf(barPrefix) ?? -1;
-          if (barcodeIndex < 0) {
-            const searchStr = this.#generateSearchString(item);
-            return searchStr.includes(this.filter.toLowerCase());
-          } else {
-            const id = +this.filter.substring(barPrefix.length);
-            return item.id === id;
-          }
+          return Object.keys(this.filters).every((key) => item[key.charAt(0).toLowerCase() + key.slice(1)]?.toString().toLowerCase().includes(this.filters[key]?.toString().toLowerCase()));
         });
         const sortedData = this.sortData(this.filteredData?.slice());
         const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
@@ -65,33 +56,5 @@ export class TableDataSource extends DataSource<any> {
       const valueB = isNaN(+propertyB) ? propertyB : +propertyB;
       return (valueA < valueB ? -1 : 1) * (this._sort.direction === 'asc' ? 1 : -1);
     });
-  }
-
-  #generateSearchString(item: any): string {
-    let searchStr = '';
-    for (const key in item) {
-      if (key === 'orderStatus') searchStr += this.#extractOrderStatusString(item[key]);
-      else searchStr += item[key];
-    }
-    return searchStr.toLowerCase();
-  }
-
-  #extractOrderStatusString(status: OrderDetailStatus): string {
-    switch (status) {
-      case OrderDetailStatus.غير_مكتمل:
-        return 'غير_مكتمل';
-      case OrderDetailStatus.جاهز:
-        return 'جاهز';
-      case OrderDetailStatus.استلم:
-        return 'استلم';
-      case OrderDetailStatus.اكتمل:
-        return 'اكتمل';
-      case OrderDetailStatus.حجز:
-        return 'حجز';
-      case OrderDetailStatus.مرتجع:
-        return 'مرتجع';
-      case OrderDetailStatus.هالك:
-        return 'هالك';
-    }
   }
 }

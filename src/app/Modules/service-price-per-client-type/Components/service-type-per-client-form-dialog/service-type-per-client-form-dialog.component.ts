@@ -5,7 +5,7 @@ import { forkJoin, map } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ClientType } from '../../../../core/data/models/client-type/IclientType';
 import { ServicePricePerClientType } from '../../../../core/data/models/service-price-per-client-type/ServicePricePerClientType';
-import { Service } from '../../../../core/data/models/service/Iservice';
+import { Service } from '../../../../core/data/models/service/IService';
 import { ServicePricePerClientTypeService } from '../../../../core/data/services/service-price-per-client-type.service';
 import { ServicesService } from '../../../../core/data/services/services.service';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';

@@ -6,7 +6,6 @@ import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
-import { IPagingCriteria } from '../../core/data/interfaces/paging-criteria.interface';
 
 @Component({
   selector: 'app-materialTracking',
@@ -27,14 +26,7 @@ export class materialTrackingComponent implements OnInit {
   }
 
   loadPaginatedData = () => {
-    const pagingCriteria: IPagingCriteria = {
-      direction: 'desc',
-      filter: '',
-      orderBy: 'Id',
-      pageIndex: 0,
-      pageSize: 25,
-    };
-    this.databaseService.getPagedData(pagingCriteria).subscribe();
+    this.databaseService.getPagedData().subscribe();
   };
 
   private initiateTableHeaders() {
@@ -45,32 +37,32 @@ export class materialTrackingComponent implements OnInit {
         cell: (element: MaterialTracking) => element.id,
       },
       {
-        columnDef: 'name',
+        columnDef: 'Material',
         header: 'أسم الخامة',
         cell: (element: MaterialTracking) => element.name,
       },
       {
-        columnDef: 'quantity',
+        columnDef: 'Quantity',
         header: 'الكمية',
         cell: (element: MaterialTracking) => element.quantity,
       },
       {
-        columnDef: 'status',
+        columnDef: 'Status',
         header: 'الحالة',
         cell: (element: MaterialTracking) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
       },
       {
-        columnDef: 'comment',
+        columnDef: 'Comment',
         header: 'ملاحظات',
         cell: (element: MaterialTracking) => element.comment,
       },
       {
-        columnDef: 'createdBy',
+        columnDef: 'CreatedBy',
         header: 'التسجيل بواسطة',
         cell: (element: MaterialTracking) => element.createdBy,
       },
       {
-        columnDef: 'time-createdOn',
+        columnDef: 'time-CreatedOn',
         header: 'وقت التسجيل',
         cell: (element: MaterialTracking) => element.createdOn,
       },

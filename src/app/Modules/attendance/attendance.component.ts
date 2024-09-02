@@ -62,7 +62,7 @@ export class AttendanceComponent implements OnInit {
       },
       {
         columnDef: 'formattedOverTime',
-        header: 'عدد ساعات الوقت الاضافي',
+        header: 'وقت إضافي / غير مكتمل',
         cell: (element: Attendance) => element.formattedOverTime,
       },
     ];
