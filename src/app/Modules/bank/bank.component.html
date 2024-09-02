@@ -7,7 +7,7 @@
             <mat-card class="main_card">
               <mat-card-header>الرصيد الأفتتاحي</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.startingBalance ?? '-' }} جنية</p>
+                <p>{{ bankStatistics?.startingBalance ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>
@@ -15,7 +15,7 @@
             <mat-card>
               <mat-card-header>الرصيد النهائي</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.balance ?? '-' }} جنية</p>
+                <p>{{ bankStatistics?.balance ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>
@@ -25,7 +25,7 @@
             <mat-card>
               <mat-card-header>إجمالي الصادر</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.totalDebit ?? '-' }} جنية</p>
+                <p>{{ bankStatistics?.totalDebit ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>
@@ -33,7 +33,7 @@
             <mat-card>
               <mat-card-header>إجمالي الوارد</mat-card-header>
               <mat-card-content>
-                <p>{{ bank?.totalCredit ?? '-' }} جنية</p>
+                <p>{{ bankStatistics?.totalCredit ?? '-' }} جنية</p>
               </mat-card-content>
             </mat-card>
           </div>
@@ -68,9 +68,9 @@
       </div>
     </div>
   </div>
-  <div style="height: 87%">
+  <div style="height: 78%">
     <app-table class="h-100" [tableColumns]="tableColumns" [formName]="formName" [componentName]="componentName"
-      [canEdit]="false" [database]="databaseService">
+      [canEdit]="false" [isPaginated]="true" [database]="databaseService">
     </app-table>
   </div>
 </div>

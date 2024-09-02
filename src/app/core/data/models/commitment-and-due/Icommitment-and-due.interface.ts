@@ -1,6 +1,6 @@
 import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
 import { TransactionType } from '../../../../shared/enums/TransactionType.enum';
-import { Transaction } from '../money-transaction/Iincome-outcome';
+import { Transaction } from '../money-transaction/ITransaction';
 
 export interface CommitmentAndDue {
   id: number;

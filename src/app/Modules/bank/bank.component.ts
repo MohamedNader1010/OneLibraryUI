@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Bank } from '../../core/data/models/bank/Ibank';
 import { CommitmentAndDueTotal } from '../../core/data/models/commitment-and-due/Icommitment-and-due-total.interface';
-import { Transaction } from '../../core/data/models/money-transaction/Iincome-outcome';
+import { Transaction } from '../../core/data/models/money-transaction/ITransaction';
 import { BankService } from '../../core/data/services/bank.service';
 import { CommitmentAndDueService } from '../../core/data/services/commitment-and-due.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
@@ -9,6 +9,8 @@ import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
+import { MoneyTransactionService } from '../../core/data/services/money-transaction.service';
+import { forkJoin, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-bank',
@@ -18,12 +20,13 @@ import { TableCommunicationService } from '../../shared/components/table/table-c
 export class BankComponent implements OnInit {
   formName = FormDialogNames.bankFormDialogComponent;
   componentName = ComponentsName.Bank;
-  bank!: Bank | null;
+  bankStatistics!: Bank | null;
   defaultBankId: number = 3;
   commitments: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
   dues: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
-  databaseService = inject(BankService);
-  _commitmentAndDueService = inject(CommitmentAndDueService);
+  databaseService = inject(MoneyTransactionService);
+  #bankService = inject(BankService);
+  #commitmentAndDueService = inject(CommitmentAndDueService);
   isHovered = false;
   tableColumns!: any[];
   tableCommunicationService = inject(TableCommunicationService);
@@ -39,26 +42,19 @@ export class BankComponent implements OnInit {
 
   ngOnInit(): void {
     this.initiateTableHeaders();
-    this._commitmentAndDueService.TotalCommitments().subscribe({
-      next: (res) => (this.commitments = res.body),
-    });
-    this._commitmentAndDueService.TotalDues().subscribe({
-      next: (res) => (this.dues = res.body),
-    });
 
-    this.tableCommunicationService.reloadTable$.subscribe(() => {
-      this.loadData();
-      this.getBankData();
-    });
-    this.tableCommunicationService.reloadTable$.next();
-  }
-
-  getBankData() {
-    this.databaseService.GetById(this.defaultBankId).subscribe({
-      next: (response) => {
-        this.bank = response.body;
+    forkJoin([this.#commitmentAndDueService.TotalCommitments(), this.#commitmentAndDueService.TotalDues(), this.#bankService.GetStatisticsById(this.defaultBankId)]).subscribe({
+      next: ([commitments, dues, statistics]) => {
+        this.commitments = commitments.body;
+        this.dues = dues.body;
+        this.bankStatistics = statistics.body;
       },
     });
+
+    this.databaseService.bankId = this.defaultBankId;
+    this.tableCommunicationService.reloadTable$.pipe(switchMap(() => this.databaseService.getPagedData())).subscribe();
+
+    this.tableCommunicationService.reloadTable$.next();
   }
 
   private initiateTableHeaders() {
@@ -94,9 +90,5 @@ export class BankComponent implements OnInit {
         cell: (element: Transaction) => element.createdOn,
       },
     ];
-  }
-
-  loadData() {
-    this.databaseService.getAllBankTransactions(this.defaultBankId);
   }
 }

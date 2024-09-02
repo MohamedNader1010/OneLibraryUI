@@ -38,7 +38,7 @@ export class FeedbackComponent implements OnInit {
       {
         columnDef: 'cleint',
         header: 'أسم العميل',
-        cell: (element: Feedback) => element.cleint,
+        cell: (element: Feedback) => element.client,
       },
       {
         columnDef: 'feedBack',

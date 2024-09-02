@@ -1,6 +1,6 @@
 import { Attendance } from '../attendance/attendance';
-import { MaterialIncomeOutcome as MaterialTransactions } from '../material-transaction/Imaterial-income-outcome';
-import { Transaction as transactions } from '../money-transaction/Iincome-outcome';
+import { MaterialTransactions } from '../material-transaction/Imaterial-transaction';
+import { Transaction } from '../money-transaction/ITransaction';
 
 export interface Shift {
   id: number;
@@ -12,7 +12,7 @@ export interface Shift {
   totalCredit: string;
   createdOn: Date;
   createdBy: string | null;
-  transactions: transactions[];
+  transactions: Transaction[];
   materialTransactions: MaterialTransactions[];
   attendances: Attendance[];
 }

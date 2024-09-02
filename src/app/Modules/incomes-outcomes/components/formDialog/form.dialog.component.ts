@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Material } from '../../../../core/data/models/material/Imaterial';
-import { Transaction } from '../../../../core/data/models/money-transaction/Iincome-outcome';
+import { Transaction } from '../../../../core/data/models/money-transaction/ITransaction';
 import { MoneyTransactionService } from '../../../../core/data/services/money-transaction.service';
 import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';

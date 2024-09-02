@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Transaction } from '../../core/data/models/money-transaction/Iincome-outcome';
+import { Transaction } from '../../core/data/models/money-transaction/ITransaction';
 import { Shift } from '../../core/data/models/shift/Ishift';
 import { MoneyTransactionService } from '../../core/data/services/money-transaction.service';
 import { ShiftService } from '../../core/data/services/shift.service';

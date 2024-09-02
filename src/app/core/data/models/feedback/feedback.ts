@@ -3,5 +3,5 @@ export interface Feedback {
   feedBack: string;
   feedBackDate: Date;
   clientId: number;
-  cleint: string;
+  client: string;
 }

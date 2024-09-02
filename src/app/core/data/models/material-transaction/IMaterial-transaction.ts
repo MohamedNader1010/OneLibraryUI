@@ -1,7 +1,7 @@
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
 import { Material } from '../material/Imaterial';
 
-export interface MaterialIncomeOutcome {
+export interface MaterialTransactions {
   id: number;
   status: TransactionStatus;
   quantity: number;

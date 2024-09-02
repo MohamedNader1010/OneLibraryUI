@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Attendance } from '../../../../core/data/models/attendance/attendance';
 import { MaterialTracking } from '../../../../core/data/models/material-transaction/materialTracking';
-import { Transaction } from '../../../../core/data/models/money-transaction/Iincome-outcome';
+import { Transaction } from '../../../../core/data/models/money-transaction/ITransaction';
 import { Shift } from '../../../../core/data/models/shift/Ishift';
 import { AttendanceService } from '../../../../core/data/services/attendance.service';
 import { MoneyTransactionService } from '../../../../core/data/services/money-transaction.service';
