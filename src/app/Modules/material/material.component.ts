@@ -48,12 +48,12 @@ export class MaterialComponent implements OnInit {
         cell: (element: Material) => element.price,
       },
       {
-        columnDef: 'TotalIn',
+        columnDef: 'TotalCredit',
         header: 'اجمالي الوارد',
         cell: (element: Material) => element.totalCredit,
       },
       {
-        columnDef: 'TotalOut',
+        columnDef: 'TotalDebit',
         header: 'اجمالي الصادر',
         cell: (element: Material) => element.totalDebit,
       },
