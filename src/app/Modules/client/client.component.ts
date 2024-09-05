@@ -30,17 +30,17 @@ export class ClientComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Client) => element.id,
       },
       {
-        columnDef: this.translateService.instant('form.name'),
+        columnDef: "Name",
         header: this.translateService.instant('form.name.label'),
         cell: (element: Client) => element.name,
       },
       {
-        columnDef: this.translateService.instant('form.phoneNumber'),
+        columnDef: "PhoneNumber",
         header: this.translateService.instant('form.phoneNumber.label'),
         cell: (element: Client) => element.phoneNumber,
       },
@@ -50,17 +50,17 @@ export class ClientComponent implements OnInit {
         cell: (element: Client) => element.clientType,
       },
       {
-        columnDef: this.translateService.instant('form.client.total'),
+        columnDef: "Total",
         header: this.translateService.instant('form.client.total.label'),
         cell: (element: Client) => element.total,
       },
       {
-        columnDef: this.translateService.instant('form.client.paid'),
+        columnDef: "Paid",
         header: this.translateService.instant('form.client.paid.label'),
         cell: (element: Client) => element.paid,
       },
       {
-        columnDef: this.translateService.instant('form.client.rest'),
+        columnDef: "Rest",
         header: this.translateService.instant('form.client.rest.label'),
         cell: (element: Client) => element.rest,
       },
