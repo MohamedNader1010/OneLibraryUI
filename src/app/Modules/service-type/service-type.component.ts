@@ -32,7 +32,7 @@ export class ServiceTypeComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: any) => element.id,
       },
