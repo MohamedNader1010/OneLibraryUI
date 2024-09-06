@@ -32,12 +32,12 @@ export class materialTrackingComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: MaterialTracking) => element.id,
       },
       {
-        columnDef: 'Material',
+        columnDef: 'Material.Name',
         header: 'أسم الخامة',
         cell: (element: MaterialTracking) => element.name,
       },
@@ -62,7 +62,7 @@ export class materialTrackingComponent implements OnInit {
         cell: (element: MaterialTracking) => element.createdBy,
       },
       {
-        columnDef: 'time-CreatedOn',
+        columnDef: 'CreatedOn',
         header: 'وقت التسجيل',
         cell: (element: MaterialTracking) => element.createdOn,
       },
