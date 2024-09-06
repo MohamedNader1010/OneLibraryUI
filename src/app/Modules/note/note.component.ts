@@ -32,62 +32,63 @@ export class NoteComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Note) => element.id,
       },
       {
-        columnDef: 'barcode',
+        columnDef: 'Barcode-Id', // cannot duplicate the columnDef Name, it for columnDef: "Id" 
+        // we can bar-Id and execlude the Barcode- in the backend
         header: 'باركود',
         cell: (element: Note) => `bar-${element.id}`,
       },
       {
-        columnDef: 'name',
+        columnDef: 'Name',
         header: 'الأسم',
         cell: (element: Note) => element.name,
       },
       {
-        columnDef: 'teacher',
+        columnDef: 'Client.Name',
         header: 'المدرس',
         cell: (element: Note) => element.client,
       },
       {
-        columnDef: 'stage',
+        columnDef: 'Stage.Name',
         header: 'المرحلة',
         cell: (element: Note) => element.stage ?? '-',
       },
       {
-        columnDef: 'term',
+        columnDef: 'Term.Name',
         header: 'الترم',
         cell: (element: Note) => element.term ?? '-',
       },
       {
-        columnDef: 'actualPrice',
+        columnDef: 'ActualPrice',
         header: 'السعر الفعلي',
         cell: (element: Note) => element.actualPrice,
       },
       {
-        columnDef: 'originalPrice',
+        columnDef: 'OriginalPrice',
         header: 'سعر التكلفة',
         cell: (element: Note) => element.originalPrice,
       },
       {
-        columnDef: 'earning',
+        columnDef: 'Earning',
         header: 'الربح',
         cell: (element: Note) => element.earning,
       },
       {
-        columnDef: 'teacherPrice',
+        columnDef: 'TeacherPrice',
         header: 'ربح المدرس',
         cell: (element: Note) => element.teacherPrice,
       },
       {
-        columnDef: 'finalPrice',
+        columnDef: 'FinalPrice',
         header: 'السعر النهائي',
         cell: (element: Note) => element.finalPrice,
       },
       {
-        columnDef: 'quantity',
+        columnDef: 'Quantity',
         header: 'الكمية',
         cell: (element: Note) => element.quantity,
       },
