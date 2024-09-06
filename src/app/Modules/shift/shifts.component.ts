@@ -31,42 +31,42 @@ export class ShiftsComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Shift) => `${element.id}`,
       },
       {
-        columnDef: this.translateService.instant('table.startTime'),
+        columnDef: "StartTime",
         header: this.translateService.instant('table.startTime.label'),
         cell: (element: Shift) => element.startTime,
       },
       {
-        columnDef: this.translateService.instant('table.endTime'),
+        columnDef: "EndTime",
         header: this.translateService.instant('table.endTime.label'),
         cell: (element: Shift) => element.endTime,
       },
       {
-        columnDef: this.translateService.instant('table.startingBalance'),
+        columnDef: "StartingBalance",
         header: this.translateService.instant('table.startingBalance.label'),
         cell: (element: Shift) => element.startingBalance,
       },
       {
-        columnDef: this.translateService.instant('table.totalIncome'),
+        columnDef: "TotalDebit",
         header: this.translateService.instant('table.totalIncome.label'),
         cell: (element: Shift) => element.totalDebit,
       },
       {
-        columnDef: this.translateService.instant('table.totalOutcome'),
+        columnDef: "TotalCredit",
         header: this.translateService.instant('table.totalOutcome.label'),
         cell: (element: Shift) => element.totalCredit,
       },
       {
-        columnDef: this.translateService.instant('table.closingBalance'),
+        columnDef: "ClosingBalance",
         header: this.translateService.instant('table.closingBalance.label'),
         cell: (element: Shift) => element.closingBalance,
       },
       {
-        columnDef: this.translateService.instant('table.createdBy'),
+        columnDef: "CreatedBy",
         header: this.translateService.instant('table.createdBy.label'),
         cell: (element: Shift) => element.createdBy,
       },
