@@ -32,32 +32,32 @@ export class SupplierComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Supplier) => element.id,
       },
       {
-        columnDef: this.translateService.instant('form.name'),
+        columnDef: "Name",
         header: this.translateService.instant('form.name.label'),
         cell: (element: Supplier) => element.name,
       },
       {
-        columnDef: this.translateService.instant('form.phoneNumber'),
+        columnDef: "PhoneNumber",
         header: this.translateService.instant('form.phoneNumber.label'),
         cell: (element: Supplier) => element.phoneNumber,
       },
       {
-        columnDef: this.translateService.instant('form.Supplier.totalDue'),
+        columnDef: "TotalDue",
         header: this.translateService.instant('form.Supplier.totalDue.label'),
         cell: (element: Supplier) => element.totalDue,
       },
       {
-        columnDef: this.translateService.instant('form.Supplier.takeMoney'),
+        columnDef: "Paid",
         header: this.translateService.instant('form.Supplier.takeMoney.label'),
         cell: (element: Supplier) => element.paid,
       },
       {
-        columnDef: this.translateService.instant('form.Supplier.rest'),
+        columnDef: "Rest",
         header: this.translateService.instant('form.Supplier.rest.label'),
         cell: (element: Supplier) => element.rest,
       },
