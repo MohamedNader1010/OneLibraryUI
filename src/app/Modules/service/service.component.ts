@@ -32,12 +32,12 @@ export class ServiceComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Service) => element.id,
       },
       {
-        columnDef: 'barcode',
+        columnDef: 'Barcode-Id',
         header: 'باركود',
         cell: (element: Service) => `bar-${element.id}`,
       },
