@@ -37,52 +37,52 @@ export class UnfinishedOrdersComponent implements OnInit {
   private initiateTableHeader() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: Order) => element.id,
       },
       {
-        columnDef: this.translateService.instant('shared.totalPrice.label'),
+        columnDef: "TotalPrice",
         header: this.translateService.instant('shared.totalPrice'),
         cell: (element: Order) => element.totalPrice,
       },
       {
-        columnDef: this.translateService.instant('shared.rest.label'),
+        columnDef: "Rest",
         header: this.translateService.instant('shared.rest'),
         cell: (element: Order) => element.rest,
       },
       {
-        columnDef: this.translateService.instant('shared.paid.label'),
+        columnDef: "Paid",
         header: this.translateService.instant('shared.paid'),
         cell: (element: Order) => element.paid,
       },
       {
-        columnDef: this.translateService.instant('order.status.label'),
+        columnDef: "OrderDetail.Status",
         header: this.translateService.instant('order.status'),
         cell: (element: Order) => OrderDetailStatus[element.status],
       },
       {
-        columnDef: this.translateService.instant('shared.client.label'),
+        columnDef: "Client.Name",
         header: this.translateService.instant('shared.client'),
         cell: (element: Order) => element.clientName,
       },
       {
-        columnDef: this.translateService.instant('shared.clientPhoneNumber.label'),
+        columnDef: "Client.PhoneNumber",
         header: this.translateService.instant('shared.clientPhoneNumber'),
         cell: (element: Order) => element.clientPhoneNumber,
       },
       {
-        columnDef: this.translateService.instant('shared.remarks.label'),
+        columnDef: "Remarks",
         header: this.translateService.instant('shared.remarks'),
         cell: (element: Order) => element.remarks,
       },
       {
-        columnDef: this.translateService.instant('table.createdBy'),
+        columnDef: "CreatedBy",
         header: this.translateService.instant('table.createdBy.label'),
         cell: (element: Order) => element.createdBy,
       },
       {
-        columnDef: this.translateService.instant('table.createdAt'),
+        columnDef: "CreatedOn",
         header: this.translateService.instant('table.createdAt.label'),
         cell: (element: Order) => element.createdOn,
       },
