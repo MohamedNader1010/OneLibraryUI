@@ -31,17 +31,17 @@ export class ServicePricePerClientTypeComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: this.translateService.instant('table.id'),
+        columnDef: "Id",
         header: this.translateService.instant('table.id.label'),
         cell: (element: ServicePricePerClientType) => `${element.id}`,
       },
       {
-        columnDef: 'Service Name',
+        columnDef: 'Service.Name',
         header: 'الخدمة',
         cell: (element: ServicePricePerClientType) => `${element.service}`,
       },
       {
-        columnDef: 'Client Type',
+        columnDef: 'ClientType.Name',
         header: 'نوع العميل',
         cell: (element: ServicePricePerClientType) => `${element.clientType}`,
       },
