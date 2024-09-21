@@ -77,19 +77,24 @@ export class TeacherAccountComponent implements OnInit {
         cell: (row: TeacherProfitResponse) => row.totalEarning,
       },
       {
-        columnDef: 'paidToTeacher',
+        columnDef: 'totalCredit',
         header: 'مدفوع للعميل',
-        cell: (row: TeacherProfitResponse) => row.paidToTeacher,
+        cell: (row: TeacherProfitResponse) => row.totalCredit,
       },
       {
-        columnDef: 'ordersRest',
-        header: 'باقي علي العميل',
-        cell: (row: TeacherProfitResponse) => row.ordersRest,
+        columnDef: 'totalDebit',
+        header: 'قام بدفع',
+        cell: (row: TeacherProfitResponse) => row.totalDebit,
       },
       {
         columnDef: 'rest',
-        header: 'المتبقي للعميل',
+        header: 'باقي علي العميل',
         cell: (row: TeacherProfitResponse) => row.rest,
+      },
+      {
+        columnDef: 'restForTeacher',
+        header: 'المتبقي للعميل',
+        cell: (row: TeacherProfitResponse) => row.restForTeacher,
       },
     ];
   }

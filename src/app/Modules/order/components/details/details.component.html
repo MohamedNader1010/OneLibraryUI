@@ -53,7 +53,7 @@
     </div>
     <div class="row" *ngFor="let o of order.orderDetails" style="padding-bottom:10px ;">
       <div class="col-6">
-        <span>- {{ o.note ?? o.service }}</span>
+        <span class="text-wrap">- ({{OrderDetailStatusMapper.get(o.status)}}) - {{ o.note ?? o.service }}</span>
       </div>
       <div class="col-3">
         <span>{{ o.quantity }}</span>

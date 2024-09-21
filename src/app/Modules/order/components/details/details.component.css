@@ -30,10 +30,6 @@
   width: 12.5%;
   margin: 0;
 }
-.titl {
-  margin-bottom: 0;
-  border: 1px solid black;
-}
 
 .print-only {
   display: none;
@@ -47,10 +43,9 @@
   }
 
   @page {
-    size: 2.8in 11in;
-    margin-top: 0cm;
-    margin-left: 0cm;
-    margin-right: 0cm;
+    size: 2.8in auto;
+    margin: 0;
+    padding: 0;
   }
 
   .print-dialog-content {

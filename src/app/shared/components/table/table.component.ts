@@ -1,11 +1,10 @@
-import { Component, Input, OnInit, ViewChild, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
 import { TableDataSource } from './tableDataSource';
 import { environment } from '../../../../environments/environment';
 import * as signalR from '@microsoft/signalr';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { IPagingCriteria } from '../../../core/data/interfaces/paging-criteria.interface';
 import { PaginatedTableDataSource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/response.dto';
@@ -49,8 +48,6 @@ export class TableComponent extends BaseTableActions implements OnInit {
 
   @Input() tableColumns: any;
   @Input() isPaginated: boolean = false;
-  @ViewChildren(CdkDetailRowDirective)
-  detailRowDirectives!: QueryList<CdkDetailRowDirective>;
 
   toastrService = inject(ToastrService);
   filters: { [key: string]: string } = {};
@@ -83,15 +80,6 @@ export class TableComponent extends BaseTableActions implements OnInit {
       }
     });
   }
-
-  isRowExpanded(rowId: string): boolean {
-    if (this.detailRowDirectives) {
-      const isExists = this.detailRowDirectives.find((x) => x.isRowExpanded(rowId));
-      return isExists ? true : false;
-    }
-    return false;
-  }
-
   collapseAllRows = () => this.detailRowDirectives.forEach((x) => x.collapseAllRows());
 
   public loadData() {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, EventEmitter, inject, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { Order } from '../../../core/data/models/order/Iorder';
 import { FormFactory } from '../../classes/form.factory';
@@ -11,12 +11,14 @@ import { MatPaginator } from '@angular/material/paginator';
 
 import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 
 @Component({
   template: '',
 })
 export class BaseTableActions {
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
+  @ViewChildren(CdkDetailRowDirective) detailRowDirectives!: QueryList<CdkDetailRowDirective>;
 
   @Output() OnView = new EventEmitter<any>();
   @Output() onClose = new EventEmitter();
@@ -47,6 +49,59 @@ export class BaseTableActions {
 
   refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
+  actions = [
+    {
+      condition: (row: any) => this.hasTransaction,
+      tooltip: (row: any) => 'تسجيل معاملة مالية',
+      icon: (row: any) => 'paid',
+      action: (row: any) => this.handleTransaction(row),
+    },
+    {
+      condition: (row: any) => this.canView,
+      tooltip: (row: any) => 'عرض التفاصيل',
+      icon: (row: any) => 'info',
+      action: (row: any) => this.handleView(row),
+    },
+    {
+      condition: (row: any) => this.canNavigateToDetails,
+      tooltip: (row: any) => 'الانتقال إلى صفحة التفاصيل',
+      icon: (row: any) => 'info',
+      action: (row: any) => this.navigate(row),
+    },
+    {
+      condition: (row: any) => this.canEdit,
+      tooltip: (row: any) => 'تعديل',
+      icon: (row: any) => 'edit',
+      action: (row: any) => this.handleEdit(row),
+    },
+    {
+      condition: (row: any) => !!row.filePath,
+      tooltip: (row: any) => 'فتح الوثيقة PDF المرتبطة',
+      icon: (row: any) => 'open_in_new',
+      action: (row: any) => this.handleViewPdf(row),
+    },
+    {
+      condition: (row: any) => this.canPayBulk,
+      tooltip: (row: any) => 'إجراء الدفع بالجملة لطلبات العميل',
+      icon: (row: any) => 'paid',
+      action: async (row: any) => await this.handleBulkPayment(row),
+    },
+    {
+      condition: (row: any) => row.noteClients && row.noteClients.length > 0,
+      tooltip: (row: any) => (this.isRowExpanded(row.id) ? 'إغلاق' : 'فتح'),
+      icon: (row: any) => (this.isRowExpanded(row.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'),
+      action: (row: any) => {},
+    },
+  ];
+
+  isRowExpanded(rowId: string): boolean {
+    if (this.detailRowDirectives) {
+      const isExists = this.detailRowDirectives.find((x) => x.isRowExpanded(rowId));
+      return isExists ? true : false;
+    }
+    return false;
+  }
+
   async HandleNew() {
     const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
@@ -67,8 +122,7 @@ export class BaseTableActions {
     });
   }
 
-  async handleEdit(row: any, $event: any) {
-    $event.stopPropagation();
+  async handleEdit(row: any) {
     const dialogComponent = await FormFactory.getAppropriateDialogComponent(this.formName);
     const dialogRef = this.dialog.open<any>(dialogComponent, { minWidth: '30%', data: row });
     dialogRef.afterClosed().subscribe({
@@ -76,8 +130,7 @@ export class BaseTableActions {
     });
   }
 
-  async handleTransaction(row: any, $event: any) {
-    $event.stopPropagation();
+  async handleTransaction(row: any) {
     let dialogComponent = null;
     if (this.componentName == ComponentsName.commitmentAndDue) {
       dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.commitmentAndDueComponentTransactionFormDialog);
@@ -96,8 +149,7 @@ export class BaseTableActions {
     });
   }
 
-  async handleView(row: any, $event: any) {
-    $event.stopPropagation();
+  async handleView(row: any) {
     const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.orderDetailsDialogComponent);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
@@ -105,13 +157,9 @@ export class BaseTableActions {
     });
   }
 
-  navigate(row: any, $event: any) {
-    $event.stopPropagation();
-    this.#router.navigate(['details', row.id], { relativeTo: this.#activatedRoute });
-  }
+  navigate = (row: any) => this.#router.navigate(['details', row.id], { relativeTo: this.#activatedRoute });
 
-  handleViewPdf = (row: any, $event: any) => {
-    $event.stopPropagation();
+  handleViewPdf = (row: any) => {
     const filePath = row.filePath;
     const uploadsIndex = filePath.indexOf('uploads');
     if (uploadsIndex !== -1) {
@@ -122,8 +170,7 @@ export class BaseTableActions {
     }
   };
 
-  async handleBulkPayment(row: any, $event: any) {
-    $event.stopPropagation();
+  async handleBulkPayment(row: any) {
     const dialogComponent = await FormFactory.getAppropriateDialogComponent(FormDialogNames.clientBulkPaymentFormDialog);
     const dialogRef = this.dialog.open<any>(dialogComponent, {
       data: row,
@@ -134,13 +181,7 @@ export class BaseTableActions {
     });
   }
 
-  MarkAsReady = (row: any, $event: any) => {
-    $event.stopPropagation();
-    this.onMarkAsReady.emit(row);
-  };
+  MarkAsReady = (row: any) => this.onMarkAsReady.emit(row);
 
-  printNote = (row: any, $event: any) => {
-    $event.stopPropagation();
-    this.onNotePrint.emit(row);
-  };
+  printNote = (row: any) => this.onNotePrint.emit(row);
 }

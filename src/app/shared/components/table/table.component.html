@@ -1,9 +1,7 @@
 <section class="container-fluid d-flex flex-column py-2 h-100">
   <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
-    <table tabindex="0" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn"
-      matSortDirection="desc" recycleRows>
-      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last"
-        [matColumnDef]="'header_'+column.columnDef" [sticky]="first || last">
+    <table tabindex="0" mat-table [dataSource]="dataSource" multiTemplateDataRows matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+      <ng-container *ngFor="let column of tableColumns; let first = first; let last = last" [matColumnDef]="'header_' + column.columnDef" [sticky]="first || last">
         <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="setActiveSortColumn(column.columnDef)">
           {{ column.header }}
         </th>
@@ -12,13 +10,19 @@
             {{ formatCellValue(column, row) }}
           </ng-container>
           <ng-template #barcode>
-            <ngx-barcode6 [bc-value]="column.cell(row)" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2"
-              [bc-height]="35" [bc-font-size]="15" [bc-margin]="5"></ngx-barcode6>
+            <ngx-barcode6
+              [bc-value]="column.cell(row)"
+              [bc-display-value]="true"
+              [bc-element-type]="'img'"
+              [bc-width]="2"
+              [bc-height]="35"
+              [bc-font-size]="15"
+              [bc-margin]="5"
+            ></ngx-barcode6>
           </ng-template>
         </td>
       </ng-container>
-      <ng-container *ngFor="let column of tableColumns; let first = first;" [matColumnDef]="column.columnDef"
-        [sticky]="first">
+      <ng-container *ngFor="let column of tableColumns; let first = first" [matColumnDef]="column.columnDef" [sticky]="first">
         <th mat-header-cell *matHeaderCellDef>
           <mat-form-field color="warn" class="w-100">
             <!-- Check if the column is an enum -->
@@ -32,24 +36,28 @@
             </ng-container>
             <!-- Fallback to text input if not an enum or date column -->
             <ng-template #textInput>
-              <input matInput type="text" [(ngModel)]="column.filterValue" [disabled]="column.disableFilter"
-                (input)="$event.stopPropagation(); handleColumnFilter($event, column.columnDef)">
+              <input
+                matInput
+                type="text"
+                [(ngModel)]="column.filterValue"
+                [disabled]="column.disableFilter"
+                (input)="$event.stopPropagation(); handleColumnFilter($event, column.columnDef)"
+              />
             </ng-template>
           </mat-form-field>
         </th>
       </ng-container>
-
 
       <ng-container matColumnDef="actions" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>
           <button matSuffix color="warn" mat-icon-button aria-label="Clear" (click)="clearAllFilters()">
             <mat-icon>close</mat-icon>
           </button>
-          </th>
-          </ng-container>
+        </th>
+      </ng-container>
 
-          <ng-container matColumnDef="header_actions" stickyEnd>
-            <th mat-header-cell *matHeaderCellDef>
+      <ng-container matColumnDef="header_actions" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
           <button *ngIf="canAdd" mat-icon-button color="basic" (click)="HandleNew()" matTooltip="اضافة جديد">
             <mat-icon aria-label="new item">add</mat-icon>
           </button>
@@ -58,36 +66,12 @@
             <mat-icon aria-label="collapse all">expand_less</mat-icon>
           </button>
         </th>
-        <th>test</th>
         <td mat-cell *matCellDef="let row" class="min-w-200">
-          <button *ngIf="hasTransaction" mat-icon-button matTooltip="تسجيل معاملة مالية" color="basic"
-            aria-label="add transaction to selected row" (click)="handleTransaction(row, $event)">
-            <mat-icon>paid</mat-icon>
-          </button>
-          <button *ngIf="canView" mat-icon-button matTooltip="view" color="basic" aria-label="view selected row"
-            (click)="handleView(row, $event)">
-            <mat-icon>info</mat-icon>
-          </button>
-          <button *ngIf="canNavigateToDetails" mat-icon-button matTooltip="view details" color="basic"
-            aria-label="view selected row" (click)="navigate(row, $event)">
-            <mat-icon>info</mat-icon>
-          </button>
-          <button *ngIf="canEdit" mat-icon-button matTooltip="تعديل" color="basic" aria-label="Edit selected row"
-            (click)="handleEdit(row, $event)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button *ngIf="row.filePath" mat-icon-button matTooltip="open" color="basic" aria-label="view certificate"
-            (click)="handleViewPdf(row, $event)">
-            <mat-icon>open_in_new</mat-icon>
-          </button>
-          <button *ngIf="canPayBulk" mat-icon-button matTooltip="دفع طلبات العميل" color="basic"
-            aria-label="bulk payment for client orders" (click)="handleBulkPayment(row, $event)">
-            <mat-icon>paid</mat-icon>
-          </button>
-          <button mat-icon-button color="basic" *ngIf="row.noteClients && row.noteClients.length > 0"
-            [matTooltip]="isRowExpanded(row.id) ? 'غلق' : 'فتح'">
-            <mat-icon>{{ isRowExpanded(row.id) ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
-          </button>
+          <ng-container *ngFor="let action of actions">
+            <button mat-icon-button color="basic" *ngIf="action.condition(row)" [matTooltip]="action.tooltip(row)" (click)="action.action(row); $event.stopPropagation()">
+              <mat-icon>{{ action.icon(row) }}</mat-icon>
+            </button>
+          </ng-container>
         </td>
       </ng-container>
       <!-- Header row definition -->
@@ -95,8 +79,7 @@
       <tr mat-header-row *matHeaderRowDef="filterColumns; sticky: true"></tr>
       <!-- end of header row definition -->
       <!-- Row Data -->
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row"
-        [cdkDetailRowTpl]="tpl"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="element-row" matRipple [cdkDetailRow]="row" [cdkDetailRowTpl]="tpl"></tr>
       <!-- Ends of Row Data -->
       <!-- No Data Found Row Definition -->
       <tr class="mat-row" *matNoDataRow>
@@ -104,17 +87,23 @@
           <ng-container *ngIf="database.isLoading">
             <mat-spinner class="mx-auto mt-5" color="warn"></mat-spinner>
           </ng-container>
-          <ng-container *ngIf="!database.isLoading">
-            لا يوجد بيانات
-            </ng-container>
+          <ng-container *ngIf="!database.isLoading"> لا يوجد بيانات </ng-container>
         </td>
       </tr>
       <!-- End of No Data found -->
     </table>
   </div>
 
-  <mat-paginator class="d-flex" #paginator [pageSizeOptions]="PAGE_SIZE_OPTIONS" [pageSize]="25" (page)="onPageChange()"
-    [length]="filteredDataLength" showFirstLastButtons color="warn">
+  <mat-paginator
+    class="d-flex"
+    #paginator
+    [pageSizeOptions]="PAGE_SIZE_OPTIONS"
+    [pageSize]="25"
+    (page)="onPageChange()"
+    [length]="filteredDataLength"
+    showFirstLastButtons
+    color="warn"
+  >
   </mat-paginator>
 </section>
 <ng-template #tpl let-row>

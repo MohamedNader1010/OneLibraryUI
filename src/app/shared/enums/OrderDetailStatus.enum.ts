@@ -4,6 +4,4 @@ export enum OrderDetailStatus {
   استلم,
   مرتجع,
   هالك,
-  // اكتمل,
-  // غير_مكتمل,
 }

@@ -16,7 +16,12 @@
       <ng-container matColumnDef="expand" [sticky]="true">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-          <button *ngIf="element.notes.length" mat-icon-button aria-label="expand row" (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()">
+          <button
+            *ngIf="element.notes.length"
+            mat-icon-button
+            aria-label="expand row"
+            (click)="expandedElement = expandedElement === element ? null : element; $event.stopPropagation()"
+          >
             <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
             <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
           </button>
@@ -31,8 +36,8 @@
           <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
             <mat-list *ngFor="let note of element.notes; let last = last">
               <mat-list-item
-                >أسم المذكرة: {{ note.name }} - المبيعات للعملاء الاخرين: {{ note.numberOfSellItem }} - المبيعات للمدرس: {{ note.numberOfSellItemFroTeacher }} - اجمالي المبيعات: {{ note.numberOfAllSellItem }} - هامش ربح المدرس:
-                {{ note.teacherPrice }} - أجمالي : {{ note.totalEarning }}</mat-list-item
+                >أسم المذكرة: {{ note.name }} - المبيعات للعملاء الاخرين: {{ note.numberOfSellItem }} - المبيعات للمدرس: {{ note.numberOfSellItemForTeacher }} - اجمالي المبيعات:
+                {{ note.numberOfAllSellItem }} - هامش ربح المدرس: {{ note.teacherPrice }} - أجمالي : {{ note.totalEarning }}</mat-list-item
               >
               <mat-divider *ngIf="!last"></mat-divider>
             </mat-list>
