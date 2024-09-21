@@ -155,6 +155,7 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
 
   patchData = () => {
     this.data.noteComponents.forEach(() => this.noteComponents.push(this.createFormItem('noteComponent')));
+    this.ClientsDataSource.push({ id: this.data.clientId, name: this.data.client, clientTypeId: this.data.clientTypeId });
     this.Form.patchValue(this.data, { emitEvent: false });
   };
 
