@@ -9,9 +9,12 @@ import { AttendanceService } from '../../../../core/data/services/attendance.ser
 import { MoneyTransactionService } from '../../../../core/data/services/money-transaction.service';
 import { MaterialTrackingService } from '../../../../core/data/services/material-tracking.service';
 import { ShiftService } from '../../../../core/data/services/shift.service';
-import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
+import { TransactionSource } from '../../../../shared/enums/TransactionSource.enum';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
 import { ResponseDto } from '../../../../shared/interfaces/response.dto';
+import { TransactionSourceMapper } from '../../../../shared/mappers/transaction-source.mapper';
+import { TransactionStatusMapper } from '../../../../shared/mappers/transaction-status.mapper';
+import { getEnumOptions } from '../../../../shared/utilities/enum.utility';
 
 @Component({
   selector: 'app-shift-details',
@@ -34,7 +37,6 @@ export class ShiftDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('test');
     this.initiateTableHeaders();
     let id = this._route.snapshot.paramMap.get('id');
     if (id) this.loadShiftData(+id);
@@ -93,12 +95,14 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: Transaction) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: Transaction) => TransactionStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(TransactionStatus, TransactionStatusMapper),
       },
       {
         columnDef: 'source',
         header: 'المصدر',
-        cell: (element: Transaction) => (element.source == TransactionSource.daily ? 'اليومية' : 'البنك'),
+        cell: (element: Transaction) => TransactionSourceMapper.get(element.source),
+        enumOptions: getEnumOptions(TransactionSource, TransactionSourceMapper),
       },
       {
         columnDef: 'comment',
@@ -135,7 +139,7 @@ export class ShiftDetailsComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: MaterialTracking) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: MaterialTracking) => (element.status == 0 ? 'صادر' : 'وارد'),
       },
       {
         columnDef: 'comment',

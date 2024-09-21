@@ -11,6 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
 import { MoneyTransactionService } from '../../core/data/services/money-transaction.service';
 import { forkJoin, switchMap } from 'rxjs';
+import { TransactionStatusMapper } from '../../shared/mappers/transaction-status.mapper';
+import { getEnumOptions } from '../../shared/utilities/enum.utility';
 
 @Component({
   selector: 'app-bank',
@@ -21,7 +23,7 @@ export class BankComponent implements OnInit {
   formName = FormDialogNames.bankFormDialogComponent;
   componentName = ComponentsName.Bank;
   bankStatistics!: Bank | null;
-  defaultBankId: number = 3;
+  defaultBankId: number = 4;
   commitments: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
   dues: CommitmentAndDueTotal = {} as CommitmentAndDueTotal;
   databaseService = inject(MoneyTransactionService);
@@ -72,7 +74,8 @@ export class BankComponent implements OnInit {
       {
         columnDef: 'Status',
         header: 'الحالة',
-        cell: (element: Transaction) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: Transaction) => TransactionStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(TransactionStatus, TransactionStatusMapper),
       },
       {
         columnDef: 'Comment',

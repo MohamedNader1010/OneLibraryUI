@@ -37,7 +37,6 @@ export class VirtualScrollDataSource extends DataSource<any> {
         startWith(this.filterSubject.value),
         debounceTime(1000),
         switchMap((filterValue) => {
-          console.log('_filter', filterValue);
           const pagingCriteria: IPagingCriteria = {
             pageIndex: 0,
             pageSize: this._pageSize,
@@ -45,11 +44,7 @@ export class VirtualScrollDataSource extends DataSource<any> {
           return this.databaseService.getPagedData(pagingCriteria);
         }),
       )
-      .subscribe({
-        next: (data: any) => {
-          console.log('data', data);
-        },
-      });
+      .subscribe();
     this._subscription.add(collectionViewerSubscription);
     return this._dataStream;
   }
@@ -73,7 +68,6 @@ export class VirtualScrollDataSource extends DataSource<any> {
   private _fetchPage(pagingCriteria: IPagingCriteria) {
     this.databaseService.getPagedData(pagingCriteria).subscribe({
       next: (data: ResponseDto) => {
-        console.log('data', data);
         this._cachedData.splice(pagingCriteria.pageIndex * this._pageSize, this._pageSize, ...data.body);
         this._dataStream.next(this._cachedData);
       },

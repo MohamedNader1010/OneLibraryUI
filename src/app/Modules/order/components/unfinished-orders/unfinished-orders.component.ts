@@ -4,10 +4,12 @@ import { Order } from '../../../../core/data/models/order/Iorder';
 import { OrderService } from '../../../../core/data/services/orders.service';
 import { ComponentsName } from '../../../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
-import { OrderDetailStatus } from '../../../../shared/enums/OrderDetailStatus.enum';
 import { ResponseDto } from '../../../../shared/interfaces/response.dto';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
+import { OrderStatus } from '../../../../shared/enums/OrderStatus.enum';
+import { OrderStatusMapper } from '../../../../shared/mappers/order-status.mapper';
+import { getEnumOptions } from '../../../../shared/utilities/enum.utility';
 
 @Component({
   selector: 'app-unfinished-orders',
@@ -37,52 +39,58 @@ export class UnfinishedOrdersComponent implements OnInit {
   private initiateTableHeader() {
     this.tableColumns = [
       {
-        columnDef: "Id",
+        columnDef: 'Id',
         header: this.translateService.instant('table.id.label'),
         cell: (element: Order) => element.id,
       },
       {
-        columnDef: "TotalPrice",
-        header: this.translateService.instant('shared.totalPrice'),
-        cell: (element: Order) => element.totalPrice,
-      },
-      {
-        columnDef: "Rest",
-        header: this.translateService.instant('shared.rest'),
-        cell: (element: Order) => element.rest,
-      },
-      {
-        columnDef: "Paid",
-        header: this.translateService.instant('shared.paid'),
-        cell: (element: Order) => element.paid,
-      },
-      {
-        columnDef: "OrderDetail.Status",
-        header: this.translateService.instant('order.status'),
-        cell: (element: Order) => OrderDetailStatus[element.status],
-      },
-      {
-        columnDef: "Client.Name",
+        columnDef: 'Client.Name',
         header: this.translateService.instant('shared.client'),
         cell: (element: Order) => element.clientName,
       },
       {
-        columnDef: "Client.PhoneNumber",
+        columnDef: 'ClientType.Name',
+        header: 'نوع العميل',
+        cell: (element: Order) => element.clientTypeName,
+      },
+      {
+        columnDef: 'Client.PhoneNumber',
         header: this.translateService.instant('shared.clientPhoneNumber'),
         cell: (element: Order) => element.clientPhoneNumber,
       },
       {
-        columnDef: "Remarks",
+        columnDef: 'FinalPrice',
+        header: this.translateService.instant('shared.finalPrice'),
+        cell: (element: Order) => element.finalPrice,
+      },
+      {
+        columnDef: 'Rest',
+        header: this.translateService.instant('shared.rest'),
+        cell: (element: Order) => element.rest,
+      },
+      {
+        columnDef: 'Paid',
+        header: this.translateService.instant('shared.paid'),
+        cell: (element: Order) => element.paid,
+      },
+      {
+        columnDef: 'Status',
+        header: this.translateService.instant('order.status'),
+        cell: (element: Order) => OrderStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(OrderStatus, OrderStatusMapper),
+      },
+      {
+        columnDef: 'Remarks',
         header: this.translateService.instant('shared.remarks'),
         cell: (element: Order) => element.remarks,
       },
       {
-        columnDef: "CreatedBy",
+        columnDef: 'CreatedBy',
         header: this.translateService.instant('table.createdBy.label'),
         cell: (element: Order) => element.createdBy,
       },
       {
-        columnDef: "CreatedOn",
+        columnDef: 'CreatedOn',
         header: this.translateService.instant('table.createdAt.label'),
         cell: (element: Order) => element.createdOn,
       },

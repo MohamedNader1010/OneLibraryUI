@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Material } from '../../../../core/data/models/material/Imaterial';
 import { Transaction } from '../../../../core/data/models/money-transaction/ITransaction';
 import { MoneyTransactionService } from '../../../../core/data/services/money-transaction.service';
-import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
+import { TransactionSource } from '../../../../shared/enums/TransactionSource.enum';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
 @Component({
@@ -23,11 +23,11 @@ export class FormDialogComponent extends BaseForm implements OnInit {
       { value: TransactionSource.Bank, name: 'البنك' },
     ];
     this.transactionStatuses = [
-      { value: TransactionStatus.صادر, name: 'صادر' },
-      { value: TransactionStatus.وارد, name: 'وارد' },
+      { value: TransactionStatus.Debit, name: 'صادر' },
+      { value: TransactionStatus.Credit, name: 'وارد' },
     ];
     this.Form = this.fb.group({
-      status: [TransactionStatus.وارد],
+      status: [TransactionStatus.Debit],
       source: [TransactionSource.daily],
       amount: [0, [Validators.min(0.00001)]],
       comment: [''],

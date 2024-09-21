@@ -9,6 +9,6 @@ export interface OrderDetail {
   note: string | null;
   orderId: number;
   quantity: number;
-  orderStatus: OrderDetailStatus;
+  status: OrderDetailStatus;
   filePath: string;
 }

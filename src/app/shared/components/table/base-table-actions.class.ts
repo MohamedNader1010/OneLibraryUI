@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatPaginator } from '@angular/material/paginator';
 
 import { Component } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   template: '',
@@ -38,10 +39,11 @@ export class BaseTableActions {
   @Input() canAdd: boolean = true;
   @Input() toggleShift: boolean = false;
 
+  #router = inject(Router);
+  #activatedRoute = inject(ActivatedRoute);
   dialog = inject(MatDialog);
-  _router = inject(Router);
-  _activatedRoute = inject(ActivatedRoute);
   cdRef = inject(ChangeDetectorRef);
+  datePipe = inject(DatePipe);
 
   refreshTable = () => this.paginator._changePageSize(this.paginator.pageSize);
 
@@ -105,7 +107,7 @@ export class BaseTableActions {
 
   navigate(row: any, $event: any) {
     $event.stopPropagation();
-    this._router.navigate(['details', row.id], { relativeTo: this._activatedRoute });
+    this.#router.navigate(['details', row.id], { relativeTo: this.#activatedRoute });
   }
 
   handleViewPdf = (row: any, $event: any) => {

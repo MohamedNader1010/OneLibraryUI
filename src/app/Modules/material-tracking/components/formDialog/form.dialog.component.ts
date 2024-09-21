@@ -43,7 +43,7 @@ export class FormDialogComponent extends BaseForm implements OnInit {
 
   ngOnInit() {
     this.getAllMaterial();
-    this.quantity.valueChanges.subscribe((value) => this.status.setValue(value > 0 ? TransactionStatus.وارد : TransactionStatus.صادر));
+    this.quantity.valueChanges.subscribe((value) => this.status.setValue(value > 0 ? TransactionStatus.Credit : TransactionStatus.Debit));
   }
 
   getAllMaterial() {

@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommitmentAndDue } from '../../../../core/data/models/commitment-and-due/Icommitment-and-due.interface';
 import { Material } from '../../../../core/data/models/material/Imaterial';
 import { CommitmentAndDueService } from '../../../../core/data/services/commitment-and-due.service';
-import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
+import { TransactionSource } from '../../../../shared/enums/TransactionSource.enum';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
 import { TransactionType } from '../../../../shared/enums/TransactionType.enum';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
@@ -83,7 +83,7 @@ export class CommitmentAndDueTransactionFormDialogComponent extends BaseForm imp
   override handleSubmit() {
     if (this.Form.valid) {
       this.isSubmitting = true;
-      this.status.setValue(this.data.type === TransactionType.استحقاق ? TransactionStatus.وارد : TransactionStatus.صادر);
+      this.status.setValue(this.data.type === TransactionType.استحقاق ? TransactionStatus.Debit : TransactionStatus.Credit);
       this._databaseService.AddTransaction(this.Form.value).subscribe(this.closeDialogAndRefreshTable());
     }
   }

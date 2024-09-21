@@ -10,7 +10,6 @@ import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
 import { MatDialog } from '@angular/material/dialog';
-import { fromEvent } from 'rxjs';
 @Component({
   selector: 'app-teacherAccount',
   templateUrl: './teacherAccount.component.html',
@@ -46,11 +45,11 @@ export class TeacherAccountComponent implements OnInit {
     this.dataSource.filteredDataLength$.subscribe((length) => {
       this.filteredDataLength = length;
     });
-    fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
-      if (!this.dataSource) return;
-      // this.dataSource.filter = this.filter.nativeElement.value;
-      this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
-    });
+    // fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
+    //   if (!this.dataSource) return;
+    // this.dataSource.filter = this.filter.nativeElement.value;
+    // this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
+    // });
   }
 
   loadData() {

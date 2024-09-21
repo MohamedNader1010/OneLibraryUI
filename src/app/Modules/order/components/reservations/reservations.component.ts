@@ -74,7 +74,7 @@ export class ReservationsComponent implements OnInit {
 
   handleReadyOrderDetail = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
     $event.stopPropagation();
-    data.orderStatus = OrderDetailStatus.جاهز;
+    data.status = OrderDetailStatus.جاهز;
     this.databaseService.MarkSingleOrderDetailAsReady(data).subscribe({
       next: (res) => {
         this.toastrService.success(res.message);

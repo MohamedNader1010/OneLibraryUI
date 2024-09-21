@@ -24,7 +24,7 @@
             <mat-hint>HH:MM AM/PM</mat-hint>
             <input dir="ltr" matInput [owlDateTimeTrigger]="checkInPicker" [owlDateTime]="checkInPicker" [formControl]="checkIn" />
             <mat-icon matSuffix (click)="checkInPicker.open()">event</mat-icon>
-            <owl-date-time [pickerMode]="'dialog'" #checkInPicker></owl-date-time>
+            <owl-date-time [pickerMode]="'dialog'" #checkInPicker [hour12Timer]="true"></owl-date-time>
             <mat-error *ngIf="checkIn.hasError('required') && (checkIn.touched || checkIn.dirty)">يجب ادخال وقت الحضور</mat-error>
           </mat-form-field>
         </div>
@@ -35,7 +35,7 @@
             <input dir="ltr" matInput type="datetime" [owlDateTimeTrigger]="checkOutPicker" [owlDateTime]="checkOutPicker"
               [formControl]="checkOut" />
             <mat-icon matSuffix (click)="checkOutPicker.open()">event</mat-icon>
-            <owl-date-time [pickerMode]="'dialog'" #checkOutPicker dir="ltr"></owl-date-time>
+            <owl-date-time [pickerMode]="'dialog'" #checkOutPicker [hour12Timer]="true" color="warn"></owl-date-time>
           </mat-form-field>
         </div>
       </div>

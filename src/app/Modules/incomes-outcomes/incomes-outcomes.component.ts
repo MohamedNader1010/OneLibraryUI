@@ -5,10 +5,11 @@ import { MoneyTransactionService } from '../../core/data/services/money-transact
 import { ShiftService } from '../../core/data/services/shift.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
-import { TransactionSource } from '../../shared/enums/TransactionSource.emun';
 import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
+import { TransactionStatusMapper } from '../../shared/mappers/transaction-status.mapper';
+import { getEnumOptions } from '../../shared/utilities/enum.utility';
 
 @Component({
   selector: 'app-Incomes-outcomes',
@@ -54,13 +55,15 @@ export class IncomesOutcomesComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'الحالة',
-        cell: (element: Transaction) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: Transaction) => TransactionStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(TransactionStatus, TransactionStatusMapper),
       },
-      {
-        columnDef: 'source',
-        header: 'المصدر',
-        cell: (element: Transaction) => (element.source == TransactionSource.daily ? 'اليومية' : 'البنك'),
-      },
+      // {
+      //   columnDef: 'source',
+      //   header: 'المصدر',
+      //   cell: (element: Transaction) => TransactionSourceMapper.get(element.source),
+      //   enumOptions: getEnumOptions(TransactionSource, TransactionSourceMapper),
+      // },
       {
         columnDef: 'comment',
         header: 'ملاحظات',

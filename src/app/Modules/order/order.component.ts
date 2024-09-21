@@ -3,10 +3,12 @@ import { Order } from '../../core/data/models/order/Iorder';
 import { OrderService } from '../../core/data/services/orders.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
 import { FormDialogNames } from '../../shared/enums/forms-name.enum';
-import { OrderDetailStatus } from '../../shared/enums/OrderDetailStatus.enum';
 import { ResponseDto } from '../../shared/interfaces/response.dto';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
+import { getEnumOptions } from '../../shared/utilities/enum.utility';
+import { OrderStatusMapper } from '../../shared/mappers/order-status.mapper';
+import { OrderStatus } from '../../shared/enums/OrderStatus.enum';
 
 @Component({
   selector: 'app-order',
@@ -51,21 +53,6 @@ export class OrderComponent implements OnInit {
         header: this.translateService.instant('shared.clientPhoneNumber'),
         cell: (element: Order) => element.clientPhoneNumber,
       },
-      // {
-      //   columnDef: 'TotalPrice',
-      //   header: this.translateService.instant('shared.totalPrice'),
-      //   cell: (element: Order) => element.totalPrice,
-      // },
-      // {
-      //   columnDef: 'Discount',
-      //   header: 'قيمة الخصم',
-      //   cell: (element: Order) => element.discount,
-      // },
-      // {
-      //   columnDef: 'DiscountPercent',
-      //   header: 'نسبة الخصم',
-      //   cell: (element: Order) => element.discountPercent,
-      // },
       {
         columnDef: 'FinalPrice',
         header: this.translateService.instant('shared.finalPrice'),
@@ -84,7 +71,8 @@ export class OrderComponent implements OnInit {
       {
         columnDef: 'Status',
         header: this.translateService.instant('order.status'),
-        cell: (element: Order) => OrderDetailStatus[element.status],
+        cell: (element: Order) => OrderStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(OrderStatus, OrderStatusMapper),
       },
       {
         columnDef: 'Remarks',

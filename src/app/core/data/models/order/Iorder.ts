@@ -1,3 +1,4 @@
+import { OrderStatus } from '../../../../shared/enums/OrderStatus.enum';
 import { OrderDetail } from './IorderDetail';
 import { OrderTransaction } from './IorderTransaction';
 export interface Order {
@@ -11,7 +12,7 @@ export interface Order {
   discountPercent: string;
   discount: string;
   remarks: string;
-  status: number;
+  status: OrderStatus;
   clientId: number;
   clientName: string;
   clientTypeName: string;

@@ -8,8 +8,8 @@
           {{ column.header }}
         </th>
         <td mat-cell *matCellDef="let row">
-          <ng-container *ngIf="!column.columnDef.includes('barcode'); else barcode">
-            {{ column.columnDef.includes('time') || column.columnDef.includes('CreatedOn') ? (column.cell(row) | date: 'dd/MM/yyyy || hh:mm a') : column.cell(row) }}
+          <ng-container *ngIf="!column.columnDef.toLowerCase().includes('barcode'); else barcode">
+            {{ formatCellValue(column, row) }}
           </ng-container>
           <ng-template #barcode>
             <ngx-barcode6 [bc-value]="column.cell(row)" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2"
@@ -20,12 +20,25 @@
       <ng-container *ngFor="let column of tableColumns; let first = first;" [matColumnDef]="column.columnDef"
         [sticky]="first">
         <th mat-header-cell *matHeaderCellDef>
-          <mat-form-field class="filter_input w-100">
-            <input matInput type="text" [(ngModel)]="column.filterValue" [disabled]="column.disableFilter"
-              (input)="$event.stopPropagation();handleColumnFilter($event ,column.columnDef)">
+          <mat-form-field color="warn" class="w-100">
+            <!-- Check if the column is an enum -->
+            <ng-container *ngIf="isEnumColumn(column); else textInput">
+              <mat-select [(ngModel)]="column.filterValue" (selectionChange)="handleColumnFilter($event, column.columnDef)">
+                <mat-option [value]="null">-</mat-option>
+                <mat-option *ngFor="let option of column.enumOptions" [value]="option.value">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </ng-container>
+            <!-- Fallback to text input if not an enum or date column -->
+            <ng-template #textInput>
+              <input matInput type="text" [(ngModel)]="column.filterValue" [disabled]="column.disableFilter"
+                (input)="$event.stopPropagation(); handleColumnFilter($event, column.columnDef)">
+            </ng-template>
           </mat-form-field>
         </th>
       </ng-container>
+
 
       <ng-container matColumnDef="actions" stickyEnd>
         <th mat-header-cell *matHeaderCellDef>

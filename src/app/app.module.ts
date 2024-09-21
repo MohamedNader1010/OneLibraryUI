@@ -15,6 +15,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ErrorInterceptor } from './shared/interceptors/error-handling.interceptor';
 import { LoginGuard } from './core/authentication/guards/login.guard';
 import { TokenInterceptor } from './core/authentication/interceptors/token.interceptor';
+import { MatPaginatorIntl } from '@angular/material/paginator';
+import { CustomMatPaginatorIntl } from './config/classes/CustomMatPaginatorIntl';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -45,7 +47,12 @@ export function tokenGetter() {
     }),
   ],
   bootstrap: [AppComponent],
-  providers: [LoginGuard, { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }, { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }],
+  providers: [
+    LoginGuard,
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
+  ],
 })
 export class AppModule {}
 

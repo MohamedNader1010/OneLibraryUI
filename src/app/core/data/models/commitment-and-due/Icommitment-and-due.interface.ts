@@ -1,4 +1,4 @@
-import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
+import { TransactionSource } from '../../../../shared/enums/TransactionSource.enum';
 import { TransactionType } from '../../../../shared/enums/TransactionType.enum';
 import { Transaction } from '../money-transaction/ITransaction';
 

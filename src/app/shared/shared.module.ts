@@ -1,6 +1,6 @@
 import { NotfoundComponent } from './components/notfound/notfound.component';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { SharedRoutingModule } from './shared-routing.module';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { SharedComponent } from './shared.component';
@@ -53,6 +53,16 @@ import { AuthService } from '../core/authentication/services/auth.service';
     VirtualAutocompleteComponent,
   ],
   exports: [TableComponent, AutocompleteComponent, DragAndDropDirective, DragAndDropComponent, NgxBarcode6Module, VirtualAutocompleteComponent],
-  providers: [LoginGuard, AuthService, ToastrService, { provide: NgChartsConfiguration, useValue: { generateColors: false } }, ServiceFactory, AuthGuard, BankGuard, CdkDetailRowDirective],
+  providers: [
+    LoginGuard,
+    AuthService,
+    ToastrService,
+    { provide: NgChartsConfiguration, useValue: { generateColors: false } },
+    ServiceFactory,
+    AuthGuard,
+    BankGuard,
+    CdkDetailRowDirective,
+    DatePipe,
+  ],
 })
 export class SharedModule {}

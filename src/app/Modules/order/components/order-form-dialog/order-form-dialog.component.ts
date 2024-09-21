@@ -85,7 +85,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
   getOrderDetailNoteAvailableQuantity = (index: number): FormControl => this.OrderDetails.at(index).get('availableNoteQuantity') as FormControl;
   getOrderDetailQuantity = (index: number): FormControl => this.OrderDetails.at(index).get('quantity') as FormControl;
   getOrderDetailPrice = (index: number): FormControl => this.OrderDetails.at(index).get('price') as FormControl;
-  getOrderDetailStatus = (index: number): FormControl => this.OrderDetails.at(index).get('orderStatus') as FormControl;
+  getOrderDetailStatus = (index: number): FormControl => this.OrderDetails.at(index).get('status') as FormControl;
   getOrderDetailServiceCount = (index: number): FormControl => this.OrderDetails.at(index).get('counts') as FormControl;
   getOrderDetailServiceCopies = (index: number): FormControl => this.OrderDetails.at(index).get('copies') as FormControl;
   getServicePriceForClientTypeId = (index: number) => {
@@ -106,7 +106,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
   };
   getAvailableStatus(index: number): OrderDetailStatus[] {
     if (this.data) {
-      const oldStatus = this.data.orderDetails.find((od) => od.id === this.getOrderDetailId(index).value)?.orderStatus ?? OrderDetailStatus.حجز;
+      const oldStatus = this.data.orderDetails.find((od) => od.id === this.getOrderDetailId(index).value)?.status ?? OrderDetailStatus.حجز;
       return this.data ? this.availableStatus.filter((s) => s >= oldStatus) : this.availableStatus;
     } else return this.newOrderAvailableStatus;
   }
@@ -144,7 +144,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
     this._databaseService.GetById(this.data.id).subscribe((order) => {
       this.data = order.body;
       this.data.orderDetails.forEach((orderDetail: OrderDetail, index: number) => {
-        this.OrderDetails.push(this.createFormItem('detail', orderDetail.orderStatus));
+        this.OrderDetails.push(this.createFormItem('detail', orderDetail.status));
         this.getNoteOrService(index).setValue(orderDetail.noteId ? 'note' : 'service');
         if (orderDetail.noteId) {
           const availableNoteQuantity = this.getNoteById(orderDetail.noteId)?.quantity ?? 0;
@@ -245,7 +245,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
           noteId: [null],
           note: [''],
           availableNoteQuantity: [0],
-          orderStatus: [null, [Validators.required]],
+          status: [null, [Validators.required]],
           counts: [0],
           copies: [0],
           reservationRequired: [true],
@@ -317,7 +317,7 @@ export class OrderFormDialogComponent extends BaseForm implements OnInit {
         counts: 0,
         copies: 0,
         quantity: 0,
-        orderStatus: null,
+        status: null,
         noteId: null,
         serviceId: null,
       }),

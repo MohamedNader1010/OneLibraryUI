@@ -1,7 +1,7 @@
 <div class="container w-100">
   <ng-container *ngIf="data; else update">
     <h2 class="w-100 text-center mt-3">{{ 'order.edit' | translate }}</h2>
-    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.status != 6; else complete">يمكنك تعديل الحالة الخاصة بكل
+    <h4 class="w-100 text-center mt-1 text-secondary" *ngIf="data.status != 0; else complete">يمكنك تعديل الحالة الخاصة بكل
       بند في الطلب فقط.</h4>
     <ng-template #complete>
       <h4 class="w-100 text-center mt-1 text-secondary">هذا الطلب مكتمل غير مسموح بتعديل البيانات</h4>
@@ -142,12 +142,12 @@
               <div [ngClass]="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i) ? 'col-2' : 'col-3'">
                 <mat-form-field appearance="fill" class="w-100" color="warn">
                   <mat-label>{{ 'order.status' | translate }}</mat-label>
-                  <mat-select formControlName="orderStatus">
+                  <mat-select formControlName="status">
                     <mat-option *ngFor="let status of getAvailableStatus(i)" [value]="status">
                       {{ StatusInstance[status] }}
                     </mat-option>
                   </mat-select>
-                  <mat-error *ngIf="detail.get('orderStatus')?.hasError('required')"> يجب اختيار حالة الطلب </mat-error>
+                  <mat-error *ngIf="detail.get('status')?.hasError('required')"> يجب اختيار حالة الطلب </mat-error>
                 </mat-form-field>
               </div>
               <div [ngClass]="getNoteOrService(i).value == 'note' && getOrderDetailFilePath(i) ? 'col-2' : 'col-1'">

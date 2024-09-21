@@ -6,6 +6,8 @@ import { FormDialogNames } from '../../shared/enums/forms-name.enum';
 import { TransactionStatus } from '../../shared/enums/TransactionStatus.enum';
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
+import { getEnumOptions } from '../../shared/utilities/enum.utility';
+import { TransactionStatusMapper } from '../../shared/mappers/transaction-status.mapper';
 
 @Component({
   selector: 'app-materialTracking',
@@ -32,7 +34,7 @@ export class materialTrackingComponent implements OnInit {
   private initiateTableHeaders() {
     this.tableColumns = [
       {
-        columnDef: "Id",
+        columnDef: 'Id',
         header: this.translateService.instant('table.id.label'),
         cell: (element: MaterialTracking) => element.id,
       },
@@ -49,7 +51,8 @@ export class materialTrackingComponent implements OnInit {
       {
         columnDef: 'Status',
         header: 'الحالة',
-        cell: (element: MaterialTracking) => (element.status == TransactionStatus.صادر ? 'صادر' : 'وارد'),
+        cell: (element: MaterialTracking) => TransactionStatusMapper.get(element.status),
+        enumOptions: getEnumOptions(TransactionStatus, TransactionStatusMapper),
       },
       {
         columnDef: 'Comment',

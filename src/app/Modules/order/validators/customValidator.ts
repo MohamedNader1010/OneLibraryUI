@@ -14,7 +14,7 @@ export function validateQuantityAsync(previousStatus: OrderDetailStatus | null):
     if (previousStatus && (previousStatus === OrderDetailStatus.استلم || previousStatus === OrderDetailStatus.جاهز)) return of(null);
     const formGroup = control.parent as FormGroup;
     if (!formGroup || !formGroup.controls['reservationRequired'].value) return of(null);
-    const isReceivedStatus = formGroup.controls['orderStatus'].value === OrderDetailStatus.استلم;
+    const isReceivedStatus = formGroup.controls['status'].value === OrderDetailStatus.استلم;
     const isNote = formGroup.controls['noteId'].value;
     const availableNoteQuantity = (+formGroup.get('availableNoteQuantity')?.value).toFixed(2);
     const exceedQuantityError = {

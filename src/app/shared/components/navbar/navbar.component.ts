@@ -80,7 +80,5 @@ export class NavbarComponent implements OnInit {
       },
     });
   }
-  startNewFiscalYear() {
-    console.log('start new fiscal year');
-  }
+  startNewFiscalYear() {}
 }

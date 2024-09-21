@@ -6,7 +6,7 @@ export interface ReservedOrderDetail {
   note: string;
   orderId: number;
   quantity: number;
-  orderStatus: OrderDetailStatus;
+  status: OrderDetailStatus;
   filePath: string;
   client: string;
 }

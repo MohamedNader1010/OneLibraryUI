@@ -12,25 +12,40 @@ export class ErrorInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         let errorMessage = 'An unknown error occurred';
-        if (error instanceof HttpErrorResponse && error.status === 401) {
+        // Handle 401 Unauthorized errors
+        if (error.status === 401) {
           return this.handle401Error();
-        } else if (error.error instanceof ErrorEvent) {
-          errorMessage = `Error: ${error.error.message}`;
-        } else if (typeof error.error === 'object') {
+        }
+        // Handle client-side errors
+        if (error.error instanceof ErrorEvent) {
+          errorMessage = `Client-side error: ${error.error.message}`;
+        }
+        // Handle server-side errors with a response body
+        else if (error.error && typeof error.error === 'object') {
           errorMessage = error.error.Message ?? errorMessage;
-        } else if (typeof error.error === 'string') {
+        }
+        // Handle server-side errors with a string response
+        else if (typeof error.error === 'string') {
           errorMessage = error.error;
-        } else {
+        }
+        // Handle other types of errors
+        else {
           errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
         }
+        // Display error message
         this._toastrService.error(errorMessage);
+        // Propagate error
         return throwError(() => new Error(errorMessage));
       }),
     );
   }
 
-  private handle401Error(): Observable<HttpEvent<any>> {
+  private handle401Error(): Observable<never> {
+    // Handle unauthorized errors (e.g., redirect to login)
     this._authService.logout();
-    return throwError(() => new Error('unauthorized, please login again.'));
+    // Display error message for unauthorized access
+    this._toastrService.error('Unauthorized, please log in again.');
+    // Return an error observable to prevent further processing
+    return throwError(() => new Error('Unauthorized, please log in again.'));
   }
 }

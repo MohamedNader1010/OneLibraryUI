@@ -1,96 +1,99 @@
 .info {
-	padding: 0 8% 2%;
+  padding: 0 8% 2%;
 }
 .info .col-5 {
-	padding: 0;
+  padding: 0;
 }
 .heading {
-	color: grey;
+  color: grey;
 }
 .pricing {
-	background-color: #ddd3;
-	padding: 0 8%;
-	font-weight: 400;
+  background-color: #ddd3;
+  padding: 0 8%;
+  font-weight: 400;
 }
 .pricing .col-3 {
-	padding: 0;
+  padding: 0;
 }
 .total {
-	padding: 2vh 8%;
-	font-weight: bold;
+  padding: 2vh 8%;
+  font-weight: bold;
 }
 .total .col-3 {
-	padding: 0;
+  padding: 0;
 }
 .tracklist {
-	list-style: none;
-	padding: 0;
+  list-style: none;
+  padding: 0;
 }
 .col-nader {
-	width: 12.5%;
-	margin: 0;
+  width: 12.5%;
+  margin: 0;
 }
 .titl {
-	margin-bottom: 0;
-	border: 1px solid black;
+  margin-bottom: 0;
+  border: 1px solid black;
 }
-.print-pad {
-	padding: 1rem 1rem 0 1rem;
-}
+
 .print-only {
-	display: none;
+  display: none;
 }
 
 @media print {
-	@page {
-		size: 112mm auto;
-		margin: 0;
-	}
-	* {
-		color: black;
-	}
-	.print-dialog-content {
-		font-size: 13pt !important;
-		line-height: 1 !important;
-    font-weight: normal;
-		margin: 0 !important;
-		/* padding-right: 5px !important; */
-		width: 100% !important;
-		box-shadow: none !important;
-	}
-
-	.heading {
-		font-weight: bold;
-	}
-	.pricing {
-		margin-top: 0px;
+  body {
+    margin: 0;
     padding: 0;
-	}
-	.pricing h4 {
-		font-weight: bold;
-		margin-bottom: 0px;
-	}
-  hr{
+    font-family: 'PT Sans', sans-serif;
+  }
+
+  @page {
+    size: 2.8in 11in;
+    margin-top: 0cm;
+    margin-left: 0cm;
+    margin-right: 0cm;
+  }
+
+  .print-dialog-content {
+    font-size: 13pt !important;
+    line-height: 1 !important;
+    font-weight: normal;
+    margin: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  .heading {
+    font-weight: bold;
+  }
+  .pricing {
+    margin-top: 0px;
+    padding: 0;
+  }
+  .pricing h4 {
+    font-weight: bold;
+    margin-bottom: 0px;
+  }
+  hr {
     margin-top: 5px;
     margin-bottom: 5px;
   }
-	.pricing h5 {
-		margin-bottom: 0px;
-	}
-	.total {
-		margin-top: 0px;
-    padding: 0px;
-	}
-	.total strong {
-		font-weight: normal;
-	}
-  .info{
+  .pricing h5 {
+    margin-bottom: 0px;
+  }
+  .total {
+    margin-top: 0px;
     padding: 0px;
   }
-	.print-only {
-		display: block;
-	}
-	.hide {
-		display: none;
-	}
+  .total strong {
+    font-weight: normal;
+  }
+  .info {
+    padding: 0px;
+  }
+  .print-only {
+    display: block;
+  }
+  .hide {
+    display: none;
+  }
 }

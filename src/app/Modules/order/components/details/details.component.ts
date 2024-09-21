@@ -18,7 +18,6 @@ export class DetailsComponent implements OnInit {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: Order, private _orderService: OrderService, public dialog: MatDialog) {}
   ngOnInit(): void {
-    console.log(this.data);
     this._orderService.GetById(this.data.id).subscribe({
       next: (res) => {
         this.order = res.body;
@@ -39,12 +38,12 @@ export class DetailsComponent implements OnInit {
 
     let totalProgress = 0;
     for (const detail of this.order.orderDetails) {
-      const progress = progressValues[detail.orderStatus];
+      const progress = progressValues[detail.status];
       if (progress !== undefined) {
         totalProgress += progress;
       }
     }
 
-    return totalProgress / this.order.orderDetails.filter((d) => !(d.orderStatus == OrderDetailStatus.مرتجع || d.orderStatus == OrderDetailStatus.هالك)).length;
+    return totalProgress / this.order.orderDetails.filter((d) => !(d.status == OrderDetailStatus.مرتجع || d.status == OrderDetailStatus.هالك)).length;
   }
 }

@@ -7,13 +7,14 @@ import * as signalR from '@microsoft/signalr';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CdkDetailRowDirective } from '../../directives/cdk-detail-row.directive';
 import { IPagingCriteria } from '../../../core/data/interfaces/paging-criteria.interface';
-import { PaginatedTableDataSource as PaginatedTableDataSource } from './paginatedTableDatasource';
+import { PaginatedTableDataSource } from './paginatedTableDatasource';
 import { ResponseDto } from '../../interfaces/response.dto';
 import { ToastrService } from 'ngx-toastr';
 import { NoteClient } from '../../../core/data/models/note/InoteClient';
 import { Order } from '../../../core/data/models/order/Iorder';
 import { ComponentsName } from '../../enums/components.name.enum';
 import { BaseTableActions } from './base-table-actions.class';
+import { MatSelectChange } from '@angular/material/select';
 
 const detailExpandAnimation = trigger('detailExpand', [
   state('void', style({ height: '0px', minHeight: '0', visibility: 'hidden' })),
@@ -36,7 +37,7 @@ export class TableComponent extends BaseTableActions implements OnInit {
   PAGE_SIZE_OPTIONS = [25, 50, 100];
   filteredDataLength = 0;
 
-  _pagingCriteria: IPagingCriteria = {
+  #pagingCriteria: IPagingCriteria = {
     direction: 'desc',
     filters: {},
     orderBy: 'Id',
@@ -109,8 +110,8 @@ export class TableComponent extends BaseTableActions implements OnInit {
         switchMap(() => {
           this.#setPagingCriteria();
           this.database.loadingData.next(true);
-          this._pagingCriteria.pageIndex = 0;
-          return this.database.getPagedData(this._pagingCriteria);
+          this.#pagingCriteria.pageIndex = 0;
+          return this.database.getPagedData(this.#pagingCriteria);
         }),
       )
       .subscribe();
@@ -142,7 +143,7 @@ export class TableComponent extends BaseTableActions implements OnInit {
     if (this.isPaginated) {
       this.activeSortColumn = column;
       this.#setPagingCriteria();
-      this.database.getPagedData(this._pagingCriteria).subscribe();
+      this.database.getPagedData(this.#pagingCriteria).subscribe();
     }
   }
 
@@ -150,18 +151,18 @@ export class TableComponent extends BaseTableActions implements OnInit {
     if (this.isPaginated) {
       this.#setPagingCriteria();
       this.database.loadingData.next(true);
-      this.database.getPagedData(this._pagingCriteria).subscribe({
+      this.database.getPagedData(this.#pagingCriteria).subscribe({
         complete: () => (this.database.isLoading = false),
       });
     }
   }
 
   #setPagingCriteria() {
-    this._pagingCriteria.direction = this.sort.direction ?? 'desc';
-    this._pagingCriteria.filters = this.filters;
-    this._pagingCriteria.orderBy = this.activeSortColumn;
-    this._pagingCriteria.pageIndex = this.paginator.pageIndex;
-    this._pagingCriteria.pageSize = this.paginator.pageSize;
+    this.#pagingCriteria.direction = this.sort.direction ?? 'desc';
+    this.#pagingCriteria.filters = this.filters;
+    this.#pagingCriteria.orderBy = this.activeSortColumn;
+    this.#pagingCriteria.pageIndex = this.paginator.pageIndex;
+    this.#pagingCriteria.pageSize = this.paginator.pageSize;
   }
 
   trimIfBarcode(value: string) {
@@ -173,8 +174,14 @@ export class TableComponent extends BaseTableActions implements OnInit {
     return noteClients.map((t) => t.quantity).reduce((acc, value) => acc + value, 0);
   }
 
-  handleColumnFilter(event: Event, columnDef: string) {
-    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+  handleColumnFilter(event: Event | MatSelectChange, columnDef: string) {
+    let filterValue: any;
+
+    if (event instanceof MatSelectChange) {
+      filterValue = event.value;
+    } else if ((event as Event).target) {
+      filterValue = ((event as Event).target as HTMLInputElement).value.trim().toLowerCase();
+    }
     const column = this.tableColumns.find((col: any) => col.columnDef === columnDef);
     if (column) {
       column.filterValue = filterValue;
@@ -187,5 +194,18 @@ export class TableComponent extends BaseTableActions implements OnInit {
     this.tableColumns.forEach((column: any) => (column.filterValue = ''));
     this.filters = {};
     this.#filterSubject.next(null);
+  }
+
+  isDateColumn(columnDef: string): boolean {
+    const dateKeywords = ['time', 'CreatedOn', 'CheckIn', 'CheckOut'];
+    return dateKeywords.some((keyword) => columnDef.includes(keyword));
+  }
+
+  formatCellValue(column: any, row: any): string {
+    return this.isDateColumn(column.columnDef) ? this.datePipe.transform(column.cell(row), 'dd/MM/yyyy || hh:mm a') : column.cell(row);
+  }
+
+  isEnumColumn(column: any): boolean {
+    return column.enumOptions && column.enumOptions.length > 0;
   }
 }

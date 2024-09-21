@@ -1,4 +1,4 @@
-import { TransactionSource } from '../../../../shared/enums/TransactionSource.emun';
+import { TransactionSource } from '../../../../shared/enums/TransactionSource.enum';
 import { TransactionStatus } from '../../../../shared/enums/TransactionStatus.enum';
 
 export interface Transaction {
