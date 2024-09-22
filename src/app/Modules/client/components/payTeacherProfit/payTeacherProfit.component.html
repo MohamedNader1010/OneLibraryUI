@@ -6,9 +6,9 @@
 				<div class="col">
 					<mat-form-field appearance="fill" class="w-100" color="warn">
 						<mat-label>المبلغ</mat-label>
-						<input type="number" matInput formControlName="amount" min="0" [max]="data.rest"/>
+						<input type="number" matInput formControlName="amount" min="0" [max]="data.restForTeacher"/>
 						<mat-error *ngIf="amount.hasError('min') && (amount.touched || amount.dirty)">لا يمكن ادخال قيمة اصغر من صفر</mat-error>
-						<mat-error *ngIf="amount.hasError('max') && (amount.touched || amount.dirty)">لا يمكن ادخال قيمة اكبر من القيمة المستحقة للعميل "{{data.rest}}" جنية.</mat-error>
+						<mat-error *ngIf="amount.hasError('max') && (amount.touched || amount.dirty)">لا يمكن ادخال قيمة اكبر من القيمة المستحقة للعميل "{{data.restForTeacher}}" جنية.</mat-error>
 					</mat-form-field>
 				</div>
 			</div>
