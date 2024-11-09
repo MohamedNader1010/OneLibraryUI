@@ -42,9 +42,7 @@ export class DetailsComponent implements OnInit {
 
   handleOrderPrint() {
     this._orderService.printOrderById(this.order.id).subscribe({
-      next: (res) => {
-        console.log('printed');
-      },
+      next: (res) => {},
       error: (err) => {
         console.log(err);
       },

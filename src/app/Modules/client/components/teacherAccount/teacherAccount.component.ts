@@ -116,7 +116,6 @@ export class TeacherAccountComponent implements OnInit {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         let oldrow = this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)];
-        console.log(oldrow);
         this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)] = result.row;
         this.toastrService.success(result.res.message);
       },
