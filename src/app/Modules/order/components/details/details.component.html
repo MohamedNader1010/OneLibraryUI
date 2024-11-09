@@ -7,8 +7,15 @@
 <mat-dialog-content *ngIf="order" class="print-dialog-content">
   <div class="print-only">
     <div class="text-center">
-      <ngx-barcode6 bc-value="bar-{{ order.id }}" [bc-display-value]="true" [bc-element-type]="'img'" [bc-width]="2"
-        [bc-height]="35" [bc-font-size]="15" [bc-margin]="0"></ngx-barcode6>
+      <ngx-barcode6
+        bc-value="bar-{{ order.id }}"
+        [bc-display-value]="true"
+        [bc-element-type]="'img'"
+        [bc-width]="2"
+        [bc-height]="35"
+        [bc-font-size]="15"
+        [bc-margin]="0"
+      ></ngx-barcode6>
     </div>
   </div>
   <hr />
@@ -51,9 +58,9 @@
         <h4><strong>السعر</strong></h4>
       </div>
     </div>
-    <div class="row" *ngFor="let o of order.orderDetails" style="padding-bottom:10px ;">
+    <div class="row" *ngFor="let o of order.orderDetails" style="padding-bottom: 10px">
       <div class="col-6">
-        <span class="text-wrap">- ({{OrderDetailStatusMapper.get(o.status)}}) - {{ o.note ?? o.service }}</span>
+        <span class="text-wrap">- ({{ OrderDetailStatusMapper.get(o.status) }}) - {{ o.note ?? o.service }}</span>
       </div>
       <div class="col-3">
         <span>{{ o.quantity }}</span>
@@ -121,3 +128,10 @@
     </div>
   </div>
 </mat-dialog-content>
+
+<mat-dialog-actions align="start">
+  <button type="button" mat-fab extended color="basic" tabindex="-1" matTooltip="طباعة" (click)="handleOrderPrint()">
+    <mat-icon>print</mat-icon>
+    طباعة
+  </button>
+</mat-dialog-actions>

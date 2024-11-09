@@ -8,7 +8,6 @@ import { ClientService } from '../../../../core/data/services/client.service';
 import { TableDataSource } from '../../../../shared/components/table/tableDataSource';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
 import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-teacherAccount',
@@ -35,7 +34,6 @@ export class TeacherAccountComponent implements OnInit {
   databaseService = inject(ClientService);
   toastrService = inject(ToastrService);
   tableColumns!: any[];
-  tableCommunicationService = inject(TableCommunicationService);
   translateService = inject(TranslateService);
   public dialog = inject(MatDialog);
 
@@ -72,29 +70,39 @@ export class TeacherAccountComponent implements OnInit {
         cell: (row: TeacherProfitResponse) => row.name,
       },
       {
+        columnDef: 'totalForOrders',
+        header: 'التعاملات',
+        cell: (row: TeacherProfitResponse) => row.totalForOrders,
+      },
+      {
+        columnDef: 'paidForOrders',
+        header: 'دفع',
+        cell: (row: TeacherProfitResponse) => row.paidForOrders,
+      },
+      {
+        columnDef: 'restForOrders',
+        header: 'عليه',
+        cell: (row: TeacherProfitResponse) => row.restForOrders,
+      },
+      {
         columnDef: 'totalEarning',
-        header: 'أجمالي الارباح',
+        header: 'الارباح',
         cell: (row: TeacherProfitResponse) => row.totalEarning,
       },
       {
-        columnDef: 'totalCredit',
+        columnDef: 'totalCollected',
         header: 'مدفوع للعميل',
-        cell: (row: TeacherProfitResponse) => row.totalCredit,
+        cell: (row: TeacherProfitResponse) => row.totalCollected,
       },
       {
-        columnDef: 'totalDebit',
-        header: 'قام بدفع',
-        cell: (row: TeacherProfitResponse) => row.totalDebit,
+        columnDef: 'totalPending',
+        header: 'باقي للعميل',
+        cell: (row: TeacherProfitResponse) => row.totalPending,
       },
       {
         columnDef: 'rest',
-        header: 'باقي علي العميل',
+        header: 'الصافي',
         cell: (row: TeacherProfitResponse) => row.rest,
-      },
-      {
-        columnDef: 'restForTeacher',
-        header: 'المتبقي للعميل',
-        cell: (row: TeacherProfitResponse) => row.restForTeacher,
       },
     ];
   }
@@ -107,6 +115,8 @@ export class TeacherAccountComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe({
       next: (result) => {
+        let oldrow = this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)];
+        console.log(oldrow);
         this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)] = result.row;
         this.toastrService.success(result.res.message);
       },

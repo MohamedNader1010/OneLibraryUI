@@ -11,6 +11,7 @@ export interface Note {
   clientTypeId: number;
   clientType: string;
   termId: number;
+  fiscalYearId: number;
   term: string;
   stageId: number;
   stage: string;

@@ -18,18 +18,18 @@
           >
           </autocomplete>
           <autocomplete
-          class="col-3"
-          [label]="'shared.client' | translate"
-          [dataSource]="ClientsDataSource"
-          (selectedId)="setClientId($event)"
-          [selectedValue]="clientId.value"
-          [loading]="clientsDisable"
-          [disable]="clientsDisable"
-          [id]="clientTypeId.value"
-          [backendSideFilter]="true"
-          [hasNewClient]="true"
-        >
-        </autocomplete>
+            class="col-3"
+            [label]="'shared.client' | translate"
+            [dataSource]="ClientsDataSource"
+            (selectedId)="setClientId($event)"
+            [selectedValue]="clientId.value"
+            [loading]="clientsDisable"
+            [disable]="clientsDisable"
+            [id]="clientTypeId.value"
+            [backendSideFilter]="true"
+            [hasNewClient]="true"
+          >
+          </autocomplete>
           <mat-form-field color="warn" appearance="fill" class="col-3">
             <mat-label>المرحلة</mat-label>
             <mat-select formControlName="stageId">
@@ -152,8 +152,19 @@
           <app-drag-and-drop [fileName]="fileName.value" (selectedFile)="getSelectedFiles($event)" [progress]="progress"> </app-drag-and-drop>
         </div>
         <div class="row">
-          <mat-checkbox formControlName="isVisible" color="warn"> متاح للطلبات </mat-checkbox>
-          <mat-checkbox formControlName="reservationRequired" color="warn"> يجب الحجز عند نفاذ الكمية </mat-checkbox>
+          <mat-form-field color="warn" appearance="fill" class="col-6">
+            <mat-label>العام الدراسي</mat-label>
+            <mat-select formControlName="fiscalYearId">
+              <mat-option *ngFor="let fiscalYear of fiscalYears" [value]="fiscalYear.id">
+                {{ fiscalYear.startDate | date : 'dd-MM-yyyy' }} -
+                {{ fiscalYear.endDate ? (fiscalYear.endDate | date : 'dd-MM-yyyy') : 'حتى الآن' }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="col-6">
+            <mat-checkbox formControlName="isVisible" color="warn"> متاح للطلبات </mat-checkbox>
+            <mat-checkbox formControlName="reservationRequired" color="warn"> يجب الحجز عند نفاذ الكمية </mat-checkbox>
+          </div>
         </div>
       </form>
     </mat-dialog-content>

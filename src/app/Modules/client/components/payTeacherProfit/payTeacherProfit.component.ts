@@ -41,8 +41,11 @@ export class PayTeacherProfitComponent extends BaseForm implements OnInit {
       next: (res) => {
         // this.data.paidToTeacher += this.amount.value;
         // this.data.rest -= this.amount.value;
-        // this.dialogRef.close({ res: res, row: this.data });
         this.tableCommunicationService.reloadTable$.next();
+        this.data.totalCollected = this.data.totalCollected + this.amount.value;
+        this.data.totalPending = this.data.totalPending - this.amount.value;
+        this.data.rest = this.data.rest - this.amount.value;
+        this.matDialogRef.close({ res: res, row: this.data });
       },
       error: () => (this.isSubmitting = false),
       complete: () => {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { FormArray, FormGroup, Validators, FormControl } from '@angular/forms';
 import { map, forkJoin, switchMap, filter, startWith, Observer, tap, catchError, of, BehaviorSubject } from 'rxjs';
 import { ClientTypeService } from 'src/app/core/data/services/client-type.service';
@@ -20,6 +20,8 @@ import { NoteComponent } from '../../note.component';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
 import { TermService } from '../../../../core/data/services/term.service';
 import { StageService } from '../../../../core/data/services/stage.service';
+import { IFiscalYear } from '../../../../core/data/models/fiscalYear/fiscalYear.interface';
+import { FiscalYearsService } from '../../../../core/data/services/fiscal-years.service';
 @Component({
   selector: 'app-note-form-dialog',
   templateUrl: './note-form-dialog.component.html',
@@ -39,6 +41,9 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
   clientsDisable: boolean = false;
   serviceLoading: boolean = false;
   clientTypeLoading = false;
+  fiscalYears: IFiscalYear[] = [];
+  selectedFiscalYear: string | null = '';
+  _fiscalYearService = inject(FiscalYearsService);
 
   constructor(
     private _databaseService: NoteService,
@@ -119,16 +124,17 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
   }
 
   private forkJoins() {
-    let observables = [this.stageService.getAll(), this.termsService.getAll(), this._clientTypeService.getAll()];
+    this.clientTypeLoading = this.clientsDisable = this.serviceLoading = this.formDataIsLoading = true;
+    const observables = [this.stageService.getAll(), this.termsService.getAll(), this._clientTypeService.getAll(), this._fiscalYearService.getAllFiscalYears()];
     return forkJoin(observables)
       .pipe(
-        tap(() => (this.clientTypeLoading = this.clientsDisable = this.serviceLoading = this.formDataIsLoading = true)),
         catchError((err) => of(err)),
-        map(([stagesResponse, termsResponse, clientTypeResponse]) => {
+        map(([stagesResponse, termsResponse, clientTypeResponse, fiscalYearsResponse]) => {
           return {
             stages: stagesResponse,
             terms: termsResponse,
             clientsType: clientTypeResponse,
+            fiscalYears: fiscalYearsResponse,
           };
         }),
       )
@@ -141,6 +147,7 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
           let emptyStage: Stage = { id: null, name: 'بدون' };
           this.StagesDataSource.unshift(emptyStage);
           this.ClientTypesDataSource = response.clientsType.body;
+          this.fiscalYears = response.fiscalYears.body;
         },
         error: () => (this.isSubmitting = false),
         complete: () => {
@@ -155,7 +162,7 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
 
   patchData = () => {
     this.data.noteComponents.forEach(() => this.noteComponents.push(this.createFormItem('noteComponent')));
-    this.ClientsDataSource.push({ id: this.data.clientId, name: this.data.client, clientTypeId: this.data.clientTypeId });
+    this.ClientsDataSource.push({ id: this.data.clientId, name: this.data.client, clientTypeId: this.data.clientTypeId });
     this.Form.patchValue(this.data, { emitEvent: false });
   };
 
@@ -169,6 +176,7 @@ export class NoteFormDialogComponent extends BaseForm implements OnInit {
             name: ['', [Validators.required]],
             termId: [null],
             stageId: [null],
+            fiscalYearId: [null],
             clientTypeId: [null],
             clientId: [null, [Validators.required]],
             noteComponents: this.fb.array([], Validators.minLength(1)),
