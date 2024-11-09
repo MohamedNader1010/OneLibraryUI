@@ -8,8 +8,6 @@ import { FiscalYearsService } from '../../../core/data/services/fiscal-years.ser
 })
 export class FiscalYearComponent implements OnInit {
   fiscalYears: IFiscalYear[] = [];
-  selectedStartYear: string | null = '';
-  selectedEndYear: string | null = '';
   _fiscalYearService = inject(FiscalYearsService);
 
   ngOnInit() {

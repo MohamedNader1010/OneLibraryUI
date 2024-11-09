@@ -48,7 +48,8 @@ export const BACKEND_APIs = {
   servicePricePerClientType: environment.apiUrl + 'ServicePricePerClientType',
   PricedServices: environment.apiUrl + 'ServicePricePerClientType/Priced',
   PricedServicesByClientTypeIdWithOriginalPrices: (clientTypeId: number) => environment.apiUrl + `ServicePricePerClientType/Priced/ClientType/${clientTypeId}/WithOriginalPrices`,
-  servicePriceByClientTypeIdAndServiceId: (clientTypeId: number, serviceId: number) => environment.apiUrl + `ServicePricePerClientType/ClientType/${clientTypeId}/Service/${serviceId}`,
+  servicePriceByClientTypeIdAndServiceId: (clientTypeId: number, serviceId: number) =>
+    environment.apiUrl + `ServicePricePerClientType/ClientType/${clientTypeId}/Service/${serviceId}`,
   note: environment.apiUrl + 'Note',
   noteVisible: environment.apiUrl + 'Note/Visible',
   noteForm: environment.apiUrl + 'Note/Form',
@@ -57,6 +58,7 @@ export const BACKEND_APIs = {
   notePrint: environment.apiUrl + 'Note/Print',
   order: environment.apiUrl + 'Order',
   orderById: (id: number) => `${BACKEND_APIs.order}/${id}`,
+  orderPrintById: (id: number) => `${BACKEND_APIs.order}/Print/${id}`,
   orderUnFinished: environment.apiUrl + 'Order/UnFinished',
   orderStatus: environment.apiUrl + 'Order/Status',
   orderTransaction: environment.apiUrl + 'Order/Transaction',

@@ -79,4 +79,6 @@ export class OrderService extends BaseHttpClient {
       }),
     );
   };
+
+  printOrderById = (id: number) => this.httpClient.get<ResponseDto>(BACKEND_APIs.orderPrintById(id), { headers: this.headers });
 }

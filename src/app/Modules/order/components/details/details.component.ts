@@ -39,4 +39,15 @@ export class DetailsComponent implements OnInit {
     for (const detail of this.order.orderDetails) totalProgress += progressValues[detail.status] ?? 0;
     return totalProgress / this.order.orderDetails.length;
   }
+
+  handleOrderPrint() {
+    this._orderService.printOrderById(this.order.id).subscribe({
+      next: (res) => {
+        console.log('printed');
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 }
