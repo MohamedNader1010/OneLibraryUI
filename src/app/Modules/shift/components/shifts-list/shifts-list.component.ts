@@ -9,7 +9,6 @@ import { FormDialogNames } from '../../../../shared/enums/forms-name.enum';
 @Component({
   selector: 'app-shifts-list',
   templateUrl: './shifts-list.component.html',
-  styleUrls: ['./shifts-list.component.css'],
 })
 export class ShiftsListComponent implements OnInit {
   formName = FormDialogNames.shiftFormDialogComponent;
