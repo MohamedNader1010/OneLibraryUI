@@ -13,6 +13,8 @@ import { OrderDetailStatus } from '../../../../shared/enums/OrderDetailStatus.en
 import { TranslateService } from '@ngx-translate/core';
 import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
 import { ToastrService } from 'ngx-toastr';
+import { OrderDetail } from '../../../../core/data/models/order/IorderDetail';
+import { Note } from '../../../../core/data/models/note/Inote';
 
 @Component({
   selector: 'app-reservations',
@@ -72,10 +74,24 @@ export class ReservationsComponent implements OnInit {
     ];
   }
 
-  handleReadyOrderDetail = (reservation: Reservation, data: ReservedOrderDetail, $event: any) => {
+  handleReadyOrderDetail = (reservation: Reservation, data: OrderDetail, $event: any) => {
     $event.stopPropagation();
+
+    const reservedOrderDetail: ReservedOrderDetail = {
+      id: data.id,
+      noteId: data.noteId!,
+      note: (data.note! as unknown as Note).name,
+      orderId: data.orderId!,
+      quantity: data.quantity,
+      status: data.status,
+      filePath: data.filePath,
+    } as ReservedOrderDetail;
+
     data.status = OrderDetailStatus.جاهز;
-    this.databaseService.MarkSingleOrderDetailAsReady(data).subscribe({
+    data.note = data.note;
+    console.log(data, reservedOrderDetail);
+
+    this.databaseService.MarkSingleOrderDetailAsReady(reservedOrderDetail).subscribe({
       next: (res) => {
         this.toastrService.success(res.message);
       },
