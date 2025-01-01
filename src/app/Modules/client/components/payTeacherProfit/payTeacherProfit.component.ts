@@ -30,7 +30,7 @@ export class PayTeacherProfitComponent extends BaseForm implements OnInit {
 
   ngOnInit() {
     this.clientId.setValue(this.data.clientId);
-    this.amount.addValidators(Validators.max(this.data.restForTeacher));
+    this.amount.addValidators(Validators.max(this.data.rest));
   }
 
   handleSubmit() {
