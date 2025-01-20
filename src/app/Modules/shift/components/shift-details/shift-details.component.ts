@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Attendance } from '../../../../core/data/models/attendance/attendance';
 import { MaterialTracking } from '../../../../core/data/models/material-transaction/materialTracking';
 import { Transaction } from '../../../../core/data/models/money-transaction/ITransaction';
-import { Shift } from '../../../../core/data/models/shift/Ishift';
+import { Shift } from '../../../../core/data/models/shift/IShift';
 import { AttendanceService } from '../../../../core/data/services/attendance.service';
 import { MoneyTransactionService } from '../../../../core/data/services/money-transaction.service';
 import { MaterialTrackingService } from '../../../../core/data/services/material-tracking.service';

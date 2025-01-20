@@ -1,5 +1,5 @@
 import { Attendance } from '../attendance/attendance';
-import { MaterialTransactions } from '../material-transaction/Imaterial-transaction';
+import { MaterialTransactions } from '../material-transaction/IMaterial-transaction';
 import { Transaction } from '../money-transaction/ITransaction';
 
 export interface Shift {

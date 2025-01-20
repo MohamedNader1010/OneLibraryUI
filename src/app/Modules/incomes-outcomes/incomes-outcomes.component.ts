@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Transaction } from '../../core/data/models/money-transaction/ITransaction';
-import { Shift } from '../../core/data/models/shift/Ishift';
+import { Shift } from '../../core/data/models/shift/IShift';
 import { MoneyTransactionService } from '../../core/data/services/money-transaction.service';
 import { ShiftService } from '../../core/data/services/shift.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';
@@ -13,7 +13,7 @@ import { getEnumOptions } from '../../shared/utilities/enum.utility';
 
 @Component({
   selector: 'app-Incomes-outcomes',
-  templateUrl: './Incomes-outcomes.component.html',
+  templateUrl: './incomes-outcomes.component.html',
   styleUrls: ['./Incomes-outcomes.component.css'],
 })
 export class IncomesOutcomesComponent implements OnInit {

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Shift } from '../../core/data/models/shift/Ishift';
+import { Shift } from '../../core/data/models/shift/IShift';
 import { ShiftService } from '../../core/data/services/shift.service';
 import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
 import { ComponentsName } from '../../shared/enums/components.name.enum';

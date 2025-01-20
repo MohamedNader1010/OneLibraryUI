@@ -3,7 +3,7 @@ import { ResponseDto } from '../../../shared/interfaces/response.dto';
 import { CloseAndStartShift } from '../models/shift/IcloseAndStartShift';
 import { BaseHttpClient } from '../../../shared/classes/base-http-client.abstract';
 import { BACKEND_APIs } from '../apis/backend-apis';
-import { Shift } from '../models/shift/Ishift';
+import { Shift } from '../models/shift/IShift';
 
 @Injectable({
   providedIn: 'root',

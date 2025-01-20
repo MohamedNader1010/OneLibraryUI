@@ -1,5 +1,9 @@
+import { Injectable } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class CustomMatPaginatorIntl extends MatPaginatorIntl {
   override itemsPerPageLabel = '';
   override nextPageLabel = 'الصفحة التالية';
@@ -12,7 +16,7 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
       return `0 of ${length}`;
     }
     const startIndex = page * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, length);
-    return `${startIndex + 1} - ${endIndex}`;
+    const endIndex = Math.min(startIndex + pageSize, length); /// need to check this
+    return `${startIndex + 1} - ${length}`;
   };
 }

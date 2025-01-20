@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Shift } from '../../../../core/data/models/shift/Ishift';
+import { Shift } from '../../../../core/data/models/shift/IShift';
 import { ShiftService } from '../../../../core/data/services/shift.service';
 import { TableCommunicationService } from '../../../../shared/components/table/table-communication.service';
 import { ComponentsName } from '../../../../shared/enums/components.name.enum';
@@ -53,12 +53,12 @@ export class ShiftsListComponent implements OnInit {
       {
         columnDef: this.translateService.instant('table.totalIncome'),
         header: this.translateService.instant('table.totalIncome.label'),
-        cell: (element: Shift) => element.totalDebit,
+        cell: (element: Shift) => element.totalCredit,
       },
       {
         columnDef: this.translateService.instant('table.totalOutcome'),
         header: this.translateService.instant('table.totalOutcome.label'),
-        cell: (element: Shift) => element.totalCredit,
+        cell: (element: Shift) => element.totalDebit,
       },
       {
         columnDef: this.translateService.instant('table.closingBalance'),
