@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { CommonModule } from '@angular/common';
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -22,11 +22,8 @@ import { AppComponent } from './app.component';
 export function tokenGetter() {
     return localStorage.getItem(LocalStorageKeys.TOKEN);
 }
-@NgModule({
-    declarations: [AppComponent],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
+@NgModule({ declarations: [AppComponent],
+    bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         CommonModule,
         JwtModule.forRoot({
@@ -51,16 +48,13 @@ export function tokenGetter() {
                 useFactory: HttpLoaderFactory,
                 deps: [HttpClient]
             }
-        })
-    ],
-    bootstrap: [AppComponent],
-    providers: [
+        })], providers: [
         { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: RequestHeadersInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl }
-    ]
-})
+        { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {}
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {

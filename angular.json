@@ -11,12 +11,13 @@
 			"prefix": "app",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:browser",
+					"builder": "@angular-devkit/build-angular:application",
 					"options": {
             "allowedCommonJsDependencies": ["jsbarcode"],
-            "outputPath": "dist/one-book-store",
+            "outputPath": {
+              "base": "dist/one-book-store"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/web.config"],
@@ -26,7 +27,10 @@
               "src/styles.css",
               "node_modules/ngx-toastr/toastr.css"
             ],
-            "scripts": ["./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"]
+            "scripts": [
+              "./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ],
+            "browser": "src/main.ts"
           },
 					"configurations": {
             "production": {
@@ -62,15 +66,15 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": true,
-              "buildOptimizer": true,
               "deleteOutputPath": true
             },
             "development": {
-              "assets": ["src/favicon.ico", "src/assets", "src/web.config"],
-              "buildOptimizer": false,
+              "assets": [
+                "src/favicon.ico",
+                "src/assets",
+                "src/web.config"
+              ],
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -81,21 +85,21 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
-						"production": {
-							"browserTarget": "one-book-store:build:production",
-							"host": "192.168.1.11"
+            "production": {
+              "host": "192.168.1.11",
+              "buildTarget": "one-book-store:build:production"
 						},
-						"development": {
-							"browserTarget": "one-book-store:build:development",
-							"host": "localhost"
+            "development": {
+              "host": "localhost",
+              "buildTarget": "one-book-store:build:development"
 						}
 					},
 					"defaultConfiguration": "development"
 				},
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
-					"options": {
-						"browserTarget": "one-book-store:build"
+          "options": {
+            "buildTarget": "one-book-store:build"
 					}
 				},
 				"test": {
