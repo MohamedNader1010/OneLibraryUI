@@ -1,3 +1,21 @@
 {
-  "cSpell.words": ["endregion", "toastr"]
+  "cSpell.words": [
+    "dtos",
+    "endregion",
+    "jsbarcode",
+    "onreconnected",
+    "onreconnecting",
+    "Payables",
+    "toastr",
+    "اضافة",
+    "الآن",
+    "الدراسي",
+    "العام",
+    "العميل",
+    "تعديل",
+    "جديد",
+    "سداد",
+    "طلبات"
+  ],
+  "editor.codeLens": true
 }

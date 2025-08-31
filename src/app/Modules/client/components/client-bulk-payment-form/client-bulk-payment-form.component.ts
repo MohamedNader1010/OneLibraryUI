@@ -1,40 +1,33 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CommitmentAndDueFormDialogComponent } from '../../../commitment-and-due/components/commitment-and-due-form-dialog/commitment-and-due-form-dialog.component';
-import { Client } from '../../../../core/data/models/client/Iclient';
-import { ClientService } from '../../../../core/data/services/client.service';
+import { Component } from '@angular/core';
 import { BaseForm } from '../../../../shared/classes/base-form.abstract';
+import { IPayBulkOrdersCommand } from '../../../../core/models/Clients/commands/pay-bulk-orders-command.interface';
+import { IClientOverviewDTO } from '../../../../core/models/Clients/dtos/client-overview-dto.interface';
+import { Validators } from '@angular/forms';
+import { PaymentMethod } from "../../../../core/enums/payment-method.enum";
 
 @Component({
-  selector: 'app-client-bulk-payment-form',
-  templateUrl: './client-bulk-payment-form.component.html',
+    selector: 'app-client-bulk-payment-form',
+    templateUrl: './client-bulk-payment-form.component.html'
 })
-export class ClientBulkPaymentFormComponent extends BaseForm implements OnInit {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: Client, override matDialogRef: MatDialogRef<CommitmentAndDueFormDialogComponent>, private databaseService: ClientService) {
-    super();
-    this.Form = this.fb.group({
-      clientId: [0],
-      amount: [0],
-    });
-  }
-
-  get clientId(): FormControl {
-    return this.Form.get('clientId') as FormControl;
-  }
-
-  get amount(): FormControl {
-    return this.Form.get('amount') as FormControl;
-  }
-
-  ngOnInit() {
-    this.clientId.setValue(this.data.id);
-  }
-
-  handleSubmit() {
-    if (this.Form.valid) {
-      this.isSubmitting = true;
-      this.databaseService.bulkPayment(this.Form.value).subscribe(this.closeDialogAndRefreshTable());
+export class ClientBulkPaymentFormComponent extends BaseForm<
+    IPayBulkOrdersCommand,
+    ClientBulkPaymentFormComponent,
+    IClientOverviewDTO
+> {
+    onInit() {
+        this.form = this.fb.group({
+            clientId: this.fb.nonNullable.control<string>(this.data.id, { validators: Validators.required }),
+            amount: this.fb.nonNullable.control<number>(0, { validators: [Validators.required, Validators.min(1)] }),
+            paymentMethod: this.fb.nonNullable.control<PaymentMethod>(PaymentMethod.Cash, { validators: Validators.required })
+        });
     }
-  }
+
+    handleSubmit() {
+        if (this.form.valid) {
+            this.isSubmitting = true;
+            this.unitOfWorkService.client.bulkPayment(this.form.getRawValue()).subscribe(this.closeDialogAndRefreshTable());
+        }
+    }
+
+    onDestroy() {}
 }

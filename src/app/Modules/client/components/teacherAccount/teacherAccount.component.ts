@@ -1,123 +1,126 @@
-import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { PayTeacherProfitComponent } from '../payTeacherProfit/payTeacherProfit.component';
-import { TeacherProfitResponse } from '../../../../core/data/models/client/IteacherProfitResponse';
-import { ClientService } from '../../../../core/data/services/client.service';
-import { TableDataSource } from '../../../../shared/components/table/tableDataSource';
-import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
-@Component({
-  selector: 'app-teacherAccount',
-  templateUrl: './teacherAccount.component.html',
-  styleUrls: ['./teacherAccount.component.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
-})
-export class TeacherAccountComponent implements OnInit {
-  displayedColumns!: string[];
-  columnsToDisplayWithExpand!: string[];
-  dataSource!: TableDataSource;
-  expandedElement: any;
-  filteredDataLength = 0;
+// import { Component, OnInit, inject } from '@angular/core';
+// import { takeUntil } from 'rxjs';
+// import { PayTeacherProfitFormDialogComponent } from '../payTeacherProfit/payTeacherProfit.component';
+// import { ClientDetailsDialogComponent } from '../client-details-dialog/client-details-dialog.component';
+// import { UnitOfWorkService } from "../../../../core/services/unit-of-work.service";
+// import { ListComponentBase } from "../../../../shared/classes/list-component-base.abstract";
+// import { TableActionPosition } from "../../../../shared/enums/table-action-position.enum";
+// @Component({
+//   selector: 'app-teacherAccount',
+//   templateUrl: './teacherAccount.component.html',
+//   styleUrls: ['./teacherAccount.component.css'],
+// })
+// export class TeacherAccountComponent extends ListComponentBase implements OnInit {
+//   unitOfWorkService = inject(UnitOfWorkService);
 
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort!: MatSort;
-  @ViewChild('filter', { static: true }) filter!: ElementRef;
-  databaseService = inject(ClientService);
-  toastrService = inject(ToastrService);
-  tableColumns!: any[];
-  translateService = inject(TranslateService);
-  public dialog = inject(MatDialog);
+//   ngOnInit(): void {
+//     this.initiateTableHeaders();
+//     this.initializeTableActions();
+//     this.tableCommunicationService.reloadTable$
+//       .pipe(
+//         // switchMap(() => this.unitOfWorkService.client.getTeacherProfit()),
+//         takeUntil(this.unsubscribe$),
+//       )
+//       .subscribe();
+//     this.tableCommunicationService.reloadTable$.next();
+//   }
 
-  ngOnInit(): void {
-    this.initializeTableColumns();
-    this.loadData();
-    this.dataSource.filteredDataLength$.subscribe((length) => {
-      this.filteredDataLength = length;
-    });
-    // fromEvent(this.filter.nativeElement, 'keyup').subscribe(() => {
-    //   if (!this.dataSource) return;
-    // this.dataSource.filter = this.filter.nativeElement.value;
-    // this.dataSource.filteredDataLength$.subscribe((length) => (this.filteredDataLength = length));
-    // });
-  }
+//   handlePagination(pagingCriteria: IPagingCriteria) {
+//     // this.unitOfWorkService.client.getTeacherProfit(pagingCriteria).subscribe();
+//   }
 
-  loadData() {
-    this.displayedColumns = [...this.tableColumns.map((c: any) => c.columnDef)];
-    this.columnsToDisplayWithExpand = [...this.displayedColumns, 'expand'];
-    this.dataSource = new TableDataSource(this.databaseService, this.paginator, this.sort);
-    this.databaseService.getTeacherProfit();
-  }
+//   initiateTableHeaders() {
+//     this.tableColumns = [
+//       {
+//         columnDef: this.translateService.instant('table.id'),
+//         header: this.translateService.instant('table.id.label'),
+//         cell: (row: ITeacherProfitWithNotes) => row.clientId,
+//       },
+//       {
+//         columnDef: 'Name',
+//         header: 'الأسم',
+//         cell: (row: ITeacherProfitWithNotes) => row.name,
+//       },
+//       {
+//         columnDef: 'Total',
+//         header: 'التعاملات',
+//         cell: (row: ITeacherProfitWithNotes) => row.total,
+//       },
+//       {
+//         columnDef: 'Paid',
+//         header: 'دفع',
+//         cell: (row: ITeacherProfitWithNotes) => row.paid,
+//       },
+//       {
+//         columnDef: 'Rest',
+//         header: 'عليه',
+//         cell: (row: ITeacherProfitWithNotes) => row.rest,
+//       },
+//       {
+//         columnDef: 'Earning',
+//         header: 'الارباح',
+//         cell: (row: ITeacherProfitWithNotes) => row.earning,
+//       },
+//       {
+//         columnDef: 'Collected',
+//         header: 'مدفوع للعميل',
+//         cell: (row: ITeacherProfitWithNotes) => row.collected,
+//       },
+//       {
+//         columnDef: 'Pending',
+//         header: 'باقي للعميل',
+//         cell: (row: ITeacherProfitWithNotes) => row.pending,
+//       },
+//       {
+//         columnDef: 'NetCredit',
+//         header: 'له',
+//         cell: (row: ITeacherProfitWithNotes) => (row.net > 0 ? row.net : 0),
+//       },
+//       {
+//         columnDef: 'NetDebt',
+//         header: 'عليه',
+//         cell: (row: ITeacherProfitWithNotes) => (row.net < 0 ? Math.abs(row.net) : 0),
+//       },
+//     ];
+//   }
 
-  private initializeTableColumns() {
-    this.tableColumns = [
-      {
-        columnDef: this.translateService.instant('table.id'),
-        header: this.translateService.instant('table.id.label'),
-        cell: (row: TeacherProfitResponse) => this.databaseService.data.body.indexOf(row) + 1,
-      },
-      {
-        columnDef: 'name',
-        header: 'الأسم',
-        cell: (row: TeacherProfitResponse) => row.name,
-      },
-      {
-        columnDef: 'totalForOrders',
-        header: 'التعاملات',
-        cell: (row: TeacherProfitResponse) => row.totalForOrders,
-      },
-      {
-        columnDef: 'paidForOrders',
-        header: 'دفع',
-        cell: (row: TeacherProfitResponse) => row.paidForOrders,
-      },
-      {
-        columnDef: 'restForOrders',
-        header: 'عليه',
-        cell: (row: TeacherProfitResponse) => row.restForOrders,
-      },
-      {
-        columnDef: 'totalEarning',
-        header: 'الارباح',
-        cell: (row: TeacherProfitResponse) => row.totalEarning,
-      },
-      {
-        columnDef: 'totalCollected',
-        header: 'مدفوع للعميل',
-        cell: (row: TeacherProfitResponse) => row.totalCollected,
-      },
-      {
-        columnDef: 'totalPending',
-        header: 'باقي للعميل',
-        cell: (row: TeacherProfitResponse) => row.totalPending,
-      },
-      {
-        columnDef: 'rest',
-        header: 'الصافي',
-        cell: (row: TeacherProfitResponse) => row.rest,
-      },
-    ];
-  }
+//   initializeTableActions() {
+//     this.tableActions = [
+//       {
+//         condition: (forCurrentYearOnly: boolean, row: ITeacherProfitWithNotes) => true,
+//         action: (row: ITeacherProfitWithNotes) => this.onViewDetails(row),
+//         tooltip: 'عرض التفاصيل',
+//         icon: 'groups',
+//         position: TableActionPosition.Row,
+//       },
+//       {
+//         condition: (forCurrentYearOnly: boolean, row: ITeacherProfitWithNotes) => forCurrentYearOnly && row.rest > 0,
+//         action: async (row: ITeacherProfitWithNotes) => this.onTeacherPay(row),
+//         icon: 'paid',
+//         tooltip: 'سداد',
+//         position: TableActionPosition.Row,
+//       },
+//     ];
+//   }
 
-  async HandleTeacherPay(row: TeacherProfitResponse, $event: any) {
-    $event.stopPropagation();
-    const dialogRef = this.dialog.open<any>(PayTeacherProfitComponent, {
-      minWidth: '30%',
-      data: row,
-    });
-    dialogRef.afterClosed().subscribe({
-      next: (result) => {
-        this.databaseService.dataChange.value.body[this.databaseService.dataChange.value.body.findIndex((x: any) => x.id === result.row.id)] = result.row;
-        this.toastrService.success(result.res.message);
-      },
-    });
-  }
-}
+//   onTeacherPay(row: ITeacherProfitWithNotes) {
+//     const dialogRef = this.matDialog.open<any>(PayTeacherProfitFormDialogComponent, { data: row, minWidth: '30%' });
+//     this.matDialogCommunicationService.addDialog(dialogRef);
+//     dialogRef
+//       .afterClosed()
+//       .pipe(takeUntil(this.unsubscribe$))
+//       .subscribe({
+//         next: () => this.matDialogCommunicationService.removeDialog(dialogRef),
+//         complete: () => this.tableCommunicationService.reloadTable$.next(),
+//       });
+//   }
+
+//   onViewDetails(row: ITeacherProfitWithNotes) {
+//     const dialogRef = this.matDialog.open(ClientDetailsDialogComponent, { minWidth: '30%', data: row });
+//     this.matDialogCommunicationService.addDialog(dialogRef);
+//   }
+
+//   OnDestroy(): void {
+//     this.unitOfWorkService.unsubscribe();
+//   }
+// }

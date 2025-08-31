@@ -1,0 +1,9 @@
+<ng-container *ngIf="!(column | isActionsCol); else actionsCell">
+    <table-barcode [value]="column.getCellValueFn(row)" *ngIf="column.columnDef | isBarcode; else rowCell" />
+    <ng-template #rowCell>
+        <span [matTooltip]="(column | formatCellValue : row) || 'No data'"> {{ column | formatCellValue : row }} </span>
+    </ng-template>
+</ng-container>
+<ng-template #actionsCell>
+    <table-actions [actions]="actions" [isCurrentYear]="isCurrentYear" [row]="row" />
+</ng-template>

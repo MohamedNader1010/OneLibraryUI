@@ -1,0 +1,120 @@
+<div class="teacher-details container" *ngIf="data$ | async as t; else skeleton">
+    <!-- Header -->
+    <mat-card class="mat-elevation-z2 section-card">
+        <mat-card-header>
+            <div mat-card-avatar>
+                <mat-icon aria-hidden="true">school</mat-icon>
+            </div>
+            <mat-card-title>{{ t.name }}</mat-card-title>
+            <mat-card-subtitle>
+                <span class="meta-inline">
+                    <mat-icon inline>phone</mat-icon> <span>{{ t.phoneNumber }}</span>
+                </span>
+            </mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+
+    <!-- Account Summary -->
+    <app-account-summary [account]="t.account"></app-account-summary>
+
+    <!-- Orders -->
+    <mat-card class="mat-elevation-z2 section-card">
+        <mat-card-header>
+            <mat-card-title>الطلبات</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngIf="t.orders?.length; else noOrders">
+                <table class="mat-elevation-z1 orders-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الإجمالي</th>
+                            <th>النهائي</th>
+                            <th>خصم %</th>
+                            <th>الخصم</th>
+                            <th>المدفوع</th>
+                            <th>المتبقي</th>
+                            <th>الحالة</th>
+                            <th>ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let o of t.orders; let i = index" class="orders-row">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ o.totalPrice | number : '1.0-2' }}</td>
+                            <td>{{ o.finalPrice | number : '1.0-2' }}</td>
+                            <td>{{ o.discountPercent | number : '1.0-2' }}%</td>
+                            <td>{{ o.discount | number : '1.0-2' }}</td>
+                            <td>{{ o.paid | number : '1.0-2' }}</td>
+                            <td>{{ o.rest | number : '1.0-2' }}</td>
+                            <td>
+                                <mat-chip color="accent">{{ o.status }}</mat-chip>
+                            </td>
+                            <td [matTooltip]="o.remarks || ''">{{ o.remarks || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noOrders>
+                <div class="muted empty-state">
+                    <mat-icon>inbox</mat-icon>
+                    <span>لا توجد طلبات</span>
+                </div>
+            </ng-template>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Notes -->
+    <mat-card class="mat-elevation-z2 section-card">
+        <mat-card-header>
+            <mat-card-title>المذكرات</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngIf="t.notes?.length; else noNotes">
+                <table class="mat-elevation-z1 orders-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم</th>
+                            <th>الكمية</th>
+                            <th>السعر النهائي</th>
+                            <th>العميل</th>
+                            <th>سعر المعلم</th>
+                            <th>المرحلة</th>
+                            <th>الترم</th>
+                            <th>الأرباح</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let n of t.notes; let i = index" class="orders-row">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ n.name }}</td>
+                            <td>{{ n.quantity }}</td>
+                            <td>{{ n.finalPrice | number : '1.0-2' }}</td>
+                            <td>{{ n.client }}</td>
+                            <td>{{ n.teacherPrice | number : '1.0-2' }}</td>
+                            <td>{{ n.stage || '-' }}</td>
+                            <td>{{ n.term || '-' }}</td>
+                            <td>{{ n.earning | number : '1.0-2' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noNotes>
+                <div class="muted empty-state">
+                    <mat-icon>inbox</mat-icon>
+                    <span>لا توجد مذكرات</span>
+                </div>
+            </ng-template>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<ng-template #skeleton>
+    <mat-card class="mat-elevation-z1">
+        <mat-card-content class="skeleton-content">
+            <mat-progress-spinner mode="indeterminate" diameter="28"></mat-progress-spinner>
+            <span>جاري التحميل...</span>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

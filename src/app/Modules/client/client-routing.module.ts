@@ -1,24 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LoginGuard } from '../../core/authentication/guards/login.guard';
 import { ClientComponent } from './client.component';
-import { TeacherAccountComponent } from './components/teacherAccount/teacherAccount.component';
+import { ClientDetailsComponent } from './components/client-details/client-details.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: ClientComponent,
-    title: 'العملاء',
-    canActivateChild: [LoginGuard],
-    children: [
-      { path: '', component: TeacherAccountComponent, title: 'حسابات المدرسين' },
-      { path: '', redirectTo: 'all', pathMatch: 'full' },
-    ],
-  },
+    {
+        path: '',
+        title: 'العملاء',
+        children: [
+            { path: '', component: ClientComponent, pathMatch: 'full' },
+            { path: ':id', component: ClientDetailsComponent, title: 'تفاصيل العميل' }
+        ]
+    }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
 export class ClientRoutingModule {}

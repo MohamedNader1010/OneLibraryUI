@@ -3,7 +3,7 @@
 	"version": 1,
 	"newProjectRoot": "projects",
 	"projects": {
-		"OneLibraryUI": {
+		"one-book-store": {
 			"projectType": "application",
 			"schematics": {},
 			"root": "",
@@ -14,7 +14,7 @@
 					"builder": "@angular-devkit/build-angular:browser",
 					"options": {
             "allowedCommonJsDependencies": ["jsbarcode"],
-            "outputPath": "dist/one-library-ui",
+            "outputPath": "dist/one-book-store",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
@@ -82,11 +82,11 @@
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "OneLibraryUI:build:production",
+							"browserTarget": "one-book-store:build:production",
 							"host": "192.168.1.11"
 						},
 						"development": {
-							"browserTarget": "OneLibraryUI:build:development",
+							"browserTarget": "one-book-store:build:development",
 							"host": "localhost"
 						}
 					},
@@ -95,7 +95,7 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "OneLibraryUI:build"
+						"browserTarget": "one-book-store:build"
 					}
 				},
 				"test": {

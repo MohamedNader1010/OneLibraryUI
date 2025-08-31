@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  one-book-store-frontend:
+    image: one-book-store-frontend:latest
+    container_name: one-book-store-frontend
+    restart: unless-stopped

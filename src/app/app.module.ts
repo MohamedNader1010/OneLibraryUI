@@ -1,58 +1,65 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { JwtModule } from '@auth0/angular-jwt';
-import { environment } from 'src/environments/environment';
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { ErrorInterceptor } from './shared/interceptors/error-handling.interceptor';
-import { LoginGuard } from './core/authentication/guards/login.guard';
-import { TokenInterceptor } from './core/authentication/interceptors/token.interceptor';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { environment } from '../environments/environment';
 import { CustomMatPaginatorIntl } from './config/classes/CustomMatPaginatorIntl';
+import { TokenInterceptor } from './shared/interceptors/token.interceptor';
+import { ErrorInterceptor } from './shared/interceptors/error.interceptor';
+import { LocalStorageKeys } from './shared/constants/local-storage-keys.constants';
+import { RequestHeadersInterceptor } from './shared/interceptors/request-headers.interceptor';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 
 export function tokenGetter() {
-  return localStorage.getItem('token');
+    return localStorage.getItem(LocalStorageKeys.TOKEN);
 }
 @NgModule({
-  declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    CommonModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: [environment.host],
-        disallowedRoutes: [],
-      },
-    }),
-    ToastrModule.forRoot({ preventDuplicates: true, positionClass: 'toast-bottom-left', progressBar: true, newestOnTop: true, progressAnimation: 'decreasing' }),
-    BrowserAnimationsModule,
-    TranslateModule.forRoot({
-      defaultLanguage: 'ar',
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
-  ],
-  bootstrap: [AppComponent],
-  providers: [
-    LoginGuard,
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl },
-  ],
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        CommonModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: tokenGetter,
+                allowedDomains: [environment.host],
+                disallowedRoutes: []
+            }
+        }),
+        ToastrModule.forRoot({
+            preventDuplicates: true,
+            positionClass: 'toast-bottom-left',
+            progressBar: true,
+            newestOnTop: true,
+            progressAnimation: 'decreasing'
+        }),
+        BrowserAnimationsModule,
+        TranslateModule.forRoot({
+            defaultLanguage: 'ar',
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
+    ],
+    bootstrap: [AppComponent],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: RequestHeadersInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        { provide: MatPaginatorIntl, useClass: CustomMatPaginatorIntl }
+    ]
 })
 export class AppModule {}
 

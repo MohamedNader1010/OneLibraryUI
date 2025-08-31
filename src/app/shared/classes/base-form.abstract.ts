@@ -1,42 +1,66 @@
 import { inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { TableCommunicationService } from '../components/table/table-communication.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Observer } from 'rxjs';
-import { ResponseDto } from '../interfaces/response.dto';
+import { DestroyableComponentBase } from './destroyable-component-base.abstract';
+import { TableCommunicationService } from '../services/table-communication.service';
+import { TypedFormGroup } from '../../core/types/common.types';
+import { UnitOfWorkService } from '../../core/services/unit-of-work.service';
+import { MatDialogCommunicationService } from '../services/mat-dialog-communication.service';
+import { mappers, enums, getEnumValues } from '../utilities/enum.utility';
 
-export abstract class BaseForm {
-  public Form!: FormGroup;
-  public isSubmitting: boolean = false;
-  public formDataIsLoading = false;
+export abstract class BaseForm<TFormType, TMatDialogRef, TDialogData = any> extends DestroyableComponentBase {
+    tableCommunicationService = inject(TableCommunicationService);
+    matDialogCommunicationService = inject(MatDialogCommunicationService);
+    unitOfWorkService = inject(UnitOfWorkService);
+    translateService = inject(TranslateService);
+    toastrService = inject(ToastrService);
+    fb = inject(FormBuilder);
+    matDialogRef = inject(MatDialogRef<TMatDialogRef>);
+    dialog = inject(MatDialog);
+    data: TDialogData = inject(MAT_DIALOG_DATA);
 
-  public tableCommunicationService = inject(TableCommunicationService);
-  public matDialogRef = inject(MatDialogRef<any>);
-  public translateService = inject(TranslateService);
-  public toastrService = inject(ToastrService);
-  public fb = inject(FormBuilder);
+    mappers = mappers;
+    enums = enums;
+    getEnumValues = getEnumValues;
 
-  public get id(): FormControl {
-    return this.Form.get('id') as FormControl;
-  }
+    form!: TypedFormGroup<TFormType>;
+    isSubmitting: boolean = false;
+    isLoading: boolean = false;
+    formDataIsLoading = false;
 
-  closeDialogAndRefreshTable(): Observer<ResponseDto> {
-    return {
-      next: (res) => {
-        this.toastrService.success(res.message);
-        this.matDialogRef.close({ data: res });
-        this.tableCommunicationService.reloadTable$.next();
-      },
-      error: () => (this.isSubmitting = false),
-      complete: () => {
-        this.isSubmitting = false;
-      },
-    };
-  }
+    abstract onInit(): void;
+    abstract onDestroy(): void;
+    abstract handleSubmit(): void;
 
-  public onNoClick = () => this.matDialogRef.close();
+    get id(): FormControl {
+        return this.form.get('id') as FormControl;
+    }
 
-  public abstract handleSubmit(): void;
+    closeDialogAndRefreshTable(): Observer<any> {
+        return {
+            next: (res) => {
+                this.toastrService.success(res.message);
+                this.matDialogRef.close({ data: res });
+                this.tableCommunicationService.reload();
+            },
+            error: () => (this.isSubmitting = false),
+            complete: () => {
+                this.isSubmitting = false;
+            }
+        };
+    }
+
+    onNoClick = () => this.matDialogRef.close();
+
+    baseOnInit(): void {
+        this.onInit();
+    }
+
+    baseOnDestroy(): void {
+        this.onDestroy();
+        this.unitOfWorkService.unsubscribe();
+    }
 }

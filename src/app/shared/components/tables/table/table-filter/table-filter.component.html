@@ -1,0 +1,56 @@
+<ng-container *ngIf="column | isActionsCol; else filterInput">
+    <button mat-icon-button color="warn" matSuffix aria-label="Clear filters" (click)="onClearFilters($event)">
+        <mat-icon>close</mat-icon>
+    </button>
+</ng-container>
+
+<ng-template #filterInput>
+    <ng-container *ngIf="column.filterType !== 'date'; else dateFilter">
+        <mat-form-field color="warn" class="w-100">
+            <ng-container *ngIf="column.filterAsyncOptions; else filterOptions">
+                <mat-select
+                    [(ngModel)]="column.filterValue"
+                    (selectionChange)="onFilterChange($event)"
+                    [disabled]="!!column.disableFilter">
+                    <mat-option [value]="null">-</mat-option>
+                    <mat-option *ngFor="let opt of column.filterAsyncOptions | async" [value]="opt.value">{{ opt.label }}</mat-option>
+                </mat-select>
+            </ng-container>
+
+            <ng-template #filterOptions>
+                <ng-container *ngIf="column.filterOptions; else otherFilter">
+                    <mat-select
+                        [(ngModel)]="column.filterValue"
+                        (selectionChange)="onFilterChange($event)"
+                        [disabled]="!!column.disableFilter">
+                        <mat-option [value]="null">-</mat-option>
+                        <mat-option *ngFor="let opt of column.filterOptions" [value]="opt.value">{{ opt.label }}</mat-option>
+                    </mat-select>
+                </ng-container>
+            </ng-template>
+
+            <ng-template #otherFilter>
+                <input
+                    matInput
+                    [type]="column.filterType || 'text'"
+                    [(ngModel)]="column.filterValue"
+                    [disabled]="!!column.disableFilter"
+                    (input)="onFilterChange($event)" />
+            </ng-template>
+        </mat-form-field>
+    </ng-container>
+
+    <ng-template #dateFilter>
+        <mat-form-field color="warn" class="w-100">
+            <input
+                matInput
+                [matDatepicker]="picker"
+                (dateInput)="onDateChange($event)"
+                [(ngModel)]="column.filterValue"
+                [readonly]="true" />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    </ng-template>
+</ng-template>

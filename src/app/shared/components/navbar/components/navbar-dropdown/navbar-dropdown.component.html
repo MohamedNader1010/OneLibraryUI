@@ -1,0 +1,33 @@
+<ng-container *ngFor="let navItem of navItems">
+    <ng-container *ngIf="navItem.items; else link">
+        <li class="nav-item dropdown" *ngIf="navItem.visible">
+            <span class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ navItem.title }}
+            </span>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li class="dropdown-item" *ngFor="let item of navItem.items">
+                    <a
+                        *ngIf="item.visible"
+                        class="nav-link"
+                        [routerLink]="[item.routerLink]"
+                        [routerLinkActiveOptions]="{ exact: item.exact }"
+                        routerLinkActive="active link-danger">
+                        {{ item.text }}
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ng-container>
+    <ng-template #link>
+        <li class="nav-item" *ngIf="navItem.visible">
+            <a
+                class="nav-link"
+                aria-current="page"
+                [routerLink]="[navItem.routerLink]"
+                [routerLinkActiveOptions]="{ exact: !!navItem.exact }"
+                routerLinkActive="active link-danger">
+                {{ navItem.title }}
+            </a>
+        </li>
+    </ng-template>
+</ng-container>

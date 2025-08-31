@@ -1,164 +1,295 @@
 {
-  "table.id": "Id",
-  "table.id.label": "#",
-  "table.startTime": "time-startTime",
-  "table.startTime.label": "بداية الشيفت",
-  "table.endTime": "time-endTime",
-  "table.endTime.label": "نهاية الشيفت",
-  "table.startingBalance": "startingBalance",
-  "table.startingBalance.label": "الرصيد الافتتاحي",
-  "table.totalIncome": "totalIncome",
-  "table.totalIncome.label": "اجمالي الوارد",
-  "table.totalOutcome": "totalOutcome",
-  "table.totalOutcome.label": "اجمالي الصادر",
-  "table.closingBalance": "closingBalance",
-  "table.closingBalance.label": "الرصيد النهائي",
-  "table.createdBy": "createdBy",
-  "table.createdBy.label": "تم بواسطة",
-  "table.createdAt": "time-createdOn",
-  "table.createdAt.label": "وقت التسجيل",
-
-  "button.save": "حفظ",
-  "button.wait": "انتظر من فضلك",
-  "button.delete": "حذف",
-  "button.back": "رجوع",
-
-  "error.cantLoadData": "لا يمكن تحميل البيانات",
-  "error.cantLoadPrices": "لا يمكن تحميل الاسعار",
-  "error.name": "Error",
-  "error.mustEnterMaterialName": "يجب ادخال اسم الخامه",
-  "error.youMustChoosePrice": "يجب تحديد السعر",
-
-  "service.name": "الخدمات",
-  "service.edit": "تعديل الخدمة",
-  "service.new": "اضافة خدمة جديده",
-
-  "warn.deletion.message": "سيتم حذف البيانات, هل انت متأكد؟",
-
-  "order.name": "الطلبات",
-  "order.item": "الصنف",
-  "order.item.label": "item",
-  "order.number": "رقم الطلب",
-  "order.number.label": "order Id",
-  "order.status": "حالة الطلب",
-  "order.status.label": "OrderStatus",
-  "order.delete": "حذف الطلب",
-  "order.new": "طلب جديد",
-  "order.edit": "تعديل الطلب",
-  "order.transaction": "عملية دفع",
-
-  "note.name": "المذكرات",
-
-  "shared.amount": "المبلغ",
-  "shared.comments": "ملاحظات",
-  "shared.price": "السعر",
-  "shared.price.label": "Price",
-  "shared.totalPrice": "السعر الكلي",
-  "shared.totalPrice.label": "TotalPrice",
-  "shared.finalPrice": "السعر النهائي",
-  "shared.discountValue": "خصم مبلغ",
-  "shared.discountPercent": "خصم نسبه",
-  "shared.paid": "المدفوع",
-  "shared.paid.label": "Paid",
-  "shared.rest": "الباقي",
-  "shared.rest.label": "Rest",
-  "shared.clientRemarks": "ملحوظات العميل",
-  "shared.client": "العميل",
-  "shared.client.label": "Name",
-  "shared.clientPhoneNumber": "رقم التليفون",
-  "shared.clientPhoneNumber.label": "PhoneNumber",
-  "shared.remarks.label": "Remarks",
-  "shared.remarks": "ملاحظات",
-  "shared.clientType": "نوع العميل",
-  "shared.notice": "الملحوظات",
-  "shared.clientName": "اسم العميل",
-  "shared.service": "الخدمات",
-  "shared.note": "المذكرات",
-  "shared.unsavedMessage.title": "لم يتم حفظ التعديلات",
-  "shared.unsavedMessage.body": "لقد قمت بتعديل بعض البيانات ولم تقم بحفظها هل انت متاكد من مغادرة الصفحة",
-
-  "material.edit": "تعديل الخامات",
-  "material.new": "خامات جديده",
-  "supplier.edit": "تعديل الخامات",
-  "supplier.new": "خامات جديده",
-
-  "form.name": "name",
-  "form.name.label": "الإسم",
-  "form.username": "username",
-  "form.username.label": "إسم المستخدم",
-  "form.phoneNumber": "phoneNumber",
-  "form.phoneNumber.label": "رقم التليفون",
-  "form.email": "email",
-  "form.email.label": "البريد الإلكتروني",
-  "form.emailConfirmed": "emailConfirmed",
-  "form.emailConfirmed.label": "حالة البريد الإلكتروني",
-  "form.email.active": "مفعل",
-  "form.email.inactive": "غير مفعل",
-  "form.material.wholesalePrice": "wholesalePrice",
-  "form.material.wholesalePrice.label": "سعر الجمله",
-  "form.material.currentQty": "Current Quantity",
-  "form.material.currentQty.label": "الكميه الحاليه",
-  "form.client.type": "type",
-  "form.client.type.label": "النوع",
-  "form.client.total": "total",
-  "form.client.total.label": "إجمالي التعاملات",
-  "form.client.paid": "paid",
-  "form.client.paid.label": "قام بدفع",
-  "form.client.rest": "rest",
-  "form.client.rest.label": "المتبقي",
-  "form.Supplier.totalDue": "totalDue",
-  "form.Supplier.totalDue.label": "إجمالي المستحقات",
-  "form.Supplier.paid": "paid",
-  "form.Supplier.paid.label": "قام بدفع",
-  "form.Supplier.rest": "rest",
-  "form.Supplier.rest.label": "المتبقي",
-  "form.Supplier.takeMoney": "takeMoney",
-  "form.Supplier.takeMoney.label": "أستلم",
-
-  "keys.material.name": "إسم الخامه",
-  "keys.material.price": "السعر",
-  "keys.material.quantity": "الكميه الحاليه",
-  "keys.attendance.checkIn": "الحضور",
-  "keys.attendance.checkOut": "الانصراف",
-  "keys.attendance.employee": "اسم الموظف",
-  "keys.attendance.employeeId": "بيان الموظف",
-  "keys.service.name": "أسم الخدمة",
-  "keys.service.serviceType": "نوع الخدمة",
-  "keys.service.serviceMaterial.material": "أسم الخامة",
-  "keys.service.serviceMaterial.service": "أسم الخدمة",
-  "keys.employee.email": "البريد الإلكتروني",
-  "keys.employee.emailConfirmed": "تـأكيد البريد الإلكتروني",
-  "keys.employee.name": "إسم الموظف",
-  "keys.employee.phoneNumber": "رقم التليفون",
-  "keys.employee.userName": "إسم المستخدم",
-  "keys.client.clientType": "نوع العميل",
-  "keys.client.clientTypeId": "بيان نوع العميل",
-  "keys.client.name": "إسم العميل",
-  "keys.client.paid": "قام بدفع",
-  "keys.client.phoneNumber": "رقم التليفون",
-  "keys.client.rest": "المتبقي",
-  "keys.client.total": "إجمالي التعاملات",
-
-  "quantity": "quantity",
-  "quantity.label": "الكمية",
-  "copies.label": "النسخ",
-  "title.main": "الرئيسيه",
-  "totalOrderStatus": "مجموع حالات الطلبات",
-  "completed": "مكتمل",
-  "incompleted": "غير مكتمل",
-  "gone": "هالك",
-  "reserved": "حجوزات",
-  "prepared": "اعداد",
-  "received": "استلم",
-  "returned": "مرتجعات",
-  "ready": "جاهز",
-
-  "transaction.type": "النوع",
-
-  "form.Employee.totalCommitment": "totalCommitment",
-  "form.Employee.totalCommitment.label": "اجمالي الالتزامات",
-  "form.Employee.paid": "paid",
-  "form.Employee.paid.label": "المدفوع",
-  "form.Employee.rest": "rest",
-  "form.Employee.rest.label": "المتبقي"
+    "navbar": {
+        "home": "الرئيسية",
+        "services": "الخدمات",
+        "serviceTypes": "أنواع الخدمات",
+        "clients": "العملاء",
+        "clientTypes": "أنواع العملاء",
+        "teachers": "المدرسين",
+        "teacherAccounts": "حسابات المدرسين",
+        "clientFeedback": "ملاحظات العملاء",
+        "suppliers": "الموردين",
+        "employees": "الموظفين",
+        "attendance": "الحضور و الأنصراف",
+        "materials": "الخامات",
+        "materialTransactions": "معاملات الخامات",
+        "notes": "المذكرات",
+        "orders": "الطلبات",
+        "reservations": "الحجوزات",
+        "returns": "المرتجعات",
+        "unfinishedOrders": "الطلبات غير المكتملة",
+        "financial": "المالية",
+        "bank": "البنك",
+        "shifts": "الشيفتات",
+        "transactions": "المعاملات",
+        "advances": "السلف",
+        "payables": "مستحقات الموردين",
+        "receivables": "مستحقات",
+        "operationalExpenses": "المصروفات التشغيلية"
+    },
+    "employee": {
+        "table": {
+            "columns": {
+                "name": {
+                    "def": "name",
+                    "label": "الاسم"
+                },
+                "username": {
+                    "def": "username",
+                    "label": "اسم المستخدم"
+                },
+                "phoneNumber": {
+                    "def": "phoneNumber",
+                    "label": "رقم الهاتف"
+                },
+                "email": {
+                    "def": "email",
+                    "label": "البريد الإلكتروني"
+                },
+                "emailConfirmed": {
+                    "def": "emailConfirmed",
+                    "label": "تأكيد البريد الإلكتروني"
+                },
+                "Employee": {
+                    "advanceLimit": {
+                        "def": "advanceLimit",
+                        "label": "حد السلفة"
+                    },
+                    "totalAdvances": {
+                        "def": "totalAdvances",
+                        "label": "إجمالي السلف"
+                    },
+                    "paid": {
+                        "def": "paid",
+                        "label": "المدفوع"
+                    },
+                    "rest": {
+                        "def": "rest",
+                        "label": "المتبقي"
+                    }
+                }
+            },
+            "actions": {
+                "addNew": "إضافة جديد",
+                "edit": "تعديل",
+                "advanceTransaction": "عملية سلفة",
+                "advanceList": "قائمة السلف"
+            },
+            "email": {
+                "active": "مفعل",
+                "inactive": "غير مفعل"
+            }
+        }
+    },
+    "table": {
+        "columns": {
+            "id": "#",
+            "createdOn": "تاريخ الإنشاء",
+            "createdBy": "تم الإنشاء بواسطة",
+            "modifiedBy": "تم التعديل بواسطة",
+            "modifiedOn": "تاريخ التعديل"
+        },
+        "id": "Id",
+        "id.label": "#",
+        "startTime": "time-startTime",
+        "startTime.label": "بداية الشيفت",
+        "endTime": "time-endTime",
+        "endTime.label": "نهاية الشيفت",
+        "startingBalance": "startingBalance",
+        "startingBalance.label": "الرصيد الافتتاحي",
+        "totalIncome": "totalIncome",
+        "totalIncome.label": "اجمالي الوارد",
+        "totalOutcome": "totalOutcome",
+        "totalOutcome.label": "اجمالي الصادر",
+        "closingBalance": "closingBalance",
+        "closingBalance.label": "الرصيد النهائي",
+        "createdBy": "createdBy",
+        "createdBy.label": "تم بواسطة",
+        "createdAt": "time-createdOn",
+        "createdAt.label": "وقت التسجيل"
+    },
+    "button": {
+        "save": "حفظ",
+        "wait": "انتظر من فضلك",
+        "delete": "حذف",
+        "back": "رجوع"
+    },
+    "error": {
+        "cantLoadData": "لا يمكن تحميل البيانات",
+        "cantLoadPrices": "لا يمكن تحميل الاسعار",
+        "name": "Error",
+        "mustEnterMaterialName": "يجب ادخال اسم الخامه",
+        "youMustChoosePrice": "يجب تحديد السعر"
+    },
+    "service": {
+        "name": "الخدمات",
+        "edit": "تعديل الخدمة",
+        "new": "اضافة خدمة جديده"
+    },
+    "warn": {
+        "deletion.message": "سيتم حذف البيانات, هل انت متأكد؟"
+    },
+    "order": {
+        "name": "الطلبات",
+        "item": "الصنف",
+        "item.label": "item",
+        "number": "رقم الطلب",
+        "number.label": "order Id",
+        "status": "حالة الطلب",
+        "status.label": "OrderStatus",
+        "delete": "حذف الطلب",
+        "new": "طلب جديد",
+        "edit": "تعديل الطلب",
+        "transaction": "عملية دفع"
+    },
+    "note": {
+        "name": "المذكرات"
+    },
+    "shared": {
+        "amount": "المبلغ",
+        "comments": "ملاحظات",
+        "price": "السعر",
+        "price.label": "Price",
+        "totalPrice": "السعر الكلي",
+        "totalPrice.label": "TotalPrice",
+        "finalPrice": "السعر النهائي",
+        "discountValue": "خصم مبلغ",
+        "discountPercent": "خصم نسبه",
+        "paid": "المدفوع",
+        "paid.label": "Paid",
+        "rest": "الباقي",
+        "rest.label": "Rest",
+        "clientRemarks": "ملحوظات العميل",
+        "client": "العميل",
+        "client.label": "Name",
+        "clientPhoneNumber": "رقم التليفون",
+        "clientPhoneNumber.label": "PhoneNumber",
+        "remarks": "ملاحظات",
+        "remarks.label": "Remarks",
+        "clientType": "نوع العميل",
+        "notice": "الملحوظات",
+        "clientName": "اسم العميل",
+        "service": "الخدمات",
+        "note": "المذكرات",
+        "unsavedMessage": {
+            "title": "لم يتم حفظ التعديلات",
+            "body": "لقد قمت بتعديل بعض البيانات ولم تقم بحفظها هل انت متاكد من مغادرة الصفحة"
+        }
+    },
+    "material": {
+        "edit": "تعديل الخامات",
+        "new": "خامات جديده"
+    },
+    "supplier": {
+        "edit": "تعديل الخامات",
+        "new": "خامات جديده"
+    },
+    "form": {
+        "name": "name",
+        "name.label": "الإسم",
+        "username": "username",
+        "username.label": "إسم المستخدم",
+        "phoneNumber": "phoneNumber",
+        "phoneNumber.label": "رقم التليفون",
+        "email": "email",
+        "email.label": "البريد الإلكتروني",
+        "emailConfirmed": "emailConfirmed",
+        "emailConfirmed.label": "حالة البريد الإلكتروني",
+        "email.active": "مفعل",
+        "email.inactive": "غير مفعل",
+        "material": {
+            "wholesalePrice": "wholesalePrice",
+            "wholesalePrice.label": "سعر الجمله",
+            "currentQty": "Current Quantity",
+            "currentQty.label": "الكميه الحاليه"
+        },
+        "client": {
+            "type": "type",
+            "type.label": "النوع",
+            "total": "total",
+            "total.label": "إجمالي التعاملات",
+            "paid": "paid",
+            "paid.label": "قام بدفع",
+            "rest": "rest",
+            "rest.label": "المتبقي"
+        },
+        "supplier": {
+            "totalDue": "totalDue",
+            "totalDue.label": "إجمالي المستحقات",
+            "paid": "paid",
+            "paid.label": "قام بدفع",
+            "rest": "rest",
+            "rest.label": "المتبقي",
+            "takeMoney": "takeMoney",
+            "takeMoney.label": "أستلم"
+        },
+        "employee": {
+            "totalCommitment": "totalCommitment",
+            "totalCommitment.label": "اجمالي الالتزامات",
+            "paid": "paid",
+            "paid.label": "المدفوع",
+            "rest": "rest",
+            "rest.label": "المتبقي"
+        }
+    },
+    "keys": {
+        "material": {
+            "name": "إسم الخامه",
+            "price": "السعر",
+            "quantity": "الكميه الحاليه"
+        },
+        "attendance": {
+            "checkIn": "الحضور",
+            "checkOut": "الانصراف",
+            "employee": "اسم الموظف",
+            "employeeId": "بيان الموظف"
+        },
+        "service": {
+            "name": "أسم الخدمة",
+            "serviceType": "نوع الخدمة",
+            "serviceMaterial": {
+                "material": "أسم الخامة",
+                "service": "أسم الخدمة"
+            }
+        },
+        "employee": {
+            "email": "البريد الإلكتروني",
+            "emailConfirmed": "تـأكيد البريد الإلكتروني",
+            "name": "إسم الموظف",
+            "phoneNumber": "رقم التليفون",
+            "userName": "إسم المستخدم"
+        },
+        "client": {
+            "clientType": "نوع العميل",
+            "clientTypeId": "بيان نوع العميل",
+            "name": "إسم العميل",
+            "paid": "قام بدفع",
+            "phoneNumber": "رقم التليفون",
+            "rest": "المتبقي",
+            "total": "إجمالي التعاملات"
+        }
+    },
+    "quantity": {
+        "label": "الكمية"
+    },
+    "copies": {
+        "label": "النسخ"
+    },
+    "title": {
+        "main": "الرئيسيه"
+    },
+    "orderStatus": {
+        "total": "مجموع حالات الطلبات",
+        "completed": "مكتمل",
+        "incompleted": "غير مكتمل",
+        "gone": "هالك",
+        "reserved": "حجوزات",
+        "prepared": "اعداد",
+        "received": "استلم",
+        "returned": "مرتجعات",
+        "ready": "جاهز"
+    },
+    "transaction": {
+        "type": "النوع"
+    }
 }

@@ -5,13 +5,13 @@
 	</ng-template>
 	<mat-dialog-content>
 		<mat-spinner *ngIf="isLoading" class="mx-auto mt-5" color="warn"></mat-spinner>
-		<form *ngIf="!isLoading" [formGroup]="Form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
+		<form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="handleSubmit()" class="d-flex flex-column w-100">
 			<div class="row">
 				<div class="col">
 					<mat-form-field class="w-100" color="warn">
 						<mat-label>الأسم</mat-label>
 						<input matInput formControlName="name" />
-						<mat-error *ngIf="name.errors?.['required']"> يجب ادخال البيانات </mat-error>
+						<mat-error *ngIf="form.controls.name.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -21,8 +21,8 @@
 						<mat-label>رقم التلفون</mat-label>
 						<input type="tel" matInput formControlName="phoneNumber" />
 						<mat-icon matSuffix>phone</mat-icon>
-						<mat-error *ngIf="phone.errors?.['pattern']&& !phone.errors?.['required']"> يجب ادخال رقم تليفون صحيح </mat-error>
-						<mat-error *ngIf="phone.errors?.['required']"> يجب ادخال البيانات </mat-error>
+						<mat-error *ngIf="form.controls.phoneNumber.errors?.['pattern']&& !form.controls.phoneNumber.errors?.['required']"> يجب ادخال رقم تليفون صحيح </mat-error>
+						<mat-error *ngIf="form.controls.phoneNumber.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 				<div class="col">
@@ -31,12 +31,12 @@
 						<mat-select formControlName="clientTypeId">
 							<mat-option *ngFor="let type of ClientTypeDataSource" [value]="type.id">{{ type.name }}</mat-option>
 						</mat-select>
-						<mat-error *ngIf="clientTypeId.errors?.['required']"> يجب ادخال البيانات </mat-error>
+						<mat-error *ngIf="form.controls.clientTypeId.errors?.['required']"> يجب ادخال البيانات </mat-error>
 					</mat-form-field>
 				</div>
 			</div>
 			<div class="my-2 d-flex flex-row-reverse">
-				<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !Form.valid }}">حفظ</button>
+				<button mat-flat-button color="warn" class="mx-2 px-4" disabled="{{ !form.valid }}">حفظ</button>
 				<button type="button" mat-stroked-button color="basic" (click)="onNoClick()">رجوع</button>
 			</div>
 		</form>

@@ -13,10 +13,9 @@ export class CustomMatPaginatorIntl extends MatPaginatorIntl {
 
   override getRangeLabel = (page: number, pageSize: number, length: number) => {
     if (length === 0 || pageSize === 0) {
-      return `0 of ${length}`;
+      return `لا يوجد بيانات`;
     }
     const startIndex = page * pageSize;
-    const endIndex = Math.min(startIndex + pageSize, length); /// need to check this
     return `${startIndex + 1} - ${length}`;
   };
 }

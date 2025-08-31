@@ -1,6 +1,7 @@
 let host = 'https://localhost:7222/';
 export const environment = {
-	production: false,
-	apiUrl: `${host}api/`,
-	host: host,
+    production: false,
+    apiUrl: `${host}api/`,
+    host: host,
+    appVersion: require('../../package.json').version
 };

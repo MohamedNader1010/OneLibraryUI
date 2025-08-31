@@ -1,8 +1,0 @@
-export interface Bank {
-  id: number;
-  name: string;
-  startingBalance: string;
-  balance: string;
-  totalDebit: string;
-  totalCredit: string;
-}

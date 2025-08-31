@@ -1,0 +1,6 @@
+<ng-container *ngIf="!(column | isActionsCol); else actionsHeader">
+    {{ column.header }}
+</ng-container>
+<ng-template #actionsHeader>
+    <table-actions [actions]="actions" [isCurrentYear]="isCurrentYear" />
+</ng-template>

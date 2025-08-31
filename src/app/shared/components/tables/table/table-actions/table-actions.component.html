@@ -1,0 +1,10 @@
+<ng-container *ngFor="let action of actions">
+    <button
+        *ngIf="action.condition(isCurrentYear, row)"
+        mat-icon-button
+        color="basic"
+        [matTooltip]="action.tooltip"
+        (click)="action.action(row)">
+        <mat-icon>{{ action.icon }}</mat-icon>
+    </button>
+</ng-container>

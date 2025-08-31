@@ -1,0 +1,8 @@
+.active {
+  border-bottom: 2px solid rgb(160, 1, 1);
+  animation-timing-function: ease-in-out;
+}
+
+.dropdown-item:active {
+  background-color: transparent !important;
+}

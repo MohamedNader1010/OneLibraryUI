@@ -1,13 +1,13 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild, Input, OnDestroy, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
-import { ToastrService } from "ngx-toastr";
+import { Component, ElementRef, EventEmitter, Output, ViewChild, Input, OnInit, inject } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-drag-and-drop',
   templateUrl: './drag-and-drop.component.html',
   styleUrls: ['./drag-and-drop.component.css'],
 })
 export class DragAndDropComponent implements OnInit {
-  constructor(private _toastrService: ToastrService) {}
+  toastrService = inject(ToastrService);
+
   @ViewChild('fileDropRef', { static: false }) fileDropElment!: ElementRef;
   @Input() progress: number = 0;
   @Output() selectedFile = new EventEmitter<File | null>();
@@ -24,7 +24,7 @@ export class DragAndDropComponent implements OnInit {
   };
   async prepareFilesList(file: File) {
     if (file.size > 1024 * 1024 * 100) {
-      this._toastrService.error('file size exceeded the accepted file size ,please select smaller file', 'too larg document');
+      this.toastrService.error('file size exceeded the accepted file size ,please select smaller file', 'too larg document');
       return;
     }
     this.handleUpload(file);
@@ -43,4 +43,3 @@ export class DragAndDropComponent implements OnInit {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }
-

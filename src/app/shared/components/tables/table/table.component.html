@@ -1,0 +1,49 @@
+<section class="container-fluid d-flex flex-column py-2 h-100">
+    <div class="loading-shade" *ngIf="dataSource?.isLoading"><mat-spinner color="warn" /></div>
+    <div class="flex-grow-1 mat-elevation-z2 w-100 overflow-auto">
+        <table mat-table [dataSource]="dataSource" matSort [matSortActive]="activeSortColumn" matSortDirection="desc" recycleRows>
+            <ng-container *ngFor="let column of tableColumns; let first = first; let last = last">
+                <ng-container [matColumnDef]="column.columnDef" [sticky]="first" [stickyEnd]="(column | isActionsCol) || last">
+                    <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        mat-sort-header
+                        (click)="handleSortChange($event, column)"
+                        [disabled]="column.disableSort">
+                        <table-header-cell
+                            [column]="column"
+                            [actions]="headerActions"
+                            [isCurrentYear]="true"></table-header-cell>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <table-row-cell
+                            [column]="column"
+                            [actions]="rowActions"
+                            [isCurrentYear]="true"
+                            [row]="row"></table-row-cell>
+                    </td>
+                </ng-container>
+
+                <ng-container
+                    [matColumnDef]="'filter_' + column.columnDef"
+                    [sticky]="first"
+                    [stickyEnd]="(column | isActionsCol) || last">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <table-filter
+                            [column]="column"
+                            (filterChange)="onFilterChange($event, column)"
+                            (clearFilters)="onClearFilters()"></table-filter>
+                    </th>
+                </ng-container>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="headerColumns; sticky: true"></tr>
+            <tr mat-header-row *matHeaderRowDef="filterColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: headerColumns" class="element-row"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell text-center" [colSpan]="tableColumns.length">لا يوجد بيانات</td>
+            </tr>
+        </table>
+    </div>
+    <mat-paginator class="d-flex" [pageSizeOptions]="pageSizeOptions" [pageSize]="25" showFirstLastButtons color="warn" />
+</section>

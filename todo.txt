@@ -1,0 +1,3 @@
+
+//how to handle uncompleted commitments and dues for closed fiscal year????
+//add financial summaries when new fiscal year is opened, ==> may be this is not needed

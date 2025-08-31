@@ -1,0 +1,115 @@
+table {
+  background-color: white;
+  table-layout: auto;
+}
+
+.mat-mdc-header-cell {
+  user-select: none;
+  white-space: nowrap;
+}
+
+.mat-mdc-row {
+  white-space: nowrap;
+}
+
+.element-row:hover,
+.element-row:hover .mat-mdc-cell {
+  border-color: orangered;
+  background-color: rgb(255, 219, 219);
+}
+
+.mat-column-filter_Id,
+.mat-column-Id {
+  width: auto;
+  max-width: 100px;
+  text-align: right;
+}
+
+.mat-column-filter_Barcode-Id,
+.mat-column-Barcode-Id {
+  width: auto;
+  max-width: 200px;
+  text-align: right;
+}
+
+.mat-column-filter_Total,
+.mat-column-filter_total,
+.mat-column-filter_FinalPrice,
+.mat-column-filter_TeacherPrice,
+.mat-column-filter_Earning,
+.mat-column-filter_OriginalPrice,
+.mat-column-filter_ActualPrice,
+.mat-column-filter_Total,
+.mat-column-filter_quantity,
+.mat-column-filter_Quantity,
+.mat-column-filter_Term-Name,
+.mat-column-filter_Stage-Name,
+.mat-column-filter_amount,
+.mat-column-filter_Amount,
+.mat-column-filter_rest,
+.mat-column-filter_Rest,
+.mat-column-filter_paid,
+.mat-column-filter_Paid,
+.mat-column-filter_Remarks,
+.mat-column-filter_remarks,
+.mat-column-filter_CreatedBy,
+.mat-column-Total,
+.mat-column-total,
+.mat-column-FinalPrice,
+.mat-column-TeacherPrice,
+.mat-column-Earning,
+.mat-column-OriginalPrice,
+.mat-column-ActualPrice,
+.mat-column-Total,
+.mat-column-quantity,
+.mat-column-Quantity,
+.mat-column-Term-Name,
+.mat-column-Stage-Name,
+.mat-column-amount,
+.mat-column-Amount,
+.mat-column-rest,
+.mat-column-Rest,
+.mat-column-paid,
+.mat-column-Paid,
+.mat-column-Remarks,
+.mat-column-remarks,
+.mat-column-CreatedBy {
+  width: auto;
+  max-width: 120px !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mat-column-filter_CreatedOn,
+.mat-column-filter_type,
+.mat-column-filter_Type,
+.mat-column-filter_status,
+.mat-column-filter_Status,
+.mat-column-filter_ServiceMaterials-Material-Name,
+.mat-column-CreatedOn,
+.mat-column-filter_Client-PhoneNumber,
+.mat-column-filter_PhoneNumber,
+.mat-column-type,
+.mat-column-Type,
+.mat-column-status,
+.mat-column-Status,
+.mat-column-ServiceMaterials-Material-Name,
+.mat-column-Client-PhoneNumber,
+.mat-column-PhoneNumber {
+  width: auto;
+  max-width: 190px !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loading-shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(94, 6, 6, 0);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

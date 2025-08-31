@@ -1,0 +1,10 @@
+<div class="loading" *ngIf="isLoading">
+  <mat-spinner color="warn"></mat-spinner>
+</div>
+<ng-container *ngIf="!isLoading">
+  <h4 mat-dialog-title>{{ clientWithProfit.name }}</h4>
+
+  <div mat-dialog-content>
+    <app-teacher-profit-sub-table [data]="clientWithProfit.notes"></app-teacher-profit-sub-table>
+  </div>
+</ng-container>

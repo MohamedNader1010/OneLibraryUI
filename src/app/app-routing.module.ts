@@ -1,17 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginGuard } from './core/authentication/guards/login.guard';
+import { loginGuard } from './shared/guards/login.guard';
+import { authGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
-  {
-    path: 'auth',
-    loadChildren: () => import('./core/authentication/auth.module').then((m) => m.AuthModule),
-  },
-  {
-    path: '',
-    loadChildren: () => import('./shared/shared.module').then((m) => m.SharedModule),
-    canLoad: [LoginGuard],
-  },
+    {
+        path: 'auth',
+        loadChildren: () => import('./modules/authentication/auth.module').then((m) => m.AuthModule),
+        canMatch: [loginGuard],
+        canActivate: [loginGuard]
+    },
+    {
+        path: '',
+        loadChildren: () => import('./shared/shared.module').then((m) => m.SharedModule),
+        canMatch: [authGuard],
+        canActivate: [authGuard],
+        canActivateChild: [authGuard]
+    }
 ];
 
 @NgModule({

@@ -1,77 +1,95 @@
-import { IDashboard } from '../../../core/data/models/dashboard/dashboard.interface';
-
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
-import { DashboardService } from '../../../core/data/services/dashboard.service';
 
 import { TranslateService } from '@ngx-translate/core';
-import { forkJoin } from 'rxjs';
-import { IDashboardStatistics } from '../../../core/data/models/dashboard/dashboard-statistics.interface';
+import { finalize, forkJoin } from 'rxjs';
+import { DestroyableComponentBase } from '../../classes/destroyable-component-base.abstract';
+import { UnitOfWorkService } from '../../../core/services/unit-of-work.service';
+import { IDashBoardDataDTO } from '../../../core/models/DashBoard/dtos/dashboard-data-dto.interface';
+import { IDashboardStatisticsDTO } from '../../../core/models/DashBoard/dtos/dashboard-statistics-dto.interface';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent implements OnInit {
-  public dashboardData!: IDashboard;
-  public dashboardStatistics!: IDashboardStatistics | null;
-  public pieChartOptions: ChartOptions<'pie'> = {
-    responsive: true,
-  };
-  public pieChartLabels: string[] = [];
-  public pieChartDatasets = [
-    {
-      data: [0, 0],
-    },
-  ];
-  public pieChartLegend = true;
-  public pieChartPlugins = [];
+export class DashboardComponent extends DestroyableComponentBase {
+    unitOfWorkService = inject(UnitOfWorkService);
+    translateService = inject(TranslateService);
 
-  constructor(private _dashboardService: DashboardService, private _translateService: TranslateService) {}
+    dashboardData!: IDashBoardDataDTO;
+    dashboardStatistics!: IDashboardStatisticsDTO | null;
+    pieChartOptions: ChartOptions<'pie'> = {
+        responsive: true
+    };
+    pieChartLabels: string[] = [];
+    pieChartDatasets = [
+        {
+            data: [0, 0]
+        }
+    ];
+    pieChartLegend = true;
+    pieChartPlugins = [];
+    isLoading = true;
 
-  ngOnInit() {
-    this._getDashboardData();
-  }
-  public barChartLegend = true;
-  public barChartPlugins = [];
-  public barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: [],
-    datasets: [
-      {
-        data: [],
-        label: this.translateWord('totalOrderStatus'),
-      },
-    ],
-  };
-  public barChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: true,
-  };
-  private _getDashboardData() {
-    forkJoin([this._dashboardService.getDashboardData(), this._dashboardService.getStatistics()]).subscribe(([data, statisticsResponse]) => {
-      this.dashboardData = data.body;
-      this.dashboardStatistics = statisticsResponse.body;
-      this._setBarChartData(data.body);
-      this._setPieChartData(data.body);
-    });
-  }
+    baseOnInit() {
+        this.isLoading = true;
+        forkJoin([this.unitOfWorkService.dashboard.getDashboardData(), this.unitOfWorkService.dashboard.getStatistics()])
+            .pipe(finalize(() => (this.isLoading = false)))
+            .subscribe({
+                next: ([dataResponse, statisticsResponse]) => {
+                    this.dashboardData = dataResponse.data;
+                    this.dashboardStatistics = statisticsResponse.data;
+                    this.setBarChartData(dataResponse.data);
+                    this.setPieChartData(dataResponse.data);
+                }
+            });
+    }
 
-  private _setBarChartData(dashboardData: IDashboard) {
-    this.barChartData.labels?.push(this.translateWord('هالك'), this.translateWord('جاهز'), this.translateWord('استلم'), this.translateWord('حجز'), this.translateWord('مرتجع'));
+    barChartLegend = true;
+    barChartPlugins = [];
+    barChartData: ChartConfiguration<'bar'>['data'] = {
+        labels: [],
+        datasets: [
+            {
+                data: [],
+                label: this.translateWord('totalOrderStatus')
+            }
+        ]
+    };
+    barChartOptions: ChartConfiguration<'bar'>['options'] = {
+        responsive: true
+    };
 
-    this.barChartData.datasets[0].data.push(
-      dashboardData.totalOrderDetailsStatus.totalGoneOrders,
-      dashboardData.totalOrderDetailsStatus.totalReadyOrders,
-      dashboardData.totalOrderDetailsStatus.totalReceivedOrders,
-      dashboardData.totalOrderDetailsStatus.totalReservedOrders,
-      dashboardData.totalOrderDetailsStatus.totalReturnedOrders,
-    );
-  }
-  private _setPieChartData(dashboardData: IDashboard) {
-    this.pieChartLabels = [this.translateWord('completed'), this.translateWord('incompleted')];
-    this.pieChartDatasets[0].data = [dashboardData.completedAndInCompletedOrders.totalCompletedOrders, dashboardData.completedAndInCompletedOrders.totalInCompletedOrders];
-  }
+    setBarChartData(dashboardData: IDashBoardDataDTO) {
+        this.barChartData.labels?.push(
+            this.translateWord('هالك'),
+            this.translateWord('جاهز'),
+            this.translateWord('استلم'),
+            this.translateWord('حجز'),
+            this.translateWord('مرتجع')
+        );
 
-  private translateWord(word: string): string {
-    return this._translateService.instant(word);
-  }
+        this.barChartData.datasets[0].data.push(
+            dashboardData.totalOrderDetailsStatus.totalGoneOrders,
+            dashboardData.totalOrderDetailsStatus.totalReadyOrders,
+            dashboardData.totalOrderDetailsStatus.totalReceivedOrders,
+            dashboardData.totalOrderDetailsStatus.totalReservedOrders,
+            dashboardData.totalOrderDetailsStatus.totalReturnedOrders
+        );
+    }
+    setPieChartData(dashboardData: IDashBoardDataDTO) {
+        this.pieChartLabels = [this.translateWord('completed'), this.translateWord('incompleted')];
+        this.pieChartDatasets[0].data = [
+            dashboardData.completedAndInCompletedOrders.totalCompletedOrders,
+            dashboardData.completedAndInCompletedOrders.totalInCompletedOrders
+        ];
+    }
+
+    translateWord(word: string): string {
+        return this.translateService.instant(word);
+    }
+
+    baseOnDestroy(): void {
+        this.unitOfWorkService.unsubscribe();
+    }
 }

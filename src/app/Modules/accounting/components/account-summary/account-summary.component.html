@@ -1,0 +1,27 @@
+<mat-card class="mat-elevation-z2 section-card">
+    <mat-card-header>
+        <mat-card-title>الحساب</mat-card-title>
+        <mat-card-subtitle>ملخص الحساب</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="account-grid">
+            <div>
+                <div class="mat-body-2">الرصيد</div>
+                <div class="mat-headline-6 inline-row">
+                    {{ account.balance | number : '1.0-2' }}
+                    <mat-chip [color]="account.balance > 0 ? 'primary' : account.balance < 0 ? 'warn' : null">
+                        {{ account.balance > 0 ? 'دائن' : account.balance < 0 ? 'مدين' : 'متزن' }}
+                    </mat-chip>
+                </div>
+            </div>
+            <div>
+                <div class="mat-body-2">مدين</div>
+                <div class="mat-headline-6">{{ account.totalDebit | number : '1.0-2' }}</div>
+            </div>
+            <div>
+                <div class="mat-body-2">دائن</div>
+                <div class="mat-headline-6">{{ account.totalCredit | number : '1.0-2' }}</div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

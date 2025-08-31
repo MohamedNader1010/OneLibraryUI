@@ -1,22 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { SessionTimeoutService } from './shared/services/session-timeout.service';
+import { DestroyableComponentBase } from './shared/classes/destroyable-component-base.abstract';
+import { SessionTimeoutService } from './core/services/session-timeout.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
-  title = 'OneLibraryUI';
-  constructor(translateService: TranslateService, private _sessionTimeoutService: SessionTimeoutService) {
-    translateService.setDefaultLang('ar');
-    translateService.use('ar');
-  }
-  ngOnInit(): void {
-    this._sessionTimeoutService.startTimeout();
-  }
-  ngOnDestroy(): void {
-    this._sessionTimeoutService.stopTimeout();
-  }
+export class AppComponent extends DestroyableComponentBase {
+    title = 'one-book-store';
+    translateService = inject(TranslateService);
+    sessionTimeoutService = inject(SessionTimeoutService);
+
+    baseOnInit = (): void => {
+        this.translateService.setDefaultLang('ar');
+        this.translateService.use('ar');
+        this.sessionTimeoutService.startTimeout();
+    };
+
+    baseOnDestroy(): void {
+        this.sessionTimeoutService.stopTimeout();
+    }
 }

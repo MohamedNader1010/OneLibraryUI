@@ -1,0 +1,76 @@
+<div class="client-details container" *ngIf="data$ | async as client; else skeleton">
+    <!-- Header -->
+    <mat-card class="mat-elevation-z2 section-card">
+        <mat-card-header>
+            <div mat-card-avatar>
+                <mat-icon aria-hidden="true">person</mat-icon>
+            </div>
+            <mat-card-title>{{ client.name }}</mat-card-title>
+            <mat-card-subtitle>
+                <span class="meta-inline">
+                    <mat-icon inline>phone</mat-icon> <span>{{ client.phoneNumber }}</span>
+                    <mat-divider vertical></mat-divider>
+                    <mat-icon inline>badge</mat-icon> <span>{{ client.clientType.name }}</span>
+                </span>
+            </mat-card-subtitle>
+        </mat-card-header>
+    </mat-card>
+
+    <!-- Account Summary -->
+    <app-account-summary [account]="client.account"></app-account-summary>
+    <!-- Orders -->
+    <mat-card class="mat-elevation-z2 section-card">
+        <mat-card-header>
+            <mat-card-title>الطلبات</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div *ngIf="client.orders?.length; else noOrders">
+                <table class="mat-elevation-z1 orders-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الإجمالي</th>
+                            <th>النهائي</th>
+                            <th>خصم %</th>
+                            <th>الخصم</th>
+                            <th>المدفوع</th>
+                            <th>المتبقي</th>
+                            <th>الحالة</th>
+                            <th>ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let o of client.orders; let i = index" class="orders-row">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ o.totalPrice | number : '1.0-2' }}</td>
+                            <td>{{ o.finalPrice | number : '1.0-2' }}</td>
+                            <td>{{ o.discountPercent | number : '1.0-2' }}%</td>
+                            <td>{{ o.discount | number : '1.0-2' }}</td>
+                            <td>{{ o.paid | number : '1.0-2' }}</td>
+                            <td>{{ o.rest | number : '1.0-2' }}</td>
+                            <td>
+                                <mat-chip color="accent">{{ o.status }}</mat-chip>
+                            </td>
+                            <td [matTooltip]="o.remarks || ''">{{ o.remarks || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ng-template #noOrders>
+                <div class="muted empty-state">
+                    <mat-icon>inbox</mat-icon>
+                    <span>لا توجد طلبات</span>
+                </div>
+            </ng-template>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<ng-template #skeleton>
+    <mat-card class="mat-elevation-z1">
+        <mat-card-content class="skeleton-content">
+            <mat-progress-spinner mode="indeterminate" diameter="28"></mat-progress-spinner>
+            <span>جاري التحميل...</span>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

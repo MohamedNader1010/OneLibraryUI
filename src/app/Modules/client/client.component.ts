@@ -1,69 +1,38 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { Client } from '../../core/data/models/client/Iclient';
-import { ClientService } from '../../core/data/services/client.service';
-import { ComponentsName } from '../../shared/enums/components.name.enum';
-import { FormDialogNames } from '../../shared/enums/forms-name.enum';
-import { TranslateService } from '@ngx-translate/core';
-import { TableCommunicationService } from '../../shared/components/table/table-communication.service';
+import { Component } from '@angular/core';
+import { ClientBulkPaymentFormComponent } from './components/client-bulk-payment-form/client-bulk-payment-form.component';
+import { IClientOverviewDTO } from '../../core/models/Clients/dtos/client-overview-dto.interface';
+import { PaginatedListComponentBase } from '../../shared/classes/paginated-list-component-base.abstract';
+import { CreateClientFormDialogComponent } from './components/client-form-dialog/create-client-form-dialog.component';
+import { EditClientFormDialogComponent } from './components/client-form-dialog/edit-client-form-dialog.component';
+import { IPaginationRequest } from '../../core/Common/models/request/pagination-request.model';
+import { ITableAction } from '../../shared/interfaces/table-action.interface';
+import {
+    getBulkPaymentAction,
+    getCreateAction,
+    getDetailsPageNavigationAction,
+    getEditAction
+} from '../../shared/utilities/table-actions-utility';
+import { CLIENT_COLUMNS } from '../../shared/utilities/table-columns';
+import { ColumnsToken } from '../../shared/utilities/table-columns/table-columns.factory';
+import { IClientFullDTO } from '../../core/models/Clients/dtos/client-full-dto.interface';
 @Component({
-  selector: 'app-all',
-  templateUrl: './client.component.html',
+    selector: 'app-all-clients',
+    templateUrl: './client.component.html'
 })
-export class ClientComponent implements OnInit {
-  formName = FormDialogNames.ClientFormDialogComponent;
-  componentName = ComponentsName.client;
-  databaseService = inject(ClientService);
-  tableColumns!: any[];
-  tableCommunicationService = inject(TableCommunicationService);
-  translateService = inject(TranslateService);
+export class ClientComponent extends PaginatedListComponentBase<IClientOverviewDTO> {
+    dataObservableFn = (paginationRequest: IPaginationRequest) => this.unitOfWorkService.client.getAllPaginated(paginationRequest);
+    columnsToken: ColumnsToken = CLIENT_COLUMNS;
 
-  ngOnInit(): void {
-    this.initiateTableHeaders();
-    this.loadPaginatedData();
-    this.tableCommunicationService.reloadTable$.subscribe(() => this.loadPaginatedData());
-  }
-
-  loadPaginatedData = () => {
-    this.databaseService.getPagedData().subscribe();
-  };
-
-  private initiateTableHeaders() {
-    this.tableColumns = [
-      {
-        columnDef: "Id",
-        header: this.translateService.instant('table.id.label'),
-        cell: (element: Client) => element.id,
-      },
-      {
-        columnDef: "Name",
-        header: this.translateService.instant('form.name.label'),
-        cell: (element: Client) => element.name,
-      },
-      {
-        columnDef: "PhoneNumber",
-        header: this.translateService.instant('form.phoneNumber.label'),
-        cell: (element: Client) => element.phoneNumber,
-      },
-      {
-        columnDef: 'ClientType.Name',
-        header: this.translateService.instant('form.client.type.label'),
-        cell: (element: Client) => element.clientType,
-      },
-      {
-        columnDef: "Total",
-        header: this.translateService.instant('form.client.total.label'),
-        cell: (element: Client) => element.total,
-      },
-      {
-        columnDef: "Paid",
-        header: this.translateService.instant('form.client.paid.label'),
-        cell: (element: Client) => element.paid,
-      },
-      {
-        columnDef: "Rest",
-        header: this.translateService.instant('form.client.rest.label'),
-        cell: (element: Client) => element.rest,
-      },
+    tableActions: ITableAction[] = [
+        getCreateAction(() => this.openDialogWithAutoReload(CreateClientFormDialogComponent)),
+        getDetailsPageNavigationAction<IClientFullDTO>((row) => this.router.navigate([`/clients/${row.id}`])),
+        getEditAction<IClientOverviewDTO>((row) => this.openDialogWithAutoReload(EditClientFormDialogComponent, row)),
+        getBulkPaymentAction((row: IClientOverviewDTO) => this.openDialogWithAutoReload(ClientBulkPaymentFormComponent, row))
     ];
-  }
+
+    onInit() {}
+
+    onDestroy() {
+        console.log(`component ${this.constructor.name} destroyed`);
+    }
 }
